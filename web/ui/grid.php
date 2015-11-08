@@ -17,6 +17,21 @@ class TGrid extends \Phoenix\MVC\TPartialController
     {
         $this->getElements();
         $elements = $this->elements[$this->getPattern()];
+        
+        \Phoenix\Log\TLog::dump('PATTERN ELEMENTS', $elements);
+
+        $id = $this->getParent()->getId();
+
+        $result = array();
+        $c = count($elements);
+        for($i = 0; $i < $c; $i++) {
+            array_push($result, ['opening' => $elements[$i]->getOpening(), 'closing' => $elements[$i]->getClosing()]);
+        }
+        
+        $json = json_encode($result);
+        $elementsFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_elements.json';
+        file_put_contents($elementsFilename, $json);
+        
         $algoClass = '\Phoenix\Web\UI\Algo\T' . ucfirst($this->getPattern());
         $algo = new $algoClass();
         $algo->setCols($this->columns);
@@ -25,7 +40,7 @@ class TGrid extends \Phoenix\MVC\TPartialController
         $algo->setPivot($this->pivot);
         $algo->setTemplates($this->templates);
         $algo->setElements($elements);
-        $this->innerHtml = $algo->run();
+        $this->innerHtml = $algo->render();
     }
 
 }
