@@ -1,7 +1,7 @@
 <?php
 namespace Phoenix\Data\UI;
 
-class TDataGrid extends \Phoenix\Web\UI\TGrid
+class TDataGrid extends \Phoenix\Web\UI\TAlgoDispatcher
 {
     use TDataTag;
     
@@ -55,12 +55,15 @@ class TDataGrid extends \Phoenix\Web\UI\TGrid
 
         if($this->hasColumns) {
             $this->templates = $this->getControls($this->_columns);
-            $json = json_encode($this->templates);
             $id = $this->getParent()->getId();
+            
+            $json = json_encode($this->templates);
             $templateFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_template.json';
             file_put_contents($templateFilename, $json);
-            $this->_columns = $this->assocArrayByAttribute($this->_columns, 'name');
             
+
+            
+            $this->_columns = $this->assocArrayByAttribute($this->_columns, 'name');
             $this->_columnCount = count($this->_columns);
         }
         else {
@@ -85,16 +88,15 @@ class TDataGrid extends \Phoenix\Web\UI\TGrid
         $templates = '';
         if(file_exists($templateFilename)) {
             $templates = json_decode(file_get_contents($templateFilename));
-//            \Phoenix\Log\TLog::dump('TEMPLATES 1', var_export($templates, true));
-            //$templates = \Phoenix\Core\TObject::arraysToObjects($templates);
-//            \Phoenix\Log\TLog::dump('TEMPLATES 2', var_export($templates, true));
         }
         
-//        $sql = $cmd->getSelectQuery();
-//        
-//        
-//        \Phoenix\Log\TLog::dump('SQL RENDER HTML', $sql);
-//        //$this->command->setSelectQuery($sql);
+        $elementsFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_elements.json';
+        \Phoenix\Log\TLog::debug('TEMPLATE FILE : ' . $elementsFilename);
+        $elements = '';
+        if(file_exists($elementsFilename)) {
+            $elements = json_decode(file_get_contents($elementsFilename));
+        }
+        
         $stmt = $cmd->querySelect();
         
         $fieldCount = $stmt->getFieldCount();
@@ -113,13 +115,19 @@ class TDataGrid extends \Phoenix\Web\UI\TGrid
         }
         
         \Phoenix\Log\TLog::dump('RECORDSET VALUES', $values);
-        return [
+        $result = [
             'cols' => $fieldCount
             , 'rows' => $rowCount
             , 'names' => $stmt->getFieldNames()
-            , 'templates' => $templates
             , 'values' => $values
+            , 'templates' => $templates
         ];
+        
+        if(isset($elements)) {
+            $result['elements'] = $elements;
+        }
+        
+        return $result;
 
     }
     
@@ -140,5 +148,3 @@ class TDataGrid extends \Phoenix\Web\UI\TGrid
     }
 
 }
-
-
