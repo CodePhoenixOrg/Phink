@@ -24,8 +24,8 @@ class TRegistry
                 'hasTemplate' => true, 
                 'canRender' => true
              ),
-            'TGrid' => array(
-                'alias' => 'grid',
+            'TAlgoDispatcher' => array(
+                'alias' => 'algodispatcher',
                 'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR, 
                 'namespace' => ROOT_NAMESPACE . '\Web\UI', 
                 'hasTemplate' => false, 

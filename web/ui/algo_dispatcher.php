@@ -6,7 +6,7 @@ namespace Phoenix\Web\UI;
  *
  * @author david
  */
-class TGrid extends \Phoenix\MVC\TPartialController
+class TAlgoDispatcher extends \Phoenix\MVC\TPartialController
 {
     use \Phoenix\Web\UI\THtmlPattern;
     use \Phoenix\Data\UI\TDataBinder;

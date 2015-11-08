@@ -9,7 +9,7 @@ namespace Phoenix\Web\UI\Algo;
 
 interface IAlgo
 {
-    function run();
+    function render();
 }
 
 trait TAlgo
