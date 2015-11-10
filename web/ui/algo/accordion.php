@@ -66,6 +66,7 @@ class TAccordion implements IAlgo
                     if($i > 0) {
                         $tbody .= $elements[2]->getClosing() . "\n" . $elements[0]->getClosing() . "\n";
                         $tbody .= $elements[2]->getClosing() . "\n" . $elements[0]->getClosing() . "\n";
+                        $oldValue = array_fill(0, $this->columns, '!#');
                     }
                     $tbody .= str_replace('%s', 'blue', $elements[0]->getOpening()) . "\n";
                     $tbody .= $elements[1]->getOpening() . $html . $elements[1]->getClosing() . "\n";
