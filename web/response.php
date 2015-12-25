@@ -61,8 +61,12 @@ class TResponse implements \JsonSerializable
         }
 
         $this->_data['scripts'] = $this->scriptList;
-                
-        header('Content-Type: text/html; charset=UTF-8');
+//        $this->_data['http_host'] = HTTP_HOST;
+
+        header('Content-Type: application/json; charset=UTF-8');
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Expose-Headers: origin');
+        header('Origin: ' . SERVER_ROOT);
         echo json_encode($this);
     }
 

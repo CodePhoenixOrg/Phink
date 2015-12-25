@@ -39,7 +39,7 @@ class TPartialView extends TCustomView
         $this->viewName = lcfirst($this->className);
     }
 
-    public function setFilenames()
+    public function setNames()
     {
         
         $this->controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;

@@ -47,7 +47,7 @@ abstract class TCustomView extends \Phoenix\Web\UI\TCustomControl
         //$this->redis = new Client($this->context->getRedis());
         $this->setViewName();
         $this->setNamespace();
-        $this->setFilenames();
+        $this->setNames();
     }
 
     public function isDirty()

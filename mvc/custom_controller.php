@@ -20,7 +20,7 @@ abstract class TCustomController extends \Phoenix\Web\UI\TCustomControl
         
         $this->setViewName();
         $this->setNamespace();
-        $this->setFilenames();
+        $this->setNames();
     }
 
     public function getInnerHtml()

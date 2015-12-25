@@ -5,21 +5,28 @@
             <url>web/web_object.php</url>
             <bookmark id="1">
                 <name/>
-                <line>152</line>
+                <line>153</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/Akades/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/jphoenix.js</file>
-            <file>file:/Users/Akades/Sites/CodePhoenix.net/SDK/php/includes/phoenix/data/ui/data_binder.php</file>
-            <file>file:/Users/Akades/Sites/CodePhoenix.net/SDK/php/includes/phoenix/web/ui/algo/table.php</file>
-            <file>file:/Users/Akades/Sites/CodePhoenix.net/SDK/php/includes/phoenix/web/ui/html.pattern.phtml</file>
-            <file>file:/Users/Akades/Sites/CodePhoenix.net/SDK/php/includes/phoenix/web/ui/algo/algo.php</file>
-            <file>file:/Users/Akades/Sites/CodePhoenix.net/SDK/php/includes/phoenix/web/ui/grid.php</file>
-            <file>file:/Users/Akades/Sites/CodePhoenix.net/SDK/php/includes/phoenix/web/ui/algo/accordion.php</file>
-            <file>file:/Users/Akades/Sites/CodePhoenix.net/SDK/php/includes/phoenix/data/ui/data_grid.class.php</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/controller.js</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/code_phoenix.js</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/globals.php</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/autoloader.php</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/core/application.php</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/web/web_application.php</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/jphoenix.js</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/web/web_object.php</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/core/constants.php</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/starter.php</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/js_starter.php</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/core/object.php</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/web_application.js</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/web_object.js</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/registry.js</file>
         </group>
     </open-files>
 </project-private>

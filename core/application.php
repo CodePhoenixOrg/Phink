@@ -14,7 +14,7 @@ namespace Phoenix\Core;
 
 require_once 'constants.php';
 
-//include 'phoenix/'.STARTER_FILE;
+include 'phoenix/'.STARTER_FILE;
 
 //require_once 'log.php';
 //require_once 'object.php';

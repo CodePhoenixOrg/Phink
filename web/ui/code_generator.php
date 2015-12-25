@@ -181,10 +181,14 @@ trait TCodeGenerator {
     {
                 
 
-        if($this->jsControllerFileName) {
-            $pageCode = "<script src='$this->jsControllerFileName'></script>" . CR_LF . $pageCode;        
+        if(file_exists($this->jsControllerFileName)) {
+            $pageCode = "<script src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . "/" . $this->jsControllerFileName . "'></script>" . CR_LF . $pageCode;        
         }
-
+        if(file_exists($this->cssFileName)) {
+//            $pageCode = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . "/" . $this->cssFileName . "' />" . CR_LF . $pageCode;
+            $pageCode = "<script>\$.jPhoenix.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . "/" . $this->cssFileName . "');</script>" . CR_LF . $pageCode;        
+        }
+        
         $count = $doc->getCount();
         $matchesSort = $doc->getMatchesByDepth();
         $docList = $doc->getList();

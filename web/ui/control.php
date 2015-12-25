@@ -19,7 +19,7 @@ class TControl extends TCustomControl
         
         $this->setViewName();
         $this->setNamespace();
-        $this->setFilenames();
+        $this->setNames();
         
         $this->className = $this->getType();
         $this->viewName = lcfirst($this->className);

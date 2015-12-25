@@ -36,7 +36,7 @@ class TWebApplication extends UI\TCustomControl
         
         $this->setViewName();
         $this->setNamespace();
-        $this->setFilenames();
+        $this->setNames();
     }
     
     public static function mediaPath() 
@@ -84,7 +84,7 @@ class TWebApplication extends UI\TCustomControl
         $result = false;
         // On prend le token en cours ...
         $token = $this->request->getToken();
-        if(is_string($token) || $this->viewName == MAIN_VIEW || $this->viewName == LOGIN_VIEW) {
+        if(is_string($token) || $this->viewName == MAIN_VIEW || $this->viewName == LOGIN_VIEW  || $this->viewName == HOME_VIEW) {
             // on renouvelle le token
         // ... avec ce token on récupère l'utilisateur et un nouveau token
         // de telle sorte qu'on limite la durée de vie du token

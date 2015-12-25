@@ -17,6 +17,24 @@ var spinnerOptions = {
   left: 'auto' // Left position relative to parent in px
 };
 
+if(!Object.create) {
+    Object.create = (function() {
+        function F() {}
+        
+        return function(o) {
+            if(arguments.length !== 1) {
+                throw new Error('Object.create implementation only accepts one parameter.');
+            }
+            
+            F.prototype = o;
+            return new F();
+        }
+    })()
+}
+
+
+
+
 
 (function($) 
 {
@@ -49,27 +67,25 @@ var spinnerOptions = {
             url: url,
             data: postData,
             dataType: 'json',
-            async: true,
-            success: function(data) {
-                try 
-                {
-                    $.jPhoenix.setToken(data.token);
-                    if($.isFunction(callBack)) {
-                        callBack.call(this, data);
-                    }
-                    //$("body").removeClass('onLoad');
+            async: true
+        }).done(function(data, textStatus, xhr) {
+            try 
+            {
+                $.jPhoenix.setToken(data.token);
+                if($.isFunction(callBack)) {
+                    callBack.call(this, data, textStatus, xhr);
+                }
+                //$("body").removeClass('onLoad');
 //                    spinner.stop();
-                }
-                catch(e)
-                {
-                    debugLog(e);
-                }
-            },
-            error: function(xhr, options, message) {
-                debugLog("Satus : " + xhr.status + "\r\n" +
-                        "Options : " + options + "\r\n" +
-                        "Message : " + message);
             }
+            catch(e)
+            {
+                debugLog(e);
+            }
+        }).fail(function(xhr, options, message) {
+            debugLog("Satus : " + xhr.status + "\r\n" +
+                    "Options : " + options + "\r\n" +
+                    "Message : " + message);
         });
     };
 
@@ -82,24 +98,23 @@ var spinnerOptions = {
             url: url + "&callback=?", // retour en JSONP
             data: postData,
             dataType: 'json',
-            async: true,
-            success: function(data) {
-                try {
-                    $.jPhoenix.setToken(data.token);
-                    if($.isFunction(callBack)) {
-                        callBack.call(this, data);
-                    }
+            async: true
+        }).done(function(data, textStatus, xhr) {
+            try {
+                data.status = textStatus;
+                data.headers = xhr.getAllResponseHeaders();
+                $.jPhoenix.setToken(data.token);
+                if($.isFunction(callBack)) {
+                    callBack.call(this, data, textStatus, xhr);
                 }
-                catch(e) {
-                    debugLog(e);
-                }
-            },
-            error: function(xhr, options, message) {
-                debugLog("Satus : " + xhr.status + "\r\n" +
-                    "Options : " + options + "\r\n" +
-                    "Message : " + message);
             }
-
+            catch(e) {
+                debugLog(e);
+            }
+        }).fail(function(xhr, options, message) {
+            debugLog("Satus : " + xhr.status + "\r\n" +
+                "Options : " + options + "\r\n" +
+                "Message : " + message);
         });
     };
     
@@ -113,38 +128,32 @@ var spinnerOptions = {
             data: {"action" : 'getViewHtml', "token" : myToken},
             dataType: 'json',
             async: true,
-            headers: { "Accept" : "application/json, text/javascript, request/view, */*; q=0.01" },
-            success: function(data) {
-                try {
-                    $.jPhoenix.setToken(data.token);
-                    var page = pageName.replace('.html', '');
-                    var pageJs = page + '.js';
-                    var pageCss = page + '.css';
-                    $.jPhoenix.getCSS('app/views/' + page + '/' + pageCss);
-                    var l = data.scripts.length;
-                    for(i = 0; i < l; i++) {
-                        $.getScript(data.scripts[i]);
-                    }
+            headers: {
+                "Accept" : "application/json, text/javascript, request/view, */*; q=0.01"
+//            ,   "X-Token:" : myToken
+            }
+        }).done(function(data, textStatus, xhr) {
+            try {
+                $.jPhoenix.setToken(data.token);
 
-                    $.getScript('app/controllers/' + page + '/' + pageJs)
-                    .done(function(script, textStatus) {
-                        var html = base64_decode(data.view);
-                        $("#mainContent").html(html);
-                    })
-                    .fail(function(jqxhr, settings, exception) {
-                        $("#mainContent").html(data.view.toString());
-                    });
+                var l = data.scripts.length;
+                for(i = 0; i < l; i++) {
+                    $.getScript(data.scripts[i]);
+                }
 
-                }
-                catch(e) {
-                    debugLog(e);
-                }
-            },
-            error: function(xhr, options, message) {
-                debugLog("Satus : " + xhr.status + "\r\n" +
-                    "Options : " + options + "\r\n" +
-                    "Message : " + message);
-            }            
+                var url = TWebObject.parseUrl(pageName);
+                TRegistry.item(url.page).origin = xhr.getResponseHeader('origin');
+
+                var html = base64_decode(data.view);
+                $("#mainContent").html(html);
+            }
+            catch(e) {
+                debugLog(e);
+            }
+        }).fail(function(xhr, options, message) {
+            debugLog("Satus : " + xhr.status + "\r\n" +
+                "Options : " + options + "\r\n" +
+                "Message : " + message);
         });
     };
     
@@ -165,38 +174,30 @@ var spinnerOptions = {
             data: postData,
             dataType: 'json',
             async: true,
-            headers: { "Accept" : "application/json, text/javascript, request/view, */*; q=0.01" },
-            success: function(data) {
-                try {
-                    $.jPhoenix.setToken(data.token);
-                    var page = pageName.replace('.html', '');
-                    var pageJs = page + '.js';
-                    var pageCss = page + '.css';
-                    $.jPhoenix.getCSS('app/views/' + page + '/' + pageCss);
+            headers: {
+                "Accept" : "application/json, text/javascript, request/view, */*; q=0.01"
+//            ,   "Token:" : myToken
+            }
+        }).done(function(data, textStatus, xhr) {
+            try {
+                $.jPhoenix.setToken(data.token);
 
-                    $.getScript('app/controllers/' + page + '/' + pageJs)
-                    .done(function(script, textStatus) {
-                    })
-                    .fail(function(jqxhr, settings, exception) {
-                    });
-                    if($.isFunction(callBack)) {
-                        callBack.call(this, data);
-                    } else {
-                        var html = base64_decode(data.view);
-                        $(attach).html(html);
-
-                    }
+                if($.isFunction(callBack)) {
+                    callBack.call(this, data);
+                } else {
+                    var html = base64_decode(data.view);
+                    $(attach).html(html);
 
                 }
-                catch(e) {
-                    debugLog(e);
-                }
-            },
-            error: function(xhr, options, message) {
-                debugLog("Satus : " + xhr.status + "\r\n" +
-                    "Options : " + options + "\r\n" +
-                    "Message : " + message);
-            }            
+
+            }
+            catch(e) {
+                debugLog(e);
+            }
+        }).fail(function(xhr, options, message) {
+            debugLog("Satus : " + xhr.status + "\r\n" +
+                "Options : " + options + "\r\n" +
+                "Message : " + message);
         });
     };
     
@@ -216,78 +217,55 @@ var spinnerOptions = {
             data: postData,
             dataType: 'json',
             async: true,
-            headers: { "Accept" : "application/json, text/javascript, request/partialview, */*; q=0.01" },
-            success: function(data) {
-                try 
-                {
-                    var l = data.scripts.length;
-                    for(i = 0; i < l; i++) {
-                        $.getScript(data.scripts[i]);
-                    }
-                    
-                    $.jPhoenix.setToken(data.token);
-                    if($.isFunction(callBack)) {
-                        callBack.call(this, data);
-                    }
-                    var html = base64_decode(data.view);
-                    $(attach).html(html);
-                }
-                catch(e)
-                {
-                    debugLog(e);
-                }
-            },
-            error: function(xhr, options, message) {
-                debugLog("Satus : " + xhr.status + "\r\n" +
-                        "Options : " + options + "\r\n" +
-                        "Message : " + message);
+            headers: {
+                "Accept" : "application/json, text/javascript, request/partialview, */*; q=0.01"
+//            ,   "X-Token:" : myToken
             }
+        }).done(function(data, textStatus, xhr) {
+            try 
+            {
+                var l = data.scripts.length;
+                for(i = 0; i < l; i++) {
+                    $.getScript(data.scripts[i]);
+                }
+
+                $.jPhoenix.setToken(data.token);
+                if($.isFunction(callBack)) {
+                    callBack.call(this, data);
+                }
+                
+                var url = new TWebObject.parseUrl(pageName);
+                TRegistry.item(url.page).origin = xhr.getResponseHeader('origin');
+             
+                var html = base64_decode(data.view);
+                $(attach).html(html);
+            }
+            catch(e)
+            {
+                debugLog(e);
+            }
+        }).fail(function(xhr, options, message) {
+            debugLog("Satus : " + xhr.status + "\r\n" +
+                    "Options : " + options + "\r\n" +
+                    "Message : " + message);
         });
     };
 
     $.jPhoenix.attachWindow = function (pageName, anchor) {
         var myToken = $.jPhoenix.getToken();
-        $.jPhoenix.getJSON('' + pageName, {"action" : 'getViewHtml', "token" : myToken}, function(data) {
+        $.jPhoenix.getJSON('' + pageName, {"action" : 'getViewHtml', "token" : myToken}, function(data, status, xhr) {
             try {
                 $.jPhoenix.setToken(data.token);
-                
-                var protocolLess = pageName.replace('http://', '');
-                var hasProtocol = protocolLess.length < pageName.length;
-                var protocol = '';
-//                var isSecure = false;
-                if(!hasProtocol) {
-                    protocolLess = pageName.replace('https://', '');
-                    hasProtocol = protocolLess.length < pageName.length;
-//                    isSecure = true;
-                    protocol = 'https://';
-                } else {
-                    protocol = 'http://';
-                }
-                
-                pageName = pageName.replace(protocol, '');
 
-                var domainLimit = pageName.indexOf('/');
-                var domain = pageName;
-                var queryString = '';
-                if(domainLimit > -1) {
-                    domain = pageName.substring(0, domainLimit);
-                    pageName = pageName.replace(domain, '');
-                }
+                var url = TWebObject.parseUrl(pageName);
+                TRegistry.item(url.page).origin = xhr.getResponseHeader('origin');
+ 
+                var html = base64_decode(data.view);
+                $(anchor).html(html);
                 
-                var page = pageName.replace('.html', '');
-                var pageJs = page + '.js';
-                var pageCss = page + '.css';
-                $.jPhoenix.getCSS(protocol + domain + '/app/views/' + page + '/' + pageCss);
-
-                $.getScript(protocol + domain + '/app/controllers/' + page + '/' + pageJs)
-                .done(function(script, textStatus) {
-                    var html = base64_decode(data.view);
-                    $(anchor).html(html);
-                })
-                .fail(function(jqxhr, settings, exception) {
-                    var html = base64_decode(data.view);
-                    $(anchor).html(html);
-                });
+//                TRegistry.write(page, 'origin', xhr.getResponseHeader('origin'));
+//                window[page] = {};
+//                window[page].origin = xhr.getResponseHeader('origin');
 
             }
             catch(e) {
@@ -301,27 +279,14 @@ var spinnerOptions = {
         $.jPhoenix.getJSON('' + pageName, {"action" : 'getViewHtml', "token" : myToken}, function(data) {
             try {
                 $.jPhoenix.setToken(data.token);
-                var page = pageName.replace('.html', '');
-                var pageJs = page + '.js';
-                var pageCss = page + '.css';
-                $.jPhoenix.getCSS('app/views/' + page + '/' + pageCss);
 
                 var l = data.scripts.length;
                 for(i = 0; i < l; i++) {
                     $.getScript(data.scripts[i]);
                 }
                 
-                $.getScript('app/controllers/' + page + '/' + pageJs)
-                .done(function(script, textStatus) {
-                    var html = base64_decode(data.view);
-                    $(anchor).html(html);
-                })
-                .fail(function(jqxhr, settings, exception) {
-                    var html = base64_decode(data.view);
-                    $(anchor).html(html);
-                });
-
-                
+                var html = base64_decode(data.view);
+                $(anchor).html(html);                
             }
             catch(e) {
                 debugLog(e);
@@ -334,26 +299,13 @@ var spinnerOptions = {
         $.jPhoenix.getJSONP('' + pageName, {"action" : 'getViewHtml', "token" : myToken}, function(data) {
             try {
                 $.jPhoenix.setToken(data.token);
-                var page = pageName.replace('.html', '');
-                var pageJs = page + '.js';
-                var pageCss = page + '.css';
-                $.jPhoenix.getCSS('app/views/' + page + '/' + pageCss);
-
                 var l = data.scripts.length;
                 for(i = 0; i < l; i++) {
                     $.getScript(data.scripts[i]);
                 }
                 
-                $.getScript('app/controllers/' + page + '/' + pageJs)
-                .done(function(script, textStatus) {
-                    var html = base64_decode(data.view);
-                    $(anchor).html(html);
-                })
-                .fail(function(jqxhr, settings, exception) {
-                    var html = base64_decode(data.view);
-                    $(anchor).html(html);
-                });
-
+                var html = base64_decode(data.view);
+                $(anchor).html(html);
                 
             }
             catch(e) {
@@ -885,7 +837,4 @@ function debugLog(message) {
 function phpJsonDecode(json) {
     return $.jPhoenix.phpJsonDecode(json);
 }
-
-
-
 

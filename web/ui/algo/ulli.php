@@ -15,7 +15,7 @@ class TUlli implements IAlgo
 {
     use TAlgo;    
     //put your code here
-    public function run()
+    public function render()
     {
         $noTHead = false; 
 
