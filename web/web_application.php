@@ -61,6 +61,8 @@ class TWebApplication extends UI\TCustomControl
 
     public function run($params)
     {
+        session_start();
+        
         $this->params = $params;
         if($this->validateToken()) {
             $this->dispatch();

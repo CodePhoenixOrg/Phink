@@ -177,7 +177,7 @@ TController.prototype.actions = function (actions) {
     return this;
 };
 
-TController.prototype.getView = function (pageName) {
+TController.prototype.getView = function (pageName, callback) {
 
     $.ajax({
         type: 'POST',
@@ -202,11 +202,14 @@ TController.prototype.getView = function (pageName) {
                 $.getScript(data.scripts[i]);
             }
 
-//            this.url = TWebObject.parseUrl(pageName);
-//            TRegistry.item(this.url.page).origin = xhr.getResponseHeader('origin');
+            data.view = base64_decode(data.view);
+            if($.isFunction(callback)) {
+                callback.call(this, data);
+            } else {
+                $("#mainContent").html(data.view);
+
+            }
             
-            var html = base64_decode(data.view);
-            $("#mainContent").html(html);
         }
         catch(e) {
             debugLog(e);

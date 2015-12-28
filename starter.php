@@ -51,3 +51,4 @@ include 'phoenix/web/ui/algo/olli.php';
 include 'phoenix/web/ui/algo/accordion.php';
 
 include 'phoenix/js/js_starter.php';
+include 'phoenix/css/css_starter.php';
