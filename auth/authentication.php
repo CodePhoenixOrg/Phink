@@ -6,11 +6,9 @@ namespace Phoenix\Auth;
 //require_once 'phoenix/data/data_access.php';
 //require_once 'phoenix/data/client/pdo/pdo_command.php';
 
-use Phoenix\Web\TResponse;
 use Phoenix\Crypto\TCrypto;
 use Phoenix\Data\TDataAccess;
 use Phoenix\Data\Client\PDO\TPdoCommand;
-use Phoenix\Log\TLog;
 
 class TAuthentication
 {

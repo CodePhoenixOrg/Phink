@@ -12,21 +12,10 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/controller.js</file>
-            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/code_phoenix.js</file>
-            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/globals.php</file>
-            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/autoloader.php</file>
-            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/core/application.php</file>
-            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/web/web_application.php</file>
-            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/jphoenix.js</file>
-            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/web/web_object.php</file>
-            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/core/constants.php</file>
-            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/starter.php</file>
             <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/js_starter.php</file>
-            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/core/object.php</file>
-            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/web_application.js</file>
-            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/web_object.js</file>
-            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/registry.js</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/web/web_object.js</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/web/web_application.js</file>
+            <file>file:/Users/david/Sites/CodePhoenix.net/SDK/php/includes/phoenix/js/mvc/controller.js</file>
         </group>
     </open-files>
 </project-private>

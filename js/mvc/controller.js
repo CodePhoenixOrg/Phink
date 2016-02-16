@@ -15,6 +15,24 @@ var TController = function() {
 TController.prototype = new TWebObject();
 TController.prototype.constructor = TController;
 
+TController.prototype.oninit = function (callback) {
+
+    if(typeof callback === 'function') {
+        callback.call(this);
+    }
+    
+    return this;
+};
+
+TController.prototype.onload = function (callback) {
+
+    if(typeof callback === 'function') {
+        callback.call(this);
+    }
+    
+    return this;
+};
+
 TController.prototype.render = function () {
 
     if(typeof this.oninit === 'function') {
@@ -50,9 +68,8 @@ TController.prototype.getView = function (pageName, callback) {
         }
     }).done(function(data, textStatus, xhr) {
         try {
-            this.origin = xhr.getResponseHeader('origin');
             var url = TWebObject.parseUrl(pageName);
-            TRegistry.item(url.page).origin = this.origin;
+            TRegistry.item(url.page).origin = xhr.getResponseHeader('origin');
 
             this.token = data.token;
 
@@ -62,10 +79,10 @@ TController.prototype.getView = function (pageName, callback) {
             }
 
             data.view = base64_decode(data.view);
-            if($.isFunction(callback)) {
+            if(typeof callback === 'function') {
                 callback.call(this, data);
             } else {
-                $("#mainContent").html(data.view);
+                $(document.body).html(data.view);
 
             }
             
@@ -82,7 +99,7 @@ TController.prototype.getView = function (pageName, callback) {
 
 TController.prototype.getPartialView = function (pageName, action, attach, postData, callBack) {
 
-    if(postData === undefined) {
+    if(postData === undefined || postData === null) {
         postData = {};
     }
 
@@ -104,21 +121,20 @@ TController.prototype.getPartialView = function (pageName, action, attach, postD
         {
             this.token = data.token;
 
-            this.origin = xhr.getResponseHeader('origin');
             var url = TWebObject.parseUrl(pageName);
-            TRegistry.item(url.page).origin = this.origin;
+            TRegistry.item(url.page).origin = xhr.getResponseHeader('origin');
 
             var l = data.scripts.length;
             for(i = 0; i < l; i++) {
                 $.getScript(data.scripts[i]);
             }
 
-            if($.isFunction(callBack)) {
-                callBack.call(this, data);
-            }
-
             var html = base64_decode(data.view);
             $(attach).html(html);
+            
+            if(typeof callBack === 'function') {
+                callBack.call(this, data);
+            }            
         }
         catch(e)
         {
@@ -129,4 +145,34 @@ TController.prototype.getPartialView = function (pageName, action, attach, postD
                 "Options : " + options + "\r\n" +
                 "Message : " + message);
     });
+};
+
+TController.prototype.attachWindow = function (pageName, anchor) {
+    this.getView(pageName, function(data) {
+        if(anchor !== undefined) {
+            $(anchor).html(data.view);
+        } else {
+            $(document.body).html(data.view);
+        }
+    });
+};
+
+TController.prototype.attachView = function (pageName, anchor) {
+    var myToken = this.token;
+    this.getJSON('' + pageName, {"action" : 'getViewHtml', "token" : myToken}, function(data) {
+        try {
+            this.token = data.token;
+
+            var l = data.scripts.length;
+            for(i = 0; i < l; i++) {
+                $.getScript(data.scripts[i]);
+            }
+
+            var html = base64_decode(data.view);
+            $(anchor).html(html);                
+        }
+        catch(e) {
+            debugLog(e);
+        }
+    });           
 };
