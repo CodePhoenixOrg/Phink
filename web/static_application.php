@@ -46,7 +46,7 @@ class TStaticApplication extends TWebApplication
     public function run($params)
     {
         if(strstr(HTTP_ACCEPT, 'partialview')) {
-            parent::run();
+            parent::run($params);
         } else {
             if($this->validateToken()) {
                 $filename = $this->getStaticFileName();

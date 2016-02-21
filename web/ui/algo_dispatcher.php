@@ -15,22 +15,30 @@ class TAlgoDispatcher extends \Phoenix\MVC\TPartialController
 
     public function renderHtml()
     {
-        $this->getElements();
-        $elements = $this->elements[$this->getPattern()];
-        
-        \Phoenix\Log\TLog::dump('PATTERN ELEMENTS', $elements);
+//        if($this->data !== null) {
+//            $this->columns = $this->data['cols'];
+//            $this->rows = $this->data['rows'];
+//            $elements = $this->data['elements'];
+//            $this->templates = $this->data['templates'];
+//        } else {
+            $this->getElements();
+            $elements = $this->elements[$this->getPattern()];
+            \Phoenix\Log\TLog::dump('PATTERN ELEMENTS', $elements);
 
-        $id = $this->getParent()->getId();
+            $id = $this->getParent()->getId();
 
-        $result = array();
-        $c = count($elements);
-        for($i = 0; $i < $c; $i++) {
-            array_push($result, ['opening' => $elements[$i]->getOpening(), 'closing' => $elements[$i]->getClosing()]);
-        }
+            $result = array();
+            $c = count($elements);
+            for($i = 0; $i < $c; $i++) {
+                array_push($result, ['opening' => $elements[$i]->getOpening(), 'closing' => $elements[$i]->getClosing()]);
+            }
+
+            $json = json_encode($result);
+            $elementsFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_elements.json';
+            file_put_contents($elementsFilename, $json);
+//        }
         
-        $json = json_encode($result);
-        $elementsFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_elements.json';
-        file_put_contents($elementsFilename, $json);
+        
         
         $algoClass = '\Phoenix\Web\UI\Algo\T' . ucfirst($this->getPattern());
         $algo = new $algoClass();

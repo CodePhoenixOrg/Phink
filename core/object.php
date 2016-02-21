@@ -71,7 +71,9 @@ class TObject
 
     public function getType()
     {
-        return array_pop(explode('\\', get_class($this)));;
+        $typeParts = explode('\\', get_class($this));
+        return array_pop($typeParts);
+        
     }
 
     public function getBaseType()

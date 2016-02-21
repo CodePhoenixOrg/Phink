@@ -304,8 +304,10 @@ trait TWebObject {
     
     public function setViewName()
     {
-        $this->viewName = array_pop(explode('/', REQUEST_URI));
-        $this->viewName = array_shift(explode('.',$this->viewName));
+        $requestUriParts = explode('/', REQUEST_URI);
+        $this->viewName = array_pop($requestUriParts);
+        $viewNameParts = explode('.',$this->viewName);
+        $this->viewName = array_shift($viewNameParts);
 
         $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
         $this->className = ucfirst($this->viewName);

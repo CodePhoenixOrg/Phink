@@ -72,15 +72,6 @@ class TDataGrid extends \Phoenix\Web\UI\TAlgoDispatcher
         
     }
 
-    public function setData()
-    {
-        //$id = $this->parent->getId();
-        //$id = $this->getParent()->getId();
-        $id = $this->getParent()->getViewName();
-        \Phoenix\Log\TLog::dump('DATA GRID PARENT', $this->parent);
-        $this->data = self::getGridData($id, $this->command, $this->_rowCount);
-    }
-    
     public static function getGridData($id, \Phoenix\Data\Client\PDO\TPdoCommand $cmd, $rowCount)
     {
         $templateFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_template.json';
@@ -133,13 +124,13 @@ class TDataGrid extends \Phoenix\Web\UI\TAlgoDispatcher
     
     public function getData() 
     {
-        $this->setData();
+        $this->data = self::getGridData($this->getParent()->getViewName(), $this->command, $this->_rowCount);
         $this->response->setData('data', $this->data);
     }
     
     public function renderHtml()
     {
-        $this->setData();
+        $this->data = self::getGridData($this->getParent()->getViewName(), $this->command, $this->_rowCount);
 
         parent::renderHtml();
 
