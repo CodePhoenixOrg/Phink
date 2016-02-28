@@ -15,6 +15,10 @@ var TController = function() {
 TController.prototype = new TWebObject();
 TController.prototype.constructor = TController;
 
+TController.create = function() {
+    return new TController();
+}
+
 TController.prototype.oninit = function (callback) {
 
     if(typeof callback === 'function') {
@@ -176,3 +180,24 @@ TController.prototype.attachView = function (pageName, anchor) {
         }
     });           
 };
+
+
+    
+TController.prototype.attachIframe = function(id, src, anchor) {
+//    var iframe = document.createElement('iframe');
+//    iframe.frameBorder = 0;
+//    iframe.width = "100%";
+//    iframe.height = "100%";
+//    iframe.id = id;
+//    iframe.setAttribute("src", src);
+//    document.getElementById(anchor).appendChild(iframe);
+
+    $(anchor).html('');
+    $('<iframe>', {
+        src: src,
+        id:  id,
+        frameborder: 0,
+        scrolling: 'no'
+    }).appendTo(anchor);
+
+}

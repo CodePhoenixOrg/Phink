@@ -16,6 +16,9 @@ $filenames = [
     ,   'core/registry.js'
     ,   'web/web_application.js'
     ,   'web/web_object.js'
+    ,   'web/ui/algo.js'
+    ,   'web/ui/algo/accordion.js'
+    ,   'web/ui/algo/table.js'
     ,   'mvc/controller.js'
     ,   'jphoenix.js'
 ];

@@ -25,6 +25,10 @@ if(isset($_SERVER['DOCUMENT_ROOT'])) {
         define('HTTP_PROTOCOL', ($_SERVER['HTTPS'] == 'off') ? 'http' : 'https');
     } elseif(strstr($_SERVER['SERVER_SOFTWARE'], 'Apache')) {
         define('HTTP_PROTOCOL', $_SERVER['REQUEST_SCHEME']);
+    } elseif(strstr($_SERVER['SERVER_SOFTWARE'], 'lighttpd')) {
+        define('HTTP_PROTOCOL', strstr($_SERVER['SERVER_PROTOCOL'], 'HTPPS') ? 'https' : 'http' );
+    } elseif(strstr($_SERVER['SERVER_SOFTWARE'], 'nginx')) {
+        define('HTTP_PROTOCOL', strstr($_SERVER['SERVER_PROTOCOL'], 'HTPPS') ? 'https' : 'http' );
     }
 
     define('LOG_PATH', DOCUMENT_ROOT . 'logs/');

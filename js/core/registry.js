@@ -19,11 +19,11 @@ var TRegistry = (function() {
 
     }
 
-    F.prototype.read = function(item, key, ifNull) {
+    F.prototype.read = function(item, key, defaultValue) {
         var result = null;
 
         if (this.registry[item] !== undefined) {
-            result = (this.registry[item][key] !== undefined) ? this.registry[item][key] : ((ifNull !== undefined) ? ifNull : null);
+            result = (this.registry[item][key] !== undefined) ? this.registry[item][key] : ((defaultValue !== undefined) ? defaultValue : null);
         }
 
         return result;
