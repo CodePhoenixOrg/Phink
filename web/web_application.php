@@ -72,12 +72,16 @@ class TWebApplication extends UI\TCustomControl
 
     public function setNamespace()
     {
-        $sa = explode('.', SERVER_NAME);
-        array_pop($sa);
-        if(count($sa) == 2) {
-            array_shift($sa);
+        if(strstr(SERVER_NAME, 'localhost')) {
+            $this->namespace = CUSTOM_NAMESPACE;
+        } else {
+            $sa = explode('.', SERVER_NAME);
+            array_pop($sa);
+            if(count($sa) == 2) {
+                array_shift($sa);
+            }
+            $this->namespace = ucfirst($sa[0]);
         }
-        $this->namespace = ucfirst($sa[0]);
         $this->namespace .= '\\Controllers'; 
     }
 

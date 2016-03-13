@@ -33,6 +33,7 @@ class TFileUtils
 
     public static function webPath($filename)
     {
+        $filename = str_replace(DIRECTORY_SEPARATOR, WEB_SEPARATOR, $filename);
         $filename = str_replace('//', '/', $filename);
 
         return $filename;

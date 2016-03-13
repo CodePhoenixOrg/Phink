@@ -23,38 +23,35 @@ TWebObject.prototype.getOrigin = function() {
 
 TWebObject.parseUrl = function (url) {
 
+    console.log('url : ' + url);
     var result = {};
 
-    var protocolLess = url.replace('http://', '');
-    var hasProtocol = protocolLess.length < url.length;
-    var protocol = '';
-//                var isSecure = false;
-    if(!hasProtocol) {
-        protocolLess = url.replace('https://', '');
-        hasProtocol = protocolLess.length < url.length;
-        if(hasProtocol) {
-            isSecure = true;
-            protocol = 'https://';
-        }
-    } else {
-        protocol = 'http://';
+    var protocol = (url.search('http://') > -1) ? 'http' :
+        (url.search('https://') > -1) ? 'https' :
+        (url.search('ssh://') > -1) ? 'ssh' :
+        (url.search('smb://') > -1) ? 'smb' :
+        (url.search('ftp://') > -1) ? 'ftp' :
+        (url.search('sftp://') > -1) ? 'sftp' :
+        (url.search('ftps://') > -1) ? 'ftps' : null;
+
+    var page = window.location.pathname;
+    
+    if(protocol === null) {
+        result.protocol = window.location.protocol;
+        result.domain = window.location.hostname;
+        result.port = window.location.port;
+        //url = window.location.href.substring(0, window.location.href.search('/'));
+        page = url;
     }
 
-    result.protocol = protocol;
-    url = url.replace(protocol, '');
-
-    var domainLimit = url.indexOf('/');
-    var domain = url;
     var queryString = '';
-    if(domainLimit > -1) {
-        domain = url.substring(0, domainLimit);
+    if(page.search('/') > -1) {
+        queryString = page.substring(page.search('/'));
         url = url.replace(domain, '');
-    } else {
-        domain = '';
     }
-
-    result.domain = domain;
-    result.page = url.replace('.html', '');
+    
+    result.page = page; //url.replace('.html', '');
+    result.queryString = queryString;
 
     console.log(result);
     this.url = result;
@@ -135,5 +132,46 @@ TWebObject.prototype.getJSONP = function(url, postData, callBack) {
             "Options : " + options + "\r\n" +
             "Message : " + message);
     });
+};
+
+
+/*
+* jQuery getCSS Plugin
+* Copyright 2013, intesso
+* MIT license.
+*
+* cross browser function to dynamically load an external css file.
+* see: [github page](http://intesso.github.com/jquery-getCSS/)
+*
+*/
+
+/*
+arguments: attributes
+attributes can be a string: then it goes directly inside the href attribute.
+e.g.: $.getCSS("fresh.css")
+
+attributes can also be an objcet.
+e.g.: $.getCSS({href:"cool.css", media:"print"})
+or: $.getCSS({href:"/styles/forest.css", media:"screen"})
+*/
+TWebObject.getCSS = function(attributes) {
+    // setting default attributes
+    if(typeof attributes === "string") {
+        var href = attributes;
+        attributes = {
+            href: href
+        };
+    }
+    if(!attributes.rel) {
+        attributes.rel = "stylesheet"
+    }
+    // appending the stylesheet
+    // no jQuery stuff here, just plain dom manipulations
+    var styleSheet = document.createElement("link");
+    for(var key in attributes) {
+        styleSheet.setAttribute(key, attributes[key]);
+    }
+    var head = document.getElementsByTagName("head")[0];
+        head.appendChild(styleSheet);
 };
 

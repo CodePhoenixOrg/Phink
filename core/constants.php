@@ -6,6 +6,8 @@
  */
 namespace Phoenix\Core;
 
+define('WEB_SEPARATOR', '/');
+
 define ('TMP_DIR', 'tmp');
 define ('CACHE_DIR', 'cache');
 
