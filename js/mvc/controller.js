@@ -62,7 +62,7 @@ TController.prototype.getView = function (pageName, callback) {
 
     $.ajax({
         type: 'POST',
-        url: (this.origin !== undefined) ? this.origin + pageName : pageName,
+        url: (this.origin !== 'undefined/' && this.origin !== undefined) ? this.origin + pageName : pageName,
         data: {"action" : 'getViewHtml', "token" : this.token},
         dataType: 'json',
         async: true,
