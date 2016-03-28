@@ -7,14 +7,6 @@ namespace Phoenix\Web;
 //require_once 'phoenix/utils/string_utils.php';
 //require_once 'phoenix/core/log.php';
 
-
-use Phoenix\Core\TObject;
-use Phoenix\Web\TWebObject;
-use Phoenix\MVC\TView;
-use Phoenix\Utils\TFileUtils;
-use Phoenix\Utils\TStringUtils;
-use Phoenix\Log\TLog;
-
 /**
  * Description of pagehandler
  *
@@ -22,7 +14,7 @@ use Phoenix\Log\TLog;
  */
 
 
-class TRequest extends TObject
+class TRequest extends \Phoenix\Core\TObject
 {
     //put your code here
     
@@ -65,15 +57,6 @@ class TRequest extends TObject
         $this->_subRequests[$name] = ['host' => $host, 'uri' => $uri, 'data' => $data];
     }
 
-    private function _backgroundSubrequests($mh, &$still_active)
-    {
-        do {
-            $status = curl_multi_exec($mh, $still_active);
-        } while ($status === CURLM_CALL_MULTI_PERFORM || $still_active);
-        
-        return $status;
-    }
-    
     public function execSubRequests()
     {
         $result = array();
@@ -118,6 +101,7 @@ class TRequest extends TObject
             curl_multi_add_handle($mh, $ch);
         }
         
+        $still_running = true;
         $this->_backgroundSubrequests($mh, $still_running); // start requests
         do { // "wait for completion"-loop
             curl_multi_select($mh); // non-busy (!) wait for state change
@@ -140,6 +124,15 @@ class TRequest extends TObject
         
     }
 
+    private function _backgroundSubrequests($mh, &$still_active)
+    {
+        do {
+            $status = curl_multi_exec($mh, $still_active);
+        } while ($status === CURLM_CALL_MULTI_PERFORM || $still_active);
+        
+        return $status;
+    }
+    
     private function _identifySubRequest($header)
     {
         $result = '';

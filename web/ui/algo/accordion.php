@@ -32,12 +32,20 @@ class TAccordion implements IAlgo
         $dataIndex = 0;
         $templateNum = count($this->templates);
         $oldValue = array_fill(0, $this->columns, '');
+        $lastBindableIndex = -1;
         
         for($k = 0; $k < $templateNum; $k++) {
             for($j = 0; $j < $this->columns; $j++) {
                 if($this->templates[$k]['name'] == $this->data['names'][$j]) {
                     $this->templates[$k]['index'] = $j;
                 }
+            }
+        }
+        
+        for($k = $templateNum - 1; $k > -1; $k--) {
+            if($this->templates[$k]['enabled'] === 1) {
+                $lastBindableIndex = $this->templates[$k]['index'];
+                break;
             }
         }
                         
@@ -72,7 +80,7 @@ class TAccordion implements IAlgo
                     $tbody .= $elements[1]->getOpening() . $html . $elements[1]->getClosing() . "\n";
                     $tbody .= $elements[2]->getOpening();
                 }
-                elseif($level === 1) {
+                elseif($level === 1) { //&& $level < $lastBindableIndex
                     if($i > 0 && !$bound[$level - 1]) $tbody .= $elements[2]->getClosing() . "\n" . $elements[0]->getClosing() . "\n";
                     $tbody .= str_replace('%s', 'odd', $elements[0]->getOpening()) . "\n";
                     $tbody .= $elements[1]->getOpening() . $html . $elements[1]->getClosing() . "\n";

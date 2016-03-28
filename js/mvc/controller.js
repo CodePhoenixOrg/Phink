@@ -5,18 +5,21 @@
  */
 
 
-var TController = function() {
+var TController = function(name) {
     TWebObject.call(this);
+    
+    this.setOrigin(TRegistry.item(name).origin);
     
     this.view = null;
     this.token = '';
+    this.name = name;
 };
 
 TController.prototype = new TWebObject();
 TController.prototype.constructor = TController;
 
-TController.create = function() {
-    return new TController();
+TController.create = function(name) {
+    return new TController(name);
 }
 
 TController.prototype.oninit = function (callback) {
@@ -112,7 +115,7 @@ TController.prototype.getPartialView = function (pageName, action, attach, postD
 
     $.ajax({
         type: 'POST',
-        url: (this.origin !== undefined) ? this.origin + pageName : pageName,
+        url: (this.origin !== undefined) ? this.origin + '/' + pageName : pageName,
         data: postData,
         dataType: 'json',
         async: true,

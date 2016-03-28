@@ -59,6 +59,9 @@ TWebObject.parseUrl = function (url) {
         }
         
         page = url;
+        if(page.substring(0,1) === '/') {
+            page = page.substring(1);
+        }
 
         result.protocol = protocol;
         result.domain = domain;
@@ -94,8 +97,10 @@ TWebObject.prototype.getJSON = function(
 //        spinner.spin();
     postData.token = this.token;
     
-//    var url = TWebObject.parseUrl(url);
-//    url = (this.origin !== undefined) ? this.origin + url : url;
+    if(this.origin !== undefined) {
+        var url = TWebObject.parseUrl(url);
+        url = this.origin + '/' + url.page;
+    }
 
     $.ajax({
         type: 'POST',
@@ -179,6 +184,10 @@ TWebObject.getCSS = function(attributes) {
     // setting default attributes
     if(typeof attributes === "string") {
         var href = attributes;
+        if(this.origin !== undefined) {
+            href = this.origin + '/' + href;
+        }
+        
         attributes = {
             href: href
         };
