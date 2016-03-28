@@ -64,9 +64,10 @@ class TResponse implements \JsonSerializable
 //        $this->_data['http_host'] = HTTP_HOST;
 
         header('Content-Type: application/json; charset=UTF-8');
-        header('Access-Control-Allow-Origin: *');
-        header('Access-Control-Expose-Headers: origin');
         header('Origin: ' . SERVER_ROOT);
+        header('Access-Control-Expose-Headers: origin');
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
         echo json_encode($this);
     }
 
@@ -75,3 +76,4 @@ class TResponse implements \JsonSerializable
         $this->setData('message', $message);
     }    
 }
+

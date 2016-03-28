@@ -52,36 +52,17 @@ class TRequest extends TObject
     
     }
 
-    public function exec($url)
+    public function addSubRequest($name, $host, $uri, $data)
     {
-        $result = '';
-        
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
- 
-        $html = curl_exec($ch);
-        $info = curl_getinfo($ch);
-        $header = $info['request_header'];
-        $code = $info['http_code'];
-        //$header = curl_getinfo($ch,CURLINFO_HEADER_OUT);
-        //$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-        
-        $result = ['code' => $code, 'header' => $header, 'html' => $html];
-
-        return $result;
-    }
-
-    public function addSubRequest($name, $host, $uri)
-    {
-        $this->_subRequests[$name] = ['host' => $host, 'uri' => $uri, 'ajax' => false];
+        $this->_subRequests[$name] = ['host' => $host, 'uri' => $uri, 'data' => $data];
     }
     
-    public function addAjaxSubRequest($name, $host, $uri)
+    public function addViewSubRequest($name, $host, $uri, $data)
     {
-        $this->_subRequests[$name] = ['host' => $host, 'uri' => $uri, 'ajax' => true];
+        if(is_array($data)) {
+            $data['action'] = 'getViewHtml';
+        }
+        $this->_subRequests[$name] = ['host' => $host, 'uri' => $uri, 'data' => $data];
     }
 
     private function _backgroundSubrequests($mh, &$still_active)
@@ -97,18 +78,44 @@ class TRequest extends TObject
     {
         $result = array();
         
+        foreach($this->_subRequests as $name => $request) {
+        
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $request['host'] . $request['uri']);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            if(is_array($request['data'])) {
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $request['data']);
+            }
+            curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+
+            $html = curl_exec($ch);
+            $info = curl_getinfo($ch);
+            $header = $info['request_header'];
+            $code = $info['http_code'];
+            curl_close($ch);
+
+            $result[$name] = ['code' => $code, 'header' => $header, 'html' => $html];
+        }
+        
+        return $result;
+    }
+
+    public function execAsyncSubRequests()
+    {
+        $result = array();
+        
         $mh = curl_multi_init();
 
         foreach($this->_subRequests as $name => $request) {
-            if($request['ajax']) {
-                $request['uri'] .= '&action=getViewHtml';
-                TLog::dump('SUBREQUEST ' . $name, $request);
-            }
             $ch = curl_init($request['host'] . $request['uri']);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+            if(is_array($request['data'])) {
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $request['data']);
+            }
             curl_multi_add_handle($mh, $ch);
-            
         }
         
         $this->_backgroundSubrequests($mh, $still_running); // start requests
