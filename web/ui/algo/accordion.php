@@ -9,7 +9,7 @@ namespace Phoenix\Web\UI\Algo;
 /**
  * Description of newPHPClass
  *
- * @author Akades
+ * @author David
  */
 class TAccordion implements IAlgo
 {
@@ -57,6 +57,9 @@ class TAccordion implements IAlgo
                 }
                 if($this->templates[$j]['enabled'] != 1) continue;
                 $index = $this->templates[$j]['index'];
+				if($index == $lastBindableIndex) {
+					$level = 2;
+				}
                 $canBind = $row[$index] != $oldValue[$j];
                 //$canBind = $canBind && $this->templates[$j]['name'] === $head[$dataIndex];
                 //\Phoenix\Log\TLog::debug('TEMPLATE NAME : ' . $this->templates[$j]['name'] . '; HEAD NAME :' . $head[$dataIndex]);
@@ -91,7 +94,10 @@ class TAccordion implements IAlgo
                 }                
                 $bound[$level] = $canBind;
                 $oldLevel = $level;
-                $level++;
+				if($level == 0 || $level == 2) {
+					$level++;
+				}
+                
                 $oldValue[$j] = $row[$index];
             }
         }
