@@ -111,7 +111,7 @@ class TWebApplication extends UI\TCustomControl
     public function dispatch()
     {
         if(file_exists($this->cacheFileName)) {
-            \Phoenix\Log\TLog::debug('DISPATCH : ' . $this->cacheFileName);
+            //\Phoenix\Log\TLog::debug('DISPATCH : ' . $this->cacheFileName);
             //$include = TAutoloader::includeClass($this->cacheFileName, false);
             //include $this->cacheFileName;
             $classText = file_get_contents($this->cacheFileName);

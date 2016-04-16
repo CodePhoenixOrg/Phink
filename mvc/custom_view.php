@@ -34,6 +34,7 @@ abstract class TCustomView extends \Phoenix\Web\UI\TCustomControl
     protected $design = '';
     protected $creations = '';
     protected $additions = '';
+    protected $afterBinding = '';
     protected $modelIsIncluded = false;
     protected $controllerIsIncluded = false;
     protected $pattern = '';
@@ -89,6 +90,11 @@ abstract class TCustomView extends \Phoenix\Web\UI\TCustomControl
         return $this->additions;
     }
 
+    public function getAfterBinding()
+    {
+        return $this->afterBinding;
+    }
+    
     public function getViewHtml()
     {
         return $this->viewHtml;
@@ -96,16 +102,16 @@ abstract class TCustomView extends \Phoenix\Web\UI\TCustomControl
     
     public function parse()
     {
-        //\Phoenix\Log\TLog::debug($this->controllerFileName . ' IS REGISTERED : ' . isset(\Phoenix\TAutoloader::getRegisteredCode($this->controllerFileName)), __FILE__, __LINE__);
+        ////\Phoenix\Log\TLog::debug($this->controllerFileName . ' IS REGISTERED : ' . isset(\Phoenix\TAutoloader::getRegisteredCode($this->controllerFileName)), __FILE__, __LINE__);
         
-        \Phoenix\Log\TLog::debug('PARSE FILE : ' . $this->viewFileName, __FILE__, __LINE__);
-        \Phoenix\Log\TLog::debug('GET CODE FILE : ' . $this->controllerFileName, __FILE__, __LINE__);
+        //\Phoenix\Log\TLog::debug('PARSE FILE : ' . $this->viewFileName, __FILE__, __LINE__);
+        //\Phoenix\Log\TLog::debug('GET CODE FILE : ' . $this->controllerFileName, __FILE__, __LINE__);
 //        $this->viewHtml = $this->redis->mget($templateName);
 //        $this->viewHtml = $this->viewHtml[0];
 
         $this->viewHtml = file_get_contents($this->viewFileName, FILE_USE_INCLUDE_PATH);
 //        $this->redis->mset($templateName, $this->viewHtml);
-        \Phoenix\Log\TLog::debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');
+        //\Phoenix\Log\TLog::debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');
         $doc = new TXmlDocument($this->viewHtml);
         $doc->matchAll();
         if($doc->getCount() > 0) {
@@ -114,15 +120,17 @@ abstract class TCustomView extends \Phoenix\Web\UI\TCustomControl
             $declarations = $this->writeDeclarations($doc);
             $this->creations = $declarations->creations;
             $this->additions = $declarations->additions;
+            $this->afterBinding = $declarations->afterBinding;
             $this->viewHtml = $this->writeHTML($doc, $this->viewHtml);
 
-            \Phoenix\Log\TLog::debug('CACHE FILE : ' . $this->cacheFileName, __FILE__, __LINE__);
+            //\Phoenix\Log\TLog::debug('CACHE FILE : ' . $this->cacheFileName, __FILE__, __LINE__);
         }
         
         $code = \Phoenix\TAutoloader::getRegisteredCode($this->controllerFileName);
         // On stocke le code parsé dans un fichier pour ne plus avoir à le parser à la prochaine demande.
         $code = str_replace(CREATIONS_PLACEHOLDER, $this->creations, $code);
         $code = str_replace(ADDITIONS_PLACEHOLDER, $this->additions, $code);
+        $code = str_replace(AFTERBINDING_PLACEHOLDER, $this->afterBinding, $code);
         $code = str_replace(HTML_PLACEHOLDER, $this->viewHtml, $code);
         $code = str_replace(DEFAULT_CONTROLLER, DEFAULT_CONTROL, $code);
         $code = str_replace(DEFAULT_PARTIAL_CONTROLLER, DEFAULT_CONTROL, $code);

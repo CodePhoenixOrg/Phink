@@ -5,10 +5,10 @@
  */
 
 var TTable = function() {
-    TAlgo.call(this);
+    TPlugin.call(this);
 };
 
-TTable.prototype = new TAlgo();
+TTable.prototype = new TPlugin();
 TTable.prototype.constructor = TTable;
 
 TTable.create = function() {

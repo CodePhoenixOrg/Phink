@@ -7,13 +7,14 @@
  */
 
 $filenames = [
-    "bootstrap.css"
-    ,"jquery-ui.css"
-    ,"jquery-ui.structure.css"
-    ,"jquery-ui.theme.css"
-    ,"jquerysctipttop.css"
-    ,"multiaccordion.jquery.css"
-    ,"prettify.css"
+    'bootstrap.css'
+    ,'jquery-ui.css'
+    ,'jquery-ui.structure.css'
+    ,'jquery-ui.theme.css'
+    ,'jquerysctipttop.css'
+    ,'multiaccordion.jquery.css'
+    ,'prettify.css'
+    ,'drag-and-drop.css'
 ];
 
 $srcdir =  dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..'  . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'thirdparty' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR;

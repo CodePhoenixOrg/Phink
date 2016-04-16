@@ -5,15 +5,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phoenix\Web\UI\Algo;
+namespace Phoenix\Web\UI\Plugin;
 /**
  * Description of newPHPClass
  *
  * @author Akades
  */
-class TOlli implements IAlgo
+class TUlli extends TCustomPlugin
 {
-    use TAlgo;    
     //put your code here
     public function render()
     {

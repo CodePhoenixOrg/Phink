@@ -19,31 +19,31 @@ class TRegistry
         self::$_classRegistry = array (
             'TPager' => array(
                 'alias' => 'pager',
-                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR, 
-                'namespace' => ROOT_NAMESPACE . '\Web\UI', 
+                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'pager' . DIRECTORY_SEPARATOR, 
+                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Pager', 
                 'hasTemplate' => true, 
                 'canRender' => true
-             ),
-            'TAlgoDispatcher' => array(
-                'alias' => 'algodispatcher',
+            )
+            , 'TPluginRenderer' => array(
+                'alias' => 'pluginrenderer',
                 'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR, 
                 'namespace' => ROOT_NAMESPACE . '\Web\UI', 
                 'hasTemplate' => false, 
                 'canRender' => true
-            ),
-            'TDataColumn' => array(
-                'alias' => 'column',
-                'path' => DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR, 
-                'namespace' => ROOT_NAMESPACE . '\Data\UI', 
+            ) 
+            , 'TPlugin' => array(
+                'alias' => 'plugin',
+                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR, 
+                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Plugin', 
+                'hasTemplate' => true, 
+                'canRender' => true
+            )
+            , 'TPluginChild' => array(
+                'alias' => 'pluginchild',
+                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR, 
+                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Plugin', 
                 'hasTemplate' => false, 
                 'canRender' => false
-            ),
-            'TDataGrid' => array(
-                'alias' => 'datagrid',
-                'path' => DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR, 
-                'namespace' => ROOT_NAMESPACE . '\Data\UI', 
-                'hasTemplate' => true, 
-                'canRender' => true
             )
         );
     

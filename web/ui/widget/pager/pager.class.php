@@ -1,5 +1,5 @@
 <?php
-namespace Phoenix\Web\UI;
+namespace Phoenix\Web\UI\Widget\Pager;
 
 class TPager extends \Phoenix\MVC\TPartialController
 {
@@ -52,15 +52,12 @@ class TPager extends \Phoenix\MVC\TPartialController
 
     public function init()
     {
-        //$viewName = $this->parent->getViewName();
+        $forControl = $this->parent->getChildById($this->for);
+    
+        $this->pageNum = (int) (!$this->pageNum) ? 1 : $this->pageNum;
         
-        $thisFor = $this->for;
-        $forControl = $this->$thisFor;
-        \Phoenix\Log\TLog::dump('FOR_CONTROL', $forControl);
-        $this->pageNum = ($forControl) ? $forControl->getRowCount() : (int) (!$this->pageNum) ? 1 : $this->pageNum;
-
-        \Phoenix\Log\TLog::dump('PAGENUM', $this->pageNum);
-
+        $this->pageCount = ($forControl) ? $forControl->getRowCount(): $this->pageNum;
+    
         $path = ROOT_PATH . \Phoenix\Core\TRegistry::classPath('TPager');
         $this->pagerJS = file_get_contents($path . 'pager.js', FILE_USE_INCLUDE_PATH);
         $this->pagerJS = str_replace('<% pageCount %>', $this->pageCount, $this->pagerJS);

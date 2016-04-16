@@ -63,8 +63,15 @@ class TPdoCommand extends \Phoenix\Data\TCustomCommand
 
     public function addSelectLimit($start, $count)
     {
-        $start = (!$start) ? 1 : $start;
-        $this->setSelectQuery($this->getSelectQuery() . ' LIMIT ' . (($start - 1) * $count). ', ' . $count);
+//        $driver = strtolower($this->_activeConnection->getDriver());
+//        if(strstr($driver, 'mysql')) {
+            $start = (!$start) ? 1 : $start;
+            //$sql = str_replace(PHX_MYSQL_LIMIT, ' LIMIT ' . (($start - 1) * $count). ', ' . $count, $this->getSelectQuery());
+            $sql = $this->getSelectQuery() . CR_LF . ' LIMIT ' . (($start - 1) * $count). ', ' . $count . CR_LF;
+            \Phoenix\Log\TLog::dump('start::' . $start . '; count::' . $count . '; LIMITED_SELECT::', $sql);
+
+            $this->setSelectQuery($sql);
+//        }
     }
     
     public function query($sql = '', array $params = null)
@@ -81,6 +88,9 @@ class TPdoCommand extends \Phoenix\Data\TCustomCommand
             }
             
             $result = new TPdoDataStatement($this->_statement);
+        } catch (\PDOException $ex) {
+            \Phoenix\Log\TLog::debug('SQL : ' . $sql . '; params : ' . print_r($params, true), $file, $line);
+            \Phoenix\Log\TLog::exception($ex, __FILE__, __LINE__);
         } catch (\Exception $ex) {
             \Phoenix\Log\TLog::exception($ex, __FILE__, __LINE__);
         }

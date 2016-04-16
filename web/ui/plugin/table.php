@@ -5,18 +5,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phoenix\Web\UI\Algo;
+namespace Phoenix\Web\UI\Plugin;
 /**
  * Description of newPHPClass
  *
  * @author Akades
  */
-class TTable implements IAlgo
+class TTable extends TCustomPlugin
 {
-    use TAlgo;
     //put your code here
     public function render()
     {
+        
+        $elements = $this->elements;
         $noTHead = false; 
 
         $result = "\n";
@@ -50,7 +51,7 @@ class TTable implements IAlgo
                 for($j = 0; $j < $this->columns; $j++) {
                     $k = $i * $this->columns + $j;
                     $noTHead = $this->templates[$j]['content'] && $this->templates[$j]['enabled'] == 1;
-                    $html = $this->_applyTemplate($this->templates[$j], $this->cols, $row, $head, $j);
+                    $html = $this->applyTemplate($this->templates[$j], $this->columns, $row, $head, $j);
                     $typeId1 = 'id="' . $this->getId() .  $elements[5]->getType() . $k . '"';
                     if($this->templates[$j]['enabled'] == 1) {
                         $tbody .= str_replace('%s', $typeId1, $elements[5]->getOpening()) . $html . $elements[5]->getClosing() . "\n";
@@ -74,7 +75,7 @@ class TTable implements IAlgo
                 for($j = 0; $j < $this->columns; $j++) {
                     $k = $i * $this->columns + $j;
                     $noTHead = $this->templates[$j]['content'] && $this->templates[$j]['enabled'] == 1;
-                    $html = $this->_applyTemplate($this->templates[$j], $this->columns, $row, $head, $j);
+                    $html = $this->applyTemplate($this->templates[$j], $this->columns, $row, $head, $j);
                     $typeId1 = 'id="' . $this->getId() .  $elements[5]->getType() . $k . '"';
                     if($this->templates[$j]['enabled'] == 1 && $row[$j] != $oldValue[$j]) {
                         $tbody .= $elements[3]->getOpening();

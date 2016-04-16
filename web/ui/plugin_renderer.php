@@ -6,7 +6,7 @@ namespace Phoenix\Web\UI;
  *
  * @author david
  */
-class TAlgoDispatcher extends \Phoenix\MVC\TPartialController
+abstract class TPluginRenderer extends \Phoenix\MVC\TPartialController
 {
     use \Phoenix\Web\UI\THtmlPattern;
     use \Phoenix\Data\UI\TDataBinder;
@@ -23,7 +23,7 @@ class TAlgoDispatcher extends \Phoenix\MVC\TPartialController
 //        } else {
             $this->getElements();
             $elements = $this->elements[$this->getPattern()];
-            \Phoenix\Log\TLog::dump('PATTERN ELEMENTS', $elements);
+            //\Phoenix\Log\TLog::dump('PATTERN ELEMENTS', $elements);
 
             $id = $this->getParent()->getId();
 
@@ -40,15 +40,16 @@ class TAlgoDispatcher extends \Phoenix\MVC\TPartialController
         
         
         
-        $algoClass = '\Phoenix\Web\UI\Algo\T' . ucfirst($this->getPattern());
-        $algo = new $algoClass();
-        $algo->setCols($this->columns);
-        $algo->setRows($this->rows);
-        $algo->setData($this->data);
-        $algo->setPivot($this->pivot);
-        $algo->setTemplates($this->templates);
-        $algo->setElements($elements);
-        $this->innerHtml = $algo->render();
+        $pluginClass = '\Phoenix\Web\UI\Plugin\T' . ucfirst($this->getPattern());
+        $plugin = new $pluginClass($this);
+        $plugin->setId($this->getId());
+        $plugin->setCols($this->columns);
+        $plugin->setRows($this->rows);
+        $plugin->setData($this->data);
+        $plugin->setPivot($this->pivot);
+        $plugin->setTemplates($this->templates);
+        $plugin->setElements($elements);
+        $this->innerHtml = $plugin->render();
     }
 
 }

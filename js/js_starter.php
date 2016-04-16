@@ -16,9 +16,9 @@ $filenames = [
     ,   'core/registry.js'
     ,   'web/web_application.js'
     ,   'web/web_object.js'
-    ,   'web/ui/algo.js'
-    ,   'web/ui/algo/accordion.js'
-    ,   'web/ui/algo/table.js'
+    ,   'web/ui/plugin.js'
+    ,   'web/ui/plugin/accordion.js'
+    ,   'web/ui/plugin/table.js'
     ,   'mvc/controller.js'
     ,   'jphoenix.js'
 ];
@@ -42,6 +42,7 @@ $filenames = [
     //,   'holder.js'
     //,   'prettify.js'
     ,   'php.default.min.js'
+    ,   'drag-and-drop.js'
 ];
 
 foreach ($filenames as $filename) {

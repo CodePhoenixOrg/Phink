@@ -92,7 +92,7 @@ class TAutoloader
     private static function _includeInnerClass($viewName, $info, $withCode = true)
     {
         $filename = ROOT_PATH . $info->path . \Phoenix\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;
-        \Phoenix\Log\TLog::debug('INCLUDE INNER PARTIAL CONTROLLER : ' . $filename, __FILE__, __LINE__);
+        //\Phoenix\Log\TLog::debug('INCLUDE INNER PARTIAL CONTROLLER : ' . $filename, __FILE__, __LINE__);
 
         $code = file_get_contents($filename, FILE_USE_INCLUDE_PATH);
         include_once $filename;
@@ -117,7 +117,7 @@ class TAutoloader
 //        }
         $filename = strtolower($filename);
         if(!file_exists($filename)) {
-            \Phoenix\Log\TLog::debug('INCLUDE CLASS : FILE ' . $filename . ' DOES NOT EXIST');
+            //\Phoenix\Log\TLog::debug('INCLUDE CLASS : FILE ' . $filename . ' DOES NOT EXIST');
             return false;
         }
         
@@ -161,7 +161,7 @@ class TAutoloader
     {
         $result = false;
         
-        \Phoenix\Log\TLog::debug('MODEL NAME : ' . $modelName, __FILE__, __LINE__);
+        //\Phoenix\Log\TLog::debug('MODEL NAME : ' . $modelName, __FILE__, __LINE__);
         
         $modelFileName = 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $modelName . CLASS_EXTENSION;
         
@@ -202,12 +202,12 @@ class TAutoloader
         $result = false;
         $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
         if(file_exists($controllerFileName)) {
-            \Phoenix\Log\TLog::debug('INCLUDE CUSTOM PARTIAL CONTROLLER : ' . $controllerFileName, __FILE__, __LINE__);
+            //\Phoenix\Log\TLog::debug('INCLUDE CUSTOM PARTIAL CONTROLLER : ' . $controllerFileName, __FILE__, __LINE__);
             $result = self::includeClass($controllerFileName, true);
         } elseif ($info = Core\TRegistry::classInfo($viewName)) {
             $result = self::_includeInnerClass($viewName, $info, true);
         } else {
-            \Phoenix\Log\TLog::debug('INCLUDE DEFAULT PARTIAL CONTROLLER : ' . $controllerFileName, __FILE__, __LINE__);
+            //\Phoenix\Log\TLog::debug('INCLUDE DEFAULT PARTIAL CONTROLLER : ' . $controllerFileName, __FILE__, __LINE__);
             $namespace = self::getDefaultNamespace();
             $className = ucfirst($viewName);
             $result = self::includeDefaultPartialController($namespace, $className);
@@ -251,12 +251,12 @@ class TAutoloader
         }
         
         if(file_exists($cacheFilename)) {
-            \Phoenix\Log\TLog::debug('INCLUDE CACHED CONTROL: ' . $cacheFilename, __FILE__, __LINE__);
+            //\Phoenix\Log\TLog::debug('INCLUDE CACHED CONTROL: ' . $cacheFilename, __FILE__, __LINE__);
             $include = file_get_contents($cacheFilename);
             self::registerCode($classFilename, $include);
             include $cacheFilename;
         } else {
-            \Phoenix\Log\TLog::debug('INCLUDE NEW CONTROL : ' . $viewName, __FILE__, __LINE__);
+            //\Phoenix\Log\TLog::debug('INCLUDE NEW CONTROL : ' . $viewName, __FILE__, __LINE__);
             //include_once 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
             $result = self::includePartialControllerByName($viewName);
         }
@@ -286,7 +286,7 @@ class TAutoloader
         //$id = str_replace(DIRECTORY_SEPARATOR, '_', $id);
         //file_put_contents(TMP_DIR . DIRECTORY_SEPARATOR . $id . PREHTML_EXTENSION, $value);
         $keys = array_keys(self::$_code);
-        \Phoenix\Log\TLog::debug('CODE REGISTRY : ' . print_r($keys, true));
+        //\Phoenix\Log\TLog::debug('CODE REGISTRY : ' . print_r($keys, true));
     }    
     
     public static function controllerTemplate($namespace, $className)

@@ -53,7 +53,7 @@ trait TDataBinder
         $this->pivot = $value;
     }
     
-    protected function applyTemplate($template, $cols, $row, $head, $j) 
+    public function applyTemplate($template, $cols, $row, $head, $j) 
     {
         $html = $row[$j];
         if($template['content'] && $template['enabled'] == 1) {
@@ -67,8 +67,10 @@ trait TDataBinder
             }
             for ($m = 0; $m < $cols; $m++) {
                 $html = str_replace('<% ' . $head[$m] . ' %>', $row[$m], $html);
+                //\Phoenix\Log\TLog::dump('HTML1::', $html);
                 $event = str_replace($head[$m], $row[$m], $event);
                 $html = str_replace('<% &' . $head[$m] . ' %>', $event, $html);
+                //\Phoenix\Log\TLog::dump('HTML2::', $html);
             }
             
             

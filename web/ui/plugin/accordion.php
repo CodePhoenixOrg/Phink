@@ -5,16 +5,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phoenix\Web\UI\Algo;
+namespace Phoenix\Web\UI\Plugin;
 /**
  * Description of newPHPClass
  *
  * @author David
  */
-class TAccordion implements IAlgo
+class TAccordion extends TCustomPlugin
 {
-    use TAlgo;    
-    //put your code here
     public function render()
     {
         $result = "\n";
@@ -43,14 +41,14 @@ class TAccordion implements IAlgo
                     $this->templates[$k]['index'] = $j;
                     if($this->templates[$k]['enabled'] == 1) {
                         $bindablesCount++;
-			                if($firstBindableIndex == -1) $firstBindableIndex = $j;
-			                $lastBindableIndex = $j;
-			            }
+                        if($firstBindableIndex == -1) $firstBindableIndex = $j;
+                        $lastBindableIndex = $j;
+                    }
                 }
             }
         }
-
-        \Phoenix\Log\TLog::debug("\r\n" . "\r\n" . "\r\n" . 'LAST BINDABLE INDEX::' . $lastBindableIndex . "\r\n" . "\r\n" . "\r\n");
+                        
+        //\Phoenix\Log\TLog::debug("\r\n" . "\r\n" . "\r\n" . 'LAST BINDABLE INDEX::' . $lastBindableIndex . "\r\n" . "\r\n" . "\r\n");
                         
         for($i = 0; $i < $this->rows; $i++) {
             $row = (isset($body[$i])) ? json_decode($body[$i]) : array_fill(0, $this->columns, '&nbsp;');
@@ -63,27 +61,32 @@ class TAccordion implements IAlgo
                 $index = $this->templates[$j]['index'];
                 $canBind = $row[$index] != $oldValue[$j];
                 //$canBind = $canBind && $this->templates[$j]['name'] === $head[$dataIndex];
-                //\Phoenix\Log\TLog::debug('TEMPLATE NAME : ' . $this->templates[$j]['name'] . '; HEAD NAME :' . $head[$dataIndex]);
+                ////\Phoenix\Log\TLog::debug('TEMPLATE NAME : ' . $this->templates[$j]['name'] . '; HEAD NAME :' . $head[$dataIndex]);
                 if(!$canBind) {
                     $bound[$boundIndex] = $canBind;
+                    //$bound[$boundIndex] = $canBind;
                     $oldLevel = $level;
-                    //if($level == 0 || $level == 2) {
-                    //    $level++;
-                    //}
+                    //$level++;
                     $oldValue[$j] = $row[$index];
                     $boundIndex++;
                     continue;
                 }
-                //$html = $this->_applyTemplate($this->templates[$j], $this->columns, $row, $head, $j);
-						 $level = (($index == $firstBindableIndex) ? 0 : (($index == $lastBindableIndex) ? 2 : 1))    ;  
+                $level = (($index == $firstBindableIndex) ? 0 : (($index == $lastBindableIndex) ? 2 : 1))    ;  
+                
+                //$html = $row[$index];
+                //$html = $level . '[' . $oldLevel . ']' . '-' . $index . '::' . $row[$index];
+                $html = $this->applyTemplate($this->templates[$j], $this->columns, $row, $head, $j);
 
-                $html = $row[$index];
-                \Phoenix\Log\TLog::debug('INDEX::' . $index . "\r\n" . "\r\n");
-                \Phoenix\Log\TLog::debug('LEVEL::' . $level . "\r\n" . "\r\n");
-                \Phoenix\Log\TLog::debug('HTML::' . $html . "\r\n" . "\r\n");
+                //\Phoenix\Log\TLog::debug('INDEX::' . $index . "\r\n" . "\r\n");
+                //\Phoenix\Log\TLog::debug('LEVEL::' . $level . "\r\n" . "\r\n");
+                //\Phoenix\Log\TLog::debug('HTML::' . $html . "\r\n" . "\r\n");
                 
                 if($level === 0) {
                     if($i > 0) {
+//                    if($oldLevel === 2) {
+//                        $tbody .= $elements[2]->getClosing() . "\n" . $elements[0]->getClosing() . "\n";
+//                    }
+                        //$bindablesCount = 3;
                         for($l = 1; $l < $bindablesCount; $l++) {
                             $tbody .= $elements[2]->getClosing() . "\n" . $elements[0]->getClosing() . "\n";
                         } 
@@ -94,9 +97,12 @@ class TAccordion implements IAlgo
                     $tbody .= $elements[2]->getOpening();
                 }
                 elseif($level === 1) { //&& $level < $lastBindableIndex
-                    if($oldLevel === 2 || ($i > 0 && !$bound[$boundIndex - 1])) {
+                    if($i > 0 && !$bound[$boundIndex - 1]) {
                         $tbody .= $elements[2]->getClosing() . "\n" . $elements[0]->getClosing() . "\n";
-                    }
+                    } 
+//                    if($oldLevel === 2) {
+//                        $tbody .= $elements[2]->getClosing() . "\n" . $elements[0]->getClosing() . "\n";
+//                    }
                     $tbody .= str_replace('%s', 'odd', $elements[0]->getOpening()) . "\n";
                     $tbody .= $elements[1]->getOpening() . $html . $elements[1]->getClosing() . "\n";
                     $tbody .= $elements[2]->getOpening();
@@ -105,12 +111,10 @@ class TAccordion implements IAlgo
                     $tbody .= str_replace('%s', '', $elements[2]->getOpening()) . $html . $elements[2]->getClosing() . "\n";
                 }                
                 $bound[$boundIndex] = $canBind;
+                //$bound[$boundIndex] = $canBind;
                 $oldLevel = $level;
-						 //if($level == 0 || $level == 2) {
-						 //    $level++;
-						 //}
+                //$level++;
                 $boundIndex++;
-                
                 $oldValue[$j] = $row[$index];
             }
         }

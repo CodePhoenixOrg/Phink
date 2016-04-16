@@ -26,7 +26,7 @@ class TControl extends TCustomControl
         
         $include = \Phoenix\TAutoloader::includeModelByName($this->viewName);
         $modelClass = $include['type'];
-        \Phoenix\Log\TLog::debug('TCONTROL MODEL OBJECT : ' . print_r($modelClass, true));
+        //\Phoenix\Log\TLog::debug('TCONTROL MODEL OBJECT : ' . print_r($modelClass, true));
         $this->model = new $modelClass();        
 
         $this->request = $parent->getRequest();
@@ -47,6 +47,8 @@ class TControl extends TCustomControl
     
     public function declareObjects() {}
 
+    public function afterBinding() {}
+    
     public function displayHtml() {}
     
     public function getViewHtml()
@@ -55,6 +57,7 @@ class TControl extends TCustomControl
         if(!$this->isDreclared) {
             //$this->createObjects();
             $this->declareObjects();
+            $this->partialLoad();
         }
         $this->displayHtml();
         $html = ob_get_clean();
@@ -68,6 +71,8 @@ class TControl extends TCustomControl
         $this->createObjects();
         $this->init();
         $this->declareObjects();
+        $this->beforeBinding();
+        $this->afterBinding();
         $this->isDreclared = true;
         $this->displayHtml();
         $this->renderHtml();
@@ -86,8 +91,8 @@ class TControl extends TCustomControl
             }
             $this->response->sendData();
         } else {
-            $this->load();
             $this->declareObjects();
+            $this->load();
             $this->displayHtml();
             $this->unload();
         }        

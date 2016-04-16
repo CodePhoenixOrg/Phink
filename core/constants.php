@@ -81,8 +81,11 @@ define('CSS_EXTENSION', '.css');
 define('PHX_TERMINATOR', '<phx:eof />');
 define('CREATIONS_PLACEHOLDER', '<phx:creationsPlaceHolder />');
 define('ADDITIONS_PLACEHOLDER', '<phx:additionsPlaceHolder />');
+define('AFTERBINDING_PLACEHOLDER', '<phx:afterBindingPlaceHolder />');
 define('HTML_PLACEHOLDER', '<phx:htmlPlaceHolder />');
-define('CONTROL_ADDITIONS', CR_LF . "\tpublic function createObjects() {" . CR_LF . CREATIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function declareObjects() {" . CR_LF . ADDITIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function displayHtml() {" . CR_LF . "?>" . CR_LF . HTML_PLACEHOLDER . CR_LF . "<?php" . CR_LF . "\t}" . CR_LF . '}' . CR_LF);
+define('CONTROL_ADDITIONS', CR_LF . "\tpublic function createObjects() {" . CR_LF . CREATIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function declareObjects() {" . CR_LF . ADDITIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function afterBindingObjects() {" . CR_LF . AFTERBINDING_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function displayHtml() {" . CR_LF . "?>" . CR_LF . HTML_PLACEHOLDER . CR_LF . "<?php" . CR_LF . "\t}" . CR_LF . '}' . CR_LF);
+define ('PHX_SQL_LIMIT', '<phx:sql_limit />');
+
 //if(file_exists(STARTER_FILE)) {
 //    unlink(STARTER_FILE);
 //    file_put_contents(STARTER_FILE, "<?php\n", FILE_APPEND);

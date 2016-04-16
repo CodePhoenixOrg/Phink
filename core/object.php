@@ -22,6 +22,13 @@ class TObject
     protected $id = 'noname';
     protected $serialFilename = '';
     protected $isSerialized = '';
+    protected $children = array();
+
+    public function __construct(TObject $parent)
+    {
+        $this->parent = $parent;
+    }
+
 
     public function getId()
     {
@@ -30,7 +37,7 @@ class TObject
 
     public function setId($value)
     {
-        \Phoenix\Log\TLog::dump(__CLASS__ . ':' . __METHOD__, $value);
+        //\Phoenix\Log\TLog::dump(__CLASS__ . ':' . __METHOD__, $value);
         $this->id = $value;
     }
 
@@ -57,6 +64,31 @@ class TObject
         $this->parent = $parent;
     }
     
+    public function addChild(TObject $child)
+    {
+        $this->children[$child->getId()] = $child;
+    }
+    
+    public function removeChild(TObject $child)
+    {
+        unset($this->children[$child->getId()]);
+    }
+
+    public function getChildById($id)
+    {
+        $result = null;
+            
+        if(array_key_exists($id, $this->children)) {
+            $result = $this->children[$id];
+        }
+        
+        return $result;
+    }
+    
+    public function getChildrenIds() {
+        return array_keys($this->children);
+    }
+
     public function getFullType()
     {
         return get_class($this);

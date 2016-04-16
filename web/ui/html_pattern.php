@@ -55,7 +55,7 @@ trait THtmlPattern {
 
         $patternName = $this->getPatternName();
         
-        \Phoenix\Log\TLog::dump('PATTERN NAME', $patternName);
+        //\Phoenix\Log\TLog::dump('PATTERN NAME', $patternName);
         $contents = file_get_contents($patternName, FILE_USE_INCLUDE_PATH);
         
         $doc = new \Phoenix\Xml\TXmlDocument($contents);

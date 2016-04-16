@@ -312,7 +312,7 @@ trait TWebObject {
         $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
         $this->className = ucfirst($this->viewName);
 
-//        \Phoenix\Log\TLog::debug('VIEW NAME : '  . $this->viewName, __FILE__, __LINE__);
+//        //\Phoenix\Log\TLog::debug('VIEW NAME : '  . $this->viewName, __FILE__, __LINE__);
         
     }
     

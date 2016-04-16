@@ -33,7 +33,7 @@ class TStaticApplication extends TWebApplication
         $filename = \Phoenix\Utils\TFileUtils::filePath($filename);
         $p = strpos($filename, '?');
         $filename = substr($filename, 0, $p);
-        \Phoenix\Log\TLog::debug('STATIC FILENAME : ' . $filename, __FILE__, __LINE__);
+        //\Phoenix\Log\TLog::debug('STATIC FILENAME : ' . $filename, __FILE__, __LINE__);
         
         return $filename;
     }
@@ -50,7 +50,7 @@ class TStaticApplication extends TWebApplication
         } else {
             if($this->validateToken()) {
                 $filename = $this->getStaticFileName();
-                \Phoenix\Log\TLog::debug('HTTP_ACCEPT : ' . HTTP_ACCEPT, __FILE__, __LINE__);
+                //\Phoenix\Log\TLog::debug('HTTP_ACCEPT : ' . HTTP_ACCEPT, __FILE__, __LINE__);
                 if (!file_exists($filename)) {
                     ob_start();
                     parent::create();

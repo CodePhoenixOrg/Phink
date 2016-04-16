@@ -32,6 +32,11 @@ class TPdoConnection extends TObject implements IConnection, IConfigurable
         $this->configure();
     }
 
+    public function getDriver()
+    {
+        return $this->_sqlConfig->getDriver();
+    }
+    
     public function getState()
     {
         return $this->_state;
@@ -49,7 +54,7 @@ class TPdoConnection extends TObject implements IConnection, IConfigurable
 //                $this->_state->query("SET NAMES 'utf8'");
 //            }
         } catch (\PDOException $ex) {
-            \Phoenix\Log\TLog::exception($ex, __FILE__, __LINE__);
+            //\Phoenix\Log\TLog::exception($ex, __FILE__, __LINE__);
         }
 
         return $this->_state;

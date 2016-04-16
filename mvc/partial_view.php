@@ -25,7 +25,7 @@ class TPartialView extends TCustomView
 //        $this->depth += $this->view->getDepth();
         //$this->context = $parent->context;
         //$this->className = $this->getType();
-        \Phoenix\Log\TLog::debug('FATHER TYPE <> PARENT TYPE : ' . $father->getType() . ' <> ' . $this->className, __FILE__, __LINE__);
+        //\Phoenix\Log\TLog::debug('FATHER TYPE <> PARENT TYPE : ' . $father->getType() . ' <> ' . $this->className, __FILE__, __LINE__);
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();        
 

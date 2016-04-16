@@ -13,7 +13,7 @@ namespace Phoenix\Web\UI;
  *
  * @author David
  */
-class TCustomControl extends \Phoenix\Core\TObject
+abstract class TCustomControl extends \Phoenix\Core\TObject
 {
     //put your code here
     protected $isRendered = false;
@@ -21,6 +21,10 @@ class TCustomControl extends \Phoenix\Core\TObject
     public function init() {}
    
     public function load() {}
+    
+    public function partialLoad() {}
+    
+    public function beforeBinding() {}
 
     public function parse() {}
 

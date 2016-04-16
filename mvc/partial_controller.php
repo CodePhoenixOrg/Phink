@@ -14,13 +14,14 @@ class TPartialController extends TCustomController
     {
         //$this->setParent($parent->getView())
         parent::__construct($parent);
+        
         $this->className = $this->getType();
         $this->viewName = lcfirst($this->className);
-         \Phoenix\Log\TLog::debug('PARTIAL CONTROLLER TYPE : ' . print_r($this->className, true));
+         //\Phoenix\Log\TLog::debug('PARTIAL CONTROLLER TYPE : ' . print_r($this->className, true));
        
         $include = \Phoenix\TAutoloader::includeModelByName($this->viewName);
         $modelClass = $include['type'];
-//        \Phoenix\Log\TLog::debug('MODEL OBJECT : ' . print_r($modelClass, true));
+//        //\Phoenix\Log\TLog::debug('MODEL OBJECT : ' . print_r($modelClass, true));
         $this->model = new $modelClass();        
         $this->view = new TPartialView($parent, $this); 
                 
@@ -32,6 +33,7 @@ class TPartialController extends TCustomController
         $actionName = $this->actionName;
         $this->$actionName();
         $this->getViewHtml();
+        $this->unload();
         $this->response->sendData();
     }    
     

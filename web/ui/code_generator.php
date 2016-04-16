@@ -27,8 +27,9 @@ trait TCodeGenerator {
         $code = '';
         $uses = array();
         $requires = array();
-        $additions = array();
         $creations = array();
+        $additions = array();
+        $afterBinding = array();
 
         $childName = array();
         $childrenIndex = array();
@@ -72,7 +73,7 @@ trait TCodeGenerator {
                 $fqcn = '';
                 $code  = '';
                 $info = TRegistry::classInfo($className);
-                \Phoenix\Log\TLog::dump('REGISTRY INFO ' . $className, $info);
+                //\Phoenix\Log\TLog::dump('REGISTRY INFO ' . $className, $info);
                 if ($info) {
                     if($info->canRender) {
                         array_push($requires, '\\Phoenix\\TAutoloader::import("' . $className . '");');
@@ -100,6 +101,7 @@ trait TCodeGenerator {
                 
                 $creations[$j] = array();
                 $additions[$j] = array();
+                $afterBinding[$j] = array();
                 if($isFirst) {
                     array_push($creations[$j], '$this->setId("' . $this->getViewName() . '"); ');
                     $isFirst = false;
@@ -129,13 +131,21 @@ trait TCodeGenerator {
                         if(count($sa) > 1) {
                             $member = $sa[1];
                             if($sa[0] == 'var') {
-                                array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '($this->' . $member . '); ');
+                                //if($key == 'for') {
+//                                    array_push($afterBinding[$j], $thisControl . '->set' . ucfirst($key) . '($this->' . $member . '); ');
+//                                } else {
+                                    array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '($this->' . $member . '); ');
+//                                }
                             } elseif ($sa[0] == 'prop') {
                                 array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '($this->get' . ucfirst($member) . '()); ');
                             }
                         }
                         else {
-                            array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '("' . $value . '"); ');
+                            //if($key == 'command') {
+//                                array_push($afterBinding[$j], $thisControl . '->set' . ucfirst($key) . '("' . $value . '"); ');
+//                            } else {
+                                array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '("' . $value . '"); ');
+//                            }
                         }
                     }
                 }
@@ -143,8 +153,11 @@ trait TCodeGenerator {
                     array_push($additions[$j], $thisControl . '->sleep(); ');
                     array_push($additions[$j], '} ');
                 }
+                array_push($additions[$j], '$this->addChild(' . $thisControl . ');');
+                
                 $creations[$j] = implode(CR_LF, $creations[$j]);
                 $additions[$j] = implode(CR_LF, $additions[$j]);
+                $afterBinding[$j] = implode(CR_LF, $afterBinding[$j]);
             }
 
             
@@ -174,7 +187,13 @@ trait TCodeGenerator {
             $objectAdditions .= $additions[$matchIndex] . CR_LF;
         }
 
-        return (object)['creations' => $objectCreation, 'additions' => $objectAdditions];
+        $objectAfterBiding = CR_LF;
+        foreach($matches as $matchIndex) {
+            if(!isset($afterBinding[$matchIndex])) continue;
+            $objectAfterBiding .= $afterBinding[$matchIndex] . CR_LF;
+        }
+        
+        return (object)['creations' => $objectCreation, 'additions' => $objectAdditions, 'afterBinding' => $objectAfterBiding];
     }
     
     function writeHTML(TXmlDocument $doc, $pageCode)

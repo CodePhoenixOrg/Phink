@@ -1,33 +1,29 @@
 <?php
-namespace Phoenix\Data\UI;
+namespace Phoenix\Web\UI\Widget\Plugin;
 
-class TDataGrid extends \Phoenix\Web\UI\TAlgoDispatcher
+class TPlugin extends \Phoenix\Web\UI\TPluginRenderer
 {
-    use TDataTag;
+    use \Phoenix\Data\UI\TDataTag;
     
-    private $_columns = array();
+    private $_children = array();
     private $_rowCount;
     private $_pageNum;
-    private $_columnCount;
+    private $_childrenCount;
     protected $contents = NULL;
-    protected $hasColumns = false;
+    protected $hasChildren = false;
 
-    public function getColumns()
+    public function getChildren()
     {
-        return $this->_columns;
+        return $this->_children;
     }
-    public function setColumns($value)
+    public function setChildren($value)
     {
-        $this->_columns = $value;
+        $this->_children = $value;
     }
     
-    public function getColumnCount()
+    public function getChildrenCount()
     {
-        return $this->_columnCount;
-    }
-    public function setColumnCount($value)
-    {
-        $this->_columnCount = $value;
+        return $this->_childrenCount;
     }
     
     public function getRowCount()
@@ -51,23 +47,21 @@ class TDataGrid extends \Phoenix\Web\UI\TAlgoDispatcher
     public function init()
     {
         $this->_rowCount = $this->pageCountByDefault($this->_rowCount);
-        $this->hasColumns = count($this->_columns) > 0;
+        $this->hasChildren = count($this->_children) > 0;
 
-        if($this->hasColumns) {
-            $this->templates = $this->getControls($this->_columns);
+        if($this->hasChildren) {
+            $this->templates = $this->getControls($this->_children);
             $id = $this->getParent()->getId();
             
             $json = json_encode($this->templates);
             $templateFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_template.json';
             file_put_contents($templateFilename, $json);
             
-
-            
-            $this->_columns = $this->assocArrayByAttribute($this->_columns, 'name');
-            $this->_columnCount = count($this->_columns);
+            $this->_children = $this->assocArrayByAttribute($this->_children, 'name');
+            $this->_childrenCount = count($this->_children);
         }
         else {
-            $this->_columnCount = $this->statement->getFieldCount();
+            $this->_childrenCount = $this->statement->getFieldCount();
         }
         
     }
@@ -75,14 +69,14 @@ class TDataGrid extends \Phoenix\Web\UI\TAlgoDispatcher
     public static function getGridData($id, \Phoenix\Data\Client\PDO\TPdoCommand $cmd, $rowCount)
     {
         $templateFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_template.json';
-        \Phoenix\Log\TLog::debug('TEMPLATE FILE : ' . $templateFilename);
+        //\Phoenix\Log\TLog::debug('TEMPLATE FILE : ' . $templateFilename);
         $templates = '';
         if(file_exists($templateFilename)) {
             $templates = json_decode(file_get_contents($templateFilename));
         }
         
         $elementsFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_elements.json';
-        \Phoenix\Log\TLog::debug('TEMPLATE FILE : ' . $elementsFilename);
+        //\Phoenix\Log\TLog::debug('TEMPLATE FILE : ' . $elementsFilename);
         $elements = '';
         if(file_exists($elementsFilename)) {
             $elements = json_decode(file_get_contents($elementsFilename));
@@ -105,7 +99,7 @@ class TDataGrid extends \Phoenix\Web\UI\TAlgoDispatcher
             array_push($values, json_encode(array_fill(0, $fieldCount, '&nbsp;')));
         }
         
-        \Phoenix\Log\TLog::dump('RECORDSET VALUES', $values);
+        //\Phoenix\Log\TLog::dump('RECORDSET VALUES', $values);
         $result = [
             'cols' => $fieldCount
             , 'rows' => $rowCount

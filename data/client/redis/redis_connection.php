@@ -42,7 +42,7 @@ class TRedisConnection extends TObject implements IConnection, IConfigurable
         try {
             $this->_state = new Client($this->_params);
         } catch (\Predis\PredisException $ex) {
-            \Phoenix\Log\TLog::exception($ex, __FILE__, __LINE__);
+            //\Phoenix\Log\TLog::exception($ex, __FILE__, __LINE__);
         }
 
         return $this->_state;

@@ -5,14 +5,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phoenix\Web\UI\Algo;
+namespace Phoenix\Web\UI\Plugin;
 
-interface IAlgo
-{
-    function render();
-}
-
-trait TAlgo
+abstract class TCustomPlugin extends \Phoenix\Core\TObject
 {
     use \Phoenix\Data\UI\TDataBinder;
     
@@ -26,5 +21,7 @@ trait TAlgo
     {
         $this->elements = $value;
     }
+    
+    public abstract function render();
     
 }

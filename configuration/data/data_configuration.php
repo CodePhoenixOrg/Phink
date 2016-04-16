@@ -44,7 +44,7 @@ abstract class TDataConfiguration extends TObject
     }
 
     /* 
-     * Following fields are default null string in constructor because they may not be used (eg: SQLite)
+     * Following properties are default null string in constructor because they may not be used (eg: SQLite)
      */
     public function getHost()
     {

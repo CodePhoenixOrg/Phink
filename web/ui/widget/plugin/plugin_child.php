@@ -1,14 +1,12 @@
 <?php
-namespace Phoenix\Data\UI;
-
-
+namespace Phoenix\Web\UI\Widget\Plugin;
 
 /**
  * Description of adatacolumn
  *
  * @author david
  */
-class TDataColumn extends \Phoenix\Core\TObject
+class TPluginChild extends \Phoenix\Core\TObject
 {
     use \Phoenix\Web\UI\THtmlControl;
     

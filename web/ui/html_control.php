@@ -58,7 +58,7 @@ trait THtmlControl
         $this->content = $value;
         if($this->content[0] == '@') {
             $templateName = str_replace(PREHTML_EXTENSION, '', substr($this->content,1));
-            $templateName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $templateName . DIRECTORY_SEPARATOR . $templateName . PREHTML_EXTENSION;
+            $templateName = 'app' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $templateName . DIRECTORY_SEPARATOR . $templateName . PREHTML_EXTENSION;
 
             if(file_exists($templateName)) {
                 $contents = file_get_contents($templateName, FILE_USE_INCLUDE_PATH);

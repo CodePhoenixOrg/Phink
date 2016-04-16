@@ -6,12 +6,12 @@
 
 
 var TAccordion = function() {
-    TAlgo.call(this);
+    TPlugin.call(this);
     
     
 };
 
-TAccordion.prototype = new TAlgo();
+TAccordion.prototype = new TPlugin();
 TAccordion.prototype.constructor = TAccordion;
 
 TAccordion.create = function() {
@@ -60,9 +60,9 @@ TAccordion.prototype.bind = function(accordionId, names, values, templates, elem
                 oldValues[j] = row[index];
                 continue;
             }
-            //html = this.applyTemplate(templates[j], columns, row, names, j);
             //html = this.applyTemplate(templates[j], colNum, row, i);
-            html = row[index];
+            //html = row[index];
+            html = this.applyTemplate(templates, colNum, row, j);
 
             if(level === 0) {
                 if(i > 0) {

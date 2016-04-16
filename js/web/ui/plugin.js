@@ -5,23 +5,23 @@
  */
 
 
-var TAlgo = function() {
+var TPlugin = function() {
     TWebObject.call(this);
     
 };
 
-TAlgo.prototype = new TWebObject();
-TAlgo.prototype.constructor = TAlgo;
+TPlugin.prototype = new TWebObject();
+TPlugin.prototype.constructor = TPlugin;
 
-TAlgo.create = function() {
-    return new TAlgo();
+TPlugin.create = function() {
+    return new TPlugin();
 }
 
-TAlgo.prototype.applyTemplate = function(templates, colNum, row, i) {
+TPlugin.prototype.applyTemplate = function(templates, colNum, row, i) {
     var html = row[i];
     var template = templates[i];
 
-    if(template.content !== null && template.enabled) {
+    if(template.content !== '' && template.enabled) {
         html = template.content;
         var event = template.event;
         var e = event.split('#');
@@ -40,7 +40,7 @@ TAlgo.prototype.applyTemplate = function(templates, colNum, row, i) {
     return html;
 }
 
-TAlgo.prototype.dataBind = function(tableId, values, templates) {
+TPlugin.prototype.dataBind = function(tableId, values, templates) {
     var colNum = templates.length;
     var rowNum = values.length;
     for(var j=0; j < rowNum; j++) {
