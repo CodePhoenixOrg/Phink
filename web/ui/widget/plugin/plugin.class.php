@@ -107,7 +107,7 @@ class TPlugin extends \Phoenix\Web\UI\TPluginRenderer
             , 'values' => $values
             , 'templates' => $templates
         ];
-        
+
         if(isset($elements)) {
             $result['elements'] = $elements;
         }
@@ -120,11 +120,21 @@ class TPlugin extends \Phoenix\Web\UI\TPluginRenderer
     {
         $this->data = self::getGridData($this->getParent()->getViewName(), $this->command, $this->_rowCount);
         $this->response->setData('data', $this->data);
+        
+        //if(!$this->getRequest()->isAjax()) {
+        //}
     }
     
     public function renderHtml()
     {
         $this->data = self::getGridData($this->getParent()->getViewName(), $this->command, $this->_rowCount);
+    
+        $id = $this->getParent()->getViewName();
+        $scriptFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_data.js';
+        $json = json_encode($this->data);
+        file_put_contents($scriptFilename, 'var ' . $id . 'Data = ' . $json . ';');
+        
+        $this->response->addScript($scriptFilename);
 
         parent::renderHtml();
 

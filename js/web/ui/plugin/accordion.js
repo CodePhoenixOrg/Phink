@@ -62,7 +62,7 @@ TAccordion.prototype.bind = function(accordionId, names, values, templates, elem
             }
             //html = this.applyTemplate(templates[j], colNum, row, i);
             //html = row[index];
-            html = this.applyTemplate(templates, colNum, row, j);
+            html = TPlugin.applyTemplate(templates, row, j);
 
             if(level === 0) {
                 if(i > 0) {

@@ -63,9 +63,24 @@ abstract class TCustomController extends \Phoenix\Web\UI\TCustomControl
         }
     }
 
-    public function renderedPhp()
+    public function renderCreations()
     {
-        include_once "data://text/plain," . urlencode('<?php' . $this->creations . $this->declarations . $this->beforeBinding . $this->afterBinding . '?>' . $this->viewHtml);
+        include_once "data://text/plain," . urlencode('<?php' . $this->creations . '?>');
+    }
+
+    public function renderDeclarations()
+    {
+        include_once "data://text/plain," . urlencode('<?php' . $this->declarations . '?>');
+    }
+
+    public function renderAfterBinding()
+    {
+        include_once "data://text/plain," . urlencode('<?php' . $this->afterBinding . '?>');
+    }
+
+    public function renderView()
+    {
+        include_once "data://text/plain," . urlencode($this->viewHtml);
     }
 
     public function renderedHtml()
@@ -73,6 +88,15 @@ abstract class TCustomController extends \Phoenix\Web\UI\TCustomControl
         include_once "data://text/plain," . urlencode($this->innerHtml);
     }
     
+    public function renderedPhp()
+    {
+        $this->renderCreations();
+        $this->renderDeclarations();
+        $this->beforeBinding();
+        $this->renderAfterBinding();
+        $this->renderView();
+    }
+
     public function perform() {}
     
     public function getViewHtml()

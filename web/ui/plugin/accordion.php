@@ -75,7 +75,7 @@ class TAccordion extends TCustomPlugin
                 
                 //$html = $row[$index];
                 //$html = $level . '[' . $oldLevel . ']' . '-' . $index . '::' . $row[$index];
-                $html = $this->applyTemplate($this->templates[$j], $this->columns, $row, $head, $j);
+                $html = \Phoenix\Web\UI\Widget\Plugin\TPlugin::applyTemplate($this->templates, $row, $j);
 
                 //\Phoenix\Log\TLog::debug('INDEX::' . $index . "\r\n" . "\r\n");
                 //\Phoenix\Log\TLog::debug('LEVEL::' . $level . "\r\n" . "\r\n");

@@ -14,6 +14,7 @@ $js_filename = $destdir . 'code_phoenix.js';
 $filenames = [
         'global.js'
     ,   'core/registry.js'
+    ,   'core/utils.js'
     ,   'web/web_application.js'
     ,   'web/web_object.js'
     ,   'web/ui/plugin.js'

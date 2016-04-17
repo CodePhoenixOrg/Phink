@@ -17,22 +17,45 @@ TPlugin.create = function() {
     return new TPlugin();
 }
 
-TPlugin.prototype.applyTemplate = function(templates, colNum, row, i) {
+TPlugin.applyTemplate = function(templates, row, i) {
     var html = row[i];
-    var template = templates[i];
-
-    if(template.content !== '' && template.enabled) {
-        html = template.content;
-        var event = template.event;
+    
+    if(templates[i].content !== '' && templates[i].enabled) {
+        html = templates[i].content;
+        var event = templates[i].event;
         var e = event.split('#');
         if(e[0] === 'href') {
             event = 'javascript:' + e[1];
         } else {
             event = e[0] + '="' + e[1] + '"'; 
         }
-        for (var m = 0; m < colNum; m++) {
+        for (var m = 0; m < row.length; m++) {
             html = html.replace('<% ' + templates[m].name + ' %>', row[m]);
-            event = event.replace(templates[m].name, row[m]);
+            html = html.replace('<% ' + templates[m].name + ':index %>', m);
+            event = event.replace(templates[m].name, "'" + row[m] + "'");
+            html = html.replace('<% &' + templates[m].name + ' %>', event);
+        }   
+    }
+    
+    return html;
+}
+
+TPlugin.applyDragHelper = function(templates, row, i) {
+    var html = row[i];
+    
+    if(templates[i].dragHelper !== '' && templates[i].enabled) {
+        html = templates[i].dragHelper;
+        var event = templates[i].event;
+        var e = event.split('#');
+        if(e[0] === 'href') {
+            event = 'javascript:' + e[1];
+        } else {
+            event = e[0] + '="' + e[1] + '"'; 
+        }
+        for (var m = 0; m < row.length; m++) {
+            html = html.replace('<% ' + templates[m].name + ' %>', row[m]);
+            html = html.replace('<% ' + templates[m].name + ':index %>', m);
+            event = event.replace(templates[m].name, "'" + row[m] + "'");
             html = html.replace('<% &' + templates[m].name + ' %>', event);
         }   
     }

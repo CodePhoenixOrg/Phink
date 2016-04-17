@@ -17,7 +17,7 @@ class TResponse implements \JsonSerializable
     //put your code here
     private $_data = array();
     private $_token = '';
-    protected $scriptList = [];
+    protected $scriptsList = [];
 
     public function redirect($url)
     {
@@ -29,9 +29,14 @@ class TResponse implements \JsonSerializable
         return $this->_data;
     }
 
-    public function addScript($value)
+    public function addScript($filename)
     {
-        array_push($this->scriptList, $value);
+        array_push($this->scriptsList, $filename);
+    }
+
+    public function getScripts()
+    {
+        return $this->scriptsList;
     }
 
     public function setToken($token = '')
@@ -60,7 +65,10 @@ class TResponse implements \JsonSerializable
             $this->setToken($this->_token);
         }
 
-        $this->_data['scripts'] = $this->scriptList;
+        $this->_data['scripts'] = $this->scriptsList;
+        
+        
+        
 //        $this->_data['http_host'] = HTTP_HOST;
 
         header('Content-Type: application/json; charset=UTF-8');

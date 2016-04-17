@@ -74,7 +74,12 @@ class TRequest extends \Phoenix\Core\TObject
 
             $html = curl_exec($ch);
             $info = curl_getinfo($ch);
-            $header = $info['request_header'];
+            $header = (isset($info['request_header'])) ? $info['request_header'] : '';
+
+            if($header == '') {
+                throw new Exception("Curl is not working fine for reason ! Usually a hostname problem.");
+            }
+
             $code = $info['http_code'];
             curl_close($ch);
 
@@ -110,7 +115,12 @@ class TRequest extends \Phoenix\Core\TObject
               // process completed request (e.g. curl_multi_getcontent($info['handle']))
                 $ch = $info['handle'];
                 $requestInfo = curl_getinfo($ch);
-                $header =  $requestInfo['request_header'];
+                $header = (isset($requestInfo['request_header'])) ? $requestInfo['request_header'] : '';
+                
+                if($header == '') {
+                    throw new Exception("Curl is not working fine for reason ! Usually a hostname problem.");
+                }
+            
                 $code = $requestInfo['http_code'];
                 $html = curl_multi_getcontent($ch);
                 

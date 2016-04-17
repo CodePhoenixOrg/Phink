@@ -53,12 +53,14 @@ trait TDataBinder
         $this->pivot = $value;
     }
     
-    public function applyTemplate($template, $cols, $row, $head, $j) 
+    public static function applyTemplate($templates, $row, $j) 
     {
+        $cols = count($row);
         $html = $row[$j];
-        if($template['content'] && $template['enabled'] == 1) {
-            $html = $template['content'];
-            $event = $template['event'];
+        
+        if($templates[$j]['content'] && $templates[$j]['enabled'] == 1) {
+            $html = $templates[$j]['content'];
+            $event = $templates[$j]['event'];
             $e = explode('#', $event);
             if($e[0] == 'href') {
                 $event = 'javascript:' . $e[1];
@@ -66,11 +68,12 @@ trait TDataBinder
                 $event = $e[0] . '="' . $e[1] . '"'; 
             }
             for ($m = 0; $m < $cols; $m++) {
-                $html = str_replace('<% ' . $head[$m] . ' %>', $row[$m], $html);
-                //\Phoenix\Log\TLog::dump('HTML1::', $html);
-                $event = str_replace($head[$m], $row[$m], $event);
-                $html = str_replace('<% &' . $head[$m] . ' %>', $event, $html);
-                //\Phoenix\Log\TLog::dump('HTML2::', $html);
+                $head = $templates[$m]['name'];
+                $html = str_replace('<% ' . $head . ' %>', $row[$m], $html);
+                $html = str_replace('<% ' . $head . ':index %>', $m, $html);
+                $event = str_replace($head, "'" . $row[$m] . "'", $event);
+                $html = str_replace('<% &' . $head . ' %>', $event, $html);
+                
             }
             
             
@@ -78,4 +81,30 @@ trait TDataBinder
         return $html;
     }
     
+    public static function applyDragHelper($templates, $row, $j) 
+    {
+        $cols = count($row);
+        $html = $row[$j];
+        
+        if($templates[$j]['dragHelper'] && $templates[$j]['enabled'] == 1) {
+            $html = $templates[$j]['dragHelper'];
+            $event = $templates[$j]['event'];
+            $e = explode('#', $event);
+            if($e[0] == 'href') {
+                $event = 'javascript:' . $e[1];
+            } else {    
+                $event = $e[0] . '="' . $e[1] . '"'; 
+            }
+            for ($m = 0; $m < $cols; $m++) {
+                $head = $templates[$m]['name'];
+                $html = str_replace('<% ' . $head . ' %>', $row[$m], $html);
+                $html = str_replace('<% ' . $head . ':index %>', $m, $html);
+                $event = str_replace($head, "'" . $row[$m] . "'", $event);
+                $html = str_replace('<% &' . $head . ' %>', $event, $html);
+            }
+            
+            
+        }
+        return $html;
+    }
 }
