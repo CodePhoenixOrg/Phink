@@ -44,12 +44,12 @@ class TRequest extends \Phoenix\Core\TObject
     
     }
 
-    public function addSubRequest($name, $host, $uri, $data)
+    public function addSubRequest($name, $host, $uri, $data = null)
     {
         $this->_subRequests[$name] = ['host' => $host, 'uri' => $uri, 'data' => $data];
     }
     
-    public function addViewSubRequest($name, $host, $uri, $data)
+    public function addViewSubRequest($name, $host, $uri, $data = null)
     {
         if(is_array($data)) {
             $data['action'] = 'getViewHtml';

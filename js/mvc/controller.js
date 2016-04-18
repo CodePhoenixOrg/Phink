@@ -77,6 +77,7 @@ TController.prototype.getView = function (pageName, callback) {
         try {
             var url = TWebObject.parseUrl(pageName);
             TRegistry.item(url.page).origin = xhr.getResponseHeader('origin');
+            TRegistry.item(url.page).xhr = xhr;
 
             this.token = data.token;
 
