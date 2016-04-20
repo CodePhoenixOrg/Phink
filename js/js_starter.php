@@ -46,7 +46,7 @@ $filenames = [
     //,   'holder.js'
     //,   'prettify.js'
     ,   'php.default.min.js'
-    ,   'drag-and-drop.js'
+//    ,   'drag-and-drop.js'
 ];
 
 foreach ($filenames as $filename) {
