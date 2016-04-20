@@ -115,7 +115,7 @@ abstract class TCustomView extends \Phoenix\Web\UI\TCustomControl
         $doc = new TXmlDocument($this->viewHtml);
         $doc->matchAll();
         if($doc->getCount() > 0) {
-            // Il y a des éléments à traiter
+            // Il y a des ï¿½lï¿½ments ï¿½ traiter
             $this->_dirty = true;
             $declarations = $this->writeDeclarations($doc);
             $this->creations = $declarations->creations;
@@ -126,8 +126,8 @@ abstract class TCustomView extends \Phoenix\Web\UI\TCustomControl
             //\Phoenix\Log\TLog::debug('CACHE FILE : ' . $this->cacheFileName, __FILE__, __LINE__);
         }
         
-        $code = \Phoenix\TAutoloader::getRegisteredCode($this->controllerFileName);
-        // On stocke le code parsé dans un fichier pour ne plus avoir à le parser à la prochaine demande.
+        $code = TRegistry::getRegisteredCode($this->controllerFileName);
+        // On stocke le code parsï¿½ dans un fichier pour ne plus avoir ï¿½ le parser ï¿½ la prochaine demande.
         $code = str_replace(CREATIONS_PLACEHOLDER, $this->creations, $code);
         $code = str_replace(ADDITIONS_PLACEHOLDER, $this->additions, $code);
         $code = str_replace(AFTERBINDING_PLACEHOLDER, $this->afterBinding, $code);
@@ -139,8 +139,8 @@ abstract class TCustomView extends \Phoenix\Web\UI\TCustomControl
         file_put_contents($this->getCacheFileName(), $code);
 //        $this->redis->mset($this->preHtmlName, $this->declarations . $this->viewHtml);
         
-        // On a généré le code mais on ne l'a pas parsé au sens "exécuté" du terme 
-        // donc on sort avec le flag FAUX pour indiquer qu'il doit encore être exécuté
+        // On a gï¿½nï¿½rï¿½ le code mais on ne l'a pas parsï¿½ au sens "exï¿½cutï¿½" du terme 
+        // donc on sort avec le flag FAUX pour indiquer qu'il doit encore ï¿½tre exï¿½cutï¿½
         return false;
         
     }

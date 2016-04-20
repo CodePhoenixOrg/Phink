@@ -21,8 +21,11 @@ $filenames = [
     ,   'web/ui/plugin/accordion.js'
     ,   'web/ui/plugin/table.js'
     ,   'mvc/controller.js'
+    ,   'mvc/view.js'
     ,   'jphoenix.js'
 ];
+
+//\Phoenix\Core\TRegistry::item('javascript') = $filenames;
 
 $js_content = '';
 

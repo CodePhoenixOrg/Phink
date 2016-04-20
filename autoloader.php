@@ -15,6 +15,7 @@
 
 namespace Phoenix;
 
+use Phoenix\Core\TRegistry;
 /**
  * Implements a lightweight PSR-0 compliant autoloader.
  *
@@ -26,7 +27,6 @@ class TAutoloader
     private $directory;
     private $prefix;
     private $prefixLength;
-    private static $_code = array();
 
     /**
      * @param string $baseDirectory Base directory where the source files are located.
@@ -99,7 +99,7 @@ class TAutoloader
         $file = str_replace('\\', '_', $info->namespace . '\\' . $viewName) . '.php';
         if($withCode) {
             $code = substr(trim($code), 0, -2) . CR_LF . CONTROL_ADDITIONS;
-            TAutoloader::registerCode($filename, $code);
+            TRegistry::registerCode($filename, $code);
         }
         
         return ['file' => $file, 'type' => $info->namespace . '\\' . $viewName, 'code' => $code];
@@ -150,7 +150,7 @@ class TAutoloader
         $file = str_replace('\\', '_', $namespace . '\\' . $className) . '.php';
         if($withCode) {
             $code = substr(trim($code), 0, -2) . CR_LF . CONTROL_ADDITIONS;
-            self::registerCode($filename, $code);
+            TRegistry::registerCode($filename, $code);
         }
         
         return ['file' => $file, 'type' => $namespace . '\\' . $className, 'code' => $code];
@@ -191,7 +191,7 @@ class TAutoloader
             $className = ucfirst($viewName);
             
             $result = self::includeDefaultController($namespace, $className);
-            self::registerCode('app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION, $result['code']);
+            TRegistry::registerCode('app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION, $result['code']);
         }
 
         return $result;
@@ -211,7 +211,7 @@ class TAutoloader
             $namespace = self::getDefaultNamespace();
             $className = ucfirst($viewName);
             $result = self::includeDefaultPartialController($namespace, $className);
-            self::registerCode('app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION, $result['code']);
+            TRegistry::registerCode('app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION, $result['code']);
         }
 
         return $result;
@@ -253,7 +253,7 @@ class TAutoloader
         if(file_exists($cacheFilename)) {
             //\Phoenix\Log\TLog::debug('INCLUDE CACHED CONTROL: ' . $cacheFilename, __FILE__, __LINE__);
             $include = file_get_contents($cacheFilename);
-            self::registerCode($classFilename, $include);
+            TRegistry::registerCode($classFilename, $include);
             include $cacheFilename;
         } else {
             //\Phoenix\Log\TLog::debug('INCLUDE NEW CONTROL : ' . $viewName, __FILE__, __LINE__);
@@ -274,20 +274,6 @@ class TAutoloader
 
         return ucfirst($sa[0]) . '\\Controllers';
     }
-    
-    public static function getRegisteredCode($id)
-    {
-        return self::$_code[$id];
-    }
-    
-    public static function registerCode($id, $value)
-    {
-        self::$_code[$id] = $value;
-        //$id = str_replace(DIRECTORY_SEPARATOR, '_', $id);
-        //file_put_contents(TMP_DIR . DIRECTORY_SEPARATOR . $id . PREHTML_EXTENSION, $value);
-        $keys = array_keys(self::$_code);
-        //\Phoenix\Log\TLog::debug('CODE REGISTRY : ' . print_r($keys, true));
-    }    
     
     public static function controllerTemplate($namespace, $className)
     {

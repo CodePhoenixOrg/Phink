@@ -20,7 +20,7 @@ TController.prototype.constructor = TController;
 
 TController.create = function(name) {
     return new TController(name);
-}
+};
 
 TController.prototype.oninit = function (callback) {
 
@@ -204,4 +204,4 @@ TController.prototype.attachIframe = function(id, src, anchor) {
         scrolling: 'no'
     }).appendTo(anchor);
 
-}
+};

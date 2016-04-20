@@ -15,11 +15,11 @@ TWebObject.prototype.setOrigin = function(value) {
     this.origin = value;
     
     return this;
-}
+};
 
 TWebObject.prototype.getOrigin = function() {
     return this.origin;
-}
+};
 
 TWebObject.parseUrl = function (url) {
 
@@ -86,12 +86,12 @@ TWebObject.parseUrl = function (url) {
 
 TWebObject.prototype.getUrl = function() {
     return this.url;
-}
+};
 
 TWebObject.prototype.getJSON = function(
     url, // Url du webService
-    postData, // Tableau JSON des données à poster au webserice
-    callBack // fonction qui gère le retour du webservice
+    postData, // Tableau JSON des donnï¿½es ï¿½ poster au webserice
+    callBack // fonction qui gï¿½re le retour du webservice
 ) {
     //$("body").toggleClass('onLoad');
 //        spinner.spin();

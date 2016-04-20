@@ -11,4 +11,4 @@ var TWebApplication = function() {
 
 TWebApplication.create = function() {
 
-}
+};
