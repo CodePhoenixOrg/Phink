@@ -80,7 +80,7 @@ abstract class TCustomController extends \Phoenix\Web\UI\TCustomControl
 
     public function renderView()
     {
-        include_once "data://text/plain," . urlencode($this->viewHtml);
+        include_once "data://text/plain;base64," . base64_encode($this->viewHtml);
     }
 
     public function renderedHtml()
@@ -92,8 +92,8 @@ abstract class TCustomController extends \Phoenix\Web\UI\TCustomControl
     {
         $this->renderCreations();
         $this->renderDeclarations();
-        $this->beforeBinding();
-        $this->renderAfterBinding();
+        //$this->beforeBinding();
+        //$this->renderAfterBinding();
         $this->renderView();
     }
 
@@ -114,5 +114,3 @@ abstract class TCustomController extends \Phoenix\Web\UI\TCustomControl
 
     
 }
-
-

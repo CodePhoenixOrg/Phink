@@ -17,6 +17,7 @@ $filenames = [
         'widgets.js'
     ,   'jquery.js'
     ,   'jquery-ui.js'
+    ,   'jquery.ui.touch-punch.min.js'
     //,   'multiaccordion.jquery.js'
     ,   'bootstrap.js'
     //,   'holder.js'
@@ -25,11 +26,11 @@ $filenames = [
 //    ,   'drag-and-drop.js'
 ];
 
+$js_content = '';
 foreach ($filenames as $filename) {
-    $js_content = file_get_contents($srcdir . $filename, FILE_USE_INCLUDE_PATH);
-    file_put_contents($js_filename, $js_content);
-
+    $js_content .= file_get_contents($srcdir . $filename, FILE_USE_INCLUDE_PATH);
 }
+file_put_contents($js_filename, $js_content);
 
 $dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
 
