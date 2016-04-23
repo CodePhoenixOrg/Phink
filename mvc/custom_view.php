@@ -126,8 +126,8 @@ abstract class TCustomView extends \Phoenix\Web\UI\TCustomControl
             //\Phoenix\Log\TLog::debug('CACHE FILE : ' . $this->cacheFileName, __FILE__, __LINE__);
         }
         
-        $code = \Phoenix\TAutoloader::getRegisteredCode($this->controllerFileName);
-        // On stocke le code parsé dans un fichier pour ne plus avoir à le parser à la prochaine demande.
+        $code = TRegistry::getRegisteredCode($this->controllerFileName);
+        // On stocke le code pars� dans un fichier pour ne plus avoir � le parser � la prochaine demande.
         $code = str_replace(CREATIONS_PLACEHOLDER, $this->creations, $code);
         $code = str_replace(ADDITIONS_PLACEHOLDER, $this->additions, $code);
         $code = str_replace(AFTERBINDING_PLACEHOLDER, $this->afterBinding, $code);
