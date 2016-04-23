@@ -16,7 +16,7 @@ TAccordion.prototype.constructor = TAccordion;
 
 TAccordion.create = function() {
     return new TAccordion();
-}
+};
 
 
 TAccordion.prototype.bind = function(accordionId, names, values, templates, elements) {
@@ -99,5 +99,5 @@ TAccordion.prototype.bind = function(accordionId, names, values, templates, elem
 
     $(accordionId).html("&nbsp;");
     $(accordionId).html(result);
-}
+};
     

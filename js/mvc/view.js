@@ -4,20 +4,20 @@
  * and open the template in the editor.
  */
 
-var TView = function(name) {
-    TWebObject.call(this);
-    
-    this.setOrigin(TRegistry.item(name).origin);
-    
-    this.view = null;
-    this.token = '';
-    this.name = name;
-}
-
-TView.prototype = new TWebObject();
-TView.prototype.constructor = TView;
-
-TView.create = function(name) {
-    return new TView(name);
-}
+//var TView = function(name) {
+//    TWebObject.call(this);
+//    
+//    this.setOrigin(TRegistry.item(name).origin);
+//    
+//    this.view = null;
+//    this.token = '';
+//    this.name = name;
+//};
+//
+//TView.prototype = new TWebObject();
+//TView.prototype.constructor = TView;
+//
+//TView.create = function(name) {
+//    return new TView(name);
+//};
 

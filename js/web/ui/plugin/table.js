@@ -13,7 +13,7 @@ TTable.prototype.constructor = TTable;
 
 TTable.create = function() {
     return new TTable();
-}
+};
     
 TTable.prototype.bind = function(tableId, values, templates) {
     var colNum = templates.length;
@@ -28,4 +28,4 @@ TTable.prototype.bind = function(tableId, values, templates) {
             }
         }
     }
-}
+};
