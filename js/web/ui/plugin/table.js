@@ -29,3 +29,4 @@ TTable.prototype.bind = function(tableId, values, templates) {
         }
     }
 };
+

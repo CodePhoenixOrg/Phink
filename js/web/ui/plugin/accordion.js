@@ -100,4 +100,6 @@ TAccordion.prototype.bind = function(accordionId, names, values, templates, elem
     $(accordionId).html("&nbsp;");
     $(accordionId).html(result);
 };
+
+
     

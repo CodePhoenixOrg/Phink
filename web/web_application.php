@@ -92,11 +92,11 @@ class TWebApplication extends UI\TCustomControl
         $token = $this->request->getToken();
         if(is_string($token) || $this->viewName == MAIN_VIEW || $this->viewName == LOGIN_VIEW  || $this->viewName == HOME_VIEW) {
             // on renouvelle le token
-        // ... avec ce token on récupère l'utilisateur et un nouveau token
-        // de telle sorte qu'on limite la durée de vie du token
+        // ... avec ce token on rÃ©cupÃ¨re l'utilisateur et un nouveau token
+        // de telle sorte qu'on limite la durÃ©e de vie du token
             $token = TAuthentication::renewToken($token);
 //        $result = TAuthentication::getPermissionByToken($token);
-            // on place le nouveau token dans la réponse
+            // on place le nouveau token dans la rÃ©ponse
             $this->response->setToken($token);
             $result = true;
                     
@@ -168,7 +168,7 @@ class TWebApplication extends UI\TCustomControl
             } else {
                 $result = TAutoloader::includeDefaultController($this->namespace, $this->className);
             }
-            TAutoloader::registerCode($this->controllerFileName, $result['code']);
+            \Phoenix\Core\TRegistry::registerCode($this->controllerFileName, $result['code']);
         }
 
         return $result;
@@ -178,7 +178,7 @@ class TWebApplication extends UI\TCustomControl
     {
         if($this->request->isAJAX() && $this->request->isPartialView()) {
             $result = TAutoloader::includeDefaultController($this->namespace, $this->className);
-            TAutoloader::registerCode(strtolower($this->controllerFileName), $result['code']);
+            \Phoenix\Core\TRegistry::registerCode(strtolower($this->controllerFileName), $result['code']);
         } else {
             $result = $this->includeController();
         }

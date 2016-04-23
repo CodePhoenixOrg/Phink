@@ -10,5 +10,6 @@ function include(file) {
     myScript.src = file;
     myScript.type = "text/javascript";
     document.body.appendChild(myScript);
-}
+};
+
 

@@ -15,7 +15,7 @@ TPlugin.prototype.constructor = TPlugin;
 
 TPlugin.create = function() {
     return new TPlugin();
-}
+};
 
 TPlugin.applyTemplate = function(templates, row, i) {
     var html = row[i];
@@ -38,7 +38,7 @@ TPlugin.applyTemplate = function(templates, row, i) {
     }
     
     return html;
-}
+};
 
 TPlugin.applyDragHelper = function(templates, row, i) {
     var html = row[i];
@@ -61,7 +61,7 @@ TPlugin.applyDragHelper = function(templates, row, i) {
     }
 
     return html;
-}
+};
 
 TPlugin.prototype.dataBind = function(tableId, values, templates) {
     var colNum = templates.length;
@@ -92,4 +92,4 @@ TPlugin.prototype.dataBind = function(tableId, values, templates) {
             }
         }
     }
-}
+};

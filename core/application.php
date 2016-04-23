@@ -16,12 +16,6 @@ require_once 'constants.php';
 
 include 'phoenix/'.STARTER_FILE;
 
-//require_once 'log.php';
-//require_once 'object.php';
-//require_once 'request.php';
-//require_once 'phoenix/mvc/view.php';
-//require_once 'phoenix/utils/file_utils.php';
-//require_once 'phoenix/auth/authentication.php';
 require_once 'phoenix/autoloader.php';
 \Phoenix\TAutoLoader::register();
 
@@ -46,7 +40,7 @@ class TApplication extends TObject
     const TEST_MODE = 'TEST';
     const PROD_MODE = 'PROD';
     
-    // Récupère tous les clubs dans un tableau associatif sous la forme numéro=>nom
+    // RÃ©cupÃ¨re tous les clubs dans un tableau associatif sous la forme numÃ©ro=>nom
     private static $_executionMode = self::PROD_MODE;
     private static $_verboseMode = false;
     private static $_useTransactions = true;
@@ -187,7 +181,7 @@ class TApplication extends TObject
         
         // On prend le token en cours
         if(is_string($token)) {
-            // avec ce token on récupère l'utilisateur et un nouveau token
+            // avec ce token on rÃ©cupÃ¨re l'utilisateur et un nouveau token
             $token = TAuthentication::getUserCredentialsByToken($token);
         }
         
