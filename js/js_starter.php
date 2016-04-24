@@ -17,7 +17,7 @@ $filenames = [
         'widgets.js'
     ,   'jquery.js'
     ,   'jquery-ui.js'
-    ,   'jquery.ui.touch-punch.min.js'
+    //,   'jquery.ui.touch-punch.min.js'
     //,   'multiaccordion.jquery.js'
     ,   'bootstrap.js'
     //,   'holder.js'

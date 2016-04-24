@@ -1,21 +1,9 @@
 <?php
 namespace Phoenix\MVC;
 
-//require_once 'phoenix/core/object.php';
-//require_once 'phoenix/ui/registry.php';
-//require_once 'phoenix/xml/xmldocument.php';
-//require_once 'phoenix/xml/xmlmatch.php';
-//require_once 'phoenix/utils/file_utils.php';
-//require_once 'phoenix/utils/string_utils.php';
-
 use Phoenix\Core\TObject;
-use Phoenix\Web\TWebObject;
 use Phoenix\Xml\TXmlDocument;
-use Phoenix\Xml\TXmlMatch;
-use Phoenix\Utils\TFileUtils;
-use Phoenix\Utils\TStringUtils;
 use Phoenix\Core\TRegistry;
-use Predis\Client;
 
 abstract class TCustomView extends \Phoenix\Web\UI\TCustomControl
 {
