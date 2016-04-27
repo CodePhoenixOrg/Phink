@@ -65,17 +65,17 @@ abstract class TCustomController extends \Phoenix\Web\UI\TCustomControl
 
     public function renderCreations()
     {
-        include_once "data://text/plain," . urlencode('<?php' . $this->creations . '?>');
+        include_once "data://text/plain;base64," . base64_encode('<?php' . $this->creations . '?>');
     }
 
     public function renderDeclarations()
     {
-        include_once "data://text/plain," . urlencode('<?php' . $this->declarations . '?>');
+        include_once "data://text/plain;base64," . base64_encode('<?php' . $this->declarations . '?>');
     }
 
     public function renderAfterBinding()
     {
-        include_once "data://text/plain," . urlencode('<?php' . $this->afterBinding . '?>');
+        include_once "data://text/plain;base64," . base64_encode('<?php' . $this->afterBinding . '?>');
     }
 
     public function renderView()
@@ -85,7 +85,7 @@ abstract class TCustomController extends \Phoenix\Web\UI\TCustomControl
 
     public function renderedHtml()
     {
-        include_once "data://text/plain," . urlencode($this->innerHtml);
+        include_once "data://text/plain;base64," . base64_encode($this->innerHtml);
     }
     
     public function renderedPhp()
