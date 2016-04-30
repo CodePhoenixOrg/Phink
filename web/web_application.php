@@ -11,6 +11,7 @@ require_once 'phoenix/core/application.php';
 use Phoenix\TAutoloader;
 use Phoenix\Auth\TAuthentication;
 use Phoenix\MVC\TView;
+use Phoenix\Crypto\TCrypto;
 
 /**
  * Description of router
@@ -31,6 +32,7 @@ class TWebApplication extends UI\TCustomControl
 
     public function __construct() 
     {
+        $this->authentication = new TAuthentication();
         $this->request = new TRequest();
         $this->response = new TResponse();
         
@@ -90,11 +92,15 @@ class TWebApplication extends UI\TCustomControl
         $result = false;
         // On prend le token en cours ...
         $token = $this->request->getToken();
+//        if(!is_string($token) && !isset($_SESSION['USER'])) {
+//            $token = '#!';
+//            $token = TCrypto::generateToken('');
+//        }
         if(is_string($token) || $this->viewName == MAIN_VIEW || $this->viewName == LOGIN_VIEW  || $this->viewName == HOME_VIEW) {
             // on renouvelle le token
         // ... avec ce token on récupère l'utilisateur et un nouveau token
         // de telle sorte qu'on limite la durée de vie du token
-            $token = TAuthentication::renewToken($token);
+            $token = $this->authentication->renewToken($token);
 //        $result = TAuthentication::getPermissionByToken($token);
             // on place le nouveau token dans la réponse
             $this->response->setToken($token);

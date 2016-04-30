@@ -163,6 +163,17 @@ class TRequest extends \Phoenix\Core\TObject
         return $this->getQueryArguments('token');
     }
 
+    public static function getQueryStrinng($arg = null)
+    {
+        $result = $_REQUEST;
+        
+        if ($arg !== null) {
+            $result = (isset($_REQUEST[$arg])) ? $_REQUEST[$arg] : false;
+        }
+        
+        return $result;
+    }
+
     public function getQueryArguments($arg = null)
     {
         return (isset($this->_queryArguments[$arg])) ? $this->_queryArguments[$arg] : false;

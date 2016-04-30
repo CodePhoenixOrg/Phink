@@ -36,7 +36,7 @@ trait TWebObject {
     protected $className = '';
     protected $namespace = '';
     protected $code = '';
-    
+    protected $authentication = null;
     
 //    public function __construct(TObject $parent)
 //    {
@@ -231,7 +231,12 @@ trait TWebObject {
         $parts = pathinfo($this->getFileName());
         return DOCUMENT_ROOT . 'tmp' . DIRECTORY_SEPARATOR . $parts['filename'] . '.xml';
     }
-    
+
+    public function getAuthentication()
+    {
+        return $this->authentication;
+    }
+
     public function setRedis(array $params)
     {
         $this->redis = $params;

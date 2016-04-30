@@ -13,6 +13,33 @@ use Phoenix\Data\Client\PDO\TPdoCommand;
 class TAuthentication
 {
 
+    protected $userId = '';
+    protected $userName = '';
+
+    public function getUserId()
+    {
+        $userid = (isset($this->userId)) ? $this->userId : '#!user' . uniqueid() . '#';
+        return $userId;
+    }
+    
+    public function setUserId($value)
+    {
+        $_SESSION['userId'] = $value;
+        $this->userId = $value;
+    }
+
+    public function getUserName()
+    {
+        $userName = (isset($this->userName)) ? $this->userName : '#!user' . uniqueid() . '#';
+        return $userName;
+    }
+    
+    public function setUserName($value)
+    {
+        $_SESSION['userName'] = $value;
+        $this->userName = $value;
+    }
+
     public static function getPermissionByToken ($token)
     {
         
@@ -62,7 +89,7 @@ class TAuthentication
         return $result;
     }    
     
-    public static function renewToken($token = '')
+    public function renewToken($token = '')
     {
         $result = false;
 
@@ -80,17 +107,20 @@ class TAuthentication
             
             $stmt = $command->query("UPDATE crypto SET outdated=1 WHERE token =:token;", ['token' => $token]);
             
-            $token = TCrypto::generateToken('');
-            $command->query(
-                "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
-                ,['token' => $token, 'userId' => $userId, 'login' => $login]
-            );
-           
-            $result = $token;
+        } else {
+            $userId = $this->getUserId();
+            $userName = $this->getUserName();
         }
+        
+        $token = TCrypto::generateToken('');
+        $command->query(
+                "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
+            ,['token' => $token, 'userId' => $userId, 'login' => $login]
+        );
+           
+        $result = $token;
 
         return $result;
     }    
     
 }
-
