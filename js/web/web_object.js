@@ -9,6 +9,7 @@ var TWebObject = function() {
     this.origin = '';
     this.url = {};
     this.token = '';
+    this.name = '';
 };
 
 TWebObject.prototype.setOrigin = function(value) {
@@ -19,6 +20,17 @@ TWebObject.prototype.setOrigin = function(value) {
 
 TWebObject.prototype.getOrigin = function() {
     return this.origin;
+};
+
+
+TWebObject.prototype.setToken = function(value) {
+    this.token = value;
+    
+    return this;
+};
+
+TWebObject.prototype.getToken = function() {
+    return this.token;
 };
 
 TWebObject.parseUrl = function (url) {
@@ -114,6 +126,7 @@ TWebObject.prototype.getJSON = function(
             this.token = data.token;
             url = TWebObject.parseUrl(url);
             TRegistry.item(url.page).origin = xhr.getResponseHeader('origin');
+            TRegistry.item(url.page).token = data.token;
             
             if($.isFunction(callBack)) {
                 callBack.call(this, data, textStatus, xhr);

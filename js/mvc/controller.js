@@ -7,18 +7,17 @@
 
 var TController = function(name) {
     TWebObject.call(this);
-    
-    this.setOrigin(TRegistry.item(name).origin);
-    
+
     this.view = null;
-    this.token = '';
     this.name = name;
+
 };
 
 TController.prototype = new TWebObject();
 TController.prototype.constructor = TController;
 
 TController.create = function(name) {
+    console.log(name);
     return new TController(name);
 };
 
@@ -62,11 +61,14 @@ TController.prototype.actions = function (actions) {
 };
 
 TController.prototype.getView = function (pageName, callback) {
-
+    console.log(pageName);
+    
+    var the = this;
+    var token = TRegistry.item(this.name).token;
     $.ajax({
         type: 'POST',
         url: (this.origin !== 'undefined/' && this.origin !== undefined) ? this.origin + pageName : pageName,
-        data: {"action" : 'getViewHtml', "token" : this.token},
+        data: {"action" : 'getViewHtml', "token" : token},
         dataType: 'json',
         async: true,
         headers: {
@@ -75,11 +77,9 @@ TController.prototype.getView = function (pageName, callback) {
         }
     }).done(function(data, textStatus, xhr) {
         try {
-            var url = TWebObject.parseUrl(pageName);
-            TRegistry.item(url.page).origin = xhr.getResponseHeader('origin');
-            TRegistry.item(url.page).xhr = xhr;
-
-            this.token = data.token;
+//            var url = TWebObject.parseUrl(pageName);
+            TRegistry.item(the.name).origin = xhr.getResponseHeader('origin');
+            TRegistry.item(the.name).token = data.token;
 
             var l = data.scripts.length;
             for(i = 0; i < l; i++) {
@@ -107,13 +107,18 @@ TController.prototype.getView = function (pageName, callback) {
 
 TController.prototype.getPartialView = function (pageName, action, attach, postData, callBack) {
 
-    if(postData === undefined || postData === null) {
-        postData = {};
-    }
+    postData = postData || {};
+    
+    console.log('token1::' + this.token);
+    console.log('name::' + this.name);
 
+    var token = TRegistry.item(this.name).token;
+    console.log('token2::' + token);
+    
     postData.action = action;
-    postData.token = this.token;
+    postData.token = token;
 
+    var the = this;
     $.ajax({
         type: 'POST',
         url: (this.origin !== undefined) ? this.origin + '/' + pageName : pageName,
@@ -127,10 +132,10 @@ TController.prototype.getPartialView = function (pageName, action, attach, postD
     }).done(function(data, textStatus, xhr) {
         try 
         {
-            this.token = data.token;
+            TRegistry.item(the.name).token = data.token;
 
             var url = TWebObject.parseUrl(pageName);
-            TRegistry.item(url.page).origin = xhr.getResponseHeader('origin');
+            TRegistry.item(the.name).origin = xhr.getResponseHeader('origin');
 
             var l = data.scripts.length;
             for(i = 0; i < l; i++) {

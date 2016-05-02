@@ -13,15 +13,21 @@ use Phoenix\Data\Client\PDO\TPdoCommand;
 class TAuthentication
 {
 
-    protected $userId = '';
-    protected $userName = '';
+    protected $userId = null;
+    protected $userName = null;
 
     public function getUserId()
     {
-        $userid = (isset($this->userId)) ? $this->userId : '#!user' . uniqueid() . '#';
-        return $userId;
+        if (!isset($this->userId) || empty($this->userId)) {
+            if (isset($_SESSION['userId'])) {
+                $this->userId = $_SESSION['userId'];
+            } else {
+                $this->setUserId('#!user' . uniqid() . '#');
+            }
+        }
+        return $this->userId;
     }
-    
+
     public function setUserId($value)
     {
         $_SESSION['userId'] = $value;
@@ -30,8 +36,14 @@ class TAuthentication
 
     public function getUserName()
     {
-        $userName = (isset($this->userName)) ? $this->userName : '#!user' . uniqueid() . '#';
-        return $userName;
+        if (!isset($this->userName) || empty($this->userName)) {
+            if (isset($_SESSION['userName'])) {
+                $this->userName = $_SESSION['userName'];
+            } else {
+                $this->setUserName('#!user' . uniqid() . '#');
+            }
+        }
+        return $this->userName;
     }
     
     public function setUserName($value)
@@ -93,10 +105,16 @@ class TAuthentication
     {
         $result = false;
 
+        \Phoenix\Log\TLog::debug(__METHOD__ . '::TOKEN::' . $token);
+        
         if(strlen($token) > 0 && substr($token, 0, 1) == '!') {
             $result = $token;
             return $result;
         }
+        
+        $userId = $this->getUserId();
+        $login = $this->getUserName();
+        
         $connection = TDataAccess::getCryptoDB();
         $command = new TPdoCommand($connection);
         $stmt = $command->query("select * from crypto where token =:token and outdated=0;", ['token' => $token]);
@@ -107,14 +125,11 @@ class TAuthentication
             
             $stmt = $command->query("UPDATE crypto SET outdated=1 WHERE token =:token;", ['token' => $token]);
             
-        } else {
-            $userId = $this->getUserId();
-            $userName = $this->getUserName();
         }
         
         $token = TCrypto::generateToken('');
         $command->query(
-                "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
+            "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
             ,['token' => $token, 'userId' => $userId, 'login' => $login]
         );
            

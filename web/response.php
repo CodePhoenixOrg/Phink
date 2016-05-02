@@ -24,6 +24,13 @@ class TResponse implements \JsonSerializable
         header('Location: ' . $url);
     }
     
+    public function setToken($token = '')
+    {
+        \Phoenix\Log\TLog::debug(__METHOD__ . '::TOKEN::' . $token);
+        $this->_token = $token;
+        $this->_data['token'] = $token;
+    }
+
     public function jsonSerialize()
     {
         return $this->_data;
@@ -34,16 +41,10 @@ class TResponse implements \JsonSerializable
         array_push($this->scriptsList, $filename);
     }
 
-    public function getScripts()
-    {
-        return $this->scriptsList;
-    }
-
-    public function setToken($token = '')
-    {
-        $this->_token = $token;
-        $this->_data['token'] = $token;
-    }
+//    public function getScripts()
+//    {
+//        return $this->scriptsList;
+//    }
 
     public function setReturn($value)
     {

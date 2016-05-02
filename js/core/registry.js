@@ -39,6 +39,10 @@ var TRegistry = (function() {
             return this.registry[item];
         }
     }
+    
+    F.prototype.items = function() {
+        return this.registry;
+    }
 
     F.prototype.clear = function() {
         this.registry = {};
