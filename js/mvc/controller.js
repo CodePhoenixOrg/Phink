@@ -9,7 +9,7 @@ var TController = function(name) {
     TWebObject.call(this);
 
     this.view = null;
-    this.name = name;
+    this.setName(name);
 
 };
 
@@ -17,7 +17,9 @@ TController.prototype = new TWebObject();
 TController.prototype.constructor = TController;
 
 TController.create = function(name) {
-    console.log(name);
+    if (name === undefined) {
+        name = 'ctrl' + Date.now();
+    }
     return new TController(name);
 };
 
@@ -64,7 +66,7 @@ TController.prototype.getView = function (pageName, callback) {
     console.log(pageName);
     
     var the = this;
-    var token = TRegistry.item(this.name).token;
+    var token = TRegistry.getToken();
     $.ajax({
         type: 'POST',
         url: (this.origin !== 'undefined/' && this.origin !== undefined) ? this.origin + pageName : pageName,
@@ -79,7 +81,7 @@ TController.prototype.getView = function (pageName, callback) {
         try {
 //            var url = TWebObject.parseUrl(pageName);
             TRegistry.item(the.name).origin = xhr.getResponseHeader('origin');
-            TRegistry.item(the.name).token = data.token;
+            TRegistry.setToken(data.token);
 
             var l = data.scripts.length;
             for(i = 0; i < l; i++) {
@@ -112,7 +114,7 @@ TController.prototype.getPartialView = function (pageName, action, attach, postD
     console.log('token1::' + this.token);
     console.log('name::' + this.name);
 
-    var token = TRegistry.item(this.name).token;
+    var token = TRegistry.getToken();
     console.log('token2::' + token);
     
     postData.action = action;
@@ -132,7 +134,7 @@ TController.prototype.getPartialView = function (pageName, action, attach, postD
     }).done(function(data, textStatus, xhr) {
         try 
         {
-            TRegistry.item(the.name).token = data.token;
+            TRegistry.setToken(data.token);
 
             var url = TWebObject.parseUrl(pageName);
             TRegistry.item(the.name).origin = xhr.getResponseHeader('origin');
@@ -171,10 +173,10 @@ TController.prototype.attachWindow = function (pageName, anchor) {
 };
 
 TController.prototype.attachView = function (pageName, anchor) {
-    var myToken = this.token;
+    var myToken = TRegistry.getToken();
     this.getJSON('' + pageName, {"action" : 'getViewHtml', "token" : myToken}, function(data) {
         try {
-            this.token = data.token;
+            TRegistry.setToken(data.token);
 
             var l = data.scripts.length;
             for(i = 0; i < l; i++) {

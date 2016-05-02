@@ -48,5 +48,15 @@ var TRegistry = (function() {
         this.registry = {};
     }
     
+    F.prototype.setToken = function(value) {
+        this.registry['token'] = value;
+    
+        return this;
+    };
+
+    F.prototype.getToken = function() {
+        return this.registry['token'];
+    };
+
     return new F();
 })();

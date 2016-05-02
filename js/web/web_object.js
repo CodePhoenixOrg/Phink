@@ -6,11 +6,15 @@
 
 
 var TWebObject = function() {
+	TObject.call(this);
+	  
     this.origin = '';
     this.url = {};
     this.token = '';
-    this.name = '';
 };
+
+TWebObject.prototype = new TObject();
+TWebObject.prototype.constructor = TWebObject;
 
 TWebObject.prototype.setOrigin = function(value) {
     this.origin = value;
@@ -217,4 +221,3 @@ TWebObject.getCSS = function(attributes) {
     var head = document.getElementsByTagName("head")[0];
         head.appendChild(styleSheet);
 };
-

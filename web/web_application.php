@@ -18,7 +18,7 @@ use Phoenix\Crypto\TCrypto;
  *
  * @author David
  */
-class TWebApplication extends UI\TCustomControl
+class TWebApplication extends \Phoenix\Core\TApplication
 {
     use \Phoenix\Web\TWebObject;
 
@@ -111,9 +111,9 @@ class TWebApplication extends UI\TCustomControl
             $this->response->setToken($token);
             $result = true;
                     
-        //} else {
-            //$this->response->redirect(SERVER_ROOT . MAIN_PAGE);
-            //$result = true;
+        } else {
+            $this->response->redirect(SERVER_ROOT . MAIN_PAGE);
+            $result = true;
         }
         
         return $result;
