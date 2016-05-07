@@ -131,13 +131,15 @@ class TRegistry
         }
      }
 
-    public static function item($item) {
+    public static function item($item, $value = null) {
         if($item === '' || $item === null) return $item;
 
-        array_push(self::$_items, $item);
-        
         if(self::$_items[$item] !== null) {
-            return self::$_items[$item];
+            if($value != null) {
+                self::$_items[$item] = $value;
+            } else {
+                return self::$_items[$item];
+            }
         } else {
             self::$_items[$item] = [];
             return self::$_items[$item];

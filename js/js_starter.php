@@ -14,7 +14,7 @@ $srcdir =  dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR 
 $js_filename = $destdir . '_3rdparty.js';
 
 $filenames = [
-        'widgets.js'
+       'widgets.js'
     ,   'jquery.js'
     ,   'jquery-ui.js'
     ,   'jquery.ui.touch-punch.min.js'
@@ -23,6 +23,7 @@ $filenames = [
     //,   'holder.js'
     //,   'prettify.js'
     ,   'php.default.min.js'
+//    ,   'tiny-console.js'
 //    ,   'drag-and-drop.js'
 ];
 
@@ -48,10 +49,7 @@ $filenames = [
     ,   'web/ui/plugin/table.js'
     ,   'mvc/controller.js'
     ,   'mvc/view.js'
-    ,   'jphoenix.js'
 ];
-
-//\Phoenix\Core\TRegistry::item('javascript') = $filenames;
 
 $js_content = '';
 
@@ -60,3 +58,17 @@ foreach ($filenames as $filename) {
 }
 
 file_put_contents($js_filename, $js_content);
+
+$filenames = [
+        'core/debug.js'
+    ,   'core/console.js'
+    ,   'jphoenix.js'
+];
+
+$js_content = '';
+
+foreach ($filenames as $filename) {
+    $js_content = file_get_contents($dir . $filename);
+    $filename = array_pop(explode('/', $filename));
+    file_put_contents($destdir . $filename, $js_content);
+}
