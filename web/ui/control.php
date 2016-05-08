@@ -86,9 +86,9 @@ class TControl extends TCustomControl
         if($this->request->isAJAX()) {
             $actionName = $this->actionName;
             
-            \Phoenix\TAutoloader::validateMethod($this, $actionName);
-            
-            $this->$actionName();
+            $params = \Phoenix\TAutoloader::validateMethod($this, $actionName);
+            \Phoenix\TAutoloader::invokeMethod($this, $actionName, $params);
+            //$this->$actionName();
             if($this->request->isPartialView()) {
                 $this->getViewHtml();
             }

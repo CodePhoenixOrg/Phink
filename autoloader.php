@@ -353,20 +353,12 @@ CONTROLLER;
         if ($method == '') return false;
         
         Log\TLog::dump(get_class($class) . '::' . $method . '::PARAMETERS', $params);
-//        $ref = new \ReflectionMethod(get_class($class), $method);
-//        
-//        if(is_array($params) && count($params) > 0) {
-//            $ref->invokeArgs($class, $params);
-//        } else {
-//            $ref->invoke($class);
-//        }
+        $ref = new \ReflectionMethod(get_class($class), $method);
         
         if(is_array($params) && count($params) > 0) {
-            Log\TLog::debug(get_class($class) . '::' . $method . '::PARAMETERS::COUNT::' . count($params));
-            $class->$method($params);
+            $ref->invokeArgs($class, $params);
         } else {
-            Log\TLog::debug(get_class($class) . '::' . $method . '::PARAMETERS::COUNT::ZERO');
-            $class->$method();
+            $ref->invoke($class);
         }
         
         return true;
