@@ -165,10 +165,10 @@ class TRequest extends \Phoenix\Core\TObject
 
     public static function getQueryStrinng($arg = null)
     {
-        $result = $_REQUEST;
+        $result = false;
         
-        if ($arg !== null) {
-            $result = (isset($_REQUEST[$arg])) ? $_REQUEST[$arg] : false;
+        if(!($result = filter_input(INPUT_POST, $arg, FILTER_SANITIZE_FULL_SPECIAL_CHARS))) {
+            $result = filter_input(INPUT_GET, $arg, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         }
         
         return $result;
