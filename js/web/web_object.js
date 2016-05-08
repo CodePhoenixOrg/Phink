@@ -111,7 +111,7 @@ TWebObject.prototype.getJSON = function(
 ) {
     //$("body").toggleClass('onLoad');
 //        spinner.spin();
-    postData.token = this.token;
+    postData.token = TRegistry.getToken();
     
     if(this.origin !== undefined) {
         var url = TWebObject.parseUrl(url);
@@ -127,7 +127,7 @@ TWebObject.prototype.getJSON = function(
     }).done(function(data, textStatus, xhr) {
         try 
         {
-            this.token = data.token;
+            TRegistry.setToken(data.token);
             url = TWebObject.parseUrl(url);
             TRegistry.item(url.page).origin = xhr.getResponseHeader('origin');
             TRegistry.item(url.page).token = data.token;

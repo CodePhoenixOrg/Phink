@@ -322,12 +322,20 @@ CONTROLLER;
             throw new \Exception(get_class($class) . "::$method is undefined");
         } else {
             $ref = new \ReflectionMethod($class, $method);
-            $params = $ref->getParameters();
+            $params = [];
+            foreach($ref->getParameters() as $currentParam)  {
+                array_push($params, $currentParam->name);
+            }
+            
+            Log\TLog::dump('REQUEST::' . $method . '::PARAMS::', $params);
+            
             $args = $_REQUEST;
             if(isset($args['action'])) unset($args['action']);
             if(isset($args['token'])) unset($args['token']);
             if(isset($args['_'])) unset($args['_']);
             $args = array_keys($args);
+            
+            Log\TLog::dump('REQUEST::' . $method . '::ARGS::', $args);
             
             $validArgs = [];
             foreach($args as $arg) {
@@ -341,7 +349,7 @@ CONTROLLER;
                 if(!in_array($param, $validArgs)) {
                     throw new \Exception(get_class($class) . "::$method::$param is missing");
                 } else {
-                    $result[$param] = Web\TResponse::getQueryStrinng($param);
+                    $result[$param] = Web\TRequest::getQueryStrinng($param);
                 }
             }
         }
