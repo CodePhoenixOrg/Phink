@@ -179,6 +179,11 @@ class TRequest extends \Phoenix\Core\TObject
         return (isset($this->_queryArguments[$arg])) ? $this->_queryArguments[$arg] : false;
     }
 
+    public function getArgumentsNames()
+    {
+        return array_keys($_REQUEST);
+    }
+
     public function isEncrypted()
     {
         return $this->_isEncrypted;

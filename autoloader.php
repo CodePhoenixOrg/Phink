@@ -10,7 +10,7 @@
  */
 
 /*
- * This file is modified by David Blanchard for CodePhoenix Project Predis integration
+ * This file is modified by David Blanchard for CodePhoenix Project
  */
 
 namespace Phoenix;
@@ -311,6 +311,35 @@ CONTROLLER;
         
         return $result;
         
+    }
+    
+    public static function validateMethod($class, $method) {
+        if ($method == '') return true;
+        
+        if(!method_exists($class, $method)) {
+            throw new \Exception(get_class($class) . "::$method is undefined");
+        } else {
+            $ref = new \ReflectionMethod($class, $method);
+            $params = $ref->getParameters();
+            $args = $_REQUEST;
+            if(isset($args['action'])) unset($args['action']);
+            if(isset($args['token'])) unset($args['token']);
+            if(isset($args['_'])) unset($args['_']);
+            $args = array_keys($args);
+            foreach($args as $arg) {
+                if(!in_array($arg, $params)) {
+                    throw new \Exception(get_class($class) . "::$method::$arg is undefined");
+                }
+            }
+            foreach($params as $param) {
+                if(!filter_input(INPUT_GET, $param, FILTER_NULL_ON_FAILURE)
+                   && !filter_input(INPUT_POST, $param, FILTER_NULL_ON_FAILURE)) {
+                    throw new \Exception(get_class($class) . "::$method::$param is missing");
+                }
+            }
+        }
+
+        return true;
     }
     
 }

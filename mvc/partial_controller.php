@@ -31,6 +31,9 @@ class TPartialController extends TCustomController
     {
         $this->init();
         $actionName = $this->actionName;
+        
+        \Phoenix\TAutoloader::validateMethod($this, $actionName);
+            
         $this->$actionName();
         $this->getViewHtml();
         $this->unload();
