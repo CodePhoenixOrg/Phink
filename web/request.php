@@ -165,10 +165,11 @@ class TRequest extends \Phoenix\Core\TObject
 
     public static function getQueryStrinng($arg = null)
     {
-        $result = $_REQUEST;
-        
-        if ($arg !== null) {
-            $result = (isset($_REQUEST[$arg])) ? $_REQUEST[$arg] : false;
+        $result = null;
+        if(filter_input(INPUT_POST, $arg, FILTER_NULL_ON_FAILURE)) {
+            $result = filter_input(INPUT_GET, $arg, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        } elseif(filter_input(INPUT_GET, $arg, FILTER_NULL_ON_FAILURE)) {
+            $result = filter_input(INPUT_GET, $arg, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         }
         
         return $result;
@@ -176,7 +177,7 @@ class TRequest extends \Phoenix\Core\TObject
 
     public function getQueryArguments($arg = null)
     {
-        return (isset($this->_queryArguments[$arg])) ? $this->_queryArguments[$arg] : false;
+        return self::getQueryStrinng($arg);
     }
 
     public function getArgumentsNames()

@@ -314,7 +314,9 @@ CONTROLLER;
     }
     
     public static function validateMethod($class, $method) {
-        if ($method == '') return true;
+        if ($method == '') return false;
+        
+        $result = [];
         
         if(!method_exists($class, $method)) {
             throw new \Exception(get_class($class) . "::$method is undefined");
@@ -326,20 +328,47 @@ CONTROLLER;
             if(isset($args['token'])) unset($args['token']);
             if(isset($args['_'])) unset($args['_']);
             $args = array_keys($args);
+            
+            $validArgs = [];
             foreach($args as $arg) {
                 if(!in_array($arg, $params)) {
                     throw new \Exception(get_class($class) . "::$method::$arg is undefined");
+                } else {
+                    array_push($validArgs, $arg);
                 }
             }
             foreach($params as $param) {
-                if(!filter_input(INPUT_GET, $param, FILTER_NULL_ON_FAILURE)
-                   && !filter_input(INPUT_POST, $param, FILTER_NULL_ON_FAILURE)) {
+                if(!in_array($param, $validArgs)) {
                     throw new \Exception(get_class($class) . "::$method::$param is missing");
+                } else {
+                    $result[$param] = Web\TResponse::getQueryStrinng($param);
                 }
             }
         }
 
-        return true;
+        return $result;
     }
     
+    public static function invokeMethod($class, $method, $params = null) {
+        if ($method == '') return false;
+        
+        Log\TLog::dump(get_class($class) . '::' . $method . '::PARAMETERS', $params);
+//        $ref = new \ReflectionMethod(get_class($class), $method);
+//        
+//        if(is_array($params) && count($params) > 0) {
+//            $ref->invokeArgs($class, $params);
+//        } else {
+//            $ref->invoke($class);
+//        }
+        
+        if(is_array($params) && count($params) > 0) {
+            Log\TLog::debug(get_class($class) . '::' . $method . '::PARAMETERS::COUNT::' . count($params));
+            $class->$method($params);
+        } else {
+            Log\TLog::debug(get_class($class) . '::' . $method . '::PARAMETERS::COUNT::ZERO');
+            $class->$method();
+        }
+        
+        return true;
+    }
 }

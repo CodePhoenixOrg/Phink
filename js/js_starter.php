@@ -39,16 +39,16 @@ $js_filename = $destdir . 'code_phoenix.js';
 
 $filenames = [
         'global.js'
-    ,   'core/registry.js'
-    ,   'core/utils.js'
-    ,   'core/object.js'
-    ,   'web/web_application.js'
-    ,   'web/web_object.js'
-    ,   'web/ui/plugin.js'
-    ,   'web/ui/plugin/accordion.js'
-    ,   'web/ui/plugin/table.js'
-    ,   'mvc/controller.js'
-    ,   'mvc/view.js'
+    ,   'core' . DIRECTORY_SEPARATOR . 'registry.js'
+    ,   'core' . DIRECTORY_SEPARATOR . 'utils.js'
+    ,   'core' . DIRECTORY_SEPARATOR . 'object.js'
+    ,   'web' . DIRECTORY_SEPARATOR . 'web_application.js'
+    ,   'web' . DIRECTORY_SEPARATOR . 'web_object.js'
+    ,   'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'plugin.js'
+    ,   'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'accordion.js'
+    ,   'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'table.js'
+    ,   'mvc' . DIRECTORY_SEPARATOR . 'controller.js'
+    ,   'mvc' . DIRECTORY_SEPARATOR . 'view.js'
 ];
 
 $js_content = '';
@@ -60,8 +60,8 @@ foreach ($filenames as $filename) {
 file_put_contents($js_filename, $js_content);
 
 $filenames = [
-        'core/debug.js'
-    ,   'core/console.js'
+        'core' . DIRECTORY_SEPARATOR . 'debug.js'
+    ,   'core' . DIRECTORY_SEPARATOR . 'console.js'
     ,   'jphoenix.js'
 ];
 
@@ -69,6 +69,7 @@ $js_content = '';
 
 foreach ($filenames as $filename) {
     $js_content = file_get_contents($dir . $filename);
-    $filename = array_pop(explode('/', $filename));
+    $info = explode(DIRECTORY_SEPARATOR, $filename);
+    $filename = array_pop($info);
     file_put_contents($destdir . $filename, $js_content);
 }
