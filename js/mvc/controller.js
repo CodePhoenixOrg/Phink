@@ -80,7 +80,8 @@ TController.prototype.getView = function (pageName, callback) {
     }).done(function(data, textStatus, xhr) {
         try {
 //            var url = TWebObject.parseUrl(pageName);
-            TRegistry.item(the.name).origin = xhr.getResponseHeader('origin');
+//            TRegistry.item(the.name).origin = xhr.getResponseHeader('origin');
+            TRegistry.setOrigin(xhr.getResponseHeader('origin'));
             TRegistry.setToken(data.token);
 
             var l = data.scripts.length;
@@ -137,7 +138,8 @@ TController.prototype.getPartialView = function (pageName, action, attach, postD
             TRegistry.setToken(data.token);
 
             var url = TWebObject.parseUrl(pageName);
-            TRegistry.item(the.name).origin = xhr.getResponseHeader('origin');
+//            TRegistry.item(the.name).origin = xhr.getResponseHeader('origin');
+            TRegistry.setOrigin(xhr.getResponseHeader('origin'));
 
             var l = data.scripts.length;
             for(i = 0; i < l; i++) {

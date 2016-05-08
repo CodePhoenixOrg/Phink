@@ -58,5 +58,15 @@ var TRegistry = (function() {
         return this.registry['token'];
     };
 
+    F.prototype.setOrigin = function(value) {
+        this.registry['origin'] = value;
+    
+        return this;
+    };
+
+    F.prototype.getOrigin = function() {
+        return this.registry['origin'];
+    };
+
     return new F();
 })();

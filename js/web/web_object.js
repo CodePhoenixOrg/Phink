@@ -112,12 +112,15 @@ TWebObject.prototype.getJSON = function(
     //$("body").toggleClass('onLoad');
 //        spinner.spin();
     postData.token = TRegistry.getToken();
+    var the = this;
     
-    if(this.origin !== undefined) {
+    this.origin = TRegistry.getOrigin();
+//    if(this.origin !== undefined) {
         var url = TWebObject.parseUrl(url);
         url = this.origin + '/' + url.page;
-    }
-
+//    }
+    console.log(url);
+    
     $.ajax({
         type: 'POST',
         url: url,
@@ -129,9 +132,8 @@ TWebObject.prototype.getJSON = function(
         {
             TRegistry.setToken(data.token);
             url = TWebObject.parseUrl(url);
-            TRegistry.item(url.page).origin = xhr.getResponseHeader('origin');
-            TRegistry.item(url.page).token = data.token;
-            
+//            TRegistry.item(the.name).origin = xhr.getResponseHeader('origin');
+            TRegistry.setOrigin(xhr.getResponseHeader('origin'));
             if($.isFunction(callBack)) {
                 callBack.call(this, data, textStatus, xhr);
             }
