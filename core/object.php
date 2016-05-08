@@ -23,6 +23,7 @@ class TObject
     protected $serialFilename = '';
     protected $isSerialized = '';
     protected $children = array();
+    protected $fqClassName = '';
 
     public function __construct(TObject $parent)
     {
@@ -54,6 +55,72 @@ class TObject
         return $this->_reflection;
     }
 
+    public function getMethodParameters($method)
+    {
+        $ref = $this->getReflection();
+        $met = $ref->getMethod($method);
+        
+        $params = [];
+        foreach($met->getParameters() as $currentParam)  {
+            array_push($params, $currentParam->name);
+        }
+        
+        return $params;
+    }
+    
+    public function validate($method) {
+        if ($method == '') return false;
+        
+        $result = [];
+        
+        if(!method_exists($this, $method)) {
+            throw new \Exception($this->getFQClassName() . "::$method is undefined");
+        } else {
+
+            $params = $this->getMethodParameters($method);
+            
+            $args = $_REQUEST;
+            if(isset($args['action'])) unset($args['action']);
+            if(isset($args['token'])) unset($args['token']);
+            if(isset($args['_'])) unset($args['_']);
+            $args = array_keys($args);
+            
+            $validArgs = [];
+            foreach($args as $arg) {
+                if(!in_array($arg, $params)) {
+                    throw new \Exception($this->getFQClassName() . "::$method::$arg is undefined");
+                } else {
+                    array_push($validArgs, $arg);
+                }
+            }
+            foreach($params as $param) {
+                if(!in_array($param, $validArgs)) {
+                    throw new \Exception($this->getFQClassName() . "::$method::$param is missing");
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public function invoke($method)
+    {
+        $params = $this->getMethodParameters($method);
+        
+        $values = [];
+        foreach($params as $param) {
+            array_push($values, \Phoenix\Web\TRequest::getQueryStrinng($param));
+        }
+
+        $ref = new \ReflectionMethod($this->getFQClassName(), $method);
+        
+        if(count($values) > 0) {
+            $ref->invokeArgs($this, $values);
+        } else {
+            $ref->invoke($this);
+        }        
+    }
+    
     public function getParent()
     {
         return $this->parent;
@@ -85,7 +152,8 @@ class TObject
         return $result;
     }
     
-    public function getChildrenIds() {
+    public function getChildrenIds()
+    {
         return array_keys($this->children);
     }
 
@@ -96,14 +164,22 @@ class TObject
 
     public function getNamespace()
     {
-        $typeParts = explode('\\', get_class($this));
+        $typeParts = explode('\\', $this->getFQClassName());
         array_pop($typeParts);
         return (count($typeParts) > 0) ? implode('\\', $typeParts) : '';
     }
 
+    public function getFQClassName() 
+    {
+        if($this->fqClassName == '') {
+            $this->fqClassName = get_class($this);
+        }
+        return $this->fqClassName;
+    }
+    
     public function getType()
     {
-        $typeParts = explode('\\', get_class($this));
+        $typeParts = explode('\\', $this->getFQClassName());
         return array_pop($typeParts);
         
     }

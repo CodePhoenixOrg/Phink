@@ -90,7 +90,7 @@ abstract class TCustomView extends \Phoenix\Web\UI\TCustomControl
     
     public function parse()
     {
-        ////\Phoenix\Log\TLog::debug($this->controllerFileName . ' IS REGISTERED : ' . isset(\Phoenix\TAutoloader::getRegisteredCode($this->controllerFileName)), __FILE__, __LINE__);
+        ////\Phoenix\Log\TLog::debug($this->controllerFileName . ' IS REGISTERED : ' . isset(\Phoenix\TAutoloader::getCode($this->controllerFileName)), __FILE__, __LINE__);
         
         //\Phoenix\Log\TLog::debug('PARSE FILE : ' . $this->viewFileName, __FILE__, __LINE__);
         //\Phoenix\Log\TLog::debug('GET CODE FILE : ' . $this->controllerFileName, __FILE__, __LINE__);
@@ -114,7 +114,7 @@ abstract class TCustomView extends \Phoenix\Web\UI\TCustomControl
             //\Phoenix\Log\TLog::debug('CACHE FILE : ' . $this->cacheFileName, __FILE__, __LINE__);
         }
         
-        $code = TRegistry::getRegisteredCode($this->controllerFileName);
+        $code = TRegistry::getCode($this->controllerFileName);
         // On stocke le code pars� dans un fichier pour ne plus avoir � le parser � la prochaine demande.
         $code = str_replace(CREATIONS_PLACEHOLDER, $this->creations, $code);
         $code = str_replace(ADDITIONS_PLACEHOLDER, $this->additions, $code);

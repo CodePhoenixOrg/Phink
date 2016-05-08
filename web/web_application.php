@@ -179,7 +179,7 @@ class TWebApplication extends \Phoenix\Core\TApplication
             } else {
                 $result = TAutoloader::includeDefaultController($this->namespace, $this->className);
             }
-            \Phoenix\Core\TRegistry::registerCode($this->controllerFileName, $result['code']);
+            \Phoenix\Core\TRegistry::setCode($this->controllerFileName, $result['code']);
         }
 
         return $result;
@@ -189,7 +189,7 @@ class TWebApplication extends \Phoenix\Core\TApplication
     {
         if($this->request->isAJAX() && $this->request->isPartialView()) {
             $result = TAutoloader::includeDefaultController($this->namespace, $this->className);
-            \Phoenix\Core\TRegistry::registerCode(strtolower($this->controllerFileName), $result['code']);
+            \Phoenix\Core\TRegistry::setCode(strtolower($this->controllerFileName), $result['code']);
         } else {
             $result = $this->includeController();
         }

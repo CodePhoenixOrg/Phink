@@ -16,6 +16,7 @@
 namespace Phoenix;
 
 use Phoenix\Core\TRegistry;
+use Phoenix\Core\TObject;
 /**
  * Implements a lightweight PSR-0 compliant autoloader.
  *
@@ -99,7 +100,7 @@ class TAutoloader
         $file = str_replace('\\', '_', $info->namespace . '\\' . $viewName) . '.php';
         if($withCode) {
             $code = substr(trim($code), 0, -2) . CR_LF . CONTROL_ADDITIONS;
-            TRegistry::registerCode($filename, $code);
+            TRegistry::setCode($filename, $code);
         }
         
         return ['file' => $file, 'type' => $info->namespace . '\\' . $viewName, 'code' => $code];
@@ -150,7 +151,7 @@ class TAutoloader
         $file = str_replace('\\', '_', $namespace . '\\' . $className) . '.php';
         if($withCode) {
             $code = substr(trim($code), 0, -2) . CR_LF . CONTROL_ADDITIONS;
-            TRegistry::registerCode($filename, $code);
+            TRegistry::setCode($filename, $code);
         }
         
         return ['file' => $file, 'type' => $namespace . '\\' . $className, 'code' => $code];
@@ -191,7 +192,7 @@ class TAutoloader
             $className = ucfirst($viewName);
             
             $result = self::includeDefaultController($namespace, $className);
-            TRegistry::registerCode('app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION, $result['code']);
+            TRegistry::setCode('app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION, $result['code']);
         }
 
         return $result;
@@ -211,7 +212,7 @@ class TAutoloader
             $namespace = self::getDefaultNamespace();
             $className = ucfirst($viewName);
             $result = self::includeDefaultPartialController($namespace, $className);
-            TRegistry::registerCode('app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION, $result['code']);
+            TRegistry::setCode('app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION, $result['code']);
         }
 
         return $result;
@@ -253,7 +254,7 @@ class TAutoloader
         if(file_exists($cacheFilename)) {
             //\Phoenix\Log\TLog::debug('INCLUDE CACHED CONTROL: ' . $cacheFilename, __FILE__, __LINE__);
             $include = file_get_contents($cacheFilename);
-            TRegistry::registerCode($classFilename, $include);
+            TRegistry::setCode($classFilename, $include);
             include $cacheFilename;
         } else {
             //\Phoenix\Log\TLog::debug('INCLUDE NEW CONTROL : ' . $viewName, __FILE__, __LINE__);
@@ -313,62 +314,4 @@ CONTROLLER;
         
     }
     
-    public static function validateMethod($class, $method) {
-        if ($method == '') return false;
-        
-        $result = [];
-        
-        if(!method_exists($class, $method)) {
-            throw new \Exception(get_class($class) . "::$method is undefined");
-        } else {
-            $ref = new \ReflectionMethod($class, $method);
-            $params = [];
-            foreach($ref->getParameters() as $currentParam)  {
-                array_push($params, $currentParam->name);
-            }
-            
-            Log\TLog::dump('REQUEST::' . $method . '::PARAMS::', $params);
-            
-            $args = $_REQUEST;
-            if(isset($args['action'])) unset($args['action']);
-            if(isset($args['token'])) unset($args['token']);
-            if(isset($args['_'])) unset($args['_']);
-            $args = array_keys($args);
-            
-            Log\TLog::dump('REQUEST::' . $method . '::ARGS::', $args);
-            
-            $validArgs = [];
-            foreach($args as $arg) {
-                if(!in_array($arg, $params)) {
-                    throw new \Exception(get_class($class) . "::$method::$arg is undefined");
-                } else {
-                    array_push($validArgs, $arg);
-                }
-            }
-            foreach($params as $param) {
-                if(!in_array($param, $validArgs)) {
-                    throw new \Exception(get_class($class) . "::$method::$param is missing");
-                } else {
-                    $result[$param] = Web\TRequest::getQueryStrinng($param);
-                }
-            }
-        }
-
-        return $result;
-    }
-    
-    public static function invokeMethod($class, $method, $params = null) {
-        if ($method == '') return false;
-        
-        Log\TLog::dump(get_class($class) . '::' . $method . '::PARAMETERS', $params);
-        $ref = new \ReflectionMethod(get_class($class), $method);
-        
-        if(is_array($params) && count($params) > 0) {
-            $ref->invokeArgs($class, $params);
-        } else {
-            $ref->invoke($class);
-        }
-        
-        return true;
-    }
 }

@@ -19,8 +19,8 @@ class TController extends TCustomController
         if($this->request->isAJAX()) {
             $actionName = $this->actionName;
 
-            $params = \Phoenix\TAutoloader::validateMethod($this, $actionName);
-            \Phoenix\TAutoloader::invokeMethod($this, $actionName, $params);
+            $this->validate($actionName);
+            $this->invoke($actionName);
 
             //$this->$actionName();
             if($this->request->isPartialView()) {

@@ -82,14 +82,14 @@ class TRegistry
         return ($classInfo) ? $classInfo->canRender : '';
     }
     
-    public static function getRegisteredCode($id)
+    public static function getCode($id)
     {
-        return self::$_code[$id];
+        return self::$_items['code'][$id];
     }
     
-    public static function registerCode($id, $value)
+    public static function setCode($id, $value)
     {
-        self::$_code[$id] = $value;
+        self::write('code', $id, $value);
         //$id = str_replace(DIRECTORY_SEPARATOR, '_', $id);
         //file_put_contents(TMP_DIR . DIRECTORY_SEPARATOR . $id . PREHTML_EXTENSION, $value);
         //$keys = array_keys(self::$_code);
@@ -98,10 +98,10 @@ class TRegistry
     
     public static function write($item, $key, $value) {
 
-        if (self::$_items[$item] === null) {
+        if (!isset(self::$_items[$item])) {
             self::$_items[$item] = [];
         }
-        self::$_items[$item][$key] = value;
+        self::$_items[$item][$key] = $value;
 
     }
 

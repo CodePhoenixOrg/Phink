@@ -167,8 +167,8 @@ class TRequest extends \Phoenix\Core\TObject
     {
         $result = false;
         
-        if(!($result = filter_input(INPUT_POST, $arg, FILTER_SANITIZE_FULL_SPECIAL_CHARS))) {
-            $result = filter_input(INPUT_GET, $arg, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if(!($result = filter_input(INPUT_POST, $arg, FILTER_DEFAULT))) {
+            $result = filter_input(INPUT_GET, $arg, FILTER_DEFAULT);
         }
         
         return $result;
