@@ -82,6 +82,7 @@ class TObject
             $args = $_REQUEST;
             if(isset($args['action'])) unset($args['action']);
             if(isset($args['token'])) unset($args['token']);
+            if(isset($args['q'])) unset($args['q']);
             if(isset($args['_'])) unset($args['_']);
             $args = array_keys($args);
             
