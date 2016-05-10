@@ -77,7 +77,7 @@ class TRequest extends \Phoenix\Core\TObject
             $header = (isset($info['request_header'])) ? $info['request_header'] : '';
 
             if($header == '') {
-                throw new Exception("Curl is not working fine for some reason ! Usually a hostname problem.");
+                throw new \Exception("Curl is not working fine for some reason. Are you using Android ?");
             }
 
             $code = $info['http_code'];
