@@ -44,17 +44,17 @@ class TRequest extends \Phoenix\Core\TObject
     
     }
 
-    public function addSubRequest($name, $host, $uri, $data = null)
+    public function addSubRequest($name, $uri, $data = null)
     {
-        $this->_subRequests[$name] = ['host' => $host, 'uri' => $uri, 'data' => $data];
+        $this->_subRequests[$name] = ['uri' => $uri, 'data' => $data];
     }
     
-    public function addViewSubRequest($name, $host, $uri, $data = null)
+    public function addViewSubRequest($name, $uri, $data = null)
     {
         if(is_array($data)) {
             $data['action'] = 'getViewHtml';
         }
-        $this->_subRequests[$name] = ['host' => $host, 'uri' => $uri, 'data' => $data];
+        $this->_subRequests[$name] = ['uri' => $uri, 'data' => $data];
     }
 
     public function execSubRequests()
@@ -64,7 +64,7 @@ class TRequest extends \Phoenix\Core\TObject
         foreach($this->_subRequests as $name => $request) {
         
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $request['host'] . $request['uri']);
+            curl_setopt($ch, CURLOPT_URL, $request['uri']);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             if(is_array($request['data'])) {
                 curl_setopt($ch, CURLOPT_POST, true);
@@ -77,7 +77,7 @@ class TRequest extends \Phoenix\Core\TObject
             $header = (isset($info['request_header'])) ? $info['request_header'] : '';
 
             if($header == '') {
-                throw new Exception("Curl is not working fine for reason ! Usually a hostname problem.");
+                throw new Exception("Curl is not working fine for some reason ! Usually a hostname problem.");
             }
 
             $code = $info['http_code'];
@@ -96,7 +96,7 @@ class TRequest extends \Phoenix\Core\TObject
         $mh = curl_multi_init();
 
         foreach($this->_subRequests as $name => $request) {
-            $ch = curl_init($request['host'] . $request['uri']);
+            $ch = curl_init($request['uri']);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLINFO_HEADER_OUT, true);
             if(is_array($request['data'])) {
@@ -118,7 +118,7 @@ class TRequest extends \Phoenix\Core\TObject
                 $header = (isset($requestInfo['request_header'])) ? $requestInfo['request_header'] : '';
                 
                 if($header == '') {
-                    throw new \Exception("Curl is not working fine for some reason ! Usually a hostname problem.");
+                    throw new \Exception("Curl is not working fine for some reason. Are you using Android ?");
                 }
             
                 $code = $requestInfo['http_code'];

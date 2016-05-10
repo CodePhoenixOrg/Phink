@@ -65,17 +65,23 @@ abstract class TCustomController extends \Phoenix\Web\UI\TCustomControl
 
     public function renderCreations()
     {
+      if(!empty($this->creations)) {
         include_once "data://text/plain;base64," . base64_encode('<?php' . $this->creations . '?>');
+      }
     }
 
     public function renderDeclarations()
     {
+      if(!empty($this->declarations)) {
         include_once "data://text/plain;base64," . base64_encode('<?php' . $this->declarations . '?>');
+      }
     }
 
     public function renderAfterBinding()
     {
+      if(!empty($this->afterBinding)) {
         include_once "data://text/plain;base64," . base64_encode('<?php' . $this->afterBinding . '?>');
+      }
     }
 
     public function renderView()
