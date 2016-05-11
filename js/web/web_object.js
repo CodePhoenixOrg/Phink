@@ -46,10 +46,12 @@ TWebObject.parseUrl = function (url) {
     var page = window.location.pathname;
     var domain = url;
     var port = '80';
+    var isRelative = false;
     
     if(protocol === null) {
         page = url;
 
+        isRelative = true;
         result.protocol = window.location.protocol;
         result.domain = window.location.hostname;
         result.port = window.location.port;
@@ -92,6 +94,7 @@ TWebObject.parseUrl = function (url) {
     
     result.page = page; //url.replace('.html', '');
     result.queryString = queryString;
+    result.isRelative = isRelative;
 
     console.log(result);
     this.url = result;

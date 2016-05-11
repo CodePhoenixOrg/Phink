@@ -79,3 +79,7 @@ TUtils.resizeIframe = function(ui) {
 TUtils.html64 = function(container, html) {
     $(container).html(base64_decode(html));
 };
+
+function debugLog(message) {
+    alert(message);
+}

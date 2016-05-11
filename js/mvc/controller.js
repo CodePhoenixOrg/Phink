@@ -67,9 +67,16 @@ TController.prototype.getView = function (pageName, callback) {
     
     var the = this;
     var token = TRegistry.getToken();
+    var uri = TWebObject.parseUrl(pageName);
+    var urls = (uri.isRelative) ? TRegistry.getOrigin() + '/' + pageName : pageName;
+
+    $('body').append('relative=' + uri.isRelative + '<br />') ;
+    $('body').append('urls=' + urls + '<br />') ;
+
+
     $.ajax({
         type: 'POST',
-        url: (this.origin !== 'undefined/' && this.origin !== undefined) ? this.origin + pageName : pageName,
+        url: urls,
         data: {"action" : 'getViewHtml', "token" : token},
         dataType: 'json',
         async: true,
@@ -110,13 +117,12 @@ TController.prototype.getView = function (pageName, callback) {
 
 TController.prototype.getPartialView = function (pageName, action, attach, postData, callBack) {
 
-    postData = postData || {};
-    
-    console.log('token1::' + this.token);
-    console.log('name::' + this.name);
-
+    var the = this;
     var token = TRegistry.getToken();
-    console.log('token2::' + token);
+    var uri = TWebObject.parseUrl(pageName);
+    var urls = (uri.isRelative) ? TRegistry.getOrigin() + '/' + pageName : pageName;
+
+    postData = postData || {};
     
     postData.action = action;
     postData.token = token;
@@ -174,12 +180,15 @@ TController.prototype.attachWindow = function (pageName, anchor) {
     });
 };
 
-TController.prototype.attachView = function (pageName, anchor) {
+TController.prototype.attachView = function (pageName, anchor, callback) {
     this.getView(pageName, function(data) {
         $(anchor).html(data.view);
+        if(typeof callback === 'function') {
+            callback.call(this, data);      
+        }
     });
+    
 };
-
 
     
 TController.prototype.attachIframe = function(id, src, anchor) {
