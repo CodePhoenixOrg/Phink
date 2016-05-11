@@ -180,14 +180,24 @@ TController.prototype.attachWindow = function (pageName, anchor) {
     });
 };
 
-TController.prototype.attachView = function (pageName, anchor, callback) {
-    this.getView(pageName, function(data) {
-        $(anchor).html(data.view);
-        if(typeof callback === 'function') {
-            callback.call(this, data);      
+TController.prototype.attachView = function (pageName, anchor) {
+    var myToken = TRegistry.getToken();
+    this.getJSON('' + pageName, {"action" : 'getViewHtml', "token" : myToken}, function(data) {
+        try {
+            TRegistry.setToken(data.token);
+
+            var l = data.scripts.length;
+            for(i = 0; i < l; i++) {
+                $.getScript(data.scripts[i]);
+        }
+
+            var html = base64_decode(data.view);
+            $(anchor).html(html);                
+        }
+        catch(e) {
+            debugLog(e);
         }
     });
-    
 };
 
     
