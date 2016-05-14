@@ -1,4 +1,4 @@
-var TPager = TController.create(null)
+var TPager = TController.create()
 .oninit(function (){
     this.index = '<% pageNum %>';
     this.count = '<% pageCount %>';
