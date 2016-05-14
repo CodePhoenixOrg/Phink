@@ -5,22 +5,33 @@
  */
 
 
-var TController = function(name) {
+var TController = function(view, name) {
     TWebObject.call(this);
 
-    this.view = null;
-    this.setName(name);
+    console.log('INSIDE ' + name + ' CREATE');
+    console.log(view);
+    
+    this.hasView = true;
+    
+    if(view instanceof TView) {
+        this.view = view;
+    } else if(typeof view === 'Object') {
+        throw new Error('Not a valid view');
+    } else {
+        this.hasView = false;
+    }
 
+    this.setName(name);
 };
 
 TController.prototype = new TWebObject();
 TController.prototype.constructor = TController;
 
-TController.create = function(name) {
+TController.create = function(parent, name) {
     if (name === undefined) {
         name = 'ctrl' + Date.now();
     }
-    return new TController(name);
+    return new TController(parent, name);
 };
 
 TController.prototype.oninit = function (callback) {

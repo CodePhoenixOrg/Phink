@@ -4,30 +4,9 @@
  * and open the template in the editor.
  */
 
-//TUtils.grep = function(haystack, key, needle){
-//    return $.grep(haystack, function(n, i){
-//        return n[key] == needle;
-//    });
-//};
-
 var TUtils = function() {
     
 };
-
-//TUtils.needleIndexOf = function(vector, needle) {
-//    var result = -1;
-//
-//    if(vector.length === 0) return result;
-//    
-//    for(var k = 0; k < vector.length; ++k) {
-//        if(needle === vector[k]) {
-//            result = k;
-//            break;
-//        }
-//    }        
-//
-//    return result;
-//};
 
 TUtils.find = function(haystack, index, needle) {
     var result = [];

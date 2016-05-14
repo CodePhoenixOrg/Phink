@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+function domReady(f){/in/.test(document.readyState)?setTimeout('domReady('+f+')',9):f()}
 
 function include(file) {
     var myScript =  document.createElement("script");
