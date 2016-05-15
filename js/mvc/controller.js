@@ -10,11 +10,12 @@ var TController = function(view, name) {
 
     console.log('INSIDE ' + name + ' CREATE');
     console.log(view);
+    this.domain = (view !== undefined) ? view.getDomain() : '';
     
     this.hasView = true;
     
     if(view instanceof TView) {
-        this.view = view;
+        this.parent = view;
     } else if(typeof view === 'Object') {
         throw new Error('Not a valid view');
     } else {
@@ -22,6 +23,7 @@ var TController = function(view, name) {
     }
 
     this.setName(name);
+    
 };
 
 TController.prototype = new TWebObject();
@@ -74,159 +76,21 @@ TController.prototype.actions = function (actions) {
 };
 
 TController.prototype.getView = function (pageName, callback) {
-    console.log(pageName);
-    
-    var the = this;
-    var token = TRegistry.getToken();
-    var uri = TWebObject.parseUrl(pageName);
-    var urls = (uri.isRelative) ? TRegistry.getOrigin() + '/' + pageName : pageName;
-
-    $('body').append('relative=' + uri.isRelative + '<br />') ;
-    $('body').append('urls=' + urls + '<br />') ;
-
-
-    $.ajax({
-        type: 'POST',
-        url: urls,
-        data: {"action" : 'getViewHtml', "token" : token},
-        dataType: 'json',
-        async: true,
-        headers: {
-            "Accept" : "application/json, text/javascript, request/view, */*; q=0.01"
-//            ,   "X-Token:" : myToken
-        }
-    }).done(function(data, textStatus, xhr) {
-        try {
-//            var url = TWebObject.parseUrl(pageName);
-//            TRegistry.item(the.name).origin = xhr.getResponseHeader('origin');
-            TRegistry.setOrigin(xhr.getResponseHeader('origin'));
-            TRegistry.setToken(data.token);
-
-            var l = data.scripts.length;
-            for(i = 0; i < l; i++) {
-                $.getScript(data.scripts[i]);
-            }
-
-            data.view = base64_decode(data.view);
-            if(typeof callback === 'function') {
-                callback.call(this, data);
-            } else {
-                $(document.body).html(data.view);
-
-            }
-            
-        }
-        catch(e) {
-            $.jPhoenix.debugLog(e);
-        }
-    }).fail(function(xhr, options, message) {
-        $.jPhoenix.debugLog("Satus : " + xhr.status + "\r\n" +
-            "Options : " + options + "\r\n" +
-            "Message : " + message);
-    });
+    this.parent.getView(pageName, callback);
 };
 
-TController.prototype.getPartialView = function (pageName, action, attach, postData, callBack) {
-
-    var the = this;
-    var token = TRegistry.getToken();
-    var uri = TWebObject.parseUrl(pageName);
-    var urls = (uri.isRelative) ? TRegistry.getOrigin() + '/' + pageName : pageName;
-
-    postData = postData || {};
-    
-    postData.action = action;
-    postData.token = token;
-
-    var the = this;
-    $.ajax({
-        type: 'POST',
-        url: (this.origin !== undefined) ? this.origin + '/' + pageName : pageName,
-        data: postData,
-        dataType: 'json',
-        async: true,
-        headers: {
-            "Accept" : "application/json, text/javascript, request/partialview, */*; q=0.01"
-//            ,   "X-Token:" : myToken
-        }
-    }).done(function(data, textStatus, xhr) {
-        try 
-        {
-            TRegistry.setToken(data.token);
-
-            var url = TWebObject.parseUrl(pageName);
-//            TRegistry.item(the.name).origin = xhr.getResponseHeader('origin');
-            TRegistry.setOrigin(xhr.getResponseHeader('origin'));
-
-            var l = data.scripts.length;
-            for(i = 0; i < l; i++) {
-                $.getScript(data.scripts[i]);
-            }
-
-            var html = base64_decode(data.view);
-            $(attach).html(html);
-            
-            if(typeof callBack === 'function') {
-                callBack.call(this, data);
-            }            
-        }
-        catch(e)
-        {
-            $.jPhoenix.debugLog(e);
-        }
-    }).fail(function(xhr, options, message) {
-        $.jPhoenix.debugLog("Satus : " + xhr.status + "\r\n" +
-                "Options : " + options + "\r\n" +
-                "Message : " + message);
-    });
+TController.prototype.getPartialView = function (pageName, action, attach, postData, callback) {
+    this.parent.getPartialView(pageName, action, attach, postData, callback);
 };
 
 TController.prototype.attachWindow = function (pageName, anchor) {
-    this.getView(pageName, function(data) {
-        if(anchor !== undefined) {
-            $(anchor).html(data.view);
-        } else {
-            $(document.body).html(data.view);
-        }
-    });
+    this.parent.attachWindow(pageName, anchor);
 };
 
 TController.prototype.attachView = function (pageName, anchor) {
-    var myToken = TRegistry.getToken();
-    this.getJSON('' + pageName, {"action" : 'getViewHtml', "token" : myToken}, function(data) {
-        try {
-            TRegistry.setToken(data.token);
-
-            var l = data.scripts.length;
-            for(i = 0; i < l; i++) {
-                $.getScript(data.scripts[i]);
-        }
-
-            var html = base64_decode(data.view);
-            $(anchor).html(html);                
-        }
-        catch(e) {
-            debugLog(e);
-        }
-    });
+    this.parent.attachView(pageName, anchor);
 };
-
     
 TController.prototype.attachIframe = function(id, src, anchor) {
-//    var iframe = document.createElement('iframe');
-//    iframe.frameBorder = 0;
-//    iframe.width = "100%";
-//    iframe.height = "100%";
-//    iframe.id = id;
-//    iframe.setAttribute("src", src);
-//    document.getElementById(anchor).appendChild(iframe);
-
-    $(anchor).html('');
-    $('<iframe>', {
-        src: src,
-        id:  id,
-        frameborder: 0,
-        scrolling: 'no'
-    }).appendTo(anchor);
-
+    this.parent.attachIframe(id, src, anchor);
 };

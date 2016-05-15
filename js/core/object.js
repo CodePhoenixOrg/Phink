@@ -9,7 +9,6 @@ var TObject = function() {
     this.name = '';
     this.parent = null;
     
-    //var $C = this;
 };
 
 TObject.prototype.setId = function(value) {

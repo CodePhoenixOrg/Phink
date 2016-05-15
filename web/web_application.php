@@ -100,8 +100,9 @@ class TWebApplication extends \Phoenix\Core\TApplication
         if(is_string($token) 
             || $this->viewName == MAIN_VIEW 
             || $this->viewName == MASTER_VIEW 
-            || $this->viewName == LOGIN_VIEW  
-            || $this->viewName == HOME_VIEW) {
+//            || $this->viewName == LOGIN_VIEW  
+//            || $this->viewName == HOME_VIEW
+        ) {
             // on renouvelle le token
         // ... avec ce token on récupère l'utilisateur et un nouveau token
         // de telle sorte qu'on limite la durée de vie du token
@@ -112,6 +113,7 @@ class TWebApplication extends \Phoenix\Core\TApplication
             $result = true;
                     
         } else {
+            $this->response->setReturn(403);
             $this->response->redirect(SERVER_ROOT . MAIN_PAGE);
             $result = true;
         }

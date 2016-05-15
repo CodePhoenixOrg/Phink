@@ -6,7 +6,7 @@
 
 
 var TWebApplication = function(domain, name) {
-    TWebObject.call(this);
+    TWebObject.call(this, domain);
     
     this.id = 'app' + Date.now();
     if(name === undefined) {
@@ -14,18 +14,17 @@ var TWebApplication = function(domain, name) {
     }
     
     this.name = name;
-    this.domain = domain;
+    //this.domain = domain;
     this.viewCollection = [];
     this.controllerCollection = [];
   
 };
 
-TWebApplication.create = function(domain) {
-    return new TWebApplication(domain);
-};
+TWebApplication.prototype = new TWebObject();
+TWebApplication.prototype.constructor = TWebApplication;
 
-TWebApplication.prototype.getDomain = function() {
-    return this.domain;
+TWebApplication.create = function(domain, name) {
+    return new TWebApplication(domain, name);
 };
 
 TWebApplication.prototype.includeView = function(name) {

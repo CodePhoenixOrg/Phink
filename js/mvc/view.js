@@ -7,9 +7,10 @@
 var TView = function(application, name) {
     
     TWebObject.call(this);
+    console.log(application);
     
     this.id = 'view' + Date.now();
-    this.domain = application.getDomain();
+    this.domain = (application !== undefined) ? application.getDomain() : '';
     this.token = '';
     this.name = name;
     
@@ -26,16 +27,15 @@ TView.create = function(parent, name) {
     return new TView(parent, name);
 };
 
-TView.prototype.getPage = function (pageName, callback) {
+TView.prototype.getView = function (pageName, callback) {
     console.log(pageName);
     
     var token = TRegistry.getToken();
-    var uri = TWebObject.parseUrl(pageName);
-    var urls = (uri.isRelative) ? this.domain + '/' + pageName : pageName;
+    var urls = this.getPath(pageName, this.domain);
 
-    $('body').append('relative=' + uri.isRelative + '<br />') ;
-    $('body').append('urls=' + urls + '<br />') ;
-
+//    $('body').append('relative=' + uri.isRelative + '<br />') ;
+    $('body').append('getView.urls=' + urls + '<br />');
+    console.log('getView.urls=' + urls);
 
     $.ajax({
         type: 'POST',
@@ -78,18 +78,22 @@ TView.prototype.getPage = function (pageName, callback) {
     });
 };
 
-TView.prototype.getPart = function (pageName, action, attach, postData, callBack) {
+TView.prototype.getPartialView = function (pageName, action, attach, postData, callBack) {
 
+    var the = this;
     var token = TRegistry.getToken();
-    var uri = TWebObject.parseUrl(pageName);
-    var urls = (uri.isRelative) ? this.domain + '/' + pageName : pageName;
+//    var uri = TWebObject.parseUrl(pageName);
+//    var urls = (uri.isRelative) ? TRegistry.getOrigin() + '/' + pageName : pageName;
+    var urls = this.getPath(pageName, this.domain);
+    $('body').append('getPartialView.urls=' + urls + '<br />');
+    console.log('getPartialView.urls=' + urls);
 
     postData = postData || {};
     
     postData.action = action;
     postData.token = token;
 
-    
+    var the = this;
     $.ajax({
         type: 'POST',
         url: urls,
@@ -98,15 +102,11 @@ TView.prototype.getPart = function (pageName, action, attach, postData, callBack
         async: true,
         headers: {
             "Accept" : "application/json, text/javascript, request/partialview, */*; q=0.01"
-//            ,   "X-Token:" : myToken
         }
     }).done(function(data, textStatus, xhr) {
         try 
         {
             TRegistry.setToken(data.token);
-
-            var url = TWebObject.parseUrl(pageName);
-//            TRegistry.item(the.name).origin = xhr.getResponseHeader('origin');
             TRegistry.setOrigin(xhr.getResponseHeader('origin'));
 
             var l = data.scripts.length;
@@ -133,7 +133,7 @@ TView.prototype.getPart = function (pageName, action, attach, postData, callBack
 };
 
 TView.prototype.attachWindow = function (pageName, anchor) {
-    this.getPage(pageName, function(data) {
+    this.getView(pageName, function(data) {
         if(anchor !== undefined) {
             $(anchor).html(data.view);
         } else {
@@ -144,7 +144,7 @@ TView.prototype.attachWindow = function (pageName, anchor) {
 
 TView.prototype.attachView = function (pageName, anchor) {
     var myToken = TRegistry.getToken();
-    this.getJSON('' + pageName, {"action" : 'getViewHtml', "token" : myToken}, function(data) {
+    this.getJSON(pageName, {"action" : 'getViewHtml', "token" : myToken}, function(data) {
         try {
             TRegistry.setToken(data.token);
 

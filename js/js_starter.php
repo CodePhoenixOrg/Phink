@@ -42,13 +42,14 @@ $filenames = [
     ,   'core' . DIRECTORY_SEPARATOR . 'registry.js'
     ,   'core' . DIRECTORY_SEPARATOR . 'utils.js'
     ,   'core' . DIRECTORY_SEPARATOR . 'object.js'
-    ,   'web' . DIRECTORY_SEPARATOR . 'web_application.js'
+    ,   'core' . DIRECTORY_SEPARATOR . 'url.js'
     ,   'web' . DIRECTORY_SEPARATOR . 'web_object.js'
+    ,   'web' . DIRECTORY_SEPARATOR . 'web_application.js'
+    ,   'mvc' . DIRECTORY_SEPARATOR . 'view.js'
+    ,   'mvc' . DIRECTORY_SEPARATOR . 'controller.js'
     ,   'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'plugin.js'
     ,   'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'accordion.js'
     ,   'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'table.js'
-    ,   'mvc' . DIRECTORY_SEPARATOR . 'controller.js'
-    ,   'mvc' . DIRECTORY_SEPARATOR . 'view.js'
 ];
 
 $js_content = '';

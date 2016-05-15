@@ -5,16 +5,21 @@
  */
 
 
-var TWebObject = function() {
-	TObject.call(this);
-	  
+var TWebObject = function(domain) {
+    TObject.call(this);
+    
     this.origin = '';
     this.url = {};
     this.token = '';
+    this.domain = domain;
 };
 
 TWebObject.prototype = new TObject();
 TWebObject.prototype.constructor = TWebObject;
+
+TWebObject.prototype.getDomain = function() {
+    return this.domain;
+};
 
 TWebObject.prototype.setOrigin = function(value) {
     this.origin = value;
@@ -37,71 +42,10 @@ TWebObject.prototype.getToken = function() {
     return this.token;
 };
 
-TWebObject.parseUrl = function (url) {
-
-    console.log('url : ' + url);
-    var result = {};
-
-    var protocol = (url.search('://') > -1) ? url.substring(0, url.search('://')) : null;
-    var page = window.location.pathname;
-    var domain = url;
-    var port = '80';
-    var isRelative = false;
-    
-    if(protocol === null) {
-        page = url;
-
-        isRelative = true;
-        result.protocol = window.location.protocol;
-        result.domain = window.location.hostname;
-        result.port = window.location.port;
-        //url = window.location.href.substring(0, window.location.href.search('/'));
-    } else {
-        
-        url = url.replace(protocol + '://', '');
-        var domainLimit = url.search('/');
-        
-        if(domainLimit > -1) {
-            domain = url.substring(0, domainLimit);
-            url = url.replace(domain, '');
-        }
-
-        if(domain.search(':') > -1) {
-            port = domain.substring(domain.search(':'));
-            url = url.replace(':' + port, '');
-        }
-
-        if(domain.search('localhost') > -1) {
-            domain = 'localhost';
-            url = url.replace(domain, '');
-        }
-        
-        page = url;
-        if(page.substring(0,1) === '/') {
-            page = page.substring(1);
-        }
-
-        result.protocol = protocol;
-        result.domain = domain;
-        result.port = port;
-        
-    }
-
-    var queryString = '';
-    if(page.search(/\?/) > -1) {
-        queryString = page.substring(page.search(/\?/));
-    }
-    
-    result.page = page; //url.replace('.html', '');
-    result.queryString = queryString;
-    result.isRelative = isRelative;
-
-    console.log(result);
-    this.url = result;
-
-    return result;
+TWebObject.prototype.getPath = function(url, domain) {
+    this.url = new TUrl(url, domain);
+    return this.url.toString();
 };
-
 
 TWebObject.prototype.getUrl = function() {
     return this.url;
@@ -115,18 +59,12 @@ TWebObject.prototype.getJSON = function(
     //$("body").toggleClass('onLoad');
 //        spinner.spin();
     postData.token = TRegistry.getToken();
-    var the = this;
-    
     this.origin = TRegistry.getOrigin();
-//    if(this.origin !== undefined) {
-        var url = TWebObject.parseUrl(url);
-        url = this.origin + '/' + url.page;
-//    }
-    console.log(url);
     
+    var urls = this.getPath(url, this.domain);
     $.ajax({
         type: 'POST',
-        url: url,
+        url: urls,
         data: postData,
         dataType: 'json',
         async: true
@@ -134,8 +72,6 @@ TWebObject.prototype.getJSON = function(
         try 
         {
             TRegistry.setToken(data.token);
-            url = TWebObject.parseUrl(url);
-//            TRegistry.item(the.name).origin = xhr.getResponseHeader('origin');
             TRegistry.setOrigin(xhr.getResponseHeader('origin'));
             if($.isFunction(callBack)) {
                 callBack.call(this, data, textStatus, xhr);
@@ -154,19 +90,20 @@ TWebObject.prototype.getJSON = function(
 };
 
 TWebObject.prototype.getJSONP = function(url, postData, callBack) {
-    postData.token = this.token;
+    postData.token = TRegistry.getToken();
+    this.origin = TRegistry.getOrigin();
+    var urls = this.getPath(url, this.domain);
 
     $.ajax({
         type: 'POST',
-        url: url + "&callback=?", // retour en JSONP
+        url: urls + "&callback=?", // retour en JSONP
         data: postData,
         dataType: 'json',
         async: true
     }).done(function(data, textStatus, xhr) {
         try {
-            this.token = data.token;
-            url = TWebObject.parseUrl(url);
-            TRegistry.item(url.page).origin = xhr.getResponseHeader('origin');
+            TRegistry.setToken(data.token);
+            TRegistry.setOrigin(xhr.getResponseHeader('origin'));
 
             if($.isFunction(callBack)) {
                 callBack.call(this, data, textStatus, xhr);
@@ -182,26 +119,22 @@ TWebObject.prototype.getJSONP = function(url, postData, callBack) {
     });
 };
 
+TWebObject.prototype.getScript = function (url, callback) {
+    var urls = this.getPath(url, this.domain);
 
-/*
-* jQuery getCSS Plugin
-* Copyright 2013, intesso
-* MIT license.
-*
-* cross browser function to dynamically load an external css file.
-* see: [github page](http://intesso.github.com/jquery-getCSS/)
-*
-*/
+    $.getScript(urls)
+    .done(function( script, textStatus ) {
+        if(typeof callback === 'function') {
+            callback.call(this, script, textStatus);
+        }
+    })
+    .fail(function( jqxhr, settings, exception ) {
+        debugLog("Satus : " + jqxhr.status + "\r\n" +
+            "Options : " + settings + "\r\n" +
+            "Message : " + exception);
+    });       
+}
 
-/*
-arguments: attributes
-attributes can be a string: then it goes directly inside the href attribute.
-e.g.: $.getCSS("fresh.css")
-
-attributes can also be an objcet.
-e.g.: $.getCSS({href:"cool.css", media:"print"})
-or: $.getCSS({href:"/styles/forest.css", media:"screen"})
-*/
 TWebObject.getCSS = function(attributes) {
     // setting default attributes
     if(typeof attributes === "string") {

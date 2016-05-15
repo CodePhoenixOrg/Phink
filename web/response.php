@@ -48,6 +48,7 @@ class TResponse implements \JsonSerializable
 
     public function setReturn($value)
     {
+        http_response_code($value);
         $this->_data['return'] = $value;
     }
 
@@ -77,6 +78,7 @@ class TResponse implements \JsonSerializable
         header('Access-Control-Expose-Headers: origin');
         header('Access-Control-Allow-Origin: *');
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+
         echo json_encode($this);
     }
 
