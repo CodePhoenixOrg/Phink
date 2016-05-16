@@ -26,11 +26,14 @@ class TRequest extends \Phoenix\Core\TObject
     private $_callbackAction = '';
     private $_contents = array();
     private $_subRequests = array();
+    private $_viewHeader = '';
     //private $_subRequestsHandler = null;
     
     public function __construct()
     {
-       
+        
+
+            
         $this->_queryArguments = $_REQUEST;
         $callback = '';
         if(strstr(HTTP_ACCEPT, 'application/json, text/javascript') || $this->getQueryArguments('ajax')) {
@@ -44,6 +47,35 @@ class TRequest extends \Phoenix\Core\TObject
     
     }
 
+    private function _getHeader($page) {
+        $cookie = session_id();
+        $host = HTTP_HOST;
+        $ua = HTTP_USER_AGENT;
+        
+        $url = parse_url($page);
+        if($url['host'] === '') {
+            $page = SERVER_ROOT . '/' . $page;
+        }
+  
+        $result = [
+              "POST ".$page." HTTP/1.0"
+            , "Content-Type:application/x-www-form-urlencoded; charset=UTF-8"
+            , "Accept:application/json, text/javascript, request/view, */*; q=0.01"
+            , "Cache-Control: no-cache"
+            , "Pragma: no-cache"
+//            , "Cookie:PHPSESSID=$cookie"
+//            , "Host:$host"
+            , "User-Agent:$ua"
+        ];
+        
+        if(HTTP_ORIGIN !== '')
+        {
+            array_push($result, 'Origin:' . HTTP_ORIGIN);
+        }
+        
+        return $result;
+    }
+    
     public function addSubRequest($name, $uri, $data = null)
     {
         $this->_subRequests[$name] = ['uri' => $uri, 'data' => $data];
@@ -67,8 +99,10 @@ class TRequest extends \Phoenix\Core\TObject
             curl_setopt($ch, CURLOPT_URL, $request['uri']);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             if(is_array($request['data'])) {
+                $queryString = http_build_query($request['data']);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $this->_getHeader($request['uri']));
                 curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $request['data']);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $queryString);
             }
             curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 
@@ -100,8 +134,10 @@ class TRequest extends \Phoenix\Core\TObject
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLINFO_HEADER_OUT, true);
             if(is_array($request['data'])) {
+                $queryString = http_build_query($request['data']);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $this->_getHeader($request['uri']));
                 curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $request['data']);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $queryString);
             }
             curl_multi_add_handle($mh, $ch);
         }

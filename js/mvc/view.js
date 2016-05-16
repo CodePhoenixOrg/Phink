@@ -27,9 +27,10 @@ TView.create = function(parent, name) {
     return new TView(parent, name);
 };
 
-TView.prototype.getView = function (pageName, callback) {
+TView.prototype.requestPage = function (pageName, callback) {
     console.log(pageName);
     
+    var the = this;
     var token = TRegistry.getToken();
     var urls = this.getPath(pageName, this.domain);
 
@@ -56,7 +57,7 @@ TView.prototype.getView = function (pageName, callback) {
 
             var l = data.scripts.length;
             for(i = 0; i < l; i++) {
-                $.getScript(data.scripts[i]);
+                the.getScript(data.scripts[i]);
             }
 
             data.view = base64_decode(data.view);
@@ -78,7 +79,7 @@ TView.prototype.getView = function (pageName, callback) {
     });
 };
 
-TView.prototype.getPartialView = function (pageName, action, attach, postData, callBack) {
+TView.prototype.requestPart = function (pageName, action, attach, postData, callback) {
 
     var the = this;
     var token = TRegistry.getToken();
@@ -111,14 +112,14 @@ TView.prototype.getPartialView = function (pageName, action, attach, postData, c
 
             var l = data.scripts.length;
             for(i = 0; i < l; i++) {
-                $.getScript(data.scripts[i]);
+                the.getScript(data.scripts[i]);
             }
 
             var html = base64_decode(data.view);
             $(attach).html(html);
             
-            if(typeof callBack === 'function') {
-                callBack.call(this, data);
+            if(typeof callback === 'function') {
+                callback.call(this, data);
             }            
         }
         catch(e)
@@ -132,8 +133,32 @@ TView.prototype.getPartialView = function (pageName, action, attach, postData, c
     });
 };
 
+TView.prototype.parseResponse = function(response, callback) {
+    if(response === '') {
+        throw new Error('Response is empty !');
+    }
+    var the = this;
+    
+    response = base64_decode(response);
+    
+    var data = JSON.parse(response);
+    if(data['view'] === undefined) {
+        throw new Error('Not a view !');
+    }
+
+    var l = data.scripts.length;
+    for(i = 0; i < l; i++) {
+        the.getScript(data.scripts[i]);
+    }
+
+    if(typeof callback === 'function') {
+        callback.call(this, data);
+    }            
+
+};
+
 TView.prototype.attachWindow = function (pageName, anchor) {
-    this.getView(pageName, function(data) {
+    this.requestPage(pageName, function(data) {
         if(anchor !== undefined) {
             $(anchor).html(data.view);
         } else {
@@ -144,14 +169,15 @@ TView.prototype.attachWindow = function (pageName, anchor) {
 
 TView.prototype.attachView = function (pageName, anchor) {
     var myToken = TRegistry.getToken();
+    var the = this;
     this.getJSON(pageName, {"action" : 'getViewHtml', "token" : myToken}, function(data) {
         try {
             TRegistry.setToken(data.token);
 
             var l = data.scripts.length;
             for(i = 0; i < l; i++) {
-                $.getScript(data.scripts[i]);
-        }
+                the.getScript(data.scripts[i]);
+            }
 
             var html = base64_decode(data.view);
             $(anchor).html(html);                

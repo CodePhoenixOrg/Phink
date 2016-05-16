@@ -68,6 +68,6 @@ class TPager extends \Phoenix\MVC\TPartialController
         $this->script = TMP_DIR . DIRECTORY_SEPARATOR . str_replace(DIRECTORY_SEPARATOR, '_', $path . 'pager.js');
 
         file_put_contents($this->script, $this->pagerJS);
-        //$this->response->addScript($this->script);
+        $this->response->addScript($this->script);
     }
 }

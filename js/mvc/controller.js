@@ -76,11 +76,15 @@ TController.prototype.actions = function (actions) {
 };
 
 TController.prototype.getView = function (pageName, callback) {
-    this.parent.getView(pageName, callback);
+    this.parent.requestPage(pageName, callback);
 };
 
 TController.prototype.getPartialView = function (pageName, action, attach, postData, callback) {
-    this.parent.getPartialView(pageName, action, attach, postData, callback);
+    this.parent.requestPart(pageName, action, attach, postData, callback);
+};
+
+TController.prototype.parseViewResponse = function (pageName, callback) {
+    this.parent.parseResponse(pageName, callback);
 };
 
 TController.prototype.attachWindow = function (pageName, anchor) {

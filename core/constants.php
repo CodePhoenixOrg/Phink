@@ -39,6 +39,7 @@ if(isset($_SERVER['DOCUMENT_ROOT'])) {
     define('LOG_PATH', DOCUMENT_ROOT . './');
 }
 
+
 define('PAGE_NUMBER', 'pagen');
 define('PAGE_COUNT', 'pagec');
 define('PAGE_NUMBER_DEFAULT', 1);
@@ -55,11 +56,13 @@ define('LOG_FILE', LOG_PATH . 'debug.log');
 define('APP_DATA', DOCUMENT_ROOT . 'data/');
 define('APP_BUSINESS', DOCUMENT_ROOT . 'app/business/');
 define('STARTER_FILE', 'starter.php');
+define('HTTP_USER_AGENT', $_SERVER['HTTP_USER_AGENT']);
+define('HTTP_HOST', $_SERVER['HTTP_HOST']);
+define('HTTP_ORIGIN', $_SERVER['HTTP_ORIGIN']);
 define('HTTP_ACCEPT', $_SERVER['HTTP_ACCEPT']);
 define('HTTP_PORT', $_SERVER['SERVER_PORT']);
 define('REQUEST_URI', $_SERVER['REQUEST_URI']);
 define('QUERY_STRING', $_SERVER['QUERY_STRING']);
-define('HTTP_HOST', $_SERVER['HTTP_HOST']);
 define('SERVER_NAME', $_SERVER['SERVER_NAME']);
 define('SERVER_HOST', HTTP_PROTOCOL . '://' . HTTP_HOST);
 define('SERVER_ROOT', HTTP_PROTOCOL . '://' . SERVER_NAME . ((HTTP_PORT != '80') ? ':' . HTTP_PORT : ''));
@@ -84,7 +87,7 @@ define('ADDITIONS_PLACEHOLDER', '<phx:additionsPlaceHolder />');
 define('AFTERBINDING_PLACEHOLDER', '<phx:afterBindingPlaceHolder />');
 define('HTML_PLACEHOLDER', '<phx:htmlPlaceHolder />');
 define('CONTROL_ADDITIONS', CR_LF . "\tpublic function createObjects() {" . CR_LF . CREATIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function declareObjects() {" . CR_LF . ADDITIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function afterBindingObjects() {" . CR_LF . AFTERBINDING_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function displayHtml() {" . CR_LF . "?>" . CR_LF . HTML_PLACEHOLDER . CR_LF . "<?php" . CR_LF . "\t}" . CR_LF . '}' . CR_LF);
-define ('PHX_SQL_LIMIT', '<phx:sql_limit />');
+define('PHX_SQL_LIMIT', '<phx:sql_limit />');
 
 //if(file_exists(STARTER_FILE)) {
 //    unlink(STARTER_FILE);

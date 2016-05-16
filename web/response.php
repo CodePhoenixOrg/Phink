@@ -24,9 +24,13 @@ class TResponse implements \JsonSerializable
         header('Location: ' . $url);
     }
     
+    public function getToken()
+    {
+        return $this->_token;
+    }
+
     public function setToken($token = '')
     {
-        \Phoenix\Log\TLog::debug(__METHOD__ . '::TOKEN::' . $token);
         $this->_token = $token;
         $this->_data['token'] = $token;
     }
