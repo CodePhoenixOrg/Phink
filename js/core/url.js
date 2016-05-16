@@ -12,11 +12,6 @@ var TUrl = function (url, domain) {
     
     this.tmpDomain = domain;
 
-    console.log('this.tmpDomain BEGIN');
-    console.log(this.tmpDomain);
-    console.log('this.tmpDomain END');
-    
-    
     this.port = '80'
     this.page = window.location.pathname;
     this.domain = this.url;
@@ -28,7 +23,6 @@ var TUrl = function (url, domain) {
 
 TUrl.prototype.parse = function () {
         
-    console.log('url : ' + this.url);
     var result = [];
     
     this.protocol = '';    
@@ -107,7 +101,6 @@ TUrl.prototype.parse = function () {
     result.page = this.page;
     result.queryString = this.queryString;
 
-    console.log(result);
     this.url = result;
 
     this.isParsed = true;

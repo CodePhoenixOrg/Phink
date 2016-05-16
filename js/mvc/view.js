@@ -7,7 +7,6 @@
 var TView = function(application, name) {
     
     TWebObject.call(this);
-    console.log(application);
     
     this.id = 'view' + Date.now();
     this.domain = (application !== undefined) ? application.getDomain() : '';
@@ -28,15 +27,10 @@ TView.create = function(parent, name) {
 };
 
 TView.prototype.requestPage = function (pageName, callback) {
-    console.log(pageName);
     
     var the = this;
     var token = TRegistry.getToken();
     var urls = this.getPath(pageName, this.domain);
-
-//    $('body').append('relative=' + uri.isRelative + '<br />') ;
-    $('body').append('getView.urls=' + urls + '<br />');
-    console.log('getView.urls=' + urls);
 
     $.ajax({
         type: 'POST',
@@ -46,7 +40,6 @@ TView.prototype.requestPage = function (pageName, callback) {
         async: true,
         headers: {
             "Accept" : "application/json, text/javascript, request/view, */*; q=0.01"
-//            ,   "X-Token:" : myToken
         }
     }).done(function(data, textStatus, xhr) {
         try {
@@ -83,11 +76,7 @@ TView.prototype.requestPart = function (pageName, action, attach, postData, call
 
     var the = this;
     var token = TRegistry.getToken();
-//    var uri = TWebObject.parseUrl(pageName);
-//    var urls = (uri.isRelative) ? TRegistry.getOrigin() + '/' + pageName : pageName;
     var urls = this.getPath(pageName, this.domain);
-    $('body').append('getPartialView.urls=' + urls + '<br />');
-    console.log('getPartialView.urls=' + urls);
 
     postData = postData || {};
     
@@ -168,8 +157,9 @@ TView.prototype.attachWindow = function (pageName, anchor) {
 };
 
 TView.prototype.attachView = function (pageName, anchor) {
-    var myToken = TRegistry.getToken();
     var the = this;
+    var myToken = TRegistry.getToken();
+    
     this.getJSON(pageName, {"action" : 'getViewHtml', "token" : myToken}, function(data) {
         try {
             TRegistry.setToken(data.token);

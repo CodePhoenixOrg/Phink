@@ -8,10 +8,7 @@
 var TController = function(view, name) {
     TWebObject.call(this);
 
-    console.log('INSIDE ' + name + ' CREATE');
-    console.log(view);
     this.domain = (view !== undefined) ? view.getDomain() : '';
-    
     this.hasView = true;
     
     if(view instanceof TView) {
