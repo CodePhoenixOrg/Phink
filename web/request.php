@@ -31,9 +31,6 @@ class TRequest extends \Phoenix\Core\TObject
     
     public function __construct()
     {
-        
-
-            
         $this->_queryArguments = $_REQUEST;
         $callback = '';
         if(strstr(HTTP_ACCEPT, 'application/json, text/javascript') || $this->getQueryArguments('ajax')) {
@@ -107,9 +104,16 @@ class TRequest extends \Phoenix\Core\TObject
             curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 
             $html = curl_exec($ch);
+            $error = curl_error($ch);
+            $errno = curl_errno($ch);
+
             $info = curl_getinfo($ch);
+            
             $header = (isset($info['request_header'])) ? $info['request_header'] : '';
 
+            if($errno > 0) {
+                throw new \Exception($error, $errno);
+            }
             if($header == '') {
                 throw new \Exception("Curl is not working fine for some reason. Are you using Android ?");
             }

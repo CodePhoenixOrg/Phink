@@ -58,7 +58,7 @@ define('APP_BUSINESS', DOCUMENT_ROOT . 'app/business/');
 define('STARTER_FILE', 'starter.php');
 define('HTTP_USER_AGENT', $_SERVER['HTTP_USER_AGENT']);
 define('HTTP_HOST', $_SERVER['HTTP_HOST']);
-define('HTTP_ORIGIN', $_SERVER['HTTP_ORIGIN']);
+define('HTTP_ORIGIN', (isset($_SERVER['HTTP_ORIGIN'])) ? $_SERVER['HTTP_ORIGIN'] : '');
 define('HTTP_ACCEPT', $_SERVER['HTTP_ACCEPT']);
 define('HTTP_PORT', $_SERVER['SERVER_PORT']);
 define('REQUEST_URI', $_SERVER['REQUEST_URI']);
