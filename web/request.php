@@ -1,12 +1,6 @@
 <?php
 namespace Phoenix\Web;
 
-//require_once 'phoenix/core/object.php';
-//require_once 'phoenix/mvc/view.php';
-//require_once 'phoenix/utils/file_utils.php';
-//require_once 'phoenix/utils/string_utils.php';
-//require_once 'phoenix/core/log.php';
-
 /**
  * Description of pagehandler
  *
@@ -44,7 +38,53 @@ class TRequest extends \Phoenix\Core\TObject
     
     }
 
-    private function _getHeader($page) {
+    private function _getRedirection($url)
+    {
+        $result = '';
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $res = curl_exec($ch);
+        if(preg_match('#Location: (.*)#', $res, $r)) {
+            $result = trim($r[1]);
+        }
+        
+        return $result;
+    }
+
+    private function _getHeader($page) 
+    {
+        $cookie = session_id();
+        $host = HTTP_HOST;
+        $ua = HTTP_USER_AGENT;
+        
+        $url = parse_url($page);
+        if($url['host'] === '') {
+            $page = SERVER_ROOT . '/' . $page;
+        }
+  
+        $result = [
+              "POST ".$page." HTTP/1.0"
+            , "Content-Type:text/html; charset=UTF-8"
+            , "Accept:text/html, */*; q=0.01"
+            , "Cache-Control: no-cache"
+            , "Pragma: no-cache"
+//            , "Cookie:PHPSESSID=$cookie"
+//            , "Host:$host"
+            , "User-Agent:$ua"
+        ];
+        
+        if(HTTP_ORIGIN !== '')
+        {
+            array_push($result, 'Origin:' . HTTP_ORIGIN);
+        }
+        
+        return $result;
+    }
+    
+    private function _getViewHeader($page) {
         $cookie = session_id();
         $host = HTTP_HOST;
         $ua = HTTP_USER_AGENT;
@@ -75,15 +115,15 @@ class TRequest extends \Phoenix\Core\TObject
     
     public function addSubRequest($name, $uri, $data = null)
     {
-        $this->_subRequests[$name] = ['uri' => $uri, 'data' => $data];
+        $header = $this->_getHeader($uri);
+        $this->_subRequests[$name] = ['uri' => $uri, 'header' => $header, 'data' => $data];
     }
     
     public function addViewSubRequest($name, $uri, $data = null)
     {
-        if(is_array($data)) {
-            $data['action'] = 'getViewHtml';
-        }
-        $this->_subRequests[$name] = ['uri' => $uri, 'data' => $data];
+        $header = $this->_getViewHeader($uri);
+        $data['action'] = 'getViewHtml';
+        $this->_subRequests[$name] = ['uri' => $uri, 'header' => $header, 'data' => $data];
     }
 
     public function execSubRequests()
@@ -92,12 +132,18 @@ class TRequest extends \Phoenix\Core\TObject
         
         foreach($this->_subRequests as $name => $request) {
         
+            $certpath = DOCUMENT_ROOT . 'cert' . DIRECTORY_SEPARATOR . 'birdy.crt';
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $request['uri']);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_CAINFO, 'ca-bundle.crt');
+            curl_setopt($ch, CURLOPT_CAPATH, 'ca-bundle.crt');
             if(is_array($request['data'])) {
                 $queryString = http_build_query($request['data']);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $this->_getHeader($request['uri']));
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $request['header']);
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $queryString);
             }
@@ -122,6 +168,8 @@ class TRequest extends \Phoenix\Core\TObject
             curl_close($ch);
 
             $result[$name] = ['code' => $code, 'header' => $header, 'html' => $html];
+                        
+            \Phoenix\Log\TLog::dump('subrequests result', $result);
         }
         
         return $result;
@@ -132,14 +180,20 @@ class TRequest extends \Phoenix\Core\TObject
         $result = array();
         
         $mh = curl_multi_init();
+        $certpath = DOCUMENT_ROOT . 'cert' . DIRECTORY_SEPARATOR . 'birdy.crt';
 
         foreach($this->_subRequests as $name => $request) {
             $ch = curl_init($request['uri']);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+            curl_setopt($ch, CURLOPT_CAINFO, $certpath);
+            curl_setopt($ch, CURLOPT_CAPATH, $certpath);
             if(is_array($request['data'])) {
                 $queryString = http_build_query($request['data']);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $this->_getHeader($request['uri']));
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $request['header']);
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $queryString);
             }
