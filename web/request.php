@@ -132,15 +132,16 @@ class TRequest extends \Phoenix\Core\TObject
         
         foreach($this->_subRequests as $name => $request) {
         
-            $certpath = DOCUMENT_ROOT . 'cert' . DIRECTORY_SEPARATOR . 'birdy.crt';
+            //$certpath = DOCUMENT_ROOT . 'cert' . DIRECTORY_SEPARATOR . 'birdy.crt';
+            $certpath = 'ca-bundle.crt';
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $request['uri']);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_CAINFO, 'ca-bundle.crt');
-            curl_setopt($ch, CURLOPT_CAPATH, 'ca-bundle.crt');
+            curl_setopt($ch, CURLOPT_CAINFO, $certpath);
+            curl_setopt($ch, CURLOPT_CAPATH, $certpath);
             if(is_array($request['data'])) {
                 $queryString = http_build_query($request['data']);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $request['header']);
@@ -181,6 +182,7 @@ class TRequest extends \Phoenix\Core\TObject
         
         $mh = curl_multi_init();
         $certpath = DOCUMENT_ROOT . 'cert' . DIRECTORY_SEPARATOR . 'birdy.crt';
+        $certpath = 'ca-bundle.crt';
 
         foreach($this->_subRequests as $name => $request) {
             $ch = curl_init($request['uri']);
