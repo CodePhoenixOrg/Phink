@@ -4,7 +4,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phoenix\Core;
+namespace Phink\Core;
 
 define('WEB_SEPARATOR', '/');
 
@@ -66,8 +66,8 @@ define('QUERY_STRING', $_SERVER['QUERY_STRING']);
 define('SERVER_NAME', $_SERVER['SERVER_NAME']);
 define('SERVER_HOST', HTTP_PROTOCOL . '://' . HTTP_HOST);
 define('SERVER_ROOT', HTTP_PROTOCOL . '://' . SERVER_NAME . ((HTTP_PORT != '80') ? ':' . HTTP_PORT : ''));
-define('ROOT_NAMESPACE', 'Phoenix');
-define('ROOT_PATH', 'phoenix');
+define('ROOT_NAMESPACE', 'Phink');
+define('ROOT_PATH', 'phink');
 define('DEFALT_MODEL', ROOT_NAMESPACE . '\\MVC\\TModel');
 define('DEFAULT_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TController');
 define('DEFAULT_PARTIAL_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TPartialController');

@@ -1,5 +1,5 @@
 <?php
-namespace Phoenix\Web;
+namespace Phink\Web;
 
 /**
  * Description of pagehandler
@@ -8,7 +8,7 @@ namespace Phoenix\Web;
  */
 
 
-class TRequest extends \Phoenix\Core\TObject
+class TRequest extends \Phink\Core\TObject
 {
     //put your code here
     
@@ -170,7 +170,7 @@ class TRequest extends \Phoenix\Core\TObject
 
             $result[$name] = ['code' => $code, 'header' => $header, 'html' => $html];
                         
-            \Phoenix\Log\TLog::dump('subrequests result', $result);
+            \Phink\Log\TLog::dump('subrequests result', $result);
         }
         
         return $result;

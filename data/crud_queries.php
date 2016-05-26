@@ -1,7 +1,7 @@
 <?php
-namespace Phoenix\Data;
+namespace Phink\Data;
 
-//require_once 'phoenix/core/object.php';
+//require_once 'phink/core/object.php';
 
 /**
  * Description of crudQueries

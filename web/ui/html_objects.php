@@ -4,17 +4,17 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phoenix\Web;
+namespace Phink\Web;
 
-//require_once 'phoenix/core/application.php';
-//require_once 'phoenix/utils/date_utils.php';
-//require_once 'phoenix/core/log.php';
+//require_once 'phink/core/application.php';
+//require_once 'phink/utils/date_utils.php';
+//require_once 'phink/core/log.php';
 
-use Phoenix;
-use Phoenix\Utils\TDateUtils;
-use Phoenix\Data\Client\PDO\TPdoConnection;
-use Phoenix\Data\Client\PDO\TPdoCommand;
-use Phoenix\Log\TLog;
+use Phink;
+use Phink\Utils\TDateUtils;
+use Phink\Data\Client\PDO\TPdoConnection;
+use Phink\Data\Client\PDO\TPdoCommand;
+use Phink\Log\TLog;
 
 class THtmlObjects
 {
@@ -153,7 +153,7 @@ class THtmlObjects
                 $result .= "\t\t" . '<td ' . ((isset($cssArray[$j+1])) ? ' class="' . $cssArray[$j+1] .'"' : '') . '"><div class="checkbox ui-selectee">
                             <input type="hidden" id="hid' . $name . $key . '" value="' . $labelValue . '">
                             <input type="checkbox" id="chk' . $name . $key . '" value="' . $checkValue . '"' . $onCheckClick . ' ' . $checked . ' ' . $indeterminate . ' style="visibility:' . (($j == 0) ? 'visible' : 'hidden') . '">
-                            <span id="spn' . $name . $key . '" data-toggle="tooltip" data-Phoenixal-title="' . $labelValue . '" class="control-label"' . $onEditableClick . '>' . $labelValue . '</span>
+                            <span id="spn' . $name . $key . '" data-toggle="tooltip" data-Phinkal-title="' . $labelValue . '" class="control-label"' . $onEditableClick . '>' . $labelValue . '</span>
                         </div></td>';
                 
                 $j++;

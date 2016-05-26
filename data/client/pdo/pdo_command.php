@@ -1,15 +1,15 @@
 <?php
 
-namespace Phoenix\Data\Client\PDO;
+namespace Phink\Data\Client\PDO;
 
-//require_once 'phoenix/core/object.php';
-//require_once 'phoenix/data/command.php';
-//require_once 'phoenix/data/crud_queries.php';
+//require_once 'phink/core/object.php';
+//require_once 'phink/data/command.php';
+//require_once 'phink/data/crud_queries.php';
 //require_once 'pdo_data_statement.php';
 //require_once 'pdo_connection.php';
 
-use Phoenix\Data\Client\PDO\TPdoConnection;
-use Phoenix\Data\Client\PDO\TPdoDataStatement;
+use Phink\Data\Client\PDO\TPdoConnection;
+use Phink\Data\Client\PDO\TPdoDataStatement;
 
 use PDO;
 /* 
@@ -21,7 +21,7 @@ use PDO;
  *
  * @author david
  */
-class TPdoCommand extends \Phoenix\Data\TCustomCommand
+class TPdoCommand extends \Phink\Data\TCustomCommand
 {
     //put your code here
     private $_statement;
@@ -68,7 +68,7 @@ class TPdoCommand extends \Phoenix\Data\TCustomCommand
             $start = (!$start) ? 1 : $start;
             //$sql = str_replace(PHX_MYSQL_LIMIT, ' LIMIT ' . (($start - 1) * $count). ', ' . $count, $this->getSelectQuery());
             $sql = $this->getSelectQuery() . CR_LF . ' LIMIT ' . (($start - 1) * $count). ', ' . $count . CR_LF;
-            \Phoenix\Log\TLog::dump('start::' . $start . '; count::' . $count . '; LIMITED_SELECT::', $sql);
+            \Phink\Log\TLog::dump('start::' . $start . '; count::' . $count . '; LIMITED_SELECT::', $sql);
 
             $this->setSelectQuery($sql);
 //        }
@@ -89,10 +89,10 @@ class TPdoCommand extends \Phoenix\Data\TCustomCommand
             
             $result = new TPdoDataStatement($this->_statement);
         } catch (\PDOException $ex) {
-            \Phoenix\Log\TLog::debug('SQL : ' . $sql . '; params : ' . print_r($params, true), $file, $line);
-            \Phoenix\Log\TLog::exception($ex, __FILE__, __LINE__);
+            \Phink\Log\TLog::debug('SQL : ' . $sql . '; params : ' . print_r($params, true), $file, $line);
+            \Phink\Log\TLog::exception($ex, __FILE__, __LINE__);
         } catch (\Exception $ex) {
-            \Phoenix\Log\TLog::exception($ex, __FILE__, __LINE__);
+            \Phink\Log\TLog::exception($ex, __FILE__, __LINE__);
         }
         
         return $result;
@@ -111,11 +111,11 @@ class TPdoCommand extends \Phoenix\Data\TCustomCommand
                 $this->_statement = $this->_connectionHandler->query($this->_commandText);
             }
             
-            \Phoenix\Log\TLog::debug('SQL : ' . $sql . '; params : ' . print_r($params, true), $file, $line);
+            \Phink\Log\TLog::debug('SQL : ' . $sql . '; params : ' . print_r($params, true), $file, $line);
             
             $result = new TPdoDataStatement($this->_statement);
         } catch (\Exception $ex) {
-            \Phoenix\Log\TLog::exception($ex, $file, $line);
+            \Phink\Log\TLog::exception($ex, $file, $line);
         }
         
         return $result;
@@ -139,7 +139,7 @@ class TPdoCommand extends \Phoenix\Data\TCustomCommand
                 $result = $row[0];
             }
         } catch (\Exception $ex) {
-            \Phoenix\Log\TLog::exception($ex, __FILE__, __LINE__);
+            \Phink\Log\TLog::exception($ex, __FILE__, __LINE__);
         }
         
         return $result;
@@ -158,14 +158,14 @@ class TPdoCommand extends \Phoenix\Data\TCustomCommand
                 $this->_statement = $this->_connectionHandler->query($this->_commandText);
             }
             
-            \Phoenix\Log\TLog::debug('SQL : ' . $sql . '; params : ' . print_r($params, true), $file, $line);
+            \Phink\Log\TLog::debug('SQL : ' . $sql . '; params : ' . print_r($params, true), $file, $line);
             
             $stmt = new TPdoDataStatement($this->_statement);
             if($row = $stmt->fetch()) {
                 $result = $row[0];
             }
         } catch (\Exception $ex) {
-            \Phoenix\Log\TLog::exception($ex, $file, $line);
+            \Phink\Log\TLog::exception($ex, $file, $line);
         }
         
         return $result;
@@ -181,7 +181,7 @@ class TPdoCommand extends \Phoenix\Data\TCustomCommand
 
     public function execLog($sql = '', $file = __FILE__, $line = __LINE__)
     {
-        \Phoenix\Log\TLog::debug('SQL : ' . $sql, $file, $line);
+        \Phink\Log\TLog::debug('SQL : ' . $sql, $file, $line);
         $this->_commandText = ($sql != '') ? $sql : $this->_commandText;
 
         return $this->_connectionHandler->exec($this->_commandText);

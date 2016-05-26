@@ -1,12 +1,12 @@
 <?php
 
-namespace Phoenix\Data\Client\SqlServer;
+namespace Phink\Data\Client\SqlServer;
 
-//require_once 'phoenix/data/data_reader.php';
-//require_once 'phoenix/core/aobject.php';
+//require_once 'phink/data/data_reader.php';
+//require_once 'phink/core/aobject.php';
 
-use Phoenix\Core\TObject;
-use Phoenix\Data\IDataReader;
+use Phink\Core\TObject;
+use Phink\Data\IDataReader;
 /**
  * Description of adatareader
  *

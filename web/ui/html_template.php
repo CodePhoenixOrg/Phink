@@ -6,10 +6,10 @@
  * and open the template in the editor.
  */
 
-class THtmlTemplate extends \Phoenix\Core\TObject 
+class THtmlTemplate extends \Phink\Core\TObject 
     implements \JsonSerializable
 {
-    use \Phoenix\Web\UI\THtmlControl;
+    use \Phink\Web\UI\THtmlControl;
     
     public function jsonSerialize() {
         return serialize($this);

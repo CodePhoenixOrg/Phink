@@ -1,10 +1,10 @@
 <?php
 
-namespace Phoenix\Data\Client\SqlServer;
+namespace Phink\Data\Client\SqlServer;
 
-//require_once 'phoenix/configuration/data/sqlconfiguration.php';
+//require_once 'phink/configuration/data/sqlconfiguration.php';
 
-use Phoenix\Configuration\Data\TDataConfiguration;
+use Phink\Configuration\Data\TDataConfiguration;
 
 /**
  * Description of TSqlServerConfiguration

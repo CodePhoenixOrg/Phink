@@ -4,7 +4,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phoenix\Core;
+namespace Phink\Core;
 
 //$single_server = array(
 //    'host' => '192.168.1.8',
@@ -14,10 +14,10 @@ namespace Phoenix\Core;
 
 require_once 'constants.php';
 
-include 'phoenix/'.STARTER_FILE;
+include 'phink/'.STARTER_FILE;
 
-require_once 'phoenix/autoloader.php';
-\Phoenix\TAutoLoader::register();
+require_once 'phink/autoloader.php';
+\Phink\TAutoLoader::register();
 
 //require_once 'Predis/Autoloader.php';
 //\Predis\Autoloader::register();
@@ -28,9 +28,9 @@ require_once 'phoenix/autoloader.php';
  * @author david
  */
 
-use Phoenix\Core\TObject;
-use Phoenix\MVC\TView;
-use Phoenix\Auth\TAuthentication;
+use Phink\Core\TObject;
+use Phink\MVC\TView;
+use Phink\Auth\TAuthentication;
 
 class TApplication extends TObject
 {

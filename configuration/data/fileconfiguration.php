@@ -1,9 +1,9 @@
 <?php
-namespace Phoenix\Configuration\Data;
+namespace Phink\Configuration\Data;
 
-//require_once 'phoenix/configuration/TConfiguration.php';
+//require_once 'phink/configuration/TConfiguration.php';
 
-use Phoenix\Configuration\TConfiguration;
+use Phink\Configuration\TConfiguration;
 
 /**
  * Description of TFileConfiguration

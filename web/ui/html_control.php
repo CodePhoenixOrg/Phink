@@ -5,7 +5,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phoenix\Web\UI;
+namespace Phink\Web\UI;
 /**
  * Description of html_control
  *

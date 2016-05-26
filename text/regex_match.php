@@ -1,5 +1,5 @@
 <?php
-namespace Phoenix\Text;
+namespace Phink\Text;
 
 
 
@@ -8,7 +8,7 @@ namespace Phoenix\Text;
  *
  * @author david
  */
-class TRegexMatch extends \Phoenix\Core\TObject
+class TRegexMatch extends \Phink\Core\TObject
 {
     //put your code here
     private $_text = '';

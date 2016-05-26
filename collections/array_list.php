@@ -1,8 +1,8 @@
 <?php
 
-namespace Phoenix\Collections;
+namespace Phink\Collections;
 
-use Phoenix\Core\TObject;
+use Phink\Core\TObject;
 
 /**
  * Description of aarraylist

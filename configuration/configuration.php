@@ -1,15 +1,15 @@
 <?php
-namespace Phoenix\Configuration;
+namespace Phink\Configuration;
 
-//require_once 'phoenix/core/acomponent.php';
+//require_once 'phink/core/acomponent.php';
 
-use Phoenix\Declarators\THtmlDeclarator;
+use Phink\Declarators\THtmlDeclarator;
 /**
  * Description of aconfig
  *
  * @author david
  */
-abstract class TConfiguration extends \Phoenix\UI\TComponent
+abstract class TConfiguration extends \Phink\UI\TComponent
 {
     public function __construct($parent)
     {

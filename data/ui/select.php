@@ -6,14 +6,14 @@
  * and open the template in the editor.
  */
 
-namespace Phoenix\Data\UI;
+namespace Phink\Data\UI;
 
 /**
  * Description of select
  *
  * @author David
  */
-class TSelect extends \Phoenix\Core\TObject
+class TSelect extends \Phink\Core\TObject
 {
     //put your code here
     

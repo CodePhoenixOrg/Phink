@@ -1,14 +1,14 @@
 <?php
-namespace Phoenix\Web\UI\Widget\Plugin;
+namespace Phink\Web\UI\Widget\Plugin;
 
 /**
  * Description of adatacolumn
  *
  * @author david
  */
-class TPluginChild extends \Phoenix\Core\TObject
+class TPluginChild extends \Phink\Core\TObject
 {
-    use \Phoenix\Web\UI\THtmlControl;
+    use \Phink\Web\UI\THtmlControl;
     
     private $_value;
 

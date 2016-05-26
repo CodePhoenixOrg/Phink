@@ -1,19 +1,19 @@
 <?php
 
-namespace Phoenix\Data\Client\MySQL;
+namespace Phink\Data\Client\MySQL;
 
-//require_once 'phoenix/core/object.php';
-//require_once 'phoenix/data/command.php';
-//require_once 'phoenix/data/crud_queries.php';
+//require_once 'phink/core/object.php';
+//require_once 'phink/data/command.php';
+//require_once 'phink/data/crud_queries.php';
 //require_once 'mysql_data_reader.php';
 //require_once 'mysql_connection.php';
 
-use Phoenix\Core\TObject;
-use Phoenix\Web\TRequest;
-use Phoenix\Data\ICommand;
-use Phoenix\Data\TCrudQueries;
-use Phoenix\Data\Client\MySQL\TMySqlConnection;
-use Phoenix\Data\Client\MySQL\TMySqlDataReader;
+use Phink\Core\TObject;
+use Phink\Web\TRequest;
+use Phink\Data\ICommand;
+use Phink\Data\TCrudQueries;
+use Phink\Data\Client\MySQL\TMySqlConnection;
+use Phink\Data\Client\MySQL\TMySqlDataReader;
 /* 
  * To change this template, choose Tools | Templates
  * and open the template in the editor.

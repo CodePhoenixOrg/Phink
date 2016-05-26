@@ -1,12 +1,12 @@
 <?php
-namespace Phoenix\Web\UI;
+namespace Phink\Web\UI;
 
 /**
  * Description of ahtmlelement
  *
  * @author david
  */
-class THtmlElement extends \Phoenix\Core\TObject
+class THtmlElement extends \Phink\Core\TObject
 {
 
     private $_id = '';
@@ -31,7 +31,7 @@ class THtmlElement extends \Phoenix\Core\TObject
             $this->_closing = '<' . $tag[1];
         }
 
-        $this->_type = \Phoenix\Utils\TStringUtils::elementType($this->_opening);
+        $this->_type = \Phink\Utils\TStringUtils::elementType($this->_opening);
     }
 
     public function getId()

@@ -1,10 +1,10 @@
 <?php
 
-namespace Phoenix\Utils;
+namespace Phink\Utils;
 
-use Phoenix\Web\TRequest;
+use Phink\Web\TRequest;
 
-//require_once 'phoenix/core/request.php';
+//require_once 'phink/core/request.php';
 
 /**
 * Description of ileutils

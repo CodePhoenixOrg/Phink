@@ -1,13 +1,13 @@
 <?php
 // on ouvre la base sbx
-namespace Phoenix\Data;
+namespace Phink\Data;
 
-//require_once 'phoenix/data/client/pdo/pdo_command.php';
+//require_once 'phink/data/client/pdo/pdo_command.php';
 
-use Phoenix\Data\Client\PDO\TPdoConfiguration;
-use Phoenix\Data\Client\PDO\TPdoConnection;
-use Phoenix\Data\Client\PDO\TPdoCommand;
-use Phoenix\Data\TServerType;
+use Phink\Data\Client\PDO\TPdoConfiguration;
+use Phink\Data\Client\PDO\TPdoConnection;
+use Phink\Data\Client\PDO\TPdoCommand;
+use Phink\Data\TServerType;
 
 class TDataAccess
 {
@@ -17,7 +17,7 @@ class TDataAccess
     public static function getCryptoDB()
     {
 
-        $databaseName = \Phoenix\Utils\TFileUtils::filePath(DOCUMENT_ROOT . 'data/crypto.db');
+        $databaseName = \Phink\Utils\TFileUtils::filePath(DOCUMENT_ROOT . 'data/crypto.db');
 
         $sqlConfig = new TPdoConfiguration(TServerType::SQLITE, $databaseName);
         self::$connection = new TPdoConnection($sqlConfig);

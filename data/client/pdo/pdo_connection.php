@@ -1,16 +1,16 @@
 <?php
 
-namespace Phoenix\Data\Client\PDO;
+namespace Phink\Data\Client\PDO;
 
-//require_once 'phoenix/data/connection.php';
-//require_once 'phoenix/configuration/configurable.php';
+//require_once 'phink/data/connection.php';
+//require_once 'phink/configuration/configurable.php';
 //require_once 'pdo_configuration.php';
 
-use Phoenix\Core\TObject;
-use Phoenix\Configuration\IConfigurable;
-use Phoenix\Data\IConnection;
-use Phoenix\Data\TServerType;
-use Phoenix\Data\Client\PDO\TPdoConfiguration;
+use Phink\Core\TObject;
+use Phink\Configuration\IConfigurable;
+use Phink\Data\IConnection;
+use Phink\Data\TServerType;
+use Phink\Data\Client\PDO\TPdoConfiguration;
 
 use PDO;
 /**
@@ -54,7 +54,7 @@ class TPdoConnection extends TObject implements IConnection, IConfigurable
 //                $this->_state->query("SET NAMES 'utf8'");
 //            }
         } catch (\PDOException $ex) {
-            //\Phoenix\Log\TLog::exception($ex, __FILE__, __LINE__);
+            //\Phink\Log\TLog::exception($ex, __FILE__, __LINE__);
         }
 
         return $this->_state;

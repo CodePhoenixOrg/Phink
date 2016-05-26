@@ -1,14 +1,14 @@
 <?php // Authentification
-namespace Phoenix\Auth;
+namespace Phink\Auth;
 
-//require_once 'phoenix/core/response.php';
-//require_once 'phoenix/crypto/crypto.php';
-//require_once 'phoenix/data/data_access.php';
-//require_once 'phoenix/data/client/pdo/pdo_command.php';
+//require_once 'phink/core/response.php';
+//require_once 'phink/crypto/crypto.php';
+//require_once 'phink/data/data_access.php';
+//require_once 'phink/data/client/pdo/pdo_command.php';
 
-use Phoenix\Crypto\TCrypto;
-use Phoenix\Data\TDataAccess;
-use Phoenix\Data\Client\PDO\TPdoCommand;
+use Phink\Crypto\TCrypto;
+use Phink\Data\TDataAccess;
+use Phink\Data\Client\PDO\TPdoCommand;
 
 class TAuthentication
 {
@@ -105,7 +105,7 @@ class TAuthentication
     {
         $result = false;
 
-        \Phoenix\Log\TLog::debug(__METHOD__ . '::TOKEN::' . $token);
+        \Phink\Log\TLog::debug(__METHOD__ . '::TOKEN::' . $token);
         
         if(strlen($token) > 0 && substr($token, 0, 1) == '!') {
             $result = $token;

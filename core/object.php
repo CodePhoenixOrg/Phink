@@ -4,7 +4,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phoenix\Core;
+namespace Phink\Core;
 
 use \ReflectionClass;
 /**
@@ -38,7 +38,7 @@ class TObject
 
     public function setId($value)
     {
-        //\Phoenix\Log\TLog::dump(__CLASS__ . ':' . __METHOD__, $value);
+        //\Phink\Log\TLog::dump(__CLASS__ . ':' . __METHOD__, $value);
         $this->id = $value;
     }
 
@@ -110,7 +110,7 @@ class TObject
         
         $values = [];
         foreach($params as $param) {
-            array_push($values, \Phoenix\Web\TRequest::getQueryStrinng($param));
+            array_push($values, \Phink\Web\TRequest::getQueryStrinng($param));
         }
 
         $ref = new \ReflectionMethod($this->getFQClassName(), $method);

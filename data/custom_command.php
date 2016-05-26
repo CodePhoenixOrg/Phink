@@ -1,5 +1,5 @@
 <?php
-namespace Phoenix\Data;
+namespace Phink\Data;
 
 /**
  * Description of ICommand
@@ -7,9 +7,9 @@ namespace Phoenix\Data;
  * @author david
  */
 
-abstract class TCustomCommand extends \Phoenix\Core\TObject
+abstract class TCustomCommand extends \Phink\Core\TObject
 {
-    use \Phoenix\Data\TCrudQueries;
+    use \Phink\Data\TCrudQueries;
 
     public abstract function query($sql = '', array $params = null);
     public abstract function exec($sql = '');

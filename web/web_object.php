@@ -4,7 +4,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phoenix\Web;
+namespace Phink\Web;
 
  /**
  * Description of TObject
@@ -159,7 +159,7 @@ trait TWebObject {
 //    public function getPatternName()
 //    {
 //        $parts = pathinfo($this->getFileName());
-//        $classPath = \Phoenix\Core\TRegistry::classPath('T' . ucfirst($parts['filename']));
+//        $classPath = \Phink\Core\TRegistry::classPath('T' . ucfirst($parts['filename']));
 //        return strtolower(ROOT_NAMESPACE) . $classPath . $parts['filename'] . PATTERN_EXTENSION;
 //    }
 
@@ -317,7 +317,7 @@ trait TWebObject {
         $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
         $this->className = ucfirst($this->viewName);
 
-//        //\Phoenix\Log\TLog::debug('VIEW NAME : '  . $this->viewName, __FILE__, __LINE__);
+//        //\Phink\Log\TLog::debug('VIEW NAME : '  . $this->viewName, __FILE__, __LINE__);
         
     }
     

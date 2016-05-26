@@ -1,10 +1,10 @@
 <?php
-namespace Phoenix\Xml;
+namespace Phink\Xml;
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-use Phoenix\Core\TObject;
+use Phink\Core\TObject;
 
 /**
  * Description of match

@@ -1,5 +1,5 @@
 <?php
-namespace Phoenix\Web\UI;
+namespace Phink\Web\UI;
 
 /**
  * Description of ahtmlpattern
@@ -36,15 +36,15 @@ trait THtmlPattern {
     {
          
 //        $className = $this->getType();
-//        $classPath = \Phoenix\Core\TRegistry::classPath($className);
-//        $filename = \Phoenix\TAutoloader::classNameToFilename($className);
+//        $classPath = \Phink\Core\TRegistry::classPath($className);
+//        $filename = \Phink\TAutoloader::classNameToFilename($className);
         return strtolower(ROOT_NAMESPACE) . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'html' . PATTERN_EXTENSION;
     }
 
     private function _getElements()
     {
         $type = $this->getType();
-        $path = ROOT_PATH . \Phoenix\Core\TRegistry::classPath($type);
+        $path = ROOT_PATH . \Phink\Core\TRegistry::classPath($type);
         
         $jsonName = TMP_DIR . DIRECTORY_SEPARATOR . str_replace(DIRECTORY_SEPARATOR, '_', $path . strtolower($type) . '.json');
         if(file_exists($jsonName)) {
@@ -55,10 +55,10 @@ trait THtmlPattern {
 
         $patternName = $this->getPatternName();
         
-        //\Phoenix\Log\TLog::dump('PATTERN NAME', $patternName);
+        //\Phink\Log\TLog::dump('PATTERN NAME', $patternName);
         $contents = file_get_contents($patternName, FILE_USE_INCLUDE_PATH);
         
-        $doc = new \Phoenix\Xml\TXmlDocument($contents);
+        $doc = new \Phink\Xml\TXmlDocument($contents);
         $doc->matchAll();
         $elements = $doc->getList();
 

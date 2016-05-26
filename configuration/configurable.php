@@ -1,5 +1,5 @@
 <?php
-namespace Phoenix\Configuration;
+namespace Phink\Configuration;
 
 /**
  *

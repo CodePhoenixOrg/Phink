@@ -1,10 +1,10 @@
 <?php
 
-namespace Phoenix\Data\Client\MySQL;
+namespace Phink\Data\Client\MySQL;
 
-//require_once 'phoenix/configuration/data/sqlconfiguration.php';
+//require_once 'phink/configuration/data/sqlconfiguration.php';
 
-use Phoenix\Configuration\Data\TDataConfiguration;
+use Phink\Configuration\Data\TDataConfiguration;
 
 /**
  * Description of mysqlconfiguration
@@ -15,7 +15,7 @@ class TMySqlConfiguration extends TDataConfiguration
 {
     public function __construct($driver, $host, $user, $password, $databaseName)
     {
-        parent::__construct(\Phoenix\Data\TServerType::MYSQL, $host, $user, $password, $databaseName);
+        parent::__construct(\Phink\Data\TServerType::MYSQL, $host, $user, $password, $databaseName);
     }
     //put your code here
 }

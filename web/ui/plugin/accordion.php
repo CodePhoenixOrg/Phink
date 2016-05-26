@@ -5,7 +5,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phoenix\Web\UI\Plugin;
+namespace Phink\Web\UI\Plugin;
 /**
  * Description of newPHPClass
  *
@@ -48,7 +48,7 @@ class TAccordion extends TCustomPlugin
             }
         }
                         
-        //\Phoenix\Log\TLog::debug("\r\n" . "\r\n" . "\r\n" . 'LAST BINDABLE INDEX::' . $lastBindableIndex . "\r\n" . "\r\n" . "\r\n");
+        //\Phink\Log\TLog::debug("\r\n" . "\r\n" . "\r\n" . 'LAST BINDABLE INDEX::' . $lastBindableIndex . "\r\n" . "\r\n" . "\r\n");
                         
         for($i = 0; $i < $this->rows; $i++) {
             $row = (isset($body[$i])) ? json_decode($body[$i]) : array_fill(0, $this->columns, '&nbsp;');
@@ -61,7 +61,7 @@ class TAccordion extends TCustomPlugin
                 $index = $this->templates[$j]['index'];
                 $canBind = $row[$index] != $oldValue[$j];
                 //$canBind = $canBind && $this->templates[$j]['name'] === $head[$dataIndex];
-                ////\Phoenix\Log\TLog::debug('TEMPLATE NAME : ' . $this->templates[$j]['name'] . '; HEAD NAME :' . $head[$dataIndex]);
+                ////\Phink\Log\TLog::debug('TEMPLATE NAME : ' . $this->templates[$j]['name'] . '; HEAD NAME :' . $head[$dataIndex]);
                 if(!$canBind) {
                     $bound[$boundIndex] = $canBind;
                     //$bound[$boundIndex] = $canBind;
@@ -75,11 +75,11 @@ class TAccordion extends TCustomPlugin
                 
                 //$html = $row[$index];
                 //$html = $level . '[' . $oldLevel . ']' . '-' . $index . '::' . $row[$index];
-                $html = \Phoenix\Web\UI\Widget\Plugin\TPlugin::applyTemplate($this->templates, $row, $j);
+                $html = \Phink\Web\UI\Widget\Plugin\TPlugin::applyTemplate($this->templates, $row, $j);
 
-                //\Phoenix\Log\TLog::debug('INDEX::' . $index . "\r\n" . "\r\n");
-                //\Phoenix\Log\TLog::debug('LEVEL::' . $level . "\r\n" . "\r\n");
-                //\Phoenix\Log\TLog::debug('HTML::' . $html . "\r\n" . "\r\n");
+                //\Phink\Log\TLog::debug('INDEX::' . $index . "\r\n" . "\r\n");
+                //\Phink\Log\TLog::debug('LEVEL::' . $level . "\r\n" . "\r\n");
+                //\Phink\Log\TLog::debug('HTML::' . $html . "\r\n" . "\r\n");
                 
                 if($level === 0) {
                     if($i > 0) {

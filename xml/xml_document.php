@@ -1,16 +1,16 @@
 <?php
-namespace Phoenix\Xml;
+namespace Phink\Xml;
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-//require_once 'phoenix/collections/arraylist.php';
-//require_once 'phoenix/utils/string_utils.php';
+//require_once 'phink/collections/arraylist.php';
+//require_once 'phink/utils/string_utils.php';
 //require_once 'xmlmatch.php';
 
-use Phoenix\Core\TObject;
-use Phoenix\Collections\TArrayList;
-use Phoenix\Utils\TStringUtils;
+use Phink\Core\TObject;
+use Phink\Collections\TArrayList;
+use Phink\Utils\TStringUtils;
 
 
 /**

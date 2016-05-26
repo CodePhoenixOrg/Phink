@@ -1,8 +1,8 @@
 <?php
 
-namespace Phoenix\Web;
+namespace Phink\Web;
 
-require_once 'phoenix/web/web_application.php';
+require_once 'phink/web/web_application.php';
 
 /**
  * Description of program
@@ -20,7 +20,7 @@ class TStaticApplication extends TWebApplication
     public static function cache($filename, $content)
     {
         $filename = DOCUMENT_ROOT . DIRECTORY_SEPARATOR . CAChE_DIR . DIRECTORY_SEPARATOR . $filename;
-        $filename = \Phoenix\Utils\TFileUtils::filePath($filename);
+        $filename = \Phink\Utils\TFileUtils::filePath($filename);
         file_put_contents($filename, $content);
     } 
 
@@ -30,10 +30,10 @@ class TStaticApplication extends TWebApplication
         if(strstr(HTTP_ACCEPT, 'json')) {
             $filename = str_replace('.html', '.json', $filename);
         }
-        $filename = \Phoenix\Utils\TFileUtils::filePath($filename);
+        $filename = \Phink\Utils\TFileUtils::filePath($filename);
         $p = strpos($filename, '?');
         $filename = substr($filename, 0, $p);
-        //\Phoenix\Log\TLog::debug('STATIC FILENAME : ' . $filename, __FILE__, __LINE__);
+        //\Phink\Log\TLog::debug('STATIC FILENAME : ' . $filename, __FILE__, __LINE__);
         
         return $filename;
     }
@@ -50,7 +50,7 @@ class TStaticApplication extends TWebApplication
         } else {
             if($this->validateToken()) {
                 $filename = $this->getStaticFileName();
-                //\Phoenix\Log\TLog::debug('HTTP_ACCEPT : ' . HTTP_ACCEPT, __FILE__, __LINE__);
+                //\Phink\Log\TLog::debug('HTTP_ACCEPT : ' . HTTP_ACCEPT, __FILE__, __LINE__);
                 if (!file_exists($filename)) {
                     ob_start();
                     parent::create();

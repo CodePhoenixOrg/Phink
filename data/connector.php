@@ -1,7 +1,7 @@
 <?php
-namespace Phoenix\Data;
+namespace Phink\Data;
 
-use Phoenix\Log\TLog;
+use Phink\Log\TLog;
 
 interface IStaticConnector {
     static function connect();
@@ -349,7 +349,7 @@ class TSqlSrvDbConnector implements IConnector
 
     }        
     
-    public function connect($serverName = 'DELPHI', $databaseName = 'Phoenix', $user = 'sa', $password = '1p2+ar')
+    public function connect($serverName = 'DELPHI', $databaseName = 'Phink', $user = 'sa', $password = '1p2+ar')
     {
         $result = false;
         

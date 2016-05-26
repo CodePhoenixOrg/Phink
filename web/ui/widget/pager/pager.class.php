@@ -1,7 +1,7 @@
 <?php
-namespace Phoenix\Web\UI\Widget\Pager;
+namespace Phink\Web\UI\Widget\Pager;
 
-class TPager extends \Phoenix\MVC\TPartialController
+class TPager extends \Phink\MVC\TPartialController
 {
 
     protected $pageCount;
@@ -58,7 +58,7 @@ class TPager extends \Phoenix\MVC\TPartialController
         
         $this->pageCount = ($forControl) ? $forControl->getRowCount(): $this->pageNum;
     
-        $path = ROOT_PATH . \Phoenix\Core\TRegistry::classPath('TPager');
+        $path = ROOT_PATH . \Phink\Core\TRegistry::classPath('TPager');
         $this->pagerJS = file_get_contents($path . 'pager.js', FILE_USE_INCLUDE_PATH);
         $this->pagerJS = str_replace('<% pageCount %>', $this->pageCount, $this->pagerJS);
         $this->pagerJS = str_replace('<% pageNum %>', $this->pageNum, $this->pagerJS);

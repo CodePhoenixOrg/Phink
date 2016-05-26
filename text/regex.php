@@ -1,6 +1,6 @@
 <?php
 
-namespace Phoenix\Text;
+namespace Phink\Text;
 
 
 /**
@@ -8,7 +8,7 @@ namespace Phoenix\Text;
  *
  * @author david
  */
-class TRegex extends \Phoenix\Core\TObject
+class TRegex extends \Phink\Core\TObject
 {
 
     private $_pattern = '';

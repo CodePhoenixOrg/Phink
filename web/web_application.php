@@ -1,26 +1,26 @@
 <?php
 
-namespace Phoenix\Web;
+namespace Phink\Web;
 
-require_once 'phoenix/core/application.php';
+require_once 'phink/core/application.php';
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-use Phoenix\TAutoloader;
-use Phoenix\Auth\TAuthentication;
-use Phoenix\MVC\TView;
-use Phoenix\Crypto\TCrypto;
+use Phink\TAutoloader;
+use Phink\Auth\TAuthentication;
+use Phink\MVC\TView;
+use Phink\Crypto\TCrypto;
 
 /**
  * Description of router
  *
  * @author David
  */
-class TWebApplication extends \Phoenix\Core\TApplication
+class TWebApplication extends \Phink\Core\TApplication
 {
-    use \Phoenix\Web\TWebObject;
+    use \Phink\Web\TWebObject;
 
     protected $rawPhpName = '';
     protected $className = '';
@@ -124,7 +124,7 @@ class TWebApplication extends \Phoenix\Core\TApplication
     public function dispatch()
     {
         if(file_exists($this->cacheFileName)) {
-            //\Phoenix\Log\TLog::debug('DISPATCH : ' . $this->cacheFileName);
+            //\Phink\Log\TLog::debug('DISPATCH : ' . $this->cacheFileName);
             //$include = TAutoloader::includeClass($this->cacheFileName, false);
             //include $this->cacheFileName;
             $classText = file_get_contents($this->cacheFileName);
@@ -181,7 +181,7 @@ class TWebApplication extends \Phoenix\Core\TApplication
             } else {
                 $result = TAutoloader::includeDefaultController($this->namespace, $this->className);
             }
-            \Phoenix\Core\TRegistry::setCode($this->controllerFileName, $result['code']);
+            \Phink\Core\TRegistry::setCode($this->controllerFileName, $result['code']);
         }
 
         return $result;
@@ -191,7 +191,7 @@ class TWebApplication extends \Phoenix\Core\TApplication
     {
         if($this->request->isAJAX() && $this->request->isPartialView()) {
             $result = TAutoloader::includeDefaultController($this->namespace, $this->className);
-            \Phoenix\Core\TRegistry::setCode(strtolower($this->controllerFileName), $result['code']);
+            \Phink\Core\TRegistry::setCode(strtolower($this->controllerFileName), $result['code']);
         } else {
             $result = $this->includeController();
         }

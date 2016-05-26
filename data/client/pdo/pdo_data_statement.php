@@ -1,12 +1,12 @@
 <?php
 
-namespace Phoenix\Data\Client\PDO;
+namespace Phink\Data\Client\PDO;
 
-//require_once 'phoenix/data/data_statement.php';
-//require_once 'phoenix/core/object.php';
+//require_once 'phink/data/data_statement.php';
+//require_once 'phink/core/object.php';
 
-use Phoenix\Core\TObject;
-use Phoenix\Data\IDataStatement;
+use Phink\Core\TObject;
+use Phink\Data\IDataStatement;
 
 use PDOStatement;
 

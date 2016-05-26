@@ -1,6 +1,6 @@
 <?php
 
-namespace Phoenix\Crypto;
+namespace Phink\Crypto;
 
 /**
  * Description of crypto

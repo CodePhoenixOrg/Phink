@@ -1,12 +1,12 @@
 <?php
 
-namespace Phoenix\Data\Client\PDO;
+namespace Phink\Data\Client\PDO;
 
-//require_once 'phoenix/configuration/data/sqlconfiguration.php';
-//require_once 'phoenix/data/server_type.php';
+//require_once 'phink/configuration/data/sqlconfiguration.php';
+//require_once 'phink/data/server_type.php';
 
-use Phoenix\Configuration\Data\TDataConfiguration;
-use Phoenix\Data\TServerType;
+use Phink\Configuration\Data\TDataConfiguration;
+use Phink\Data\TServerType;
 /**
  * Description of mysqlconfiguration
  *

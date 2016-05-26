@@ -1,11 +1,11 @@
 <?php
-namespace Phoenix\MVC;
+namespace Phink\MVC;
 
-//require_once 'phoenix/core/object.php';
+//require_once 'phink/core/object.php';
 
-abstract class TCustomController extends \Phoenix\Web\UI\TCustomControl
+abstract class TCustomController extends \Phink\Web\UI\TCustomControl
 {
-    use \Phoenix\Web\TWebObject;
+    use \Phink\Web\TWebObject;
 
     protected $innerHtml = '';
     protected $creations = '';
@@ -17,7 +17,7 @@ abstract class TCustomController extends \Phoenix\Web\UI\TCustomControl
     
     protected $view = NULL;
     
-    public function __construct(\Phoenix\Core\TObject $parent)
+    public function __construct(\Phink\Core\TObject $parent)
     {
         parent::__construct($parent);
         

@@ -5,7 +5,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phoenix\Web\UI\Plugin;
+namespace Phink\Web\UI\Plugin;
 /**
  * Description of newPHPClass
  *
@@ -51,7 +51,7 @@ class TTable extends TCustomPlugin
                 for($j = 0; $j < $this->columns; $j++) {
                     $k = $i * $this->columns + $j;
                     $noTHead = $this->templates[$j]['content'] && $this->templates[$j]['enabled'] == 1;
-                    $html = \Phoenix\Web\UI\Widget\Plugin\TPlugin::applyTemplate($this->templates, $row, $j);
+                    $html = \Phink\Web\UI\Widget\Plugin\TPlugin::applyTemplate($this->templates, $row, $j);
                     $typeId1 = 'id="' . $this->getId() .  $elements[5]->getType() . $k . '"';
                     if($this->templates[$j]['enabled'] == 1) {
                         $tbody .= str_replace('%s', $typeId1, $elements[5]->getOpening()) . $html . $elements[5]->getClosing() . "\n";
@@ -75,7 +75,7 @@ class TTable extends TCustomPlugin
                 for($j = 0; $j < $this->columns; $j++) {
                     $k = $i * $this->columns + $j;
                     $noTHead = $this->templates[$j]['content'] && $this->templates[$j]['enabled'] == 1;
-                    $html = \Phoenix\Web\UI\Widget\Plugin\TPlugin::applyTemplate($this->templates, $row, $j);
+                    $html = \Phink\Web\UI\Widget\Plugin\TPlugin::applyTemplate($this->templates, $row, $j);
                     $typeId1 = 'id="' . $this->getId() .  $elements[5]->getType() . $k . '"';
                     if($this->templates[$j]['enabled'] == 1 && $row[$j] != $oldValue[$j]) {
                         $tbody .= $elements[3]->getOpening();

@@ -1,11 +1,11 @@
 <?php
-namespace Phoenix\Web\UI;
+namespace Phink\Web\UI;
 
-use Phoenix\Core\TObject;
+use Phink\Core\TObject;
 
 class TControl extends TCustomControl
 {
-    use \Phoenix\Web\TWebObject;
+    use \Phink\Web\TWebObject;
 
     protected $model = NULL;
     private $_theme = '';
@@ -24,9 +24,9 @@ class TControl extends TCustomControl
         $this->className = $this->getType();
         $this->viewName = lcfirst($this->className);
         
-        $include = \Phoenix\TAutoloader::includeModelByName($this->viewName);
+        $include = \Phink\TAutoloader::includeModelByName($this->viewName);
         $modelClass = $include['type'];
-        //\Phoenix\Log\TLog::debug('TCONTROL MODEL OBJECT : ' . print_r($modelClass, true));
+        //\Phink\Log\TLog::debug('TCONTROL MODEL OBJECT : ' . print_r($modelClass, true));
         $this->model = new $modelClass();        
 
         $this->request = $parent->getRequest();

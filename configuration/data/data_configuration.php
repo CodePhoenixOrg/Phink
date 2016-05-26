@@ -1,12 +1,12 @@
 <?php
-namespace Phoenix\Configuration\Data;
+namespace Phink\Configuration\Data;
 
-//require_once 'phoenix/data/server_type.php';
+//require_once 'phink/data/server_type.php';
 /* 
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-use Phoenix\Core\TObject;
+use Phink\Core\TObject;
 
 /**
  * Description of TDataConfiguration

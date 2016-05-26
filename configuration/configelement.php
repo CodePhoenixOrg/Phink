@@ -1,9 +1,9 @@
 <?php
-namespace Phoenix\Configuration;
+namespace Phink\Configuration;
 
-//require_once 'phoenix/core/aobject.php';
+//require_once 'phink/core/aobject.php';
 
-use Phoenix\Core\TObject;
+use Phink\Core\TObject;
 /**
  * Description of ahtmlelement
  *

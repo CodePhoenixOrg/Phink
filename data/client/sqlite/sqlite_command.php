@@ -1,18 +1,18 @@
 <?php
 
-namespace Phoenix\Data\Client\SQLite;
+namespace Phink\Data\Client\SQLite;
 
 //require_once 'sqlite_data_reader.php';
 //require_once 'sqlite_connection.php';
-//require_once 'phoenix/data/command.php';
-//require_once 'phoenix/data/crud_queries.php';
-//require_once 'phoenix/core/object.php';
+//require_once 'phink/data/command.php';
+//require_once 'phink/data/crud_queries.php';
+//require_once 'phink/core/object.php';
 
-use Phoenix\Core\TObject;
-use Phoenix\Data\ICommand;
-use Phoenix\Data\TCrudQueries;
-use Phoenix\Data\Client\SQLite\TSqliteConnection;
-use Phoenix\Data\Client\SQLite\TSqliteDataReader;
+use Phink\Core\TObject;
+use Phink\Data\ICommand;
+use Phink\Data\TCrudQueries;
+use Phink\Data\Client\SQLite\TSqliteConnection;
+use Phink\Data\Client\SQLite\TSqliteDataReader;
 
 /**
  * Description of aSqlitecommand

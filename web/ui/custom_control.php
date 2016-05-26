@@ -6,14 +6,14 @@
  * and open the template in the editor.
  */
 
-namespace Phoenix\Web\UI;
+namespace Phink\Web\UI;
 
 /**
  * Description of custom_control
  *
  * @author David
  */
-abstract class TCustomControl extends \Phoenix\Core\TObject
+abstract class TCustomControl extends \Phink\Core\TObject
 {
     //put your code here
     protected $isRendered = false;

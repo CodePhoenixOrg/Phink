@@ -5,11 +5,11 @@
  * and open the template in the editor.
  */
 
-namespace Phoenix\UI;
+namespace Phink\UI;
 
 //require_once 'application.php';
 
-use Phoenix\Core\TApplication;
+use Phink\Core\TApplication;
 
 class TConsoleApplication extends TApplication
 {

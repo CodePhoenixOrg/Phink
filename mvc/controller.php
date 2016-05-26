@@ -1,5 +1,5 @@
 <?php
-namespace Phoenix\MVC;
+namespace Phink\MVC;
 
 class TController extends TCustomController
 {

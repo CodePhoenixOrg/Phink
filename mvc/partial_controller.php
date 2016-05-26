@@ -1,27 +1,27 @@
 <?php
-namespace Phoenix\MVC;
+namespace Phink\MVC;
 
 //require_once 'custom_controller.php';
 //require_once 'partial_view.php';
 
-use Phoenix\MVC\TPartialView;
-use Phoenix\MVC\TCustomController;
+use Phink\MVC\TPartialView;
+use Phink\MVC\TCustomController;
 
 class TPartialController extends TCustomController 
 {
     
-    public function __construct(\Phoenix\Core\TObject $parent)
+    public function __construct(\Phink\Core\TObject $parent)
     {
         //$this->setParent($parent->getView())
         parent::__construct($parent);
         
         $this->className = $this->getType();
         $this->viewName = lcfirst($this->className);
-         //\Phoenix\Log\TLog::debug('PARTIAL CONTROLLER TYPE : ' . print_r($this->className, true));
+         //\Phink\Log\TLog::debug('PARTIAL CONTROLLER TYPE : ' . print_r($this->className, true));
        
-        $include = \Phoenix\TAutoloader::includeModelByName($this->viewName);
+        $include = \Phink\TAutoloader::includeModelByName($this->viewName);
         $modelClass = $include['type'];
-//        //\Phoenix\Log\TLog::debug('MODEL OBJECT : ' . print_r($modelClass, true));
+//        //\Phink\Log\TLog::debug('MODEL OBJECT : ' . print_r($modelClass, true));
         $this->model = new $modelClass();        
         $this->view = new TPartialView($parent, $this); 
                 

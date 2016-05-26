@@ -1,5 +1,5 @@
 <?php
-namespace Phoenix\Data\UI;
+namespace Phink\Data\UI;
 
 /**
  * Description of adatatag
@@ -42,7 +42,7 @@ trait TDataTag {
     {
         return $this->command;
     }
-    public function setCommand(\Phoenix\Data\Client\PDO\TPdoCommand $value)
+    public function setCommand(\Phink\Data\Client\PDO\TPdoCommand $value)
     {
         $this->command = $value;
     }
@@ -51,7 +51,7 @@ trait TDataTag {
     {
         return $this->statement;
     }
-    public function setStatement(\Phoenix\Data\Client\PDO\TPdoDataStatement $value)
+    public function setStatement(\Phink\Data\Client\PDO\TPdoDataStatement $value)
     {
         $this->statement = $value;
     }

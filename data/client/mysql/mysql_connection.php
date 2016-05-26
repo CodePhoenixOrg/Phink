@@ -1,15 +1,15 @@
 <?php
 
-namespace Phoenix\Data\Client\MySQL;
+namespace Phink\Data\Client\MySQL;
 
-//require_once 'phoenix/data/connection.php';
-//require_once 'phoenix/configuration/configurable.php';
+//require_once 'phink/data/connection.php';
+//require_once 'phink/configuration/configurable.php';
 //require_once 'mysql_configuration.php';
 
-use Phoenix\Core\TObject;
-use Phoenix\Configuration\IConfigurable;
-use Phoenix\Data\IConnection;
-use Phoenix\Data\Client\MySQL\TMySqlConfiguration;
+use Phink\Core\TObject;
+use Phink\Configuration\IConfigurable;
+use Phink\Data\IConnection;
+use Phink\Data\Client\MySQL\TMySqlConfiguration;
 
 /**
  * Description of TMySqlConnection

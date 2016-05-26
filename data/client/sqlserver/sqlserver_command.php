@@ -1,20 +1,20 @@
 <?php
 
-namespace Phoenix\Data\Client\SqlServer;
+namespace Phink\Data\Client\SqlServer;
 
-//require_once 'phoenix/core/object.php';
-//require_once 'phoenix/data/command.php';
-//require_once 'phoenix/data/crud_queries.php';
-//require_once 'phoenix/utils/sql_utils.php';
+//require_once 'phink/core/object.php';
+//require_once 'phink/data/command.php';
+//require_once 'phink/data/crud_queries.php';
+//require_once 'phink/utils/sql_utils.php';
 //require_once 'sqlserver_data_reader.php';
 //require_once 'sqlserver_connection.php';
 
-use Phoenix\Core\TObject;
-use Phoenix\Data\ICommand;
-use Phoenix\Data\TCrudQueries;
-use Phoenix\Data\Client\SqlServer\TSqlServerConnection;
-use Phoenix\Data\Client\SqlServer\TSqlServerDataReader;
-use Phoenix\Utils\TSqlUtils;
+use Phink\Core\TObject;
+use Phink\Data\ICommand;
+use Phink\Data\TCrudQueries;
+use Phink\Data\Client\SqlServer\TSqlServerConnection;
+use Phink\Data\Client\SqlServer\TSqlServerDataReader;
+use Phink\Utils\TSqlUtils;
 /**
  * Description of amysqlcommand
  *

@@ -4,20 +4,20 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phoenix\MVC;
+namespace Phink\MVC;
 
-//require_once 'phoenix/core/object.php';
-//require_once 'phoenix/core/response.php';
+//require_once 'phink/core/object.php';
+//require_once 'phink/core/response.php';
 //require_once 'custom_view.php';
 //require_once 'controller.php';
-//require_once 'phoenix/utils/file_utils.php';
+//require_once 'phink/utils/file_utils.php';
 
-use Phoenix\Web\TWebApplication;
-use Phoenix\Web\TRequest;
-use Phoenix\Web\TResponse;
-use Phoenix\MVC\TCustomView;
-use Phoenix\Utils\TFileUtils;
-use Phoenix\Tuth\TAuthentication;
+use Phink\Web\TWebApplication;
+use Phink\Web\TRequest;
+use Phink\Web\TResponse;
+use Phink\MVC\TCustomView;
+use Phink\Utils\TFileUtils;
+use Phink\Tuth\TAuthentication;
 
 /**
  * Description of view

@@ -1,6 +1,6 @@
 <?php
 
-namespace Phoenix\Core;
+namespace Phink\Core;
 
 /**
  * Description of registry
@@ -93,7 +93,7 @@ class TRegistry
         //$id = str_replace(DIRECTORY_SEPARATOR, '_', $id);
         //file_put_contents(TMP_DIR . DIRECTORY_SEPARATOR . $id . PREHTML_EXTENSION, $value);
         //$keys = array_keys(self::$_code);
-        //\Phoenix\Log\TLog::debug('CODE REGISTRY : ' . print_r($keys, true));
+        //\Phink\Log\TLog::debug('CODE REGISTRY : ' . print_r($keys, true));
     }
     
     public static function write($item, $key, $value) {

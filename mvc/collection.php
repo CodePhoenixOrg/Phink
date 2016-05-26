@@ -5,7 +5,7 @@
  * and open the template in the editor.
  */
 
-namespace Phoenix\MVC;
+namespace Phink\MVC;
 
 //require_once 'model.php';
 
@@ -14,7 +14,7 @@ namespace Phoenix\MVC;
  *
  * @author david
  */
-use Phoenix\Core\TObject;
+use Phink\Core\TObject;
 
 interface ICollection {
 

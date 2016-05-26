@@ -1,9 +1,9 @@
 <?php
-namespace Phoenix\Web\UI\Widget\Plugin;
+namespace Phink\Web\UI\Widget\Plugin;
 
-class TPlugin extends \Phoenix\Web\UI\TPluginRenderer
+class TPlugin extends \Phink\Web\UI\TPluginRenderer
 {
-    use \Phoenix\Data\UI\TDataTag;
+    use \Phink\Data\UI\TDataTag;
     
     private $_children = array();
     private $_rowCount;
@@ -66,17 +66,17 @@ class TPlugin extends \Phoenix\Web\UI\TPluginRenderer
         
     }
 
-    public static function getGridData($id, \Phoenix\Data\Client\PDO\TPdoCommand $cmd, $rowCount)
+    public static function getGridData($id, \Phink\Data\Client\PDO\TPdoCommand $cmd, $rowCount)
     {
         $templateFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_template.json';
-        //\Phoenix\Log\TLog::debug('TEMPLATE FILE : ' . $templateFilename);
+        //\Phink\Log\TLog::debug('TEMPLATE FILE : ' . $templateFilename);
         $templates = '';
         if(file_exists($templateFilename)) {
             $templates = json_decode(file_get_contents($templateFilename));
         }
         
         $elementsFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_elements.json';
-        //\Phoenix\Log\TLog::debug('TEMPLATE FILE : ' . $elementsFilename);
+        //\Phink\Log\TLog::debug('TEMPLATE FILE : ' . $elementsFilename);
         $elements = '';
         if(file_exists($elementsFilename)) {
             $elements = json_decode(file_get_contents($elementsFilename));
@@ -99,7 +99,7 @@ class TPlugin extends \Phoenix\Web\UI\TPluginRenderer
             array_push($values, json_encode(array_fill(0, $fieldCount, '&nbsp;')));
         }
         
-        //\Phoenix\Log\TLog::dump('RECORDSET VALUES', $values);
+        //\Phink\Log\TLog::dump('RECORDSET VALUES', $values);
         $result = [
             'cols' => $fieldCount
             , 'rows' => $rowCount

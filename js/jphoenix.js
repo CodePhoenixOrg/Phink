@@ -40,14 +40,14 @@ if(!Object.create) {
 {
     var token;
     
-    $.jPhoenix = function() // constructeur obligatoire
+    $.jPhink = function() // constructeur obligatoire
     {
     };
 
     
-    $.jPhoenix.getViewEx = function (pageName, action, attach, postData, callBack) {
+    $.jPhink.getViewEx = function (pageName, action, attach, postData, callBack) {
         
-        var myToken = $.jPhoenix.getToken();
+        var myToken = $.jPhink.getToken();
         
         if(postData === undefined) {
             postData = {};
@@ -68,7 +68,7 @@ if(!Object.create) {
             }
         }).done(function(data, textStatus, xhr) {
             try {
-                $.jPhoenix.setToken(data.token);
+                $.jPhink.setToken(data.token);
 
                 if($.isFunction(callBack)) {
                     callBack.call(this, data);
@@ -90,11 +90,11 @@ if(!Object.create) {
     };
     
 
-    $.jPhoenix.attachViewP = function (pageName, anchor) {
-        var myToken = $.jPhoenix.getToken();
-        $.jPhoenix.getJSONP('' + pageName, {"action" : 'getViewHtml', "token" : myToken}, function(data) {
+    $.jPhink.attachViewP = function (pageName, anchor) {
+        var myToken = $.jPhink.getToken();
+        $.jPhink.getJSONP('' + pageName, {"action" : 'getViewHtml', "token" : myToken}, function(data) {
             try {
-                $.jPhoenix.setToken(data.token);
+                $.jPhink.setToken(data.token);
                 var l = data.scripts.length;
                 for(i = 0; i < l; i++) {
                     $.getScript(data.scripts[i]);
@@ -110,12 +110,12 @@ if(!Object.create) {
         });           
     };
 
-    $.jPhoenix.html64 = function(container, html) {
+    $.jPhink.html64 = function(container, html) {
         $(container).html(base64_decode(html));
         //$(container).html(html);
     } 
 
-    $.jPhoenix.selectedValues = function(selectObjectId) {
+    $.jPhink.selectedValues = function(selectObjectId) {
 
         var selectedOptions = $('select#' + selectObjectId + ' option:selected');
 
@@ -126,17 +126,17 @@ if(!Object.create) {
         return result;
     }
 
-    $.jPhoenix.debugLog = function(message) {
+    $.jPhink.debugLog = function(message) {
             alert(message);
     }
 
-    $.jPhoenix.phpJsonDecode = function(json)
+    $.jPhink.phpJsonDecode = function(json)
     {
         if(json === null) return '';
         return json.replace('\"', '', "g").replace("\\u0022", '"', "g").replace("\\u003C", "<", "g").replace("\\u003E", ">", "g").replace("\\/", "/", "g").replace("\\t", '\t', "g").replace("\\r", '\r', "g").replace("\\n", '\n', "g");
     };
 
-    $.jPhoenix.getScripts = function(data) {
+    $.jPhink.getScripts = function(data) {
         var l = data.scripts.length;
         for(i = 0; i < l; i++) {
             $.getScript(data.scripts[i]);
@@ -145,7 +145,7 @@ if(!Object.create) {
 
 
 
-    $.jPhoenix.bindTriStateCheck = function(parentElement) {
+    $.jPhink.bindTriStateCheck = function(parentElement) {
         if($(parentElement).length === 0) return;
         
         var checkboxes = $(parentElement).find("input:checkbox");
@@ -153,12 +153,12 @@ if(!Object.create) {
         checkboxes.each(function() {
             var checkBox = $(this);
             checkBox.click(function() {
-                $.jPhoenix.checkNextTriState(checkBox);
+                $.jPhink.checkNextTriState(checkBox);
             })
        });        
     };
     
-    $.jPhoenix.bindBiStateCheck = function(parentElement) {
+    $.jPhink.bindBiStateCheck = function(parentElement) {
         if($(parentElement).length === 0) return;
         
         var checkboxes = $(parentElement).find("input:checkbox");
@@ -166,12 +166,12 @@ if(!Object.create) {
         checkboxes.each(function() {
             var checkBox = $(this);
             checkBox.click(function() {
-                $.jPhoenix.checkNextBiState(checkBox);
+                $.jPhink.checkNextBiState(checkBox);
             })
        });        
     };
 
-    $.jPhoenix.checkNextTriState = function (checkBox) {
+    $.jPhink.checkNextTriState = function (checkBox) {
         var data = checkBox.data('checked');
         switch(data) {
             case 0:
@@ -195,7 +195,7 @@ if(!Object.create) {
     }
 
 
-    $.jPhoenix.checkTriStateByData = function (checkBox, data) {
+    $.jPhink.checkTriStateByData = function (checkBox, data) {
         switch(data) {
             case 0:
                 // unchecked
@@ -221,7 +221,7 @@ if(!Object.create) {
         }
     };
     
-    $.jPhoenix.checkNextBiState = function (checkBox) {
+    $.jPhink.checkNextBiState = function (checkBox) {
         var data = checkBox.data('checked');
         switch(data) {
             case 0:
@@ -239,7 +239,7 @@ if(!Object.create) {
         }
     }
 
-    $.jPhoenix.checkBiStateByData = function (checkBox, data) {
+    $.jPhink.checkBiStateByData = function (checkBox, data) {
         
         switch(data) {
             case 1:
@@ -259,42 +259,42 @@ if(!Object.create) {
 
     };
     
-    $.jPhoenix.checkAllTriState = function(parentElement, effect) {
+    $.jPhink.checkAllTriState = function(parentElement, effect) {
         if($(parentElement).length === 0) return false;
         
         var checkboxes = $(parentElement).find("input:checkbox");
         
         checkboxes.each(function() {
             var checkBox = $(this);
-            $.jPhoenix.checkTriStateByData(checkBox, effect);
+            $.jPhink.checkTriStateByData(checkBox, effect);
         });
     };
     
-    $.jPhoenix.checkAllBiState = function(parentElement, effect) {
+    $.jPhink.checkAllBiState = function(parentElement, effect) {
         if($(parentElement).length === 0) return false;
         
         var checkboxes = $(parentElement).find("input:checkbox");
         
         checkboxes.each(function() {
             var checkBox = $(this);
-            $.jPhoenix.checkBiStateByData(checkBox, effect);
+            $.jPhink.checkBiStateByData(checkBox, effect);
         });
     };
 
-    $.jPhoenix.selectableInput = function (parentElement) {
+    $.jPhink.selectableInput = function (parentElement) {
         $(parentElement).selectable({
             filter:'label',
             stop: function() {        
                 $(".ui-selected input", this).each(function() {
                     //this.checked= !this.checked
                     var checkBox = $(this);
-                    $.jPhoenix.checkNextTriState(checkBox);
+                    $.jPhink.checkNextTriState(checkBox);
                 });
             }
         });
     };
 
-    $.jPhoenix.selectAll = function (parentElement, functionName) {
+    $.jPhink.selectAll = function (parentElement, functionName) {
         
         if($(parentElement).length === 0) return false;
         alert('parentElement :' + parentElement)        
@@ -316,7 +316,7 @@ if(!Object.create) {
         });
     };
     
-    $.jPhoenix.keyValueExists = function(key, value, haystack) {
+    $.jPhink.keyValueExists = function(key, value, haystack) {
         var result = -1;
         
         if(haystack.length === 0) return result;
@@ -334,10 +334,10 @@ if(!Object.create) {
         return result;
     }
     
-    $.jPhoenix.replaceByKeyValue = function(key, value, object, haystack) {
+    $.jPhink.replaceByKeyValue = function(key, value, object, haystack) {
         var result = false;
         
-        var index = $.jPhoenix.keyValueExists(key, value, haystack);
+        var index = $.jPhink.keyValueExists(key, value, haystack);
         
         if(index > -1) {
             haystack[index] = object ;
@@ -360,69 +360,69 @@ function escapeQuotes(phrase) {
 }
 
 function checkAllBiState(parentElement, data) {
-    $.jPhoenix.checkAllBiState(parentElement, data);
+    $.jPhink.checkAllBiState(parentElement, data);
 }
 
 function checkAllTriState(parentElement, data) {
-    $.jPhoenix.checkAllTriState(parentElement, data);
+    $.jPhink.checkAllTriState(parentElement, data);
 }
 
 function checkNextBiState(checkBox) {
-    $.jPhoenix.checkNextBiState(checkBox);
+    $.jPhink.checkNextBiState(checkBox);
 }
 
 function checkNextTriState(checkBox) {
-    $.jPhoenix.checkNextTriState(checkBox);
+    $.jPhink.checkNextTriState(checkBox);
 }
 
 function checkBiStateByData(checkBox, data) {
-    $.jPhoenix.checkBiStateByData(checkBox, data);
+    $.jPhink.checkBiStateByData(checkBox, data);
 }
 
 function checkTriStateByData(checkBox, data) {
-    $.jPhoenix.checkTriStateByData(checkBox, data);
+    $.jPhink.checkTriStateByData(checkBox, data);
 }
 
 function bindBiStateCheck(parentElement) {
-    $.jPhoenix.bindBiStateCheck(parentElement);
+    $.jPhink.bindBiStateCheck(parentElement);
 }
 
 function bindTriStateCheck(parentElement) {
-    $.jPhoenix.bindTriStateCheck(parentElement);
+    $.jPhink.bindTriStateCheck(parentElement);
 }
 
 function selectableInput(parentElement) {
-    $.jPhoenix.selectableInput(parentElement);
+    $.jPhink.selectableInput(parentElement);
 }
 
 function selectAll(parentElement, functionName) {
-    $.jPhoenix.selectAll(parentElement, functionName);
+    $.jPhink.selectAll(parentElement, functionName);
 }
 
 function getView(pageName) {
-    $.jPhoenix.getView(pageName);
+    $.jPhink.getView(pageName);
 }
 
 function attachView(pageName, anchor) {
-    $.jPhoenix.attachView(pageName, anchor);
+    $.jPhink.attachView(pageName, anchor);
 }
 
 function attachViewP(pageName, anchor) {
-    $.jPhoenix.attachViewP(pageName, anchor);
+    $.jPhink.attachViewP(pageName, anchor);
 }
 
 function attachWindow(pageName, anchor) {
-    $.jPhoenix.attachWindow(pageName, anchor);
+    $.jPhink.attachWindow(pageName, anchor);
 }
 
 function attachIframe(id, src, anchor) {
-    $.jPhoenix.attachIframe(id, src, anchor);
+    $.jPhink.attachIframe(id, src, anchor);
 }
 
 function debugLog(message) {
-    $.jPhoenix.debugLog(message);
+    $.jPhink.debugLog(message);
 }
 function phpJsonDecode(json) {
-    return $.jPhoenix.phpJsonDecode(json);
+    return $.jPhink.phpJsonDecode(json);
 }
 

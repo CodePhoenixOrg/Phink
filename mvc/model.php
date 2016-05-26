@@ -10,13 +10,13 @@
  *
  * @author david
  */
-namespace Phoenix\MVC;
+namespace Phink\MVC;
 
-//require_once 'phoenix/core/object.php';
-//require_once 'phoenix/data/client/pdo/pdo_command.php';
-//require_once 'phoenix/data/crud_queries.php';
+//require_once 'phink/core/object.php';
+//require_once 'phink/data/client/pdo/pdo_command.php';
+//require_once 'phink/data/crud_queries.php';
 
-use Phoenix\Core\TObject;
+use Phink\Core\TObject;
 
 interface IModel {
     
@@ -33,7 +33,7 @@ interface IModel {
 
 class TModel extends TObject implements IModel
 {
-    use \Phoenix\Data\TCrudQueries;
+    use \Phink\Data\TCrudQueries;
     //put your code here
     protected $isNew = false;
     protected $isDirty = false;

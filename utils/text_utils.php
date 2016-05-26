@@ -4,7 +4,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phoenix\Utils;
+namespace Phink\Utils;
 
 /**
  * Description of textUtils

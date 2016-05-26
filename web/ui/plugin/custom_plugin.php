@@ -5,11 +5,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phoenix\Web\UI\Plugin;
+namespace Phink\Web\UI\Plugin;
 
-abstract class TCustomPlugin extends \Phoenix\Core\TObject
+abstract class TCustomPlugin extends \Phink\Core\TObject
 {
-    use \Phoenix\Data\UI\TDataBinder;
+    use \Phink\Data\UI\TDataBinder;
     
     protected $elements = null;
     

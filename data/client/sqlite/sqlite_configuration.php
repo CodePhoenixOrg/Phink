@@ -1,10 +1,10 @@
 <?php
 
-namespace Phoenix\Data\Client\SQLite;
+namespace Phink\Data\Client\SQLite;
 
-//require_once 'phoenix/configuration/data/fileconfiguration.php';
+//require_once 'phink/configuration/data/fileconfiguration.php';
 
-use Phoenix\Configuration\Data\TFileConfiguration;
+use Phink\Configuration\Data\TFileConfiguration;
 
 /**
  * Description of asqliteconfiguration

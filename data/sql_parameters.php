@@ -1,9 +1,9 @@
 <?php
 
-namespace Phoenix\Data;
+namespace Phink\Data;
 
-//require_once 'phoenix/core/aobject.php';
-use Phoenix\Core\TObject;
+//require_once 'phink/core/aobject.php';
+use Phink\Core\TObject;
 
 class TSqlParameters extends TObject
 {

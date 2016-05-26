@@ -1,15 +1,15 @@
 <?php
-namespace Phoenix\Web\UI;
+namespace Phink\Web\UI;
 
 /**
  * Description of tgrid
  *
  * @author david
  */
-abstract class TPluginRenderer extends \Phoenix\MVC\TPartialController
+abstract class TPluginRenderer extends \Phink\MVC\TPartialController
 {
-    use \Phoenix\Web\UI\THtmlPattern;
-    use \Phoenix\Data\UI\TDataBinder;
+    use \Phink\Web\UI\THtmlPattern;
+    use \Phink\Data\UI\TDataBinder;
     
     protected static $templateFilename;
 
@@ -23,7 +23,7 @@ abstract class TPluginRenderer extends \Phoenix\MVC\TPartialController
 //        } else {
             $this->getElements();
             $elements = $this->elements[$this->getPattern()];
-            //\Phoenix\Log\TLog::dump('PATTERN ELEMENTS', $elements);
+            //\Phink\Log\TLog::dump('PATTERN ELEMENTS', $elements);
 
             $id = $this->getParent()->getId();
 
@@ -40,7 +40,7 @@ abstract class TPluginRenderer extends \Phoenix\MVC\TPartialController
         
         
         
-        $pluginClass = '\Phoenix\Web\UI\Plugin\T' . ucfirst($this->getPattern());
+        $pluginClass = '\Phink\Web\UI\Plugin\T' . ucfirst($this->getPattern());
         $plugin = new $pluginClass($this);
         $plugin->setId($this->getId());
         $plugin->setCols($this->columns);

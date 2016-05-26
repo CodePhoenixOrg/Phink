@@ -1,22 +1,22 @@
 <?php
-namespace Phoenix\MVC;
+namespace Phink\MVC;
 
 //require_once 'view.php';
 //require_once 'custom_view.php';
-//require_once 'phoenix/ui/registry.php';
+//require_once 'phink/ui/registry.php';
 //require_once 'partial_controller.php';
-//require_once 'phoenix/utils/file_utils.php';
+//require_once 'phink/utils/file_utils.php';
 
-use Phoenix\Web\TWebObject;
-use Phoenix\MVC\TView;
-use Phoenix\MVC\TCustomView;
-use Phoenix\Core\TRegistry;
-use Phoenix\Utils\TFileUtils;
+use Phink\Web\TWebObject;
+use Phink\MVC\TView;
+use Phink\MVC\TCustomView;
+use Phink\Core\TRegistry;
+use Phink\Utils\TFileUtils;
 
 class TPartialView extends TCustomView 
 {
 
-    public function __construct(\Phoenix\Core\TObject $father, \Phoenix\Core\TObject $parent)
+    public function __construct(\Phink\Core\TObject $father, \Phink\Core\TObject $parent)
     {
         $this->parentView = $father;
         $this->className = $parent->getType();
@@ -25,7 +25,7 @@ class TPartialView extends TCustomView
 //        $this->depth += $this->view->getDepth();
         //$this->context = $parent->context;
         //$this->className = $this->getType();
-        //\Phoenix\Log\TLog::debug('FATHER TYPE <> PARENT TYPE : ' . $father->getType() . ' <> ' . $this->className, __FILE__, __LINE__);
+        //\Phink\Log\TLog::debug('FATHER TYPE <> PARENT TYPE : ' . $father->getType() . ' <> ' . $this->className, __FILE__, __LINE__);
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();        
 
@@ -49,7 +49,7 @@ class TPartialView extends TCustomView
 
             if($info = TRegistry::classInfo($this->className))
 {
-                $this->viewName = \Phoenix\TAutoloader::classNameToFilename($this->className);
+                $this->viewName = \Phink\TAutoloader::classNameToFilename($this->className);
                 if($info->hasTemplate) {
                     $this->viewFileName = ROOT_PATH . $info->path . $this->viewName . PREHTML_EXTENSION;
                 } else {

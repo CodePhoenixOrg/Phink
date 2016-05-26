@@ -1,13 +1,13 @@
 <?php
-namespace Phoenix\Web\UI;
+namespace Phink\Web\UI;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-use Phoenix\Core\TRegistry;
-use Phoenix\Xml\TXmlDocument;
-use Phoenix\Xml\TXmlMatch;
+use Phink\Core\TRegistry;
+use Phink\Xml\TXmlDocument;
+use Phink\Xml\TXmlMatch;
 
 /**
  * Description of code_generator
@@ -73,17 +73,17 @@ trait TCodeGenerator {
                 $fqcn = '';
                 $code  = '';
                 $info = TRegistry::classInfo($className);
-                //\Phoenix\Log\TLog::dump('REGISTRY INFO ' . $className, $info);
+                //\Phink\Log\TLog::dump('REGISTRY INFO ' . $className, $info);
                 if ($info) {
                     if($info->canRender) {
-                        array_push($requires, '\\Phoenix\\TAutoloader::import("' . $className . '");');
+                        array_push($requires, '\\Phink\\TAutoloader::import("' . $className . '");');
                     }
                     $fqcn = $info->namespace . '\\' . $className;
                 } elseif ($className != 'this') {
                     $viewName = lcfirst($className);
                     $fullClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
-                    array_push($requires, '\\Phoenix\\TAutoloader::import("' . $viewName . '");');
-                    $class = \Phoenix\TAutoloader::includeClass($fullClassPath);
+                    array_push($requires, '\\Phink\\TAutoloader::import("' . $viewName . '");');
+                    $class = \Phink\TAutoloader::includeClass($fullClassPath);
                     $fqcn = $class['type'];
                     $code = $class['code'];
                 }
@@ -109,7 +109,7 @@ trait TCodeGenerator {
         
                 foreach($properties as $key=>$value) {
                     if($key == 'id' ) {
-                        if($serialize) array_push($creations[$j], 'if(!' . $thisControl . ' = \Phoenix\Core\TObject::wakeUp("' . $value . '")) {');
+                        if($serialize) array_push($creations[$j], 'if(!' . $thisControl . ' = \Phink\Core\TObject::wakeUp("' . $value . '")) {');
                         if ($notThis) {
                             array_push($creations[$j], $thisControl . ' = new \\' . $fqcn . '($this); ');
                         }
@@ -199,11 +199,11 @@ trait TCodeGenerator {
     function writeHTML(TXmlDocument $doc, $pageCode)
     {
         if(file_exists($this->jsControllerFileName) && !strstr($this->jsControllerFileName, 'main.js')) {
-            $pageCode = "<script data-getscript='itsme' src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . \Phoenix\Utils\TFileUtils::webPath($this->jsControllerFileName) . "'></script>" . CR_LF . $pageCode;        
+            $pageCode = "<script data-getscript='itsme' src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . \Phink\Utils\TFileUtils::webPath($this->jsControllerFileName) . "'></script>" . CR_LF . $pageCode;        
         }
         if(file_exists($this->cssFileName)) {
 //            $pageCode = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . "/" . $this->cssFileName . "' />" . CR_LF . $pageCode;
-            $pageCode = "<script>TWebObject.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . \Phoenix\Utils\TFileUtils::webPath($this->cssFileName) . "');</script>" . CR_LF . $pageCode;        
+            $pageCode = "<script>TWebObject.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . \Phink\Utils\TFileUtils::webPath($this->cssFileName) . "');</script>" . CR_LF . $pageCode;        
         }
         
         $count = $doc->getCount();

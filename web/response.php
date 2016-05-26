@@ -4,7 +4,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phoenix\Web;
+namespace Phink\Web;
 
 /**
  * Description of response

@@ -1,5 +1,5 @@
 <?php
-namespace Phoenix\Utils {
+namespace Phink\Utils {
     /**
     * Description of TStringUtils
     *

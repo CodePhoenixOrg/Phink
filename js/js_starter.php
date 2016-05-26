@@ -35,7 +35,7 @@ file_put_contents($js_filename, $js_content);
 
 $dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
 
-$js_filename = $destdir . 'code_phoenix.js';
+$js_filename = $destdir . 'code_phink.js';
 
 $filenames = [
         'global.js'
@@ -63,7 +63,7 @@ file_put_contents($js_filename, $js_content);
 $filenames = [
         'core' . DIRECTORY_SEPARATOR . 'debug.js'
     ,   'core' . DIRECTORY_SEPARATOR . 'console.js'
-    ,   'jphoenix.js'
+    ,   'jphink.js'
 ];
 
 $js_content = '';
