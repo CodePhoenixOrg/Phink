@@ -17,7 +17,7 @@ $filenames = [
 //    ,'drag-and-drop.css'
 ];
 
-$srcdir =  dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..'  . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'thirdparty' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR;
+$srcdir =  dirname(__FILE__) . DIRECTORY_SEPARATOR . '..'  . DIRECTORY_SEPARATOR . '..'  . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'thirdparty' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR;
 $destdir = DOCUMENT_ROOT . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR;
 
 $css_filename = $destdir . '_3rdparty.css';
