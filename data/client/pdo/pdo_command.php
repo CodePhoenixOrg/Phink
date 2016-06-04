@@ -34,7 +34,12 @@ class TPdoCommand extends \Phink\Data\TCustomCommand
                 
         $this->_activeConnection = $activeConnection;
         $this->_connectionHandler = $this->_activeConnection->getState();
-        $this->_connectionHandler->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        if($this->_connectionHandler instanceof \PDO) {
+            $this->_connectionHandler->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } else {
+            \Phink\Log\TLog::debug('_connectionHandler', $this->_connectionHandler);
+            throw new \Exception('PDO Connection is null ! Please check the parameters.');
+        }
         
         if($commandText != '') {
             $this->_commandText = $commandText;
@@ -68,7 +73,6 @@ class TPdoCommand extends \Phink\Data\TCustomCommand
             $start = (!$start) ? 1 : $start;
             //$sql = str_replace(PHX_MYSQL_LIMIT, ' LIMIT ' . (($start - 1) * $count). ', ' . $count, $this->getSelectQuery());
             $sql = $this->getSelectQuery() . CR_LF . ' LIMIT ' . (($start - 1) * $count). ', ' . $count . CR_LF;
-            \Phink\Log\TLog::dump('start::' . $start . '; count::' . $count . '; LIMITED_SELECT::', $sql);
 
             $this->setSelectQuery($sql);
 //        }

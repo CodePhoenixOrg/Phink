@@ -9,7 +9,7 @@
 
 $destdir = DOCUMENT_ROOT . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR;
 
-$srcdir =  dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..'  . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'thirdparty' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR;
+$srcdir =  dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..'  . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'thirdparty' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR;
 
 $js_filename = $destdir . '_3rdparty.js';
 
@@ -35,7 +35,7 @@ file_put_contents($js_filename, $js_content);
 
 $dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
 
-$js_filename = $destdir . 'code_phink.js';
+$js_filename = $destdir . 'code_phoenix.js';
 
 $filenames = [
         'global.js'

@@ -12,15 +12,7 @@ namespace Phink\Core;
 //    'database' => 15
 //);
 
-require_once 'constants.php';
-
-include 'phink/'.STARTER_FILE;
-
-require_once 'phink/autoloader.php';
-\Phink\TAutoLoader::register();
-
-//require_once 'Predis/Autoloader.php';
-//\Predis\Autoloader::register();
+require_once 'core.php';
 
 /**
  * Description of Application
