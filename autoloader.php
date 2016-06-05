@@ -273,7 +273,7 @@ class TAutoloader
             array_shift($sa);
         }
 
-        return ucfirst($sa[0]) . '\\Controllers';
+        return ucfirst(str_replace('-', '_', $sa[0])) . '\\Controllers';
     }
     
     public static function controllerTemplate($namespace, $className)

@@ -13,6 +13,7 @@ define ('CACHE_DIR', 'cache');
 
 $PWD = '';
 if(isset($_SERVER['DOCUMENT_ROOT'])) {
+    define ('BR', "<br />");
     if(PHP_OS == 'WINNT') {
         define ('CR_LF', "\r\n");
         define('DOCUMENT_ROOT', str_replace('\\\\', '\\', $_SERVER['DOCUMENT_ROOT']) . '\\');
@@ -53,8 +54,8 @@ define('LOGIN_PAGE', '/' . LOGIN_VIEW . '.html');
 define('MASTER_PAGE', '/' . MASTER_VIEW . '.html');
 define('HOME_PAGE', '/' . HOME_VIEW . '.html');
 define('LOG_FILE', LOG_PATH . 'debug.log');
-define('APP_DATA', DOCUMENT_ROOT . 'data/');
-define('APP_BUSINESS', DOCUMENT_ROOT . 'app/business/');
+define('APP_DATA', DOCUMENT_ROOT . 'data' . DIRECTORY_SEPARATOR);
+define('APP_BUSINESS', DOCUMENT_ROOT . 'app' . DIRECTORY_SEPARATOR . 'business' . DIRECTORY_SEPARATOR);
 define('STARTER_FILE', 'starter.php');
 define('HTTP_USER_AGENT', $_SERVER['HTTP_USER_AGENT']);
 define('HTTP_HOST', $_SERVER['HTTP_HOST']);
@@ -65,7 +66,10 @@ define('REQUEST_URI', $_SERVER['REQUEST_URI']);
 define('QUERY_STRING', $_SERVER['QUERY_STRING']);
 define('SERVER_NAME', $_SERVER['SERVER_NAME']);
 define('SERVER_HOST', HTTP_PROTOCOL . '://' . HTTP_HOST);
-define('SERVER_ROOT', HTTP_PROTOCOL . '://' . SERVER_NAME . ((HTTP_PORT != '80') ? ':' . HTTP_PORT : ''));
+define('SERVER_ROOT', HTTP_PROTOCOL . '://' . SERVER_NAME . ((HTTP_PORT !== '80') ? ':' . HTTP_PORT : ''));
+define('BASE_URI', SERVER_NAME . ((HTTP_PORT !== '80') ? ':' . HTTP_PORT : '') . ((REQUEST_URI !== '') ? REQUEST_URI : ''));
+define('FULL_URI', HTTP_PROTOCOL . '://' . BASE_URI);
+define('FULL_SSL_URI', 'https://' . BASE_URI);
 define('ROOT_NAMESPACE', 'Phink');
 define('ROOT_PATH', 'phink');
 define('DEFALT_MODEL', ROOT_NAMESPACE . '\\MVC\\TModel');

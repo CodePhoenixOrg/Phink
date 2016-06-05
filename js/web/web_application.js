@@ -5,8 +5,8 @@
  */
 
 
-var TWebApplication = function(domain, name) {
-    TWebObject.call(this, domain);
+var TWebApplication = function(domain, name, isSSL) {
+    TWebObject.call(this, domain, isSSL);
     
     this.id = 'app' + Date.now();
     if(name === undefined) {
@@ -23,8 +23,8 @@ var TWebApplication = function(domain, name) {
 TWebApplication.prototype = new TWebObject();
 TWebApplication.prototype.constructor = TWebApplication;
 
-TWebApplication.create = function(domain, name) {
-    return new TWebApplication(domain, name);
+TWebApplication.create = function(domain, name, isSSL) {
+    return new TWebApplication(domain, name, isSSL);
 };
 
 TWebApplication.prototype.includeView = function(name) {

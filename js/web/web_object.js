@@ -5,9 +5,10 @@
  */
 
 
-var TWebObject = function(domain) {
+var TWebObject = function(domain, isSSL) {
     TObject.call(this);
     
+    this.isSSL = isSSL;
     this.origin = '';
     this.url = {};
     this.token = '';
@@ -43,7 +44,7 @@ TWebObject.prototype.getToken = function() {
 };
 
 TWebObject.prototype.getPath = function(url, domain) {
-    this.url = new TUrl(url, domain);
+    this.url = new TUrl(url, domain, this.isSSL);
     return this.url.toString();
 };
 

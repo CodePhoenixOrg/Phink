@@ -50,11 +50,8 @@ class TPdoConnection extends TObject implements IConnection, IConfigurable
             } else {
                 $this->_state = new \PDO($this->_dsn, $this->_sqlConfig->getUser(), $this->_sqlConfig->getPassword());
             }
-//            if ($this->_sqlConfig->getDriver() == TServerType::MYSQL) {            
-//                $this->_state->query("SET NAMES 'utf8'");
-//            }
         } catch (\PDOException $ex) {
-            //\Phink\Log\TLog::exception($ex, __FILE__, __LINE__);
+            \Phink\Log\TLog::exception($ex, __FILE__, __LINE__);
         }
 
         return $this->_state;

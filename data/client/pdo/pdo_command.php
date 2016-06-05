@@ -34,12 +34,12 @@ class TPdoCommand extends \Phink\Data\TCustomCommand
                 
         $this->_activeConnection = $activeConnection;
         $this->_connectionHandler = $this->_activeConnection->getState();
-        if($this->_connectionHandler instanceof \PDO) {
+        //if($this->_connectionHandler instanceof \PDO) {
             $this->_connectionHandler->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } else {
-            \Phink\Log\TLog::debug('_connectionHandler', $this->_connectionHandler);
-            throw new \Exception('PDO Connection is null ! Please check the parameters.');
-        }
+//        } else {
+//            \Phink\Log\TLog::debug('_connectionHandler', $this->_connectionHandler);
+//            throw new \Exception('PDO Connection is null ! Please check the parameters.');
+//        }
         
         if($commandText != '') {
             $this->_commandText = $commandText;

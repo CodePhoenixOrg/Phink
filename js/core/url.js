@@ -5,10 +5,11 @@
  */
 
 
-var TUrl = function (url, domain) {
+var TUrl = function (url, domain, isSSL) {
 
     this.url = url;
     this.isParsed = false;
+    this.isSSL = isSSL;
     
     this.tmpDomain = domain;
 
@@ -44,12 +45,12 @@ TUrl.prototype.parse = function () {
     } else {
         if(this.protocol === '' && this.tmpDomain !== undefined) {
             this.domain = this.tmpDomain;
-            this.protocol = 'http:';
+            this.protocol = (this.isSSL) ? 'https:' : 'http:';
         
         } else {
 
             if(this.protocol === '') {
-                this.protocol = 'http:';
+                this.protocol = (this.isSSL) ? 'https:' : 'http:';
                 //throw new Error('Invalid absolute url. Protocol is missing');
             }
 
@@ -84,7 +85,7 @@ TUrl.prototype.parse = function () {
         }
 
         this.port = (this.port === '') ? '80' : this.port;
-        this.protocol = (this.domain !== '' && this.protocol === '') ? 'http:' : this.protocol;
+        this.protocol = ((this.domain !== '' && this.protocol === '') ? ((this.isSSL) ? 'https:' : 'http:') : this.protocol);
     }
 
     var queryString = '';

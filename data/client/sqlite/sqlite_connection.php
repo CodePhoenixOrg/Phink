@@ -54,5 +54,10 @@ class TSqliteConnection extends TObject implements IConnection, IConfigurable
     {
 
     }
+    
+    public function getDriver()
+    {
+        
+    }
 }
 ?>

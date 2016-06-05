@@ -326,7 +326,7 @@ trait TWebObject {
         $this->namespace = $this->getFileNamespace();
         
         if(!isset($this->namespace)) {
-            $this->namespace = UI\TCustomControl::getDefaultNamespace();
+            $this->namespace = \Phink\TAutoloader::getDefaultNamespace();
         }
 
     }

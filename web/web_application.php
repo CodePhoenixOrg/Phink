@@ -82,7 +82,7 @@ class TWebApplication extends \Phink\Core\TApplication
             if(count($sa) == 2) {
                 array_shift($sa);
             }
-            $this->namespace = ucfirst($sa[0]);
+            $this->namespace = str_replace('-', '_', ucfirst($sa[0]));
         }
         $this->namespace .= '\\Controllers'; 
     }
@@ -90,7 +90,7 @@ class TWebApplication extends \Phink\Core\TApplication
     public function validateToken()
     {
         $result = false;
-        // On prend le token en cours ...
+        // We get the current token ...
 //        $token = $this->request->getToken();
         $token = TRequest::getQueryStrinng('token');
 //        if(!is_string($token) && !isset($_SESSION['USER'])) {
@@ -103,12 +103,12 @@ class TWebApplication extends \Phink\Core\TApplication
 //            || $this->viewName == LOGIN_VIEW  
 //            || $this->viewName == HOME_VIEW
         ) {
-            // on renouvelle le token
-        // ... avec ce token on récupère l'utilisateur et un nouveau token
-        // de telle sorte qu'on limite la durée de vie du token
+            // We renew the token
+            // ... we'll try to match the user with this token and alternatively get a new token
+            // so that it can no longer be used
             $token = $this->authentication->renewToken($token);
 //        $result = TAuthentication::getPermissionByToken($token);
-            // on place le nouveau token dans la réponse
+            // we place the new token in the response
             $this->response->setToken($token);
             $result = true;
                     

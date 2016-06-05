@@ -12,28 +12,26 @@ use Phink\Data\TServerType;
 class TDataAccess
 {
 
-    private static $connection = null;
-    
     public static function getCryptoDB()
     {
 
         $databaseName = \Phink\Utils\TFileUtils::filePath(DOCUMENT_ROOT . 'data/crypto.db');
 
         $sqlConfig = new TPdoConfiguration(TServerType::SQLITE, $databaseName);
-        self::$connection = new TPdoConnection($sqlConfig);
+        $connection = new TPdoConnection($sqlConfig);
         
         $isFound = (file_exists($databaseName));
-        self::$connection->open();
+        $connection->open();
         
         if(!$isFound) {
-            $command = new TPdoCommand(self::$connection);
+            $command = new TPdoCommand($connection);
                     
             $command->exec("CREATE TABLE crypto (id integer primary key autoincrement, token text, userId text, userName text, outdated integer);");
             $command->exec("CREATE INDEX crypto_id ON crypto (id);");
             $command->exec("CREATE UNIQUE INDEX covering_idx ON crypto (token, userId, userName, outdated);");
         }
 
-        return self::$connection;
+        return $connection;
     }
 }
 ?>
