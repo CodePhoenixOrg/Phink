@@ -27,9 +27,7 @@ trait THtmlControl
     }
     public function setEnabled($value)
     {
-        //$value = (is_string($value)) ? ((strtolower($value) == 'false') ? 0 : 1) : 1;
-        $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-        $this->enabled = $value;
+        $this->enabled = filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 
     public function getName()

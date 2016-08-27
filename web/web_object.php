@@ -123,7 +123,7 @@ trait TWebObject {
         }
 
         if($default < 1) {
-            self::pageCount(PAGE_COUNT_DEFAULT);
+            self::pageCount(PAGE_COUNT_ZERO);
         }
 
         return self::pageCount();

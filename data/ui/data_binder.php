@@ -14,6 +14,21 @@ trait TDataBinder
     protected $data = array();
     protected $templates = array();
     protected $pivot = false;
+    protected $tileBy = false;
+
+    public function getTiled()
+    {
+        return $this->tileBy;
+    }
+    public function setTiled($value)
+    {
+        if($value === 'auto') {
+            $this->tileBy = -1;
+        } else {
+            
+        }
+        $this->tileBy = filter_var($value, FILTER_VALIDATE_INT);
+    }
 
     public function setTemplates($value)
     {
@@ -49,8 +64,7 @@ trait TDataBinder
     }
     public function setPivot($value)
     {
-        $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-        $this->pivot = $value;
+        $this->pivot = filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
     
     public static function applyTemplate($templates, $row, $j) 

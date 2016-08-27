@@ -168,7 +168,7 @@ class TRequest extends \Phink\Core\TObject
             $code = $info['http_code'];
             curl_close($ch);
 
-            $result[$name] = ['code' => $code, 'header' => $header, 'html' => $html];
+            $result[$name] = (object) ['code' => (int)$code, 'header' => $header, 'html' => $html];
                         
             \Phink\Log\TLog::dump('subrequests result', $result);
         }
@@ -272,6 +272,8 @@ class TRequest extends \Phink\Core\TObject
 
     public function getQueryArguments($arg = null)
     {
+        if(!isset($_REQUEST[$arg])) return false;
+        
         return self::getQueryStrinng($arg);
     }
 

@@ -38,7 +38,9 @@ abstract class TPluginRenderer extends \Phink\MVC\TPartialController
             file_put_contents($elementsFilename, $json);
 //        }
         
-        
+        if($this->rows === PAGE_COUNT_ZERO) {
+            $this->rows = count($this->data['values']);
+        }
         
         $pluginClass = '\Phink\Web\UI\Plugin\T' . ucfirst($this->getPattern());
         $plugin = new $pluginClass($this);
@@ -47,6 +49,7 @@ abstract class TPluginRenderer extends \Phink\MVC\TPartialController
         $plugin->setRows($this->rows);
         $plugin->setData($this->data);
         $plugin->setPivot($this->pivot);
+        $plugin->setTiled($this->tileBy);
         $plugin->setTemplates($this->templates);
         $plugin->setElements($elements);
         $this->innerHtml = $plugin->render();

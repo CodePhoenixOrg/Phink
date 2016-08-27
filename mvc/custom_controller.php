@@ -13,12 +13,13 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
     protected $beforeBinding = '';
     protected $afterBinding = '';
     protected $viewHtml = '';
-    protected $model = NULL;
-    
-    protected $view = NULL;
+    protected $model = null;
+    protected $view = null;
+    private $_type = '';
     
     public function __construct(\Phink\Core\TObject $parent)
     {
+
         parent::__construct($parent);
         
         $this->request = $parent->getRequest();
@@ -51,9 +52,10 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
        
     public function parse()
     {
-        $isAlreadyParsed = $this->view->parse();
+        $isAlreadyParsed = false; //file_exists(strtolower($this->getCacheFileName()));
 
         if(!$isAlreadyParsed) {
+            $this->_type = $this->view->parse();
 //            $this->innerPhp = $this->view->getPreHtml();
 //        } else {
             $this->creations = $this->view->getCreations();
@@ -65,42 +67,48 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
 
     public function renderCreations()
     {
-      if(!empty($this->creations)) {
-        include_once "data://text/plain;base64," . base64_encode('<?php' . $this->creations . '?>');
-      }
+        if(!empty($this->creations)) {
+            include "data://text/plain;base64," . base64_encode('<?php' . $this->creations . '?>');
+        }
     }
 
     public function renderDeclarations()
     {
-      if(!empty($this->declarations)) {
-        include_once "data://text/plain;base64," . base64_encode('<?php' . $this->declarations . '?>');
-      }
+        if(!empty($this->declarations)) {
+            include "data://text/plain;base64," . base64_encode('<?php' . $this->declarations . '?>');
+        }
     }
 
     public function renderAfterBinding()
     {
-      if(!empty($this->afterBinding)) {
-        include_once "data://text/plain;base64," . base64_encode('<?php' . $this->afterBinding . '?>');
-      }
+        if(!empty($this->afterBinding)) {
+            include "data://text/plain;base64," . base64_encode('<?php' . $this->afterBinding . '?>');
+        }
     }
 
     public function renderView()
     {
-        include_once "data://text/plain;base64," . base64_encode($this->viewHtml);
+        include "data://text/plain;base64," . base64_encode($this->viewHtml);
     }
 
     public function renderedHtml()
     {
-        include_once "data://text/plain;base64," . base64_encode($this->innerHtml);
+        include "data://text/plain;base64," . base64_encode($this->innerHtml);
     }
     
     public function renderedPhp()
     {
-        $this->renderCreations();
-        $this->renderDeclarations();
-        //$this->beforeBinding();
-        //$this->renderAfterBinding();
-        $this->renderView();
+        try {
+            //if(!class_exists($this->_type)) {
+                $this->renderCreations();
+                $this->renderDeclarations();
+            //}
+            //$this->beforeBinding();
+            //$this->renderAfterBinding();
+            $this->renderView();
+        } catch (Exception $ex) {
+            \Phink\Log\TLog::file(__METHOD__ . '::exception', $ex);
+        }
     }
 
     public function perform() {}
@@ -114,6 +122,10 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
         $html = ob_get_clean();
 
         $this->response->setData('view', $html);
+        
+        if(file_exists($this->jsControllerFileName)) {
+            $this->response->addScript($this->jsControllerFileName);
+        }
     }
     
     

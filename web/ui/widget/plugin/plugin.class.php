@@ -46,8 +46,8 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
 
     public function init()
     {
-        $this->_rowCount = $this->pageCountByDefault($this->_rowCount);
-        $this->hasChildren = count($this->_children) > 0;
+        $childrenCount = count($this->_children);
+        $this->hasChildren = $childrenCount > 0;
 
         if($this->hasChildren) {
             $this->templates = $this->getControls($this->_children);
@@ -64,6 +64,10 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
             $this->_childrenCount = $this->statement->getFieldCount();
         }
         
+        $this->_rowCount = $this->pageCountByDefault($this->_rowCount);
+//        if($this->_rowCount === 0) {
+//            $this->_rowCount = $childrenCount;
+//        }
     }
 
     public static function getGridData($id, \Phink\Data\Client\PDO\TPdoCommand $cmd, $rowCount)
@@ -98,6 +102,9 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
         for($k = $r; $k < $rowCount; $k++) {
             array_push($values, json_encode(array_fill(0, $fieldCount, '&nbsp;')));
         }
+//        if($rowCount < 1) {
+            $rowCount = $r;
+//        }
         
         //\Phink\Log\TLog::dump('RECORDSET VALUES', $values);
         $result = [

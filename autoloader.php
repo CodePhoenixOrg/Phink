@@ -85,37 +85,47 @@ class TAutoloader
             $filepath .= (file_exists($filepath . PREHTML_EXTENSION)) ? CLASS_EXTENSION : '.php';
             
             //file_put_contents(STARTER_FILE, "include '$filepath';"  . "\n", FILE_APPEND);
+            include $filepath;
             
-            include($filepath);
         }
     }
     
     private static function _includeInnerClass($viewName, $info, $withCode = true)
     {
+        $className = ucfirst($viewName);
         $filename = ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;
         //\Phink\Log\TLog::debug('INCLUDE INNER PARTIAL CONTROLLER : ' . $filename, __FILE__, __LINE__);
 
         $code = file_get_contents($filename, FILE_USE_INCLUDE_PATH);
-        include_once $filename;
+        
         $file = str_replace('\\', '_', $info->namespace . '\\' . $viewName) . '.php';
+        if(!file_exists(TMP_DIR . DIRECTORY_SEPARATOR . $file)) {
+            include $filename;
+        }
+       
         if($withCode) {
             $code = substr(trim($code), 0, -2) . CR_LF . CONTROL_ADDITIONS;
             TRegistry::setCode($filename, $code);
         }
         
-        return ['file' => $file, 'type' => $info->namespace . '\\' . $viewName, 'code' => $code];
+        return ['file' => $file, 'type' => $info->namespace . '\\' . $className, 'code' => $code];
         
           
     }
     
-    public static function includeClass($filename, $withCode = true)
+    /**
+     * Load the controller file, parse it in search of namespace and classname.
+     * Alternatively execute the code if the class is not already declared 
+     * 
+     * @param string $filename The controller filename 
+     * @param int $params The bitwise constants values that determine the behavior
+     *                    INCLUDE_FILE : execute the code
+     *                    RETURN_CODE : ...
+     * @return boolean
+     */
+    public static function includeClass($filename, $params = 0)
     {
-//        if(PHP_OS == 'WINNT') {
-//            $filename = str_replace('/', DIRECTORY_SEPARATOR, $filename);
-//            $filename = str_replace('\\\\', '\\', $filename);
-//        } else {
-//            $filename = str_replace('//', DIRECTORY_SEPARATOR, $filename);
-//        }
+
         $filename = strtolower($filename);
         if(!file_exists($filename)) {
             //\Phink\Log\TLog::debug('INCLUDE CLASS : FILE ' . $filename . ' DOES NOT EXIST');
@@ -123,7 +133,6 @@ class TAutoloader
         }
         
         $classText = file_get_contents($filename, FILE_USE_INCLUDE_PATH);
-        include_once $filename;
         
         $code = $classText;
         
@@ -148,13 +157,26 @@ class TAutoloader
             $sa = explode(' ', $className);
             $className = $sa[0];
         }
-        $file = str_replace('\\', '_', $namespace . '\\' . $className) . '.php';
-        if($withCode) {
+        
+        $fqcn = $namespace . '\\' . $className;
+        $file = str_replace('\\', '_', $fqcn) . '.php';
+        if(isset($params) && ($params && RETURN_CODE === RETURN_CODE)) {
             $code = substr(trim($code), 0, -2) . CR_LF . CONTROL_ADDITIONS;
             TRegistry::setCode($filename, $code);
         }
         
-        return ['file' => $file, 'type' => $namespace . '\\' . $className, 'code' => $code];
+        //include $filename;
+        /*include ("data://text/plain," . '<?php ' . substr(str_replace("\t", '', str_replace("\n", '', str_replace("\r", '', $code))), 5) . ' ?>');
+         * 
+         */
+        
+        Log\TLog::debug(TMP_DIR . DIRECTORY_SEPARATOR . $file);
+        
+        if((isset($params) && ($params && INCLUDE_FILE === INCLUDE_FILE)) && !class_exists('\\' . $fqcn))  {
+            include $filename;
+        }
+        
+        return ['file' => $file, 'type' => $fqcn, 'code' => $code];
         
     }
 
@@ -166,7 +188,7 @@ class TAutoloader
         
         $modelFileName = 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $modelName . CLASS_EXTENSION;
         
-        $result = self::includeClass($modelFileName, false);
+        $result = self::includeClass($modelFileName, INCLUDE_FILE);
         if(!$result) {
             $result['type'] = DEFALT_MODEL;
         }
@@ -180,7 +202,7 @@ class TAutoloader
         $result = false;
         $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
         
-        $result = self::includeClass($controllerFileName, true);
+        $result = self::includeClass($controllerFileName, RETURN_CODE | INCLUDE_FILE);
         if(!$result) {
             $sa = explode('.', SERVER_NAME);
             array_pop($sa);
@@ -204,7 +226,7 @@ class TAutoloader
         $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
         if(file_exists($controllerFileName)) {
             //\Phink\Log\TLog::debug('INCLUDE CUSTOM PARTIAL CONTROLLER : ' . $controllerFileName, __FILE__, __LINE__);
-            $result = self::includeClass($controllerFileName, true);
+            $result = self::includeClass($controllerFileName, RETURN_CODE | INCLUDE_FILE);
         } elseif ($info = Core\TRegistry::classInfo($viewName)) {
             $result = self::_includeInnerClass($viewName, $info, true);
         } else {
@@ -213,6 +235,7 @@ class TAutoloader
             $className = ucfirst($viewName);
             $result = self::includeDefaultPartialController($namespace, $className);
             TRegistry::setCode('app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION, $result['code']);
+            
         }
 
         return $result;
@@ -258,7 +281,7 @@ class TAutoloader
             include $cacheFilename;
         } else {
             //\Phink\Log\TLog::debug('INCLUDE NEW CONTROL : ' . $viewName, __FILE__, __LINE__);
-            //include_once 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
+            //include 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
             $result = self::includePartialControllerByName($viewName);
         }
 

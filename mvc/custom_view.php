@@ -98,6 +98,9 @@ abstract class TCustomView extends \Phink\Web\UI\TCustomControl
 //        $this->viewHtml = $this->viewHtml[0];
 
         $this->viewHtml = file_get_contents($this->viewFileName, FILE_USE_INCLUDE_PATH);
+        
+        $include = \Phink\TAutoloader::includeClass($this->controllerFileName);
+        
 //        $this->redis->mset($templateName, $this->viewHtml);
         //\Phink\Log\TLog::debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');
         $doc = new TXmlDocument($this->viewHtml);
@@ -115,7 +118,7 @@ abstract class TCustomView extends \Phink\Web\UI\TCustomControl
         }
         
         $code = TRegistry::getCode($this->controllerFileName);
-        // On stocke le code pars� dans un fichier pour ne plus avoir � le parser � la prochaine demande.
+        // We store the parsed code in a file so that we know it's already parsed on next request.
         $code = str_replace(CREATIONS_PLACEHOLDER, $this->creations, $code);
         $code = str_replace(ADDITIONS_PLACEHOLDER, $this->additions, $code);
         $code = str_replace(AFTERBINDING_PLACEHOLDER, $this->afterBinding, $code);
@@ -124,12 +127,12 @@ abstract class TCustomView extends \Phink\Web\UI\TCustomControl
         $code = str_replace(DEFAULT_PARTIAL_CONTROLLER, DEFAULT_CONTROL, $code);
         $code = str_replace(CONTROLLER, CONTROL, $code);
         $code = str_replace(PARTIAL_CONTROLLER, CONTROL, $code);
-        file_put_contents($this->getCacheFileName(), $code);
+        file_put_contents(strtolower($this->getCacheFileName()), $code);
 //        $this->redis->mset($this->preHtmlName, $this->declarations . $this->viewHtml);
         
-        // On a généré le code mais on ne l'a pas parsé au sens "exécuté" du terme 
-        // donc on sort avec le flag FAUX pour indiquer qu'il doit encore être exécuté
-        return false;
+        
+        // We generate the code, but we don't flag it as parsed because it was not "executed"
+        return $include['type'];
         
     }
     

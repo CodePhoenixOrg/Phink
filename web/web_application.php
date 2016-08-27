@@ -174,7 +174,7 @@ class TWebApplication extends \Phink\Core\TApplication
     {
         $result = false;
         
-        $result = TAutoloader::includeClass($this->controllerFileName);
+        $result = TAutoloader::includeClass($this->controllerFileName, RETURN_CODE | INCLUDE_FILE);
         if(!$result) {
             if($this->request->isAJAX() && $this->request->isPartialView()) {
                 $result = TAutoloader::includeDefaultPartialController($this->namespace, $this->className);

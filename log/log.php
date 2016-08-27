@@ -30,11 +30,16 @@ class TLog
         }
     }
 
-    public static function dump($message, $object)
+    public static function file($filename, $object)
     {
-        self::debug($message . ' : ' . print_r($object, true));
+        file_put_contents (DOCUMENT_ROOT . TMP_DIR . DIRECTORY_SEPARATOR . $filename . '.log', print_r($object, true) . CR_LF);
     }
     
+    public static function dump($message, $object)
+    {
+        self::debug($message . ' : ' . print_r($object, true) . CR_LF);
+    }
+
     public static function debug($message, $filename = null, $line = null)
     {
         self::_setDebugLogFile();
@@ -44,7 +49,7 @@ class TLog
             $filename = substr($filename, strlen(DOCUMENT_ROOT));
         }
         $message = date('Y-m-d h:i:s') . ((isset($filename)) ? ":$filename" : '') . ((isset($line)) ? ":$line" : '') . " : $message" . CR_LF;
-        fwrite($handle, $message);
+        fwrite($handle, $message . CR_LF);
         fclose($handle);
     }
 

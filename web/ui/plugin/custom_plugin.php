@@ -22,6 +22,14 @@ abstract class TCustomPlugin extends \Phink\Core\TObject
         $this->elements = $value;
     }
     
+    public function setTilesPerRow() {
+        if($this->tileBy === -1) {
+            $c = count($this->data['values']);
+            $this->tileBy = (int) round((float)sqrt($c));
+        }
+        $this->tileBy = 6;
+    }
+    
     public abstract function render();
     
 }

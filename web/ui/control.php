@@ -64,6 +64,11 @@ class TControl extends TCustomControl
         $this->unload();
 
         $this->response->setData('view', $html);
+        
+        if(file_exists($this->jsControllerFileName)) {
+            $this->response->addScript($this->jsControllerFileName);
+        }
+        
     }   
     
     public function render()

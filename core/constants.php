@@ -18,7 +18,7 @@ if(isset($_SERVER['DOCUMENT_ROOT'])) {
         define ('CR_LF', "\r\n");
         define('DOCUMENT_ROOT', str_replace('\\\\', '\\', $_SERVER['DOCUMENT_ROOT']) . '\\');
     } elseif(PHP_OS == 'Linux') {
-        define ('CR_LF', "\r");
+        define ('CR_LF', "\n");
         define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT'] . '/');    
     } else {
         define ('CR_LF', "\r");
@@ -40,11 +40,28 @@ if(isset($_SERVER['DOCUMENT_ROOT'])) {
     define('LOG_PATH', DOCUMENT_ROOT . './');
 }
 
+$appconf = DOCUMENT_ROOT . 'config' . DIRECTORY_SEPARATOR . 'app.ini';
+
+$appname = '';
+
+if(file_exists($appconf)) {
+    $appini = parse_ini_file($appconf);
+    $appname = isset($appini['application']['name']) ? $appini['application']['name'] : '';
+} 
+
+if(empty($appname)) {
+    $apppath = explode(DIRECTORY_SEPARATOR, DOCUMENT_ROOT);
+    $appname = array_pop($apppath);
+    $appname = strtolower(array_pop($apppath));
+}
+
+define('APP_NAME', $appname);
 
 define('PAGE_NUMBER', 'pagen');
 define('PAGE_COUNT', 'pagec');
 define('PAGE_NUMBER_DEFAULT', 1);
 define('PAGE_COUNT_DEFAULT', 20);
+define('PAGE_COUNT_ZERO', 0);
 define('MAIN_VIEW', 'main');
 define('LOGIN_VIEW', 'login');
 define('MASTER_VIEW', 'master');
@@ -98,3 +115,5 @@ define('PHX_SQL_LIMIT', '<phx:sql_limit />');
 //    file_put_contents(STARTER_FILE, "<?php\n", FILE_APPEND);
 //    
 //}
+define('RETURN_CODE', 1);
+define('INCLUDE_FILE', 2);

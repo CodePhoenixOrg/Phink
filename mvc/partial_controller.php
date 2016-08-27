@@ -38,6 +38,7 @@ class TPartialController extends TCustomController
         //$this->$actionName();
         $this->getViewHtml();
         $this->unload();
+        
         $this->response->sendData();
     }    
     

@@ -83,7 +83,7 @@ trait TCodeGenerator {
                     $viewName = lcfirst($className);
                     $fullClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
                     array_push($requires, '\\Phink\\TAutoloader::import("' . $viewName . '");');
-                    $class = \Phink\TAutoloader::includeClass($fullClassPath);
+                    $class = \Phink\TAutoloader::includeClass($fullClassPath, RETURN_CODE | INCLUDE_FILE);
                     $fqcn = $class['type'];
                     $code = $class['code'];
                 }
@@ -198,9 +198,9 @@ trait TCodeGenerator {
     
     function writeHTML(TXmlDocument $doc, $pageCode)
     {
-        if(file_exists($this->jsControllerFileName) && !strstr($this->jsControllerFileName, 'main.js')) {
-            $pageCode = "<script data-getscript='itsme' src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . \Phink\Utils\TFileUtils::webPath($this->jsControllerFileName) . "'></script>" . CR_LF . $pageCode;        
-        }
+//        if(file_exists($this->jsControllerFileName) && !strstr($this->jsControllerFileName, 'main.js')) {
+//            $pageCode = "<script data-getscript='itsme' src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . \Phink\Utils\TFileUtils::webPath($this->jsControllerFileName) . "'></script>" . CR_LF . $pageCode;        
+//        }
         if(file_exists($this->cssFileName)) {
 //            $pageCode = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . "/" . $this->cssFileName . "' />" . CR_LF . $pageCode;
             $pageCode = "<script>TWebObject.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . \Phink\Utils\TFileUtils::webPath($this->cssFileName) . "');</script>" . CR_LF . $pageCode;        
