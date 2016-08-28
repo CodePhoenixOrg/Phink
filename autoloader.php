@@ -235,7 +235,6 @@ class TAutoloader
             $className = ucfirst($viewName);
             $result = self::includeDefaultPartialController($namespace, $className);
             TRegistry::setCode('app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION, $result['code']);
-            
         }
 
         return $result;
@@ -276,9 +275,7 @@ class TAutoloader
         
         if(file_exists($cacheFilename)) {
             //\Phink\Log\TLog::debug('INCLUDE CACHED CONTROL: ' . $cacheFilename, __FILE__, __LINE__);
-            $include = file_get_contents($cacheFilename);
-            TRegistry::setCode($classFilename, $include);
-            include $cacheFilename;
+            self::includeClass($classFilename, RETURN_CODE | INCLUDE_FILE);
         } else {
             //\Phink\Log\TLog::debug('INCLUDE NEW CONTROL : ' . $viewName, __FILE__, __LINE__);
             //include 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
