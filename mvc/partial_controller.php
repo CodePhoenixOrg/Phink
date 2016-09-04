@@ -32,8 +32,14 @@ class TPartialController extends TCustomController
         $this->init();
         $actionName = $this->actionName;
         
-        $this->validate($actionName);
-        $this->invoke($actionName);
+        $this->parse();
+        $this->renderCreations();
+
+        $params = $this->validate($actionName);
+        $this->invoke($actionName, $params);
+
+        $this->beforeBinding();
+        $this->renderDeclarations();
 
         //$this->$actionName();
         $this->getViewHtml();
@@ -46,7 +52,10 @@ class TPartialController extends TCustomController
     {
         $this->init();
         $this->parse();
-        $this->renderedPhp();
+        $this->beforeBinding();
+        $this->renderCreations();
+        $this->renderDeclarations();
+        $this->renderView();
         if(!$this->isRendered) {
             $this->renderHtml();
             $this->renderedHtml();

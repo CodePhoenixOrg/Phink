@@ -8,9 +8,10 @@
 
 $filenames = [
     'bootstrap.css'
+    ,'bootstrap-theme.css'
     ,'jquery-ui.css'
     ,'jquery-ui.structure.css'
-    ,'jquery-ui.theme.css'
+    ,'jquery-ui.theme.css'    
     //,'jquerysctipttop.css'
     //,'multiaccordion.jquery.css'
     //,'prettify.css'

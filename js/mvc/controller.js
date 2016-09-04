@@ -72,8 +72,12 @@ TController.prototype.actions = function (actions) {
     return this;
 };
 
-TController.prototype.getView = function (pageName, callback) {
-    this.parent.requestPage(pageName, callback);
+TController.prototype.getSimpleView = function (view, callback) {
+    this.parent.requestSimpleView(view, callback);
+};
+
+TController.prototype.getView = function (view, action, args, callback) {
+    this.parent.requestView(view, action, args, callback);
 };
 
 TController.prototype.getPartialView = function (pageName, action, attach, postData, callback) {

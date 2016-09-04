@@ -121,7 +121,7 @@ abstract class TCustomView extends \Phink\Web\UI\TCustomControl
         // We store the parsed code in a file so that we know it's already parsed on next request.
         $code = str_replace(CREATIONS_PLACEHOLDER, $this->creations, $code);
         $code = str_replace(ADDITIONS_PLACEHOLDER, $this->additions, $code);
-        $code = str_replace(AFTERBINDING_PLACEHOLDER, $this->afterBinding, $code);
+//        $code = str_replace(AFTERBINDING_PLACEHOLDER, $this->afterBinding, $code);
         $code = str_replace(HTML_PLACEHOLDER, $this->viewHtml, $code);
         $code = str_replace(DEFAULT_CONTROLLER, DEFAULT_CONTROL, $code);
         $code = str_replace(DEFAULT_PARTIAL_CONTROLLER, DEFAULT_CONTROL, $code);

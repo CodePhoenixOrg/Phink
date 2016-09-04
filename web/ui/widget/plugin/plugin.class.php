@@ -70,7 +70,7 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
 //        }
     }
 
-    public static function getGridData($id, \Phink\Data\Client\PDO\TPdoCommand $cmd, $rowCount)
+    public static function getGridData($id, \Phink\Data\Client\PDO\TPdoCommand $cmd, $rowCount = 1)
     {
         $templateFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_template.json';
         //\Phink\Log\TLog::debug('TEMPLATE FILE : ' . $templateFilename);

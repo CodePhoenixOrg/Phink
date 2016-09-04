@@ -19,18 +19,27 @@ class TController extends TCustomController
         if($this->request->isAJAX()) {
             $actionName = $this->actionName;
 
-            $this->validate($actionName);
-            $this->invoke($actionName);
+            $this->parse();
+            $this->renderCreations();
+            
+            $params = $this->validate($actionName);
+            $this->invoke($actionName, $params);
 
-            //$this->$actionName();
-            if($this->request->isPartialView()) {
+            $this->beforeBinding();
+            $this->renderDeclarations();
+            
+            if($this->request->isPartialView()
+            || ($this->request->isView() && $this->actionName !== 'getViewHtml')) {
                 $this->getViewHtml();
             }
             $this->response->sendData();
         } else {
             $this->load();
             $this->parse();
-            $this->renderedPhp();
+            $this->beforeBinding();
+            $this->renderCreations();
+            $this->renderDeclarations();
+            $this->renderView();
             $this->unload();
         }        
     }

@@ -20,7 +20,7 @@ class TRequest extends \Phink\Core\TObject
     private $_callbackAction = '';
     private $_contents = array();
     private $_subRequests = array();
-    private $_viewHeader = '';
+    private $_isView = '';
     //private $_subRequestsHandler = null;
     
     public function __construct()
@@ -30,6 +30,9 @@ class TRequest extends \Phink\Core\TObject
         if(strstr(HTTP_ACCEPT, 'application/json, text/javascript') || $this->getQueryArguments('ajax')) {
             if(strstr(HTTP_ACCEPT, 'request/partialview') || $this->getQueryArguments('partial')) {
                 $this->_isPartialView = true;
+            }
+            if(strstr(HTTP_ACCEPT, 'request/view')) {
+                $this->_isView = true;
             }
             $this->_isAJAX = true;
             $callback = $this->getCallbackAction();
@@ -140,8 +143,8 @@ class TRequest extends \Phink\Core\TObject
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_CAINFO, $certpath);
-            curl_setopt($ch, CURLOPT_CAPATH, $certpath);
+//            curl_setopt($ch, CURLOPT_CAINFO, $certpath);
+//            curl_setopt($ch, CURLOPT_CAPATH, $certpath);
             if(is_array($request['data'])) {
                 $queryString = http_build_query($request['data']);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $request['header']);
@@ -191,8 +194,8 @@ class TRequest extends \Phink\Core\TObject
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
-            curl_setopt($ch, CURLOPT_CAINFO, $certpath);
-            curl_setopt($ch, CURLOPT_CAPATH, $certpath);
+//            curl_setopt($ch, CURLOPT_CAINFO, $certpath);
+//            curl_setopt($ch, CURLOPT_CAPATH, $certpath);
             if(is_array($request['data'])) {
                 $queryString = http_build_query($request['data']);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $request['header']);
@@ -297,11 +300,16 @@ class TRequest extends \Phink\Core\TObject
         return $this->_isAJAX;
     }
     
+    public function isView()
+    {
+        return $this->_isView;
+    }
+    
     public function isPartialView()
     {
         return $this->_isPartialView;
     }
-    
+
     public function getCallbackAction()
     {
         if(empty($this->_callbackAction)) {

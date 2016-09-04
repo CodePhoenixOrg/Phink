@@ -26,16 +26,27 @@ TView.create = function(parent, name) {
     return new TView(parent, name);
 };
 
-TView.prototype.requestPage = function (pageName, callback) {
+TView.prototype.requestSimpleView = function (view, callback) {
+    this.requestView(view, 'getViewHtml', null, callback);
+}
+
+TView.prototype.requestView = function (view, action, args, callback) {
     
     var the = this;
     var token = TRegistry.getToken();
-    var urls = this.getPath(pageName, this.domain);
+    var urls = this.getPath(view, this.domain);
+    
+    var postData = {"action" : action, "token" : token};
+    if(args != null) {
+        for(var key in args) {
+            postData[key] = args[key];
+        }
+    }
 
     $.ajax({
         type: 'POST',
         url: urls,
-        data: {"action" : 'getViewHtml', "token" : token},
+        data: postData,
         dataType: 'json',
         async: true,
         headers: {

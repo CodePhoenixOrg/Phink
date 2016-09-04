@@ -79,12 +79,14 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
         }
     }
 
+    /*
     public function renderAfterBinding()
     {
         if(!empty($this->afterBinding)) {
             include "data://text/plain;base64," . base64_encode('<?php' . $this->afterBinding . '?>');
         }
     }
+    */
 
     public function renderView()
     {
@@ -95,30 +97,13 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
     {
         include "data://text/plain;base64," . base64_encode($this->innerHtml);
     }
-    
-    public function renderedPhp()
-    {
-        try {
-            //if(!class_exists($this->_type)) {
-                $this->renderCreations();
-                $this->renderDeclarations();
-            //}
-            //$this->beforeBinding();
-            //$this->renderAfterBinding();
-            $this->renderView();
-        } catch (Exception $ex) {
-            \Phink\Log\TLog::file(__METHOD__ . '::exception', $ex);
-        }
-    }
 
     public function perform() {}
     
     public function getViewHtml()
     {
         ob_start();
-        
-        $this->parse();
-        $this->renderedPhp();
+        $this->renderView();
         $html = ob_get_clean();
 
         $this->response->setData('view', $html);

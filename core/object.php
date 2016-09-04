@@ -97,28 +97,32 @@ class TObject
             foreach($params as $param) {
                 if(!in_array($param, $validArgs)) {
                     throw new \Exception($this->getFQClassName() . "::$method::$param is missing");
+                } else {
+                    $result[$param] = \Phink\Web\TRequest::getQueryStrinng($param);
                 }
             }
+            
         }
 
-        return true;
+        return $result;
     }
 
-    public function invoke($method)
+    public function invoke($method, $params = array())
     {
-        $params = $this->getMethodParameters($method);
-        
-        $values = [];
-        foreach($params as $param) {
-            array_push($values, \Phink\Web\TRequest::getQueryStrinng($param));
-        }
 
-        $ref = new \ReflectionMethod($this->getFQClassName(), $method);
+        $values = array_values($params);
+
         
         if(count($values) > 0) {
+            $args = '"' . implode('", "', $values) . '"';
+            \Phink\Log\TLog::debug(__METHOD__ . '::INVOKE_ACTION::' . $method  . '(' . $args . ')');
+//            include 'data://text/plain;base64,' . base64_encode('<?php $this->' . $method  . '(' . $args . ')');
+            $ref = new \ReflectionMethod($this->getFQClassName(), $method);
             $ref->invokeArgs($this, $values);
         } else {
-            $ref->invoke($this);
+            \Phink\Log\TLog::debug(__METHOD__ . '::INVOKE_ACTION::' . $method  . '()');
+//            $ref->invoke($this);
+            $this->$method();
         }        
     }
     

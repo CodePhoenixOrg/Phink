@@ -8,7 +8,6 @@ class TControl extends TCustomControl
     use \Phink\Web\TWebObject;
 
     protected $model = NULL;
-    private $_theme = '';
     protected $innerHtml = '';
     protected $isDreclared = false;
 
@@ -57,7 +56,7 @@ class TControl extends TCustomControl
         if(!$this->isDreclared) {
             //$this->createObjects();
             $this->declareObjects();
-            $this->partialLoad();
+//            $this->partialLoad();
         }
         $this->displayHtml();
         $html = ob_get_clean();
@@ -75,9 +74,9 @@ class TControl extends TCustomControl
     {
         $this->createObjects();
         $this->init();
-        $this->declareObjects();
         $this->beforeBinding();
-        $this->afterBinding();
+        $this->declareObjects();
+//        $this->afterBinding();
         $this->isDreclared = true;
         $this->displayHtml();
         $this->renderHtml();
@@ -91,14 +90,19 @@ class TControl extends TCustomControl
         if($this->request->isAJAX()) {
             $actionName = $this->actionName;
             
-            $this->validate($actionName);
-            $this->invoke($actionName);
+            $params = $this->validate($actionName);
+            $this->invoke($actionName, $params);
+
+            $this->beforeBinding();
+            $this->declareObjects();
             
-            if($this->request->isPartialView()) {
+            if($this->request->isPartialView()
+            || ($this->request->isView() && $actionName !== 'getViewHtml')) {
                 $this->getViewHtml();
             }
             $this->response->sendData();
         } else {
+            $this->beforeBinding();
             $this->declareObjects();
             $this->load();
             $this->displayHtml();

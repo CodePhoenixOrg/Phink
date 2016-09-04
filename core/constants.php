@@ -21,7 +21,7 @@ if(isset($_SERVER['DOCUMENT_ROOT'])) {
         define ('CR_LF', "\n");
         define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT'] . '/');    
     } else {
-        define ('CR_LF', "\r");
+        define ('CR_LF', "\n");
         define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT'] . '/');    
     }
     if(strstr($_SERVER['SERVER_SOFTWARE'], 'IIS')) {
@@ -107,7 +107,10 @@ define('CREATIONS_PLACEHOLDER', '<phx:creationsPlaceHolder />');
 define('ADDITIONS_PLACEHOLDER', '<phx:additionsPlaceHolder />');
 define('AFTERBINDING_PLACEHOLDER', '<phx:afterBindingPlaceHolder />');
 define('HTML_PLACEHOLDER', '<phx:htmlPlaceHolder />');
-define('CONTROL_ADDITIONS', CR_LF . "\tpublic function createObjects() {" . CR_LF . CREATIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function declareObjects() {" . CR_LF . ADDITIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function afterBindingObjects() {" . CR_LF . AFTERBINDING_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function displayHtml() {" . CR_LF . "?>" . CR_LF . HTML_PLACEHOLDER . CR_LF . "<?php" . CR_LF . "\t}" . CR_LF . '}' . CR_LF);
+/*
+ * define('CONTROL_ADDITIONS', CR_LF . "\tpublic function createObjects() {" . CR_LF . CREATIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function declareObjects() {" . CR_LF . ADDITIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function afterBindingObjects() {" . CR_LF . AFTERBINDING_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function displayHtml() {" . CR_LF . "?>" . CR_LF . HTML_PLACEHOLDER . CR_LF . "<?php" . CR_LF . "\t}" . CR_LF . '}' . CR_LF);
+ */
+define('CONTROL_ADDITIONS', CR_LF . "\tpublic function createObjects() {" . CR_LF . CREATIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function declareObjects() {" . CR_LF . ADDITIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function displayHtml() {" . CR_LF . "?>" . CR_LF . HTML_PLACEHOLDER . CR_LF . "<?php" . CR_LF . "\t}" . CR_LF . '}' . CR_LF);
 define('PHX_SQL_LIMIT', '<phx:sql_limit />');
 
 //if(file_exists(STARTER_FILE)) {
