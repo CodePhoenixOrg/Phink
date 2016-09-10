@@ -5,7 +5,6 @@ namespace Phink\MVC;
 
 abstract class TCustomController extends \Phink\Web\UI\TCustomControl
 {
-    use \Phink\Web\TWebObject;
 
     protected $innerHtml = '';
     protected $creations = '';
@@ -63,6 +62,8 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
             $this->viewHtml = $this->view->getViewHtml();
  
         }
+        
+        return $isAlreadyParsed;
     }
 
     public function renderCreations()

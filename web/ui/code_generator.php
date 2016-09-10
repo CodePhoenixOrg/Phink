@@ -8,6 +8,7 @@ namespace Phink\Web\UI;
 use Phink\Core\TRegistry;
 use Phink\Xml\TXmlDocument;
 use Phink\Xml\TXmlMatch;
+use Phink\MVC\TCustomView;
 
 /**
  * Description of code_generator
@@ -16,7 +17,7 @@ use Phink\Xml\TXmlMatch;
  */
 trait TCodeGenerator {
     //put your code here
-    function writeDeclarations(TXmlDocument $doc)
+    function writeDeclarations(TXmlDocument $doc, TCustomView $view)
     {
 
         $result = '';
@@ -75,17 +76,41 @@ trait TCodeGenerator {
                 $info = TRegistry::classInfo($className);
                 //\Phink\Log\TLog::dump('REGISTRY INFO ' . $className, $info);
                 if ($info) {
-                    if($info->canRender) {
-                        array_push($requires, '\\Phink\\TAutoloader::import("' . $className . '");');
+                    if(!$info->isAutoloaded) {
+                        array_push($requires, '\\Phink\\TAutoloader::import($this, "' . $className . '");');
+//                        array_push($requires, '$this->import("' . $className . '");');
                     }
                     $fqcn = $info->namespace . '\\' . $className;
                 } elseif ($className != 'this') {
                     $viewName = lcfirst($className);
                     $fullClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
-                    array_push($requires, '\\Phink\\TAutoloader::import("' . $viewName . '");');
+                    $fullJsClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . JS_EXTENSION;
+                    $fullJsCachePath = TMP_DIR . DIRECTORY_SEPARATOR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
+                    $fullJsCachePath = str_replace(HTML_EXTENSION, JS_EXTENSION, $fullJsCachePath);
+                    array_push($requires, '\\Phink\\TAutoloader::import($this, "' . $viewName . '");');
+//                    array_push($requires, '$this->import("' . $viewName . '");');
                     $class = \Phink\TAutoloader::includeClass($fullClassPath, RETURN_CODE | INCLUDE_FILE);
                     $fqcn = $class['type'];
                     $code = $class['code'];
+                    $jsCode = '';
+                    if(file_exists($fullJsCachePath)) {
+                        $view->getResponse()->addScript($fullJsCachePath);
+                    } else if(file_exists($fullJsClassPath)) {
+                        $jsCtrlCode = file_get_contents($fullJsClassPath) . CR_LF;
+                        file_put_contents($fullJsCachePath, $jsCtrlCode);
+                        $view->getResponse()->addScript($fullJsCachePath);
+                        /*
+                        $jsCode .= CR_LF . "?>" . CR_LF;
+                        $jsCode .= '<script>' . CR_LF;
+                        $jsCode .= $jsCtrlCode . CR_LF;
+                        $jsCode .= '</script>' . CR_LF;
+                        $jsCode .= '<?php' . CR_LF;
+                        
+                        $fullJsCachePath2 = TMP_DIR . DIRECTORY_SEPARATOR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
+                        file_put_contents($fullJsCachePath2, $jsCode);
+                        */
+                    }
+                    TRegistry::setCode($fullClassPath, $code);
                 }
             
                 $canRender = ($info && $info->canRender || !$info);
@@ -196,11 +221,14 @@ trait TCodeGenerator {
         return (object)['creations' => $objectCreation, 'additions' => $objectAdditions, 'afterBinding' => $objectAfterBiding];
     }
     
-    function writeHTML(TXmlDocument $doc, $pageCode)
+    function writeHTML(TXmlDocument $doc, TCustomView $view)
     {
 //        if(file_exists($this->jsControllerFileName) && !strstr($this->jsControllerFileName, 'main.js')) {
 //            $pageCode = "<script data-getscript='itsme' src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . \Phink\Utils\TFileUtils::webPath($this->jsControllerFileName) . "'></script>" . CR_LF . $pageCode;        
 //        }
+        
+        $pageCode = $view->getViewHtml();
+               
         if(file_exists($this->cssFileName)) {
 //            $pageCode = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . "/" . $this->cssFileName . "' />" . CR_LF . $pageCode;
             $pageCode = "<script>TWebObject.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . \Phink\Utils\TFileUtils::webPath($this->cssFileName) . "');</script>" . CR_LF . $pageCode;        

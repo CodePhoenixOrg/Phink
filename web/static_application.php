@@ -26,7 +26,7 @@ class TStaticApplication extends TWebApplication
 
     public function getStaticFileName()
     {
-        $filename = DOCUMENT_ROOT . '/cache' . ((REQUEST_URI == '/') ? MAIN_PAGE : REQUEST_URI);
+        $filename = DOCUMENT_ROOT . 'cache' . ((REQUEST_URI == '/') ? MAIN_PAGE : REQUEST_URI);
         if(strstr(HTTP_ACCEPT, 'json')) {
             $filename = str_replace('.html', '.json', $filename);
         }

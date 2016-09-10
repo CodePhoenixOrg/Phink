@@ -158,7 +158,7 @@ TView.prototype.parseResponse = function(response, callback) {
 };
 
 TView.prototype.attachWindow = function (pageName, anchor) {
-    this.requestPage(pageName, function(data) {
+    this.requestSimpleView(pageName, function(data) {
         if(anchor !== undefined) {
             $(anchor).html(data.view);
         } else {

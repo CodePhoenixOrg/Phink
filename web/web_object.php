@@ -45,56 +45,7 @@ trait TWebObject {
 //    }
 //
 
-    public static function currentDirectory($value = null)
-    {
-        if(isset($value)) {
-            self::$_currentDirectory = $value;
-        }
-        else {
-            return self::$_currentDirectory;
-        }
-    }
-
-    public static function currentFilePath($value = null)
-    {
-        if(isset($value)) {
-            self::$_currentFilePath = $value;
-        }
-        else {
-            return self::$_currentFilePath;
-        }
-    }
-
-    public static function currentNamespace($value = null)
-    {
-        if(isset($value)) {
-            self::$_currentNamespace = $value;
-        }
-        else {
-            return self::$_currentNamespace;
-        }
-    }
-
-    public static function currentClassName($value = null)
-    {
-        if(isset($value)) {
-            self::$_currentClassName = $value;
-        }
-        else {
-            return self::$_currentClassName;
-        }
-    }
-
-    public static function sqlConfigurationFileName($value = null)
-    {
-        if(isset($value)) {
-            self::$_sqlConfigurationFileName = $value;
-        }
-        else {
-            return self::$_sqlConfigurationFileName;
-        }
-    }
-
+ 
     public static function pageNumber($value = null)
     {
         if(isset($value)) {
@@ -127,60 +78,6 @@ trait TWebObject {
         }
 
         return self::pageCount();
-    }
-
-    public static function pagerQuery($pageNumber, $pageCount = NULL)
-    {
-        $result = '';
-        if (isset($pageCount) && isset($pageNumber)) {
-            $result = PAGE_COUNT .  '=' .  $pageCount . '&' . PAGE_NUMBER . '=' . $pageNumber;
-        }
-        else if (!isset($pageCount) && isset($pageNumber)) {
-            $result = PAGE_COUNT .  '=' .  self::$_pageCount . '&' . PAGE_NUMBER . '=' . $pageNumber;
-        }
-        else {
-            $result = PAGE_COUNT .  '=' .  self::$_pageCount . '&' . PAGE_NUMBER . '=' . self::$_pageNumber;
-        }
-        return $result;
-    }
-    
-    public function getClassFileName()
-    {
-        $parts = pathinfo($this->getFileName());
-        return $parts['dirname'] . DIRECTORY_SEPARATOR . $parts['filename'] . CLASS_EXTENSION;
-    }
-
-    public function getTemplateName()
-    {
-        $parts = pathinfo($this->getFileName());
-        return $parts['dirname'] . DIRECTORY_SEPARATOR . str_replace('.class', '', $parts['filename']) . PREHTML_EXTENSION; //'.' . $parts['extension'];
-    }
-
-//    public function getPatternName()
-//    {
-//        $parts = pathinfo($this->getFileName());
-//        $classPath = \Phink\Core\TRegistry::classPath('T' . ucfirst($parts['filename']));
-//        return strtolower(ROOT_NAMESPACE) . $classPath . $parts['filename'] . PATTERN_EXTENSION;
-//    }
-
-    public function getDocumentFileName()
-    {
-        $parts = pathinfo($this->getFileName());
-        return DOCUMENT_ROOT . DIRECTORY_SEPARATOR . $parts['filename'] . '.' . $parts['extension'];
-    }
-
-    public function getPreHtmlDebugName()
-    {
-        $parts = pathinfo($this->getFileName());
-        return DOCUMENT_ROOT . 'tmp' . DIRECTORY_SEPARATOR . 'dbg_' . $parts['filename'] . PREHTML_EXTENSION;
-    }
-    
-    public function getPreHtmlName()
-    {
-        if($this->preHtmlName == '') {
-            $this->preHtmlName = TMP_DIR . DIRECTORY_SEPARATOR . str_replace(DIRECTORY_SEPARATOR, '_', $this->viewFileName);
-        }
-        return $this->preHtmlName;
     }
 
     public function getCacheFileName()
@@ -343,5 +240,5 @@ trait TWebObject {
         $this->getCacheFileName();
 
     }
-    
+
 }

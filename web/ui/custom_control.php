@@ -15,6 +15,8 @@ namespace Phink\Web\UI;
  */
 abstract class TCustomControl extends \Phink\Core\TObject
 {
+    use \Phink\Web\TWebObject;
+
     //put your code here
     protected $isRendered = false;
 

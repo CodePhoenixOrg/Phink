@@ -10,7 +10,6 @@ require_once 'phink/core/application.php';
  */
 use Phink\TAutoloader;
 use Phink\Auth\TAuthentication;
-use Phink\MVC\TView;
 use Phink\Crypto\TCrypto;
 
 /**
@@ -154,7 +153,7 @@ class TWebApplication extends \Phink\Core\TApplication
         $include = $this->includePrimaryController();
         $controllerClass = $include['type'];
         
-        $view = new TView($this);
+        $view = new \Phink\MVC\TView($this);
         
         $controller = new $controllerClass($view, $model);
         if($this->request->isAJAX() && $this->request->isPartialView()) {

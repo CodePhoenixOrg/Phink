@@ -48,6 +48,8 @@ include 'phink/web/ui/plugin/table.php';
 include 'phink/web/ui/plugin/ulli.php';
 include 'phink/web/ui/plugin/olli.php';
 include 'phink/web/ui/plugin/accordion.php';
+include 'phink/web/ui/plugin_renderer.php';
+include 'phink/web/ui/widget/plugin/plugin.class.php';
 include 'phink/web/ui/widget/plugin/plugin_child.php';
 
 include 'phink/js/js_starter.php';

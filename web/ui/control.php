@@ -5,7 +5,6 @@ use Phink\Core\TObject;
 
 class TControl extends TCustomControl
 {
-    use \Phink\Web\TWebObject;
 
     protected $model = NULL;
     protected $innerHtml = '';
@@ -62,12 +61,24 @@ class TControl extends TCustomControl
         $html = ob_get_clean();
         $this->unload();
 
-        $this->response->setData('view', $html);
-        
-        if(file_exists($this->jsControllerFileName)) {
-            $this->response->addScript($this->jsControllerFileName);
+/*        
+        $cachedJsController = TMP_DIR . DIRECTORY_SEPARATOR . \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
+        \Phink\Log\TLog::debug(__METHOD__ . '::1::' . $cachedJsController);
+        if(file_exists($cachedJsController)) {
+            $jsCode = file_get_contents($cachedJsController);
+            $html .= CR_LF . "?>" .CR_LF . $jsCode . CR_LF;
+            \Phink\Log\TLog::debug(__METHOD__ . '::2::' . $cachedJsController);
+            
+            $this->response->addScript($cachedJsController);
         }
-        
+*/        
+        \Phink\Log\TLog::debug(__METHOD__ . '::1::' . $this->getJsControllerFileName());
+        if(file_exists($this->getJsControllerFileName())) {
+            \Phink\Log\TLog::debug(__METHOD__ . '::2::' . $this->getJsControllerFileName());
+            $this->response->addScript($this->getJsControllerFileName());
+        }
+        $this->response->setData('view', $html);
+
     }   
     
     public function render()
@@ -100,6 +111,7 @@ class TControl extends TCustomControl
             || ($this->request->isView() && $actionName !== 'getViewHtml')) {
                 $this->getViewHtml();
             }
+
             $this->response->sendData();
         } else {
             $this->beforeBinding();

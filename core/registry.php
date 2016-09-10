@@ -25,28 +25,32 @@ class TRegistry
                 'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'pager' . DIRECTORY_SEPARATOR, 
                 'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Pager', 
                 'hasTemplate' => true, 
-                'canRender' => true
+                'canRender' => true,
+                'isAutoloaded' => false
             )
             , 'TPluginRenderer' => array(
                 'alias' => 'pluginrenderer',
                 'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR, 
                 'namespace' => ROOT_NAMESPACE . '\Web\UI', 
                 'hasTemplate' => false, 
-                'canRender' => true
+                'canRender' => true,
+                'isAutoloaded' => true
             ) 
             , 'TPlugin' => array(
                 'alias' => 'plugin',
                 'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR, 
                 'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Plugin', 
                 'hasTemplate' => true, 
-                'canRender' => true
+                'canRender' => true,
+                'isAutoloaded' => true
             )
             , 'TPluginChild' => array(
                 'alias' => 'pluginchild',
                 'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR, 
                 'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Plugin', 
                 'hasTemplate' => false, 
-                'canRender' => false
+                'canRender' => false,
+                'isAutoloaded' => true
             )
         );
     

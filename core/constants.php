@@ -97,6 +97,7 @@ define('CONTROLLER', 'TController');
 define('PARTIAL_CONTROLLER', 'TPartialController');
 define('CONTROL', 'TControl');
 define('CLASS_EXTENSION', '.class.php');
+define('HTML_EXTENSION', '.html');
 define('PREHTML_EXTENSION', '.phtml');
 define('PATTERN_EXTENSION', '.pattern' . PREHTML_EXTENSION);
 define('JS_EXTENSION', '.js');

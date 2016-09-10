@@ -67,6 +67,17 @@ class TAutoloader
         return $translated;
     }
 
+    public static function cacheFilenameFromView($viewName) {
+        return strtolower('app_controllers_' . $viewName . '_' . $viewName . CLASS_EXTENSION);
+    }
+
+    public static function cacheJsFilenameFromView($viewName) {
+        return strtolower('app_controllers_' . $viewName . '_' . $viewName . HTML_EXTENSION);
+    }
+
+    public static function cachePath($filepath) {
+        return  str_replace(DIRECTORY_SEPARATOR, '_', $filepath);
+    }
 
     /**
      * Loads a class from a file using its fully qualified name.
@@ -127,6 +138,8 @@ class TAutoloader
     {
 
         $filename = strtolower($filename);
+        $fullJsClassPath = str_replace(CLASS_EXTENSION, JS_EXTENSION, $filename);
+        
         if(!file_exists($filename)) {
             //\Phink\Log\TLog::debug('INCLUDE CLASS : FILE ' . $filename . ' DOES NOT EXIST');
             return false;
@@ -160,6 +173,8 @@ class TAutoloader
         
         $fqcn = $namespace . '\\' . $className;
         $file = str_replace('\\', '_', $fqcn) . '.php';
+        
+        $file = $filename;
         if(isset($params) && ($params && RETURN_CODE === RETURN_CODE)) {
             $code = substr(trim($code), 0, -2) . CR_LF . CONTROL_ADDITIONS;
             TRegistry::setCode($filename, $code);
@@ -170,7 +185,7 @@ class TAutoloader
          * 
          */
         
-        Log\TLog::debug(TMP_DIR . DIRECTORY_SEPARATOR . $file);
+        Log\TLog::debug(__METHOD__ . '::' . $file, __FILE__, __LINE__);
         
         if((isset($params) && ($params && INCLUDE_FILE === INCLUDE_FILE)) && !class_exists('\\' . $fqcn))  {
             include $filename;
@@ -258,24 +273,33 @@ class TAutoloader
         return $result;
     }
 
-    public static function import($viewName)
+    public static function import(Web\UI\TCustomControl $ctrl, $viewName)
     {
         $result = false;
         $cacheFilename = '';
         $classFilename = '';
+        $cacheJsFilename = '';
         
-        if($info = Core\TRegistry::classInfo($viewName))
-{
+        if($info = Core\TRegistry::classInfo($viewName)) {
             $classFilename = ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;
             $cacheFilename = TMP_DIR . DIRECTORY_SEPARATOR . str_replace(DIRECTORY_SEPARATOR, '_', ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName)) . CLASS_EXTENSION;
         } else {
             $classFilename = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
-            $cacheFilename = TMP_DIR . DIRECTORY_SEPARATOR . 'app_controllers_' . $viewName . '_' . $viewName . CLASS_EXTENSION;
+            $cacheFilename = TMP_DIR . DIRECTORY_SEPARATOR . \Phink\TAutoloader::cacheFilenameFromView($viewName);
+            $cacheJsHtmlFilename = TMP_DIR . DIRECTORY_SEPARATOR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
+            $cacheJsFilename = str_replace(CLASS_EXTENSION, JS_EXTENSION, $cacheFilename);
+            
         }
         
         if(file_exists($cacheFilename)) {
-            //\Phink\Log\TLog::debug('INCLUDE CACHED CONTROL: ' . $cacheFilename, __FILE__, __LINE__);
-            self::includeClass($classFilename, RETURN_CODE | INCLUDE_FILE);
+
+            if(file_exists($cacheJsFilename)) {
+                $ctrl->getResponse()->addScript($cacheJsFilename);
+            }
+            \Phink\Log\TLog::debug('INCLUDE CACHED CONTROL: ' . $cacheFilename, __FILE__, __LINE__);
+            self::includeClass($cacheFilename, RETURN_CODE | INCLUDE_FILE);
+
+            
         } else {
             //\Phink\Log\TLog::debug('INCLUDE NEW CONTROL : ' . $viewName, __FILE__, __LINE__);
             //include 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;

@@ -92,14 +92,14 @@ abstract class TCustomView extends \Phink\Web\UI\TCustomControl
     {
         ////\Phink\Log\TLog::debug($this->controllerFileName . ' IS REGISTERED : ' . isset(\Phink\TAutoloader::getCode($this->controllerFileName)), __FILE__, __LINE__);
         
-        //\Phink\Log\TLog::debug('PARSE FILE : ' . $this->viewFileName, __FILE__, __LINE__);
+        \Phink\Log\TLog::debug('PARSE FILE : ' . $this->viewFileName, __FILE__, __LINE__);
         //\Phink\Log\TLog::debug('GET CODE FILE : ' . $this->controllerFileName, __FILE__, __LINE__);
 //        $this->viewHtml = $this->redis->mget($templateName);
 //        $this->viewHtml = $this->viewHtml[0];
 
         $this->viewHtml = file_get_contents($this->viewFileName, FILE_USE_INCLUDE_PATH);
         
-        $include = \Phink\TAutoloader::includeClass($this->controllerFileName);
+//        $include = $this->import($this->controllerFileName);
         
 //        $this->redis->mset($templateName, $this->viewHtml);
         //\Phink\Log\TLog::debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');
@@ -108,11 +108,11 @@ abstract class TCustomView extends \Phink\Web\UI\TCustomControl
         if($doc->getCount() > 0) {
             // Il y a des éléments à traiter
             $this->_dirty = true;
-            $declarations = $this->writeDeclarations($doc);
+            $declarations = $this->writeDeclarations($doc, $this);
             $this->creations = $declarations->creations;
             $this->additions = $declarations->additions;
             $this->afterBinding = $declarations->afterBinding;
-            $this->viewHtml = $this->writeHTML($doc, $this->viewHtml);
+            $this->viewHtml = $this->writeHTML($doc, $this);
 
             //\Phink\Log\TLog::debug('CACHE FILE : ' . $this->cacheFileName, __FILE__, __LINE__);
         }
@@ -127,12 +127,22 @@ abstract class TCustomView extends \Phink\Web\UI\TCustomControl
         $code = str_replace(DEFAULT_PARTIAL_CONTROLLER, DEFAULT_CONTROL, $code);
         $code = str_replace(CONTROLLER, CONTROL, $code);
         $code = str_replace(PARTIAL_CONTROLLER, CONTROL, $code);
-        file_put_contents(strtolower($this->getCacheFileName()), $code);
+        if(!empty(trim($code))) {
+            file_put_contents(strtolower($this->getCacheFileName()), $code);
+        }
+        /*
+        \Phink\Log\TLog::debug(__METHOD__ . '::3::' . $this->getJsControllerFileName());
+        if(file_exists($this->getJsControllerFileName())) {
+            \Phink\Log\TLog::debug(__METHOD__ . '::4::' . $this->getJsControllerFileName());
+//            file_put_contents($filename, $code)
+        }
+         * 
+         */        
 //        $this->redis->mset($this->preHtmlName, $this->declarations . $this->viewHtml);
         
         
         // We generate the code, but we don't flag it as parsed because it was not "executed"
-        return $include['type'];
+        return false; //$include['type'];
         
     }
     
