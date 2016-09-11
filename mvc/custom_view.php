@@ -93,13 +93,11 @@ abstract class TCustomView extends \Phink\Web\UI\TCustomControl
         ////\Phink\Log\TLog::debug($this->controllerFileName . ' IS REGISTERED : ' . isset(\Phink\TAutoloader::getCode($this->controllerFileName)), __FILE__, __LINE__);
         
         \Phink\Log\TLog::debug('PARSE FILE : ' . $this->viewFileName, __FILE__, __LINE__);
-        //\Phink\Log\TLog::debug('GET CODE FILE : ' . $this->controllerFileName, __FILE__, __LINE__);
 //        $this->viewHtml = $this->redis->mget($templateName);
 //        $this->viewHtml = $this->viewHtml[0];
 
         $this->viewHtml = file_get_contents($this->viewFileName, FILE_USE_INCLUDE_PATH);
         
-//        $include = $this->import($this->controllerFileName);
         
 //        $this->redis->mset($templateName, $this->viewHtml);
         //\Phink\Log\TLog::debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');
@@ -130,14 +128,7 @@ abstract class TCustomView extends \Phink\Web\UI\TCustomControl
         if(!empty(trim($code))) {
             file_put_contents(strtolower($this->getCacheFileName()), $code);
         }
-        /*
-        \Phink\Log\TLog::debug(__METHOD__ . '::3::' . $this->getJsControllerFileName());
-        if(file_exists($this->getJsControllerFileName())) {
-            \Phink\Log\TLog::debug(__METHOD__ . '::4::' . $this->getJsControllerFileName());
-//            file_put_contents($filename, $code)
-        }
-         * 
-         */        
+      
 //        $this->redis->mset($this->preHtmlName, $this->declarations . $this->viewHtml);
         
         

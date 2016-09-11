@@ -12,10 +12,6 @@
  */
 namespace Phink\MVC;
 
-//require_once 'phink/core/object.php';
-//require_once 'phink/data/client/pdo/pdo_command.php';
-//require_once 'phink/data/crud_queries.php';
-
 use Phink\Core\TObject;
 
 interface IModel {

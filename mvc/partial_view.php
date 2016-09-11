@@ -1,17 +1,8 @@
 <?php
 namespace Phink\MVC;
 
-//require_once 'view.php';
-//require_once 'custom_view.php';
-//require_once 'phink/ui/registry.php';
-//require_once 'partial_controller.php';
-//require_once 'phink/utils/file_utils.php';
-
-use Phink\Web\TWebObject;
-use Phink\MVC\TView;
 use Phink\MVC\TCustomView;
 use Phink\Core\TRegistry;
-use Phink\Utils\TFileUtils;
 
 class TPartialView extends TCustomView 
 {
@@ -21,10 +12,7 @@ class TPartialView extends TCustomView
         $this->parentView = $father;
         $this->className = $parent->getType();
         parent::__construct($parent);
-        //$this->view = $father->getParent();
 //        $this->depth += $this->view->getDepth();
-        //$this->context = $parent->context;
-        //$this->className = $this->getType();
         //\Phink\Log\TLog::debug('FATHER TYPE <> PARENT TYPE : ' . $father->getType() . ' <> ' . $this->className, __FILE__, __LINE__);
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();        

@@ -1,9 +1,6 @@
 <?php
 namespace Phink\MVC;
 
-//require_once 'custom_controller.php';
-//require_once 'partial_view.php';
-
 use Phink\MVC\TPartialView;
 use Phink\MVC\TCustomController;
 
@@ -12,7 +9,6 @@ class TPartialController extends TCustomController
     
     public function __construct(\Phink\Core\TObject $parent)
     {
-        //$this->setParent($parent->getView())
         parent::__construct($parent);
         
         $this->className = $this->getType();

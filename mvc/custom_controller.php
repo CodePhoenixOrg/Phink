@@ -1,8 +1,6 @@
 <?php
 namespace Phink\MVC;
 
-//require_once 'phink/core/object.php';
-
 abstract class TCustomController extends \Phink\Web\UI\TCustomControl
 {
 
