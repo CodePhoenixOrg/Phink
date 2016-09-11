@@ -25,28 +25,7 @@ class TPartialController extends TCustomController
         $this->model = new $modelClass();        
         $this->view = new TPartialView($parent, $this); 
                 
-    }
-
-    public function perform()
-    {
-        $this->init();
-        $actionName = $this->actionName;
-        
-        $this->parse();
-        $this->renderCreations();
-
-        $params = $this->validate($actionName);
-        $this->invoke($actionName, $params);
-
-        $this->beforeBinding();
-        $this->renderDeclarations();
-
-        //$this->$actionName();
-        $this->getViewHtml();
-        $this->unload();
-        
-        $this->response->sendData();
-    }    
+    }   
     
     public function render()
     {
@@ -62,5 +41,11 @@ class TPartialController extends TCustomController
         }
         $this->unload();    
     }    
+    
+    public function __destruct()
+    {
+        unset($this->model);
+        unset($this->view);
+    }
     
 }

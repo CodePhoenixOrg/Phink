@@ -99,7 +99,38 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
         include "data://text/plain;base64," . base64_encode($this->innerHtml);
     }
 
-    public function perform() {}
+    public function perform()
+    {
+        $this->init();
+        if($this->request->isAJAX()) {
+            $actionName = $this->actionName;
+
+            $this->parse();
+            $this->renderCreations();
+            
+            $params = $this->validate($actionName);
+            $this->invoke($actionName, $params);
+
+            $this->beforeBinding();
+            $this->renderDeclarations();
+            
+            if($this->request->isPartialView()
+            || ($this->request->isView() && $this->actionName !== 'getViewHtml')) {
+                $this->getViewHtml();
+            }
+            $this->unload();
+            $this->response->sendData();
+        } else {
+            $this->load();
+            $this->parse();
+            $this->beforeBinding();
+            $this->renderCreations();
+            $this->renderDeclarations();
+            $this->renderView();
+            $this->unload();
+        }        
+        
+    }
     
     public function getViewHtml()
     {
