@@ -12,32 +12,23 @@ namespace Phink\Web;
  * @author david
  */
 
-trait TWebObject {
+trait TApiObject {
     //put your code here
-    private static $_currentDirectory;
-    private static $_currentFilePath;
-    private static $_currentClassName;
-    private static $_currentNamespace;
-    private static $_sqlConfigurationFileName;
-    private static $_pageNumber;
-    private static $_pageCount;
     protected $redis = null;
     protected $response = null;
     protected $request = null;
     protected $modelFileName = '';
-    protected $viewFileName = '';
     protected $controllerFileName = '';
     protected $jsControllerFileName = '';
-    protected $cssFileName = '';
     protected $cacheFileName = '';
-    protected $preHtmlName = '';
-    protected $viewName = '';
     protected $actionName = '';
     protected $className = '';
+    protected $apiName = '';
     protected $namespace = '';
     protected $code = '';
-    protected $authentication = null;
-    
+    protected $method = '';
+
+
 //    public function __construct(TObject $parent)
 //    {
 //        $this->request = $parent->getRequest();
@@ -46,40 +37,6 @@ trait TWebObject {
 //
 
  
-    public static function pageNumber($value = null)
-    {
-        if(isset($value)) {
-            self::$_pageNumber = $value;
-        }
-        else {
-            return self::$_pageNumber;
-        }
-    }
-
-    public static function pageCount($value = null)
-    {
-        if(isset($value)) {
-            self::$_pageCount = $value;
-        }
-        else {
-            return self::$_pageCount;
-        }
-    }
-
-    public function pageCountByDefault($default)
-    {
-        self::pageCount($this->request->getQueryArguments(PAGE_COUNT));
-        if(!self::pageCount()) {
-            self::pageCount($default);
-        }
-
-        if($default < 1) {
-            self::pageCount(PAGE_COUNT_ZERO);
-        }
-
-        return self::pageCount();
-    }
-
     public function getCacheFileName()
     {
         $this->cacheFileName = RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $this->controllerFileName);
@@ -100,38 +57,15 @@ trait TWebObject {
         return $this->code;
     }
     
-    public function preHtmlExists()
-    {
-        return file_exists($this->getPreHtmlName());
-    }
-        
-    public function getGlobalDesignName()
-    {
-        $parts = pathinfo($this->getFileName());
-        return DOCUMENT_ROOT . 'tmp' . DIRECTORY_SEPARATOR . $parts['filename'] . '.design.php';
-    }
-
     public function getJsonName()
     {
-        
-        return RUNTIME_DIR . $this->className . '.json';
+        return RUNTIME_DIR . $this->className . JSON_EXTENSION;
     }
 
     public function getConfigName()
     {
         $parts = pathinfo($this->getFileName());
         return DOCUMENT_ROOT . 'config' . DIRECTORY_SEPARATOR . $parts['filename'] . '.config.' . $parts['extension'];
-    }
-
-    public function getXmlName()
-    {
-        $parts = pathinfo($this->getFileName());
-        return DOCUMENT_ROOT . 'tmp' . DIRECTORY_SEPARATOR . $parts['filename'] . '.xml';
-    }
-
-    public function getAuthentication()
-    {
-        return $this->authentication;
     }
 
     public function setRedis(array $params)
@@ -201,21 +135,19 @@ trait TWebObject {
 
     public function getViewName()
     {
-        return $this->viewName;
+        return $this->apiName;
     }
     
-    public function setViewName()
+    public function setApiName()
     {
         $requestUriParts = explode('/', REQUEST_URI);
-        $this->viewName = array_pop($requestUriParts);
-        $viewNameParts = explode('.',$this->viewName);
-        $this->viewName = array_shift($viewNameParts);
+        $this->apiName = array_pop($requestUriParts);
+        $apiNameParts = explode('.',$this->apiName);
+        $this->apiName = array_shift($apiNameParts);
 
-        $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
-        $this->className = ucfirst($this->viewName);
-
-//        //\Phink\Log\TLog::debug('VIEW NAME : '  . $this->viewName, __FILE__, __LINE__);
-        
+        $this->apiName = ($this->apiName == '') ? MAIN_VIEW : $this->apiName;
+        $this->className = ucfirst($this->apiName);
+        $this->method = $_REQUEST['METHOD'];
     }
     
     public function setNamespace()
@@ -225,17 +157,14 @@ trait TWebObject {
         if(!isset($this->namespace)) {
             $this->namespace = \Phink\TAutoloader::getDefaultNamespace();
         }
-
     }
     
     public function setNames()
     {
         $this->actionName = (isset($_REQUEST['action'])) ? $_REQUEST['action'] : '';
-        $this->modelFileName = 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
-        $this->viewFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $this->viewName . DIRECTORY_SEPARATOR . $this->viewName . PREHTML_EXTENSION;
-        $this->cssFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $this->viewName . DIRECTORY_SEPARATOR . $this->viewName . CSS_EXTENSION;
-        $this->controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
-        $this->jsControllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
+        $this->modelFileName = 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $this->apiName . CLASS_EXTENSION;
+        $this->controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->apiName . DIRECTORY_SEPARATOR . $this->apiName . CLASS_EXTENSION;
+        $this->jsControllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->apiName . DIRECTORY_SEPARATOR . $this->apiName . JS_EXTENSION;
         
         $this->getCacheFileName();
 

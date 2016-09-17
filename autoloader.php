@@ -110,7 +110,7 @@ class TAutoloader
         $code = file_get_contents($filename, FILE_USE_INCLUDE_PATH);
         
         $file = str_replace('\\', '_', $info->namespace . '\\' . $viewName) . '.php';
-        if(!file_exists(TMP_DIR . DIRECTORY_SEPARATOR . $file)) {
+        if(!file_exists(RUNTIME_DIR . $file)) {
             include $filename;
         }
        
@@ -282,12 +282,12 @@ class TAutoloader
         
         if($info = Core\TRegistry::classInfo($viewName)) {
             $classFilename = ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;
-            $cacheFilename = TMP_DIR . DIRECTORY_SEPARATOR . str_replace(DIRECTORY_SEPARATOR, '_', ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName)) . CLASS_EXTENSION;
+            $cacheFilename = RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName)) . CLASS_EXTENSION;
         } else {
             $classFilename = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
-            $cacheFilename = TMP_DIR . DIRECTORY_SEPARATOR . \Phink\TAutoloader::cacheFilenameFromView($viewName);
-            $cacheJsHtmlFilename = TMP_DIR . DIRECTORY_SEPARATOR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
-            $cacheJsFilename = str_replace(CLASS_EXTENSION, JS_EXTENSION, $cacheFilename);
+            $cacheFilename = RUNTIME_DIR . \Phink\TAutoloader::cacheFilenameFromView($viewName);
+            $cacheJsFilename = RUNTIME_JS_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
+            $cacheJsFilename = str_replace(CLASS_EXTENSION, JS_EXTENSION, $cacheJsFilename);
             
         }
         

@@ -95,7 +95,7 @@ class TRegistry
     {
         self::write('code', $id, $value);
         //$id = str_replace(DIRECTORY_SEPARATOR, '_', $id);
-        //file_put_contents(TMP_DIR . DIRECTORY_SEPARATOR . $id . PREHTML_EXTENSION, $value);
+        //file_put_contents(RUNTIME_DIR . $id . PREHTML_EXTENSION, $value);
         //$keys = array_keys(self::$_code);
         //\Phink\Log\TLog::debug('CODE REGISTRY : ' . print_r($keys, true));
     }

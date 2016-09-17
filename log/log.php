@@ -32,7 +32,7 @@ class TLog
 
     public static function file($filename, $object)
     {
-        file_put_contents (DOCUMENT_ROOT . TMP_DIR . DIRECTORY_SEPARATOR . $filename . '.log', print_r($object, true) . CR_LF);
+        file_put_contents (DOCUMENT_ROOT . RUNTIME_DIR . $filename . '.log', print_r($object, true) . CR_LF);
     }
     
     public static function dump($message, $object)

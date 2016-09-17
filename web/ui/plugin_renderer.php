@@ -34,7 +34,7 @@ abstract class TPluginRenderer extends \Phink\MVC\TPartialController
             }
 
             $json = json_encode($result);
-            $elementsFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_elements.json';
+            $elementsFilename = RUNTIME_DIR . $id . '_elements.json';
             file_put_contents($elementsFilename, $json);
 //        }
         

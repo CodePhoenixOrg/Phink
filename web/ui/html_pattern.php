@@ -46,7 +46,7 @@ trait THtmlPattern {
         $type = $this->getType();
         $path = ROOT_PATH . \Phink\Core\TRegistry::classPath($type);
         
-        $jsonName = TMP_DIR . DIRECTORY_SEPARATOR . str_replace(DIRECTORY_SEPARATOR, '_', $path . strtolower($type) . '.json');
+        $jsonName = RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . strtolower($type) . '.json');
         if(file_exists($jsonName)) {
             $json = file_get_contents($jsonName);
             $this->elements = unserialize($json);

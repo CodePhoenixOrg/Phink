@@ -62,7 +62,7 @@ class TControl extends TCustomControl
         $this->unload();
 
 /*        
-        $cachedJsController = TMP_DIR . DIRECTORY_SEPARATOR . \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
+        $cachedJsController = RUNTIME_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
         \Phink\Log\TLog::debug(__METHOD__ . '::1::' . $cachedJsController);
         if(file_exists($cachedJsController)) {
             $jsCode = file_get_contents($cachedJsController);

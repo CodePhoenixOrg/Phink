@@ -233,11 +233,11 @@ class TObject
 
     public function sleep()
     {
-        $this->serialFilename = TMP_DIR . DIRECTORY_SEPARATOR . $this->id . JSON_EXTENSION;
+        $this->serialFilename = RUNTIME_DIR . $this->id . JSON_EXTENSION;
         $this->isSerialized = true;
         
 //        $phpObject = var_export($this, true);
-//        $objectFilename = TMP_DIR . DIRECTORY_SEPARATOR . $this->id . '.obj.txt';
+//        $objectFilename = RUNTIME_DIR . $this->id . '.obj.txt';
 //        file_put_contents($objectFilename, $phpObject);
 
         file_put_contents($this->serialFilename, $this->serialize());
@@ -245,7 +245,7 @@ class TObject
     
     public function wake()
     {
-        $serialFilename = TMP_DIR . DIRECTORY_SEPARATOR . $this->id . JSON_EXTENSION;
+        $serialFilename = RUNTIME_DIR . $this->id . JSON_EXTENSION;
         $result = file_exists($serialFilename);
         
         $serialized = ($result) ? file_get_contents($serialFilename) : $result;
@@ -255,7 +255,7 @@ class TObject
 
     public static function wakeUp($id)
     {
-        $serialFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . JSON_EXTENSION;
+        $serialFilename = RUNTIME_DIR . $id . JSON_EXTENSION;
         $result = file_exists($serialFilename);
         
         $serialized = ($result) ? file_get_contents($serialFilename) : $result;

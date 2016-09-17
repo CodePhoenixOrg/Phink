@@ -54,7 +54,7 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
             $id = $this->getParent()->getId();
             
             $json = json_encode($this->templates);
-            $templateFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_template.json';
+            $templateFilename = RUNTIME_JS_DIR . $id . '_template.json';
             file_put_contents($templateFilename, $json);
             
             $this->_children = $this->assocArrayByAttribute($this->_children, 'name');
@@ -72,14 +72,14 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
 
     public static function getGridData($id, \Phink\Data\Client\PDO\TPdoCommand $cmd, $rowCount = 1)
     {
-        $templateFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_template.json';
+        $templateFilename = RUNTIME_JS_DIR . $id . '_template.json';
         //\Phink\Log\TLog::debug('TEMPLATE FILE : ' . $templateFilename);
         $templates = '';
         if(file_exists($templateFilename)) {
             $templates = json_decode(file_get_contents($templateFilename));
         }
         
-        $elementsFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_elements.json';
+        $elementsFilename = RUNTIME_JS_DIR . $id . '_elements.json';
         //\Phink\Log\TLog::debug('TEMPLATE FILE : ' . $elementsFilename);
         $elements = '';
         if(file_exists($elementsFilename)) {
@@ -137,7 +137,7 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
         $this->data = self::getGridData($this->getParent()->getViewName(), $this->command, $this->_rowCount);
     
         $id = $this->getParent()->getViewName();
-        $scriptFilename = TMP_DIR . DIRECTORY_SEPARATOR . $id . '_data.js';
+        $scriptFilename = RUNTIME_JS_DIR . $id . '_data.js';
         $json = json_encode($this->data);
         file_put_contents($scriptFilename, 'var ' . $id . 'Data = ' . $json . ';');
         

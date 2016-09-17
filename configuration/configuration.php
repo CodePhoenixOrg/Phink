@@ -1,65 +1,39 @@
 <?php
 namespace Phink\Configuration;
 
-//require_once 'phink/core/acomponent.php';
-
-use Phink\Declarators\THtmlDeclarator;
 /**
  * Description of aconfig
  *
  * @author david
  */
-abstract class TConfiguration extends \Phink\UI\TComponent
+abstract class TConfiguration extends \Phink\Core\TObject
 {
+    private $_innerList = array();
+    
     public function __construct($parent)
     {
         parent::__construct($parent);
     }
 
-    public function parse()
+    public function loadFromFile($filename)
     {
-
-        $preHtmlName = $this->getPreHtmlName();
-        if(file_exists($preHtmlName)) {
-            require ($preHtmlName);
-            return true;
+        if(!file_exists($filename)) {
+            return false;
         }
-
-        $this->_parse2();
-
-        $templateName = $this->getTemplateName();
-
-        if($this->isDirty() === true) {
-            $templateName = $preHtmlName;
-            file_put_contents($templateName, $this->contents);
-
+        
+        $text = file_get_contents($filename);
+        $text = str_replace("\r", '', $text);
+        $lines = explode("\n", $text);
+        
+        foreach($lines as $line) {
+            array_push($this->_innerList, $line);
         }
-
-        require($templateName);
-
     }
-
-    private function _parse2()
+    
+    public function readLine()
     {
-        $jsonName = $this->getJsonName();
-        if(file_exists($jsonName)) {
-            $json = file_get_contents($jsonName);
-            $this->_elements = unserialize($json);
-            return true;
-        }
-
-        $configName = $this->getConfigName();
-        $this->contents = file_get_contents($configName);
-
-        $declarator = new THtmlDeclarator($this->contents);
-
-        $this->_elements = $declarator->parse();
-
-        $jsonElements = serialize($this->_elements);
-
-        file_put_contents($jsonName, $jsonElements);
-
-
+        $result = each($this->_innerList);
+        if(!$result) reset($this->_innerList);
+        return $result;
     }
-
 }

@@ -85,7 +85,7 @@ trait TCodeGenerator {
                     $viewName = lcfirst($className);
                     $fullClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
                     $fullJsClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . JS_EXTENSION;
-                    $fullJsCachePath = TMP_DIR . DIRECTORY_SEPARATOR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
+                    $fullJsCachePath = RUNTIME_JS_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
                     $fullJsCachePath = str_replace(HTML_EXTENSION, JS_EXTENSION, $fullJsCachePath);
                     array_push($requires, '\\Phink\\TAutoloader::import($this, "' . $viewName . '");');
 //                    array_push($requires, '$this->import("' . $viewName . '");');
@@ -106,7 +106,7 @@ trait TCodeGenerator {
                         $jsCode .= '</script>' . CR_LF;
                         $jsCode .= '<?php' . CR_LF;
                         
-                        $fullJsCachePath2 = TMP_DIR . DIRECTORY_SEPARATOR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
+                        $fullJsCachePath2 = RUNTIME_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
                         file_put_contents($fullJsCachePath2, $jsCode);
                         */
                     }
