@@ -86,9 +86,7 @@ trait TCodeGenerator {
                     $fullClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
                     $fullJsClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . JS_EXTENSION;
                     $fullJsCachePath = RUNTIME_JS_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
-                    $fullJsCachePath = str_replace(HTML_EXTENSION, JS_EXTENSION, $fullJsCachePath);
                     array_push($requires, '\\Phink\\TAutoloader::import($this, "' . $viewName . '");');
-//                    array_push($requires, '$this->import("' . $viewName . '");');
                     $class = \Phink\TAutoloader::includeClass($fullClassPath, RETURN_CODE | INCLUDE_FILE);
                     $fqcn = $class['type'];
                     $code = $class['code'];
@@ -99,16 +97,6 @@ trait TCodeGenerator {
                         $jsCtrlCode = file_get_contents($fullJsClassPath) . CR_LF;
                         file_put_contents($fullJsCachePath, $jsCtrlCode);
                         $view->getResponse()->addScript($fullJsCachePath);
-                        /*
-                        $jsCode .= CR_LF . "?>" . CR_LF;
-                        $jsCode .= '<script>' . CR_LF;
-                        $jsCode .= $jsCtrlCode . CR_LF;
-                        $jsCode .= '</script>' . CR_LF;
-                        $jsCode .= '<?php' . CR_LF;
-                        
-                        $fullJsCachePath2 = RUNTIME_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
-                        file_put_contents($fullJsCachePath2, $jsCode);
-                        */
                     }
                     TRegistry::setCode($fullClassPath, $code);
                 }

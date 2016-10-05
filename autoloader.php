@@ -72,7 +72,7 @@ class TAutoloader
     }
 
     public static function cacheJsFilenameFromView($viewName) {
-        return strtolower('app_controllers_' . $viewName . '_' . $viewName . HTML_EXTENSION);
+        return strtolower('app_controllers_' . $viewName . '_' . $viewName . JS_EXTENSION);
     }
 
     public static function cachePath($filepath) {
@@ -288,12 +288,14 @@ class TAutoloader
             $cacheFilename = RUNTIME_DIR . \Phink\TAutoloader::cacheFilenameFromView($viewName);
             $cacheJsFilename = RUNTIME_JS_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
             $cacheJsFilename = str_replace(CLASS_EXTENSION, JS_EXTENSION, $cacheJsFilename);
+            \Phink\Log\TLog::debug('CACHED JS FILENAME: ' . $cacheJsFilename, __FILE__, __LINE__);
             
         }
         
         if(file_exists($cacheFilename)) {
 
             if(file_exists($cacheJsFilename)) {
+                \Phink\Log\TLog::debug('INCLUDE CACHED JS CONTROL: ' . $cacheJsFilename, __FILE__, __LINE__);
                 $ctrl->getResponse()->addScript($cacheJsFilename);
             }
             \Phink\Log\TLog::debug('INCLUDE CACHED CONTROL: ' . $cacheFilename, __FILE__, __LINE__);

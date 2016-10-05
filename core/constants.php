@@ -11,7 +11,7 @@ define('WEB_SEPARATOR', '/');
 define ('TMP_DIR', 'tmp');
 define ('RUNTIME_DIR', 'runtime' . DIRECTORY_SEPARATOR);
 define ('RUNTIME_JS_DIR', 'runtime' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR);
-define ('CACHE_DIR', 'cache');
+define ('CACHE_DIR', 'cache' . DIRECTORY_SEPARATOR);
 
 $PWD = '';
 if(isset($_SERVER['DOCUMENT_ROOT'])) {
