@@ -137,9 +137,6 @@ class TAutoloader
     public static function includeClass($filename, $params = 0)
     {
 
-        $filename = strtolower($filename);
-        $fullJsClassPath = str_replace(CLASS_EXTENSION, JS_EXTENSION, $filename);
-        
         if(!file_exists($filename)) {
             //\Phink\Log\TLog::debug('INCLUDE CLASS : FILE ' . $filename . ' DOES NOT EXIST');
             return false;
@@ -179,11 +176,6 @@ class TAutoloader
             $code = substr(trim($code), 0, -2) . CR_LF . CONTROL_ADDITIONS;
             TRegistry::setCode($filename, $code);
         }
-        
-        //include $filename;
-        /*include ("data://text/plain," . '<?php ' . substr(str_replace("\t", '', str_replace("\n", '', str_replace("\r", '', $code))), 5) . ' ?>');
-         * 
-         */
         
         Log\TLog::debug(__METHOD__ . '::' . $file, __FILE__, __LINE__);
         

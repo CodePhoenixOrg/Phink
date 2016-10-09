@@ -37,7 +37,7 @@ class TLog
     
     public static function dump($message, $object)
     {
-        self::debug($message . ' : ' . print_r($object, true) . CR_LF);
+        self::debug($message . '::' . print_r($object, true) . CR_LF);
     }
 
     public static function debug($message, $filename = null, $line = null)

@@ -70,6 +70,7 @@ trait TCodeGenerator {
 
                 $properties = $control['properties'];
                 $controlId = $properties['id'];
+                //$className = ucfirst($control['name']);
                 $className = $control['name'];
                 $fqcn = '';
                 $code  = '';
@@ -81,15 +82,22 @@ trait TCodeGenerator {
 //                        array_push($requires, '$this->import("' . $className . '");');
                     }
                     $fqcn = $info->namespace . '\\' . $className;
-                } elseif ($className != 'this') {
+                } elseif ($className !== 'this') {
                     $viewName = lcfirst($className);
                     $fullClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
                     $fullJsClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . JS_EXTENSION;
                     $fullJsCachePath = RUNTIME_JS_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
-                    array_push($requires, '\\Phink\\TAutoloader::import($this, "' . $viewName . '");');
+                    array_push($requires, '\\Phink\\TAutoloader::import($this, "' . $className . '");');
+
+                    \Phink\Log\TLog::dump('FULL_CLASS_PATH', $fullClassPath);                    
+
                     $class = \Phink\TAutoloader::includeClass($fullClassPath, RETURN_CODE | INCLUDE_FILE);
                     $fqcn = $class['type'];
                     $code = $class['code'];
+                    
+                    \Phink\Log\TLog::dump('FILE', $class['file']);                    
+                    \Phink\Log\TLog::dump('FQCN', $class['type']);
+                    
                     $jsCode = '';
                     if(file_exists($fullJsCachePath)) {
                         $view->getResponse()->addScript($fullJsCachePath);
