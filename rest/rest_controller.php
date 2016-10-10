@@ -13,12 +13,12 @@ namespace Phink\Rest;
  *
  * @author David
  */
-abstract class RestController
+abstract class TRestController
 {
-    use HttpTransport;
+    use THttpTransport;
     //put your code here
 
-    public function __construct(RestApplication $app)
+    public function __construct(TRestApplication $app)
     {
         $this->request = $app->getRequest();
         $this->response = $app->getResponse();

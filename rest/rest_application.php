@@ -21,7 +21,7 @@ class TRestApplication
     
     public static function create()
     {
-        (new RestApplication())->run();
+        (new TRestApplication())->run();
     }
 
     public function run()
@@ -29,7 +29,7 @@ class TRestApplication
         $this->request = new \Phink\Web\TRequest();
         $this->response = new \Phink\Web\TResponse();
         
-        $router = new RestRouter($this);
+        $router = new TRestRouter($this);
         if($router->translate()) {
             $router->dispatch();
         } else {
