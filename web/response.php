@@ -56,13 +56,17 @@ class TResponse implements \JsonSerializable
         $this->_data['return'] = $value;
     }
 
-    public function setData($key, $value)
+    public function setData($key, $value = '')
     {
-        //if(!array_key_exists($key, $this->_data)) {
-            
+        if(is_array($key)) {
+//            \Phink\Log\TLog::dump('KEY', $key);
+            foreach ($key as $left => $right) {
+                $this->_data[$left] = $right;
+            }
+        } else {
             $this->_data[$key] = (in_array($key, ['view', 'page', 'master'])) ? base64_encode($value) : $value; //, 'page'
-            //$this->_data[$key] = $value;
-        //}
+        }
+            
     }
     
     private function _getHeaders($hsts = false) {

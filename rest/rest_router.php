@@ -53,9 +53,15 @@ class TRestRouter
         $data = [];
         $method = REQUEST_METHOD;
 
-        $fqObject = $this->baseNamespace . '\\Rest\\' . $this->className;
-
-        include $this->apiFileName;
+        $model = str_replace('rest', 'models', $this->apiFileName);
+        if(file_exists($model)) {
+            include $model;
+        }
+        
+        $include = \Phink\TAutoloader::includeClass($this->apiFileName, INCLUDE_FILE);
+        $fqObject = $include['type'];
+        
+        \Phink\Log\TLog::debug($fqObject);
 
         $instance = new $fqObject($this->application);
         

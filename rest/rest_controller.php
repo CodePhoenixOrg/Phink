@@ -13,7 +13,7 @@ namespace Phink\Rest;
  *
  * @author David
  */
-abstract class TRestController
+class TRestController
 {
     use THttpTransport;
     //put your code here
