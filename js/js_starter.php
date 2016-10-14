@@ -43,6 +43,7 @@ $filenames = [
     ,   'core' . DIRECTORY_SEPARATOR . 'utils.js'
     ,   'core' . DIRECTORY_SEPARATOR . 'object.js'
     ,   'core' . DIRECTORY_SEPARATOR . 'url.js'
+    ,   'web' . DIRECTORY_SEPARATOR . 'rest.js'
     ,   'web' . DIRECTORY_SEPARATOR . 'web_object.js'
     ,   'web' . DIRECTORY_SEPARATOR . 'web_application.js'
     ,   'mvc' . DIRECTORY_SEPARATOR . 'view.js'

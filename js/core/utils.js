@@ -59,6 +59,13 @@ TUtils.html64 = function(container, html) {
     $(container).html(base64_decode(html));
 };
 
+TUtils.secondsToString = function(seconds) {
+     var minutes = Math.floor(seconds / 60)
+     var seconds = seconds - (minutes * 60)
+     
+     return minutes + ':' + ('00' + seconds).toString().slice(-2)
+}
+
 function debugLog(message) {
     alert(message);
 }
