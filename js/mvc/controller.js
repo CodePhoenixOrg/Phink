@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
-
+var context = null;
 var TController = function(view, name) {
     TWebObject.call(this);
-
+    context = this;
     this.domain = (view !== undefined) ? view.getDomain() : '';
     this.hasView = true;
     
@@ -44,9 +44,12 @@ TController.prototype.oninit = function (callback) {
 
 TController.prototype.onload = function (callback) {
 
-    if(typeof callback === 'function') {
-        callback.call(this);
-    }
+    var the = this
+    Phink.DOM.ready(function() {
+        if(typeof callback === 'function') {
+            callback.call(the);
+        }
+    })
     
     return this;
 };
