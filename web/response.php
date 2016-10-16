@@ -117,9 +117,12 @@ class TResponse implements \JsonSerializable
         }
         header('Content-Type: application/json; charset=UTF-8');
         $code = $this->_getHeaders(false);
+        
+        if(count($this->scriptsList)) {
+            $this->_data['scripts'] = $this->scriptsList;
+        }
 
         if($code === 200) {
-            $this->_data['scripts'] = $this->scriptsList;
             echo json_encode($this);
         }
     }

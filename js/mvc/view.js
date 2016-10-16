@@ -59,9 +59,11 @@ TView.prototype.requestView = function (view, action, args, callback) {
             TRegistry.setOrigin(xhr.getResponseHeader('origin'));
             TRegistry.setToken(data.token);
 
-            var l = data.scripts.length;
-            for(i = 0; i < l; i++) {
-                the.getScript(data.scripts[i]);
+            if(data.scripts !== undefined) {
+                var l = data.scripts.length;
+                for(i = 0; i < l; i++) {
+                    the.getScript(data.scripts[i]);
+                }
             }
 
             data.view = base64_decode(data.view);
@@ -110,9 +112,11 @@ TView.prototype.requestPart = function (pageName, action, attach, postData, call
             TRegistry.setToken(data.token);
             TRegistry.setOrigin(xhr.getResponseHeader('origin'));
 
-            var l = data.scripts.length;
-            for(i = 0; i < l; i++) {
-                the.getScript(data.scripts[i]);
+            if(data.scripts !== undefined) {
+                var l = data.scripts.length;
+                for(i = 0; i < l; i++) {
+                    the.getScript(data.scripts[i]);
+                }
             }
 
             var html = base64_decode(data.view);
@@ -146,9 +150,11 @@ TView.prototype.parseResponse = function(response, callback) {
         throw new Error('Not a view !');
     }
 
-    var l = data.scripts.length;
-    for(i = 0; i < l; i++) {
-        the.getScript(data.scripts[i]);
+    if(data.scripts !== undefined) {
+        var l = data.scripts.length;
+        for(i = 0; i < l; i++) {
+            the.getScript(data.scripts[i]);
+        }
     }
 
     if(typeof callback === 'function') {
@@ -175,9 +181,11 @@ TView.prototype.attachView = function (pageName, anchor) {
         try {
             TRegistry.setToken(data.token);
 
-            var l = data.scripts.length;
-            for(i = 0; i < l; i++) {
-                the.getScript(data.scripts[i]);
+            if(data.scripts !== undefined) {
+                var l = data.scripts.length;
+                for(i = 0; i < l; i++) {
+                    the.getScript(data.scripts[i]);
+                }
             }
 
             var html = base64_decode(data.view);
