@@ -19,7 +19,7 @@ TAccordion.create = function() {
 };
 
 
-TAccordion.prototype.bind = function(container, names, values, templates, elements) {
+TAccordion.prototype.bind = function(container, names, values, templates, elements, callback) {
     var templateNum = templates.length;
     var colNum = names.length;
     var rowNum = values.length;
@@ -99,6 +99,10 @@ TAccordion.prototype.bind = function(container, names, values, templates, elemen
 
     $(container).html("&nbsp;");
     $(container).html(result);
+    
+    if(typeof callback === 'function') {
+        callback.call(this);
+    }    
 };
 
 

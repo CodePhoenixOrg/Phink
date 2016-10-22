@@ -19,7 +19,7 @@ TList.create = function() {
 };
 
 
-TList.prototype.bind = function(container, names, values, templates, elements) {
+TList.prototype.bind = function(container, names, values, templates, elements, callback) {
     var colNum = templates.length;
     var rowNum = values.length;
 
@@ -50,6 +50,10 @@ TList.prototype.bind = function(container, names, values, templates, elements) {
 
     $(container).html("&nbsp;");
     $(container).html(result);
+    
+    if(typeof callback === 'function') {
+        callback.call(this);
+    }
 };
 
 

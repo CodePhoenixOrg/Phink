@@ -15,7 +15,7 @@ TTable.create = function() {
     return new TTable();
 };
     
-TTable.prototype.bind = function(tableId, values, templates) {
+TTable.prototype.bind = function(tableId, values, templates, callback) {
     var colNum = templates.length;
     var rowNum = values.length;
     for(var j=0; j < rowNum; j++) {
@@ -27,6 +27,10 @@ TTable.prototype.bind = function(tableId, values, templates) {
                 $(tableId + 'td' + (i + colNum * j).toString()).html(html);
             }
         }
+    }
+    
+    if(typeof callback === 'function') {
+        callback.call(this);
     }
 };
 
