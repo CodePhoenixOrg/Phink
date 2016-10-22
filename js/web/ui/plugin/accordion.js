@@ -19,7 +19,7 @@ TAccordion.create = function() {
 };
 
 
-TAccordion.prototype.bind = function(accordionId, names, values, templates, elements) {
+TAccordion.prototype.bind = function(container, names, values, templates, elements) {
     var templateNum = templates.length;
     var colNum = names.length;
     var rowNum = values.length;
@@ -97,8 +97,8 @@ TAccordion.prototype.bind = function(accordionId, names, values, templates, elem
     result += elements[2].closing;
     result += elements[0].closing;
 
-    $(accordionId).html("&nbsp;");
-    $(accordionId).html(result);
+    $(container).html("&nbsp;");
+    $(container).html(result);
 };
 
 

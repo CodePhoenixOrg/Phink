@@ -14,6 +14,7 @@ namespace Phink\Web\UI;
 trait THtmlControl 
 {
     //put your code here
+    protected $css = '';
     protected $name = '';
     protected $image = '';
     protected $content = '';
@@ -46,6 +47,15 @@ trait THtmlControl
     public function setImage($value)
     {
         $this->image = $value;
+    }
+
+    public function getCss()
+    {
+        return $this->css;
+    }
+    public function setCss($value)
+    {
+        $this->css = $value;
     }
 
     public function getContent()
@@ -98,6 +108,7 @@ trait THtmlControl
         return [
             'image' => $this->image
           , 'name' => $this->name
+          , 'css' => $this->css
           , 'event' => $this->event
           , 'content' => $this->content
           , 'dragHelper' => $this->dragHelper

@@ -10,6 +10,7 @@ abstract class TPluginRenderer extends \Phink\MVC\TPartialController
 {
     use \Phink\Web\UI\THtmlPattern;
     use \Phink\Data\UI\TDataBinder;
+    use \Phink\Web\UI\THtmlControl;
     
     protected static $templateFilename;
 
@@ -34,7 +35,7 @@ abstract class TPluginRenderer extends \Phink\MVC\TPartialController
             }
 
             $json = json_encode($result);
-            $elementsFilename = RUNTIME_DIR . $id . '_elements.json';
+            $elementsFilename = RUNTIME_JS_DIR . $id . '_elements.json';
             file_put_contents($elementsFilename, $json);
 //        }
         
@@ -44,6 +45,10 @@ abstract class TPluginRenderer extends \Phink\MVC\TPartialController
         
         $pluginClass = '\Phink\Web\UI\Plugin\T' . ucfirst($this->getPattern());
         $plugin = new $pluginClass($this);
+        $plugin->setCss($this->css);
+        $plugin->setContent($this->content);
+        $plugin->setEvent($this->event);
+        $plugin->setEnabled($this->enabled);
         $plugin->setId($this->getId());
         $plugin->setCols($this->columns);
         $plugin->setRows($this->rows);

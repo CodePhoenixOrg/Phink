@@ -115,6 +115,7 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
             , 'templates' => $templates
         ];
 
+        
         if(isset($elements)) {
             $result['elements'] = $elements;
         }

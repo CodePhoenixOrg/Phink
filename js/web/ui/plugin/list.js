@@ -19,86 +19,37 @@ TList.create = function() {
 };
 
 
-TList.prototype.bind = function(accordionId, names, values, templates, elements) {
-    var templateNum = templates.length;
-    var colNum = names.length;
+TList.prototype.bind = function(container, names, values, templates, elements) {
+    var colNum = templates.length;
     var rowNum = values.length;
 
     var result = '';
     var html = '';
-    var level = 0;
     var row = 0;
-    var index = 0;
-    var canBind = 0;
-    var bound = [false, false, false];
+    var css = '';
 
-    num = 0;
-    var oldValues = Array.apply(null, Array(colNum)).map(String.prototype.valueOf, '!#');
-
-    for(var k = 0; k < templateNum; k++) {
-        for(j = 0; j < colNum; j++) {
-            if(templates[k].name === names[j]) {
-                templates[k].index = j;
-            }
-        }
-    }
-
-    for(var i = 0; i < rowNum; i++) {
+    result = str_replace('%s', css, elements[0].opening) + "\n";
+    var oldValue = [];
+    
+    for(i = 0; i < rowNum; i++) {
 
         row = (values[i] !== null) ? JSON.parse(values[i]) : Array.apply(null, Array(colNum)).map(String.prototype.valueOf, '&nbsp;');
-        for(var j = 0; j < templateNum; j++) {
-             if(j === 0) {
-                level = 0;
-            }
-            if(!templates[j].enabled) continue;
-            index = templates[j].index;
-            canBind = row[index] !== oldValues[j];
 
-            if(!canBind) {
-                bound[level] = canBind;
-                level++;
-                oldValues[j] = row[index];
-                continue;
-            }
-            //html = this.applyTemplate(templates[j], colNum, row, i);
-            //html = row[index];
+        result += str_replace('%s', '', elements[1].opening) + "\n";
+        for(j = 0; j < colNum; j++) {
+            var k = i * colNum + j;
             html = TPlugin.applyTemplate(templates, row, j);
-
-            if(level === 0) {
-                if(i > 0) {
-                    result += elements[2].closing + elements[0].closing;
-                    result += elements[2].closing + elements[0].closing;
-                    oldValues = Array.apply(null, Array(colNum)).map(String.prototype.valueOf, '!#');
-                }
-                result += str_replace('%s', 'blue', elements[0].opening);
-                result += elements[1].opening + html + elements[1].closing;
-                result += elements[2].opening;
+            if(templates[j]['enabled'] == 1 && row[j] != oldValue[j]) {
+                result += str_replace('%s', '', elements[2].opening) + html + elements[2].closing + "\n";
             }
-            else if(level === 1) {
-                if(i > 0 && !bound[level - 1]) {
-                    result += elements[2].closing + elements[0].closing;
-                } else {
-
-                }
-                result += str_replace('%s', 'odd', elements[0].opening);
-                result += elements[1].opening + html + elements[1].closing;
-                result += elements[2].opening;
-            }
-            else if(level === 2) {
-                result += str_replace('%s', '', elements[2].opening) + html + elements[2].closing;
-            }                
-            bound[level] = canBind;
-            level++;
-            oldValues[j] = row[index];
+            oldValue[j] = row[j];
         }
+        result += elements[1].closing + "\n";
     }
-    result += elements[2].closing;
-    result += elements[0].closing;
-    result += elements[2].closing;
-    result += elements[0].closing;
+    result += elements[0].closing + "\n";
 
-    $(accordionId).html("&nbsp;");
-    $(accordionId).html(result);
+    $(container).html("&nbsp;");
+    $(container).html(result);
 };
 
 

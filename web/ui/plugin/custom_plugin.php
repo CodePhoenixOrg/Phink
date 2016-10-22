@@ -10,6 +10,7 @@ namespace Phink\Web\UI\Plugin;
 abstract class TCustomPlugin extends \Phink\Core\TObject
 {
     use \Phink\Data\UI\TDataBinder;
+    use \Phink\Web\UI\THtmlControl;
     
     protected $elements = null;
     

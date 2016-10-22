@@ -19,6 +19,7 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
 
         parent::__construct($parent);
         
+        $this->authentication = $parent->getAuthentication();
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();        
         

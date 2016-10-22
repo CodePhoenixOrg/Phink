@@ -34,10 +34,6 @@ trait THtmlPattern {
     
     public function getPatternName()
     {
-         
-//        $className = $this->getType();
-//        $classPath = \Phink\Core\TRegistry::classPath($className);
-//        $filename = \Phink\TAutoloader::classNameToFilename($className);
         return strtolower(ROOT_NAMESPACE) . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'html' . PATTERN_EXTENSION;
     }
 
@@ -46,7 +42,7 @@ trait THtmlPattern {
         $type = $this->getType();
         $path = ROOT_PATH . \Phink\Core\TRegistry::classPath($type);
         
-        $jsonName = RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . strtolower($type) . '.json');
+        $jsonName = RUNTIME_JS_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . strtolower($type) . '.json');
         if(file_exists($jsonName)) {
             $json = file_get_contents($jsonName);
             $this->elements = unserialize($json);
@@ -83,18 +79,4 @@ trait THtmlPattern {
 
     }
 
-/**
-    public function declareObject(Declarators\THtmlDeclaratorInterface $declarator)
-    {
-        $result = '';
-
-        $result = '<?php ' . $declarator->fullId . ' = new ' . $declarator->class . '($this); ?>' . "\n";
-        $result .= '<?php ' . $declarator->fullId . '->id = "' . $declarator->id . '"; ?>' . "\n";
-        $result .= '<?php ' . $declarator->fullId . '->pattern = ' . $declarator->type . 'pattern; ?>' . "\n";
-
-        return $result;
-    }
-*/
-
-    
 }

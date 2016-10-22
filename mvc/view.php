@@ -20,6 +20,7 @@ class TView extends TCustomView
 
         parent::__construct($parent);
         
+        $this->authentication = $parent->getAuthentication();
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();
         

@@ -27,6 +27,7 @@ class TControl extends TCustomControl
         //\Phink\Log\TLog::debug('TCONTROL MODEL OBJECT : ' . print_r($modelClass, true));
         $this->model = new $modelClass();        
 
+        $this->authentication = $parent->getAuthentication();
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();        
     }

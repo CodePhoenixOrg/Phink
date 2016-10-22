@@ -20,6 +20,10 @@ TPlugin.create = function() {
 TPlugin.applyTemplate = function(templates, row, i) {
     var html = row[i];
     
+//    if(templates[i] === undefined) {
+//        return html;
+//    }
+    
     if(templates[i].content !== '' && templates[i].enabled) {
         html = templates[i].content;
         var event = templates[i].event;
@@ -29,7 +33,8 @@ TPlugin.applyTemplate = function(templates, row, i) {
         } else {
             event = e[0] + '="' + e[1] + '"'; 
         }
-        for (var m = 0; m < row.length; m++) {
+        for (var m = 0; m < templates.length; m++) {
+//            if(templates[m] === undefined) continue;
             html = html.replace('<% ' + templates[m].name + ' %>', row[m]);
             html = html.replace('<% ' + templates[m].name + ':index %>', m);
             event = event.replace(templates[m].name, "'" + row[m] + "'");
