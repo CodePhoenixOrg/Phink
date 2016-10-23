@@ -19,7 +19,11 @@ TAccordion.create = function() {
 };
 
 
-TAccordion.prototype.bind = function(container, names, values, templates, elements, callback) {
+TAccordion.prototype.bind = function(container, data, callback) {
+    var names = data.names;
+    var values = data.values;
+    var templates = data.templates;
+    var elements = data.elements;    
     var templateNum = templates.length;
     var colNum = names.length;
     var rowNum = values.length;
