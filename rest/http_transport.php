@@ -18,6 +18,12 @@ trait THttpTransport
     //put your code here
     protected $request = null;
     protected $response = null;
+    protected $authentication = null;
+    
+    public function getAuthentication()
+    {
+        return $this->authentication;
+    }
 
     public function getRequest()
     {

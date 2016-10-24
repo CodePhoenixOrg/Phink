@@ -26,6 +26,7 @@ class TRestApplication
 
     public function run()
     {
+        $this->authentication = new \Phink\Auth\TAuthentication();
         $this->request = new \Phink\Web\TRequest();
         $this->response = new \Phink\Web\TResponse();
         

@@ -20,6 +20,7 @@ class TRestController
 
     public function __construct(TRestApplication $app)
     {
+        $this->authentication = $app->getAuthentication();
         $this->request = $app->getRequest();
         $this->response = $app->getResponse();
     }
