@@ -15,7 +15,9 @@ TTable.create = function() {
     return new TTable();
 };
     
-TTable.prototype.bind = function(tableId, values, templates, callback) {
+TTable.prototype.bind = function(tableId, data, callback) {
+    var values = data.values;
+    var templates = data.templates;
     var colNum = templates.length;
     var rowNum = values.length;
     for(var j=0; j < rowNum; j++) {

@@ -19,7 +19,11 @@ TList.create = function() {
 };
 
 
-TList.prototype.bind = function(container, names, values, templates, elements, callback) {
+TList.prototype.bind = function(container, data, callback) {
+    var names = data.names;
+    var values = data.values;
+    var templates = data.templates;
+    var elements = data.elements;
     var colNum = templates.length;
     var rowNum = values.length;
 
