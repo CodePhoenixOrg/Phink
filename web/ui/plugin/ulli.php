@@ -24,7 +24,8 @@ class TUlli extends TCustomPlugin
         $result = "\n";
         $tbody = str_replace('%s', $css, $elements[0]->getOpening()) . "\n";
         $body = $this->data['values'];
-        $oldValue = array();
+        $oldValue = [];
+        $oldValue[0] = '&nbsp;';
         for($i = 0; $i < $this->rows; $i++) {
             $css = '';
 
@@ -35,9 +36,9 @@ class TUlli extends TCustomPlugin
                 $k = $i * $this->columns + $j;
                 $noTHead = $this->templates[$j]['content'] && $this->templates[$j]['enabled'] == 1;
                 $html = \Phink\Web\UI\Widget\Plugin\TPlugin::applyTemplate($this->templates, $row, $j);
-                $typeId1 = 'id="' . $this->getId() .  $elements[2]->getType() . $k . '"';
+                
                 if($this->templates[$j]['enabled'] == 1 && $row[$j] != $oldValue[$j]) {
-                    $tbody .= str_replace('%s', $typeId1, $elements[2]->getOpening()) . $html . $elements[2]->getClosing() . "\n";
+                    $tbody .= str_replace('%s', '', $elements[2]->getOpening()) . $html . $elements[2]->getClosing() . "\n";
                 }
                 $oldValue[$j] = $row[$j];
             }

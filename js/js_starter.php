@@ -23,6 +23,7 @@ $filenames = [
     //,   'holder.js'
     //,   'prettify.js'
     ,   'php.default.min.js'
+    ,   'jquery.mCustomScrollbar.js'
 //    ,   'tiny-console.js'
 //    ,   'drag-and-drop.js'
 ];
