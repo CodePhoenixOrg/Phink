@@ -65,7 +65,7 @@ trait THtmlControl
     public function setContent($value)
     {
         $this->content = $value;
-        if($this->content[0] == '@') {
+        if(isset($this->content[0]) && $this->content[0] === '@') {
             $templateName = str_replace(PREHTML_EXTENSION, '', substr($this->content,1));
             $templateName = 'app' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $templateName . DIRECTORY_SEPARATOR . $templateName . PREHTML_EXTENSION;
 
