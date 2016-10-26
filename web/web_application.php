@@ -100,7 +100,7 @@ class TWebApplication extends \Phink\Core\TApplication
             || $this->viewName == MAIN_VIEW 
             || $this->viewName == MASTER_VIEW 
 //            || $this->viewName == LOGIN_VIEW  
-//            || $this->viewName == HOME_VIEW
+            || $this->viewName == HOME_VIEW
         ) {
             // We renew the token
             // ... we'll try to match the user with this token and alternatively get a new token
