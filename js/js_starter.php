@@ -19,7 +19,7 @@ $filenames = [
     ,   'jquery-ui.js'
     ,   'jquery.ui.touch-punch.min.js'
     ,   'jquery.mousewheel.min.js'
-//    ,   'jquery.mCustomScrollbar.js'
+    ,   'jquery.mCustomScrollbar.js'
     //,   'multiaccordion.jquery.js'
     ,   'bootstrap.js'
     //,   'holder.js'
