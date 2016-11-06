@@ -122,8 +122,8 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
         } else {
             $this->load();
             $this->parse();
-            $this->beforeBinding();
             $this->renderCreations();
+            $this->beforeBinding();
             $this->renderDeclarations();
             $this->renderView();
             $this->unload();
