@@ -1,5 +1,22 @@
 <?php
-
+/*
+ * Copyright (C) 2016 David Blanchard
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+ 
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -8,6 +25,7 @@ namespace Phink\Utils;
 
 class TDateUtils
 {
+    
     public static function frenchToDbFormat($dateFrench)
     {
         if(PHP_OS == 'Linux') {
@@ -37,8 +55,9 @@ class TDateUtils
         return $result;
     }
 
-    // Une chaîne de la date passée à $timestamp au $format désiré
-    public static function makeLocaleTime ($timestamp = 0, $format = '%A %e %B %Y') { //, $locale = 'C'
+    // Une chaï¿½ne de la date passï¿½e ï¿½ $timestamp au $format dï¿½sirï¿½
+    public static function makeLocaleTime ($timestamp = 0, $format = '%A %e %B %Y') 
+    { //, $locale = 'C'
         $result = '';
         if($timestamp == 0) {
             $timestamp = mktime(0,0,0, date("n"), date("d"), date("Y"));

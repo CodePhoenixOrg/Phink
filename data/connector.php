@@ -1,5 +1,22 @@
 <?php
-namespace Phink\Data;
+/*
+ * Copyright (C) 2016 David Blanchard
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+ namespace Phink\Data;
 
 use Phink\Log\TLog;
 
@@ -67,7 +84,7 @@ class TConnector implements IStaticConnector
     public static function getInstance()
     {
         if(self::$_instance == NULL) {
-            throw new Exception("Connexion non définie.");
+            throw new Exception("Connexion non dÃ©finie.");
         }
         
         return self::$_instance;
@@ -79,7 +96,7 @@ class TConnector implements IStaticConnector
     }
     public static function connect()
     {
-        TConsole::log('Connexion par défaut');
+        TConsole::log('Connexion par dÃ©faut');
         self::$_isAlive = self::getInstance()->connect();
         return self::$_isAlive;
     }
@@ -301,7 +318,7 @@ class TSqlSrvDbConnector implements IConnector
     
     private $_connection = null;
     private $_sqlsrvType = null;
-    private $_useTransactions = true; // Par défaut on autorise l'usage des transactions pour les requêtes actions
+    private $_useTransactions = true; // Par dÃ©faut on autorise l'usage des transactions pour les requÃªtes actions
     private $_transactionLevel = 0;
     
     public function identity()
@@ -571,11 +588,11 @@ class TSqlSrvDbConnector implements IConnector
         $this->_transactionLevel = 0;
         if(!$this->_useTransactions) {
             if(TApplication::getVerboseMode()) {
-                TConsole::log('Transaction non-autorisée');
+                TConsole::log('Transaction non-autorisÃ©e');
             }
         } else {
             if(TApplication::getVerboseMode()) {
-                TConsole::log('Transaction autorisée');
+                TConsole::log('Transaction autorisÃ©e');
             }
         }
     }
@@ -591,7 +608,7 @@ class TSqlSrvDbConnector implements IConnector
         
         if($this->_connection && $setTransaction) {
             if(TApplication::getVerboseMode()) {
-                TConsole::log('transaction initiée');
+                TConsole::log('transaction initiÃ©e');
             }
             $result = sqlsrv_begin_transaction($this->_connection);
         } elseif($this->_connection && !$setTransaction) {
@@ -618,7 +635,7 @@ class TSqlSrvDbConnector implements IConnector
         if($this->_connection && $setTransaction) {
             $result = sqlsrv_commit($this->_connection);
             if(TApplication::getVerboseMode()) {
-                TConsole::log('transaction validée');
+                TConsole::log('transaction validÃ©e');
             }
         } elseif($this->_connection && !$setTransaction) {
             $result = true;
@@ -639,7 +656,7 @@ class TSqlSrvDbConnector implements IConnector
         if($this->_connection && $setTransaction) {
             $result = sqlsrv_rollback($this->_connection);
             if(TApplication::getVerboseMode()) {
-                TConsole::log('transaction annulée');
+                TConsole::log('transaction annulÃ©e');
             }
         } elseif($this->_connection && !$setTransaction) {
             $result = true;
@@ -680,7 +697,7 @@ class TMsSqlDbConnector implements IConnector
 {
     
     private $_connection = null;
-    private $_useTransactions = true; // Par défaut on autorise l'usage des transactions pour les requêtes actions
+    private $_useTransactions = true; // Par dÃ©faut on autorise l'usage des transactions pour les requÃªtes actions
     private $_transactionLevel = 0;
 
     public function identity()
@@ -910,9 +927,9 @@ class TMsSqlDbConnector implements IConnector
         $this->_useTransactions = $set;
         $this->_transactionLevel = 0;
         if(!$this->_useTransactions) {
-            TConsole::log('Transaction non-autorisée');
+            TConsole::log('Transaction non-autorisÃ©e');
         } else {
-            TConsole::log('Transaction autorisée');
+            TConsole::log('Transaction autorisÃ©e');
         }
     }
 
@@ -924,7 +941,7 @@ class TMsSqlDbConnector implements IConnector
         $setTransaction =  ($this->_useTransactions && $this->_transactionLevel == 1);
         
         if($this->_connection && $setTransaction) {
-            TConsole::log('transaction initiée');
+            TConsole::log('transaction initiÃ©e');
             $result = mssql_query('BEGIN TRAN', $this->_connection);
         } elseif($this->_connection && !$setTransaction) {
             $result = true;
@@ -1006,7 +1023,7 @@ class TMySqlDbConnector implements IConnector
 {
     
     private $_connection = null;
-    private $_useTransactions = true; // Par défaut on autorise l'usage des transactions pour les requêtes actions
+    private $_useTransactions = true; // Par dÃ©faut on autorise l'usage des transactions pour les requÃªtes actions
     private $_transactionLevel = 0;
 
 
@@ -1190,9 +1207,9 @@ class TMySqlDbConnector implements IConnector
         $this->_useTransactions = $set;
         $this->_transactionLevel = 0;
         if(!$this->_useTransactions) {
-            TConsole::log('Transaction non-autorisée');
+            TConsole::log('Transaction non-autorisÃ©e');
         } else {
-            TConsole::log('Transaction autorisée');
+            TConsole::log('Transaction autorisÃ©e');
         }
     }
 
@@ -1204,7 +1221,7 @@ class TMySqlDbConnector implements IConnector
         $setTransaction =  ($this->_useTransactions && $this->_transactionLevel == 1);
         
         if($this->_connection && $setTransaction) {
-            TConsole::log('transaction initiée');
+            TConsole::log('transaction initiÃ©e');
             $result = mysqli_query('START TRANSACTION', $this->_connection);
         } elseif($this->_connection && !$setTransaction) {
             $result = true;

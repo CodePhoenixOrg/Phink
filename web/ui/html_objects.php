@@ -1,5 +1,22 @@
 <?php
-
+/*
+ * Copyright (C) 2016 David Blanchard
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+ 
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -153,7 +170,7 @@ class THtmlObjects
                 $result .= "\t\t" . '<td ' . ((isset($cssArray[$j+1])) ? ' class="' . $cssArray[$j+1] .'"' : '') . '"><div class="checkbox ui-selectee">
                             <input type="hidden" id="hid' . $name . $key . '" value="' . $labelValue . '">
                             <input type="checkbox" id="chk' . $name . $key . '" value="' . $checkValue . '"' . $onCheckClick . ' ' . $checked . ' ' . $indeterminate . ' style="visibility:' . (($j == 0) ? 'visible' : 'hidden') . '">
-                            <span id="spn' . $name . $key . '" data-toggle="tooltip" data-Phinkal-title="' . $labelValue . '" class="control-label"' . $onEditableClick . '>' . $labelValue . '</span>
+                            <span id="spn' . $name . $key . '" data-toggle="tooltip" data-original-title="' . $labelValue . '" class="control-label"' . $onEditableClick . '>' . $labelValue . '</span>
                         </div></td>';
                 
                 $j++;
@@ -201,7 +218,7 @@ class THtmlObjects
 
     public function createDataGrid(TPdoConnection $connection, $name="", $sql="", $rowId=0, $pageLink="",  $curlRows="", $curlPager = '', $canFilter = false, $canAdd = false, $dialog = '', $colwidths = array(), $colors = array(), $offset = null, $step = 0) { 
     /*
-            Desciption des paramètres :
+            Desciption des paramÃ¨tres :
 
             $name="",
             $sql="", 
@@ -217,7 +234,7 @@ class THtmlObjects
             $colors, 
             $cs
 
-            Dessine un tableau dont les informations sont le result d'une requête SQL passée à $sql. Les parametres $pageLink et $image_link sont utilisés pour la premiere colonne. Si $image_link est vide, la valeur affichée est celle du champ d'index.
+            Dessine un tableau dont les informations sont le result d'une requÃªte SQL passÃ©e Ã  $sql. Les parametres $pageLink et $image_link sont utilisÃ©s pour la premiere colonne. Si $image_link est vide, la valeur affichÃ©e est celle du champ d'index.
     */
         
 //            $connectionType = $connection->getClassName();
@@ -233,7 +250,7 @@ class THtmlObjects
             $criterion=$_REQUEST["criterion"];
 
             
-            //Détermine les couleurs du dbGrid
+            //DÃ©termine les couleurs du dbGrid
             if(!empty($colors)) { 
                     global $grid_colors;
                     $color=$grid_colors;
@@ -263,13 +280,13 @@ class THtmlObjects
 
             $add="Ajouter";
 
-            //validité du numéro du premier enregistrement affiché
+            //validitÃ© du numÃ©ro du premier enregistrement affichÃ©
             if($offset>0) 
                     $curlRows.="&offset=$offset";
             else
                     unset($offset);
 
-            //validité du compteur de pages
+            //validitÃ© du compteur de pages
             if($step>0)
                     $curlRows.="&count=$step";
             else
@@ -300,10 +317,10 @@ class THtmlObjects
             $caption=strtoupper($name[0]).substr($name, 1, strlen($name)-1);
 
 //            /*
-//            Y a-t-il un complément d'URL en paramètre ?
-//            Si oui on sépare les noms de variables de leurs valeurs
-//            et on place les valeur indicant des champs de la requête dans un tableau.
-//            On concatène les autres variables avec leurs valeurs.
+//            Y a-t-il un complÃ©ment d'URL en paramÃ¨tre ?
+//            Si oui on sÃ©pare les noms de variables de leurs valeurs
+//            et on place les valeur indicant des champs de la requÃªte dans un tableau.
+//            On concatÃ¨ne les autres variables avec leurs valeurs.
 //            */
 //            if($curlRows!="") {
 //                    $acompl_url=array();
@@ -322,10 +339,10 @@ class THtmlObjects
 
             if($hasPager || $canFilter) {
                 /*
-                Y a-t-il un complément d'URL en paramètre pour la pagination et le filtre ?
-                Si oui on sépare les noms de variables de leurs valeurs
-                et on place les valeur indicant des champs de la requête dans un tableau.
-                On concatène les autres variables avec leurs valeurs.
+                Y a-t-il un complÃ©ment d'URL en paramÃ¨tre pour la pagination et le filtre ?
+                Si oui on sÃ©pare les noms de variables de leurs valeurs
+                et on place les valeur indicant des champs de la requÃªte dans un tableau.
+                On concatÃ¨ne les autres variables avec leurs valeurs.
                 */
                 if($curlPager!="") {
                         $vars=explode("&", $curlPager);
@@ -338,9 +355,9 @@ class THtmlObjects
             }
 
             /*
-            Le paramètre passé à $pageLink est un nom de champ de la reqête précdé du préfixe & ou @.
-            Si le préfixe est & on agit différemment en fonction de la valeur du champ.
-            Si le préfixe est @ on considère que c'est toujours une adresse web.
+            Le paramÃ¨tre passÃ© Ã  $pageLink est un nom de champ de la reqÃªte prÃ©cdÃ© du prÃ©fixe & ou @.
+            Si le prÃ©fixe est & on agit diffÃ©remment en fonction de la valeur du champ.
+            Si le prÃ©fixe est @ on considÃ¨re que c'est toujours une adresse web.
             */
             $is_image=false;
             $is_url=false;
@@ -421,8 +438,8 @@ class THtmlObjects
                     $filter_button="";
             }
 
-            //Les colonnes auront la largeur définie par ordre d'indexation dans le tableau $colwidth.
-            //Si le nombre de largeurs définies est inférieur on aggrandi le tableau avec des valeurs à 0.
+            //Les colonnes auront la largeur dÃ©finie par ordre d'indexation dans le tableau $colwidth.
+            //Si le nombre de largeurs dÃ©finies est infÃ©rieur on aggrandi le tableau avec des valeurs Ã  0.
             $width_count = count($colwidths);
 
             $fields_count = $stmt->getFieldCount();
@@ -723,14 +740,14 @@ class THtmlObjects
     /*
             Desciption des parametres :
 
-            $sql : requête SQL complète ou uniquement la clause ORDER BY de la requête SQL créée automatiquement à partir de $table
+            $sql : requÃªte SQL complÃ¨te ou uniquement la clause ORDER BY de la requÃªte SQL crÃ©Ã©e automatiquement Ã  partir de $table
             $id : index de menu de la page qui utilise la fonction
             $lg : langue choisie pour afficher la page qui utilise la fonction
-            $caption : étiquette du pager qui caractérise le type d'élément paginé (news, article, etc.)
-            $offset (starting at record) : numéro d'enregistrement où commence la pagination
-            $step : nombre d'éléments affichés par page
-            $count (pager count) : nombre d'éléments à paginer
-            $comp_url : utile pour les valeur de formulaire à reporter sur la pagination
+            $caption : Ã©tiquette du pager qui caractÃ©rise le type d'Ã©lÃ©ment paginÃ© (news, article, etc.)
+            $offset (starting at record) : numÃ©ro d'enregistrement oÃ¹ commence la pagination
+            $step : nombre d'Ã©lÃ©ments affichÃ©s par page
+            $count (pager count) : nombre d'Ã©lÃ©ments Ã  paginer
+            $comp_url : utile pour les valeur de formulaire Ã  reporter sur la pagination
 
     */
             global $count, $lg;

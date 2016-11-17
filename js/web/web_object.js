@@ -72,12 +72,15 @@ TWebObject.prototype.getJSON = function(
     }).done(function(data, textStatus, xhr) {
         try 
         {
-            TRegistry.setToken(data.token);
-            TRegistry.setOrigin(xhr.getResponseHeader('origin'));
-            if($.isFunction(callBack)) {
-                callBack.call(this, data, textStatus, xhr);
+            if(data.error !== undefined) {
+                debugLog('Error : ' + data.error);
+            } else {
+                TRegistry.setToken(data.token);
+                TRegistry.setOrigin(xhr.getResponseHeader('origin'));
+                if($.isFunction(callBack)) {
+                    callBack.call(this, data, textStatus, xhr);
+                }
             }
-
         }
         catch(e)
         {

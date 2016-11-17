@@ -1,5 +1,22 @@
 <?php
-
+/*
+ * Copyright (C) 2016 David Blanchard
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+ 
 namespace Phink\Web;
 
 require_once 'phink/core/application.php';
@@ -99,8 +116,14 @@ class TWebApplication extends \Phink\Core\TApplication
         if(is_string($token) 
             || $this->viewName == MAIN_VIEW 
             || $this->viewName == MASTER_VIEW 
-//            || $this->viewName == LOGIN_VIEW  
+            || $this->viewName == LOGIN_VIEW  
             || $this->viewName == HOME_VIEW
+            || $this->viewName == 'sol'
+            || $this->viewName == 'info'
+            || $this->viewName == 'xml'
+            || $this->viewName == 'notepad'
+            || $this->viewName == 'mail'
+
         ) {
             // We renew the token
             // ... we'll try to match the user with this token and alternatively get a new token

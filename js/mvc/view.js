@@ -54,26 +54,30 @@ TView.prototype.requestView = function (view, action, args, callback) {
         }
     }).done(function(data, textStatus, xhr) {
         try {
-//            var url = TWebObject.parseUrl(pageName);
-//            TRegistry.item(the.name).origin = xhr.getResponseHeader('origin');
-            TRegistry.setOrigin(xhr.getResponseHeader('origin'));
-            TRegistry.setToken(data.token);
+            if(data.error !== undefined) {
+                debugLog('Error : ' + data.error);
+            } else {
 
-            if(data.scripts !== undefined) {
-                var l = data.scripts.length;
-                for(i = 0; i < l; i++) {
-                    the.getScript(data.scripts[i]);
+    //            var url = TWebObject.parseUrl(pageName);
+    //            TRegistry.item(the.name).origin = xhr.getResponseHeader('origin');
+                TRegistry.setOrigin(xhr.getResponseHeader('origin'));
+                TRegistry.setToken(data.token);
+
+                if(data.scripts !== undefined) {
+                    var l = data.scripts.length;
+                    for(i = 0; i < l; i++) {
+                        the.getScript(data.scripts[i]);
+                    }
+                }
+
+                data.view = base64_decode(data.view);
+                if(typeof callback === 'function') {
+                    callback.call(this, data);
+                } else {
+                    $(document.body).html(data.view);
+
                 }
             }
-
-            data.view = base64_decode(data.view);
-            if(typeof callback === 'function') {
-                callback.call(this, data);
-            } else {
-                $(document.body).html(data.view);
-
-            }
-            
         }
         catch(e) {
             debugLog(e);
@@ -109,22 +113,26 @@ TView.prototype.requestPart = function (pageName, action, attach, postData, call
     }).done(function(data, textStatus, xhr) {
         try 
         {
-            TRegistry.setToken(data.token);
-            TRegistry.setOrigin(xhr.getResponseHeader('origin'));
+            if(data.error !== undefined) {
+                debugLog('Error : ' + data.error);
+            } else {
+                TRegistry.setToken(data.token);
+                TRegistry.setOrigin(xhr.getResponseHeader('origin'));
 
-            if(data.scripts !== undefined) {
-                var l = data.scripts.length;
-                for(i = 0; i < l; i++) {
-                    the.getScript(data.scripts[i]);
+                if(data.scripts !== undefined) {
+                    var l = data.scripts.length;
+                    for(i = 0; i < l; i++) {
+                        the.getScript(data.scripts[i]);
+                    }
+                }
+
+                var html = base64_decode(data.view);
+                $(attach).html(html);
+
+                if(typeof callback === 'function') {
+                    callback.call(this, data);
                 }
             }
-
-            var html = base64_decode(data.view);
-            $(attach).html(html);
-            
-            if(typeof callback === 'function') {
-                callback.call(this, data);
-            }            
         }
         catch(e)
         {

@@ -1,28 +1,26 @@
 <?php
-
 /*
- * This file was grabbed from Predis package.
+ * Copyright (C) 2016 David Blanchard
  *
- * (c) Daniele Alessandri <suppakilla@gmail.com>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/*
- * This file is modified by David Blanchard for CodePhink Project
- */
-
+ 
 namespace Phink;
 
 use Phink\Core\TRegistry;
 use Phink\Core\TObject;
-/**
- * Implements a lightweight PSR-0 compliant autoloader.
- *
- * @author Eric Naeseth <eric@thumbtack.com>
- * @author Daniele Alessandri <suppakilla@gmail.com>
- */
+
 class TAutoloader
 {
     private $directory;

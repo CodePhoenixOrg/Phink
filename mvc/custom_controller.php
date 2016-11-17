@@ -1,5 +1,22 @@
 <?php
-namespace Phink\MVC;
+/*
+ * Copyright (C) 2016 David Blanchard
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+ namespace Phink\MVC;
 
 abstract class TCustomController extends \Phink\Web\UI\TCustomControl
 {
@@ -46,6 +63,12 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
     public function getModel()
     {
         return $this->model;
+    }
+    
+    public function view($html)
+    {
+        $this->viewHtml = $html;
+        include "data://text/plain;base64," . base64_encode($this->viewHtml);        
     }
        
     public function parse()
@@ -102,22 +125,26 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
     {
         $this->init();
         if($this->request->isAJAX()) {
-            $actionName = $this->actionName;
+            try {
+                $actionName = $this->actionName;
 
-            $this->parse();
-            $this->renderCreations();
+                $this->parse();
+                $this->renderCreations();
             
-            $params = $this->validate($actionName);
-            $this->invoke($actionName, $params);
+                $params = $this->validate($actionName);
+                $this->invoke($actionName, $params);
 
-            $this->beforeBinding();
-            $this->renderDeclarations();
-            
-            if($this->request->isPartialView()
-            || ($this->request->isView() && $this->actionName !== 'getViewHtml')) {
-                $this->getViewHtml();
+                $this->beforeBinding();
+                $this->renderDeclarations();
+
+                if($this->request->isPartialView()
+                || ($this->request->isView() && $this->actionName !== 'getViewHtml')) {
+                    $this->getViewHtml();
+                }
+                $this->unload();
+            } catch (\BadMethodCallException $ex) {
+                $this->response->setData('error', $ex->getMessage());
             }
-            $this->unload();
             $this->response->sendData();
         } else {
             $this->load();

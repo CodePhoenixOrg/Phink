@@ -1,5 +1,22 @@
 <?php
-
+/*
+ * Copyright (C) 2016 David Blanchard
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+ 
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -212,7 +229,7 @@ class TMailUtils
         $smtp_params["port"] = "25";
 
         // Sending the email using smtp
-        $mail =&Mail::factory("smtp", $smtp_params);
+        $mail = &Mail::factory("smtp", $smtp_params);
         $result = $mail->send($recipient, $headers, $body);
 
         if (PEAR::isError($mail)) {
@@ -230,7 +247,7 @@ class TMailUtils
         //require_once('Mail.php');
         //require_once('Mail/mime.php');
 
-        $sender = "MULLER Rémy <remy@amtt.fr>"; // NE PAS CHANGER !!!
+        $sender = "MULLER Rï¿½my <remy@amtt.fr>"; // NE PAS CHANGER !!!
         $recipient = 'apismtp.v2@smsenvoi.com'; // NE PAS CHANGER !!!
         $subject = 'SMS'; // NE PAS CHANGER !!!
 
@@ -273,6 +290,5 @@ class TMailUtils
         return $result;
 
     }
-
 
 }
