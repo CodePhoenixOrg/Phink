@@ -53,7 +53,7 @@ class TPartialView extends TCustomView
         if(!file_exists($this->viewFileName)) {
 
             if($info = TRegistry::classInfo($this->className))
-{
+            {
                 $this->viewName = \Phink\TAutoloader::classNameToFilename($this->className);
                 if($info->hasTemplate) {
                     $this->viewFileName = ROOT_PATH . $info->path . $this->viewName . PREHTML_EXTENSION;
