@@ -1,0 +1,12 @@
+{
+    "license": "GPL-3.0+",
+    "name": "vendor/Phink",
+    "description": "Think PHP different",
+    "authors": [
+        {
+            "name": "David Blanchard",
+            "email": "dblanchard1@bbox.fr"
+        }
+    ],
+    "require": {}
+}
