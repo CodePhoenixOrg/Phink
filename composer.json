@@ -1,11 +1,13 @@
 {
     "license": "GPL-3.0+",
-    "name": "vendor/Phink",
+    "name": "phink/phink",
     "description": "Think PHP different",
     "authors": [
         {
             "name": "David Blanchard",
-            "email": "dblanchard1@bbox.fr"
+            "email": "dblanchard1@bbox.fr",
+            "homepage": "https://code-phoenix.org",
+            "role": "Developer"
         }
     ],
     "require": {}
