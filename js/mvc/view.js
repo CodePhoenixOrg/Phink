@@ -65,7 +65,7 @@ TView.prototype.requestView = function (view, action, args, callback) {
 
                 if(data.scripts !== undefined) {
                     var l = data.scripts.length;
-                    for(i = 0; i < l; i++) {
+                    for(var i = 0; i < l; i++) {
                         the.getScript(data.scripts[i]);
                     }
                 }
@@ -121,7 +121,7 @@ TView.prototype.requestPart = function (pageName, action, attach, postData, call
 
                 if(data.scripts !== undefined) {
                     var l = data.scripts.length;
-                    for(i = 0; i < l; i++) {
+                    for(var i = 0; i < l; i++) {
                         the.getScript(data.scripts[i]);
                     }
                 }
@@ -160,7 +160,7 @@ TView.prototype.parseResponse = function(response, callback) {
 
     if(data.scripts !== undefined) {
         var l = data.scripts.length;
-        for(i = 0; i < l; i++) {
+        for(var i = 0; i < l; i++) {
             the.getScript(data.scripts[i]);
         }
     }
@@ -191,7 +191,7 @@ TView.prototype.attachView = function (pageName, anchor) {
 
             if(data.scripts !== undefined) {
                 var l = data.scripts.length;
-                for(i = 0; i < l; i++) {
+                for(var i = 0; i < l; i++) {
                     the.getScript(data.scripts[i]);
                 }
             }
