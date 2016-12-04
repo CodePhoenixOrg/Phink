@@ -60,9 +60,9 @@ class TRestRouter
 //        $this->apiName = preg_replace('/[^a-z0-9_]+/i','', array_shift($qParts));
         $this->className = ucfirst($this->apiName);
         
-        $this->apiFileName = DOCUMENT_ROOT . 'app' . DIRECTORY_SEPARATOR . 'rest' . DIRECTORY_SEPARATOR . $this->apiName . '.class.php';
+        $this->apiFileName = 'app' . DIRECTORY_SEPARATOR . 'rest' . DIRECTORY_SEPARATOR . $this->apiName . CLASS_EXTENSION;
         
-        return file_exists($this->apiFileName);
+        return file_exists(APP_ROOT . $this->apiFileName);
     }
 
     public function dispatch()
@@ -71,8 +71,8 @@ class TRestRouter
         $method = REQUEST_METHOD;
 
         $model = str_replace('rest', 'models', $this->apiFileName);
-        if(file_exists($model)) {
-            include $model;
+        if(file_exists(APP_ROOT . $model)) {
+            include APP_ROOT . $model;
         }
         
         $include = \Phink\TAutoloader::includeClass($this->apiFileName, INCLUDE_FILE);

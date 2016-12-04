@@ -24,20 +24,19 @@
 namespace Phink\Core;
 
 define('WEB_SEPARATOR', '/');
-
-define ('TMP_DIR', 'tmp');
+define('TMP_DIR', 'tmp');
 
 $PWD = '';
 if(isset($_SERVER['DOCUMENT_ROOT'])) {
-    define ('BR', "<br />");
+    define('BR', "<br />");
     if(PHP_OS == 'WINNT') {
-        define ('CR_LF', "\r\n");
+        define('CR_LF', "\r\n");
         define('DOCUMENT_ROOT', str_replace('\\\\', '\\', $_SERVER['DOCUMENT_ROOT']) . '\\');
     } elseif(PHP_OS == 'Linux') {
-        define ('CR_LF', "\n");
+        define('CR_LF', "\n");
         define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT'] . '/');    
     } else {
-        define ('CR_LF', "\n");
+        define('CR_LF', "\n");
         define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT'] . '/');    
     }
     if(strstr($_SERVER['SERVER_SOFTWARE'], 'IIS')) {
@@ -56,7 +55,7 @@ if(isset($_SERVER['DOCUMENT_ROOT'])) {
         define('APP_ROOT', substr(DOCUMENT_ROOT, 0, -4));
         define('RUNTIME_DIR', '..' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);
         define('RUNTIME_JS_DIR', 'js' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);
-        define ('CACHE_DIR', '..' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR);
+        define('CACHE_DIR', '..' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR);
     } else {
         define('APP_ROOT', DOCUMENT_ROOT);
         define('RUNTIME_DIR', 'runtime' . DIRECTORY_SEPARATOR);
@@ -70,9 +69,6 @@ if(isset($_SERVER['DOCUMENT_ROOT'])) {
     define('DOCUMENT_ROOT', '');
     define('LOG_PATH', './');
 }
-
-
-
 
 $appconf = DOCUMENT_ROOT . 'config' . DIRECTORY_SEPARATOR . 'app.ini';
 
@@ -149,10 +145,5 @@ define('HTML_PLACEHOLDER', '<phx:htmlPlaceHolder />');
 define('CONTROL_ADDITIONS', CR_LF . "\tpublic function createObjects() {" . CR_LF . CREATIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function declareObjects() {" . CR_LF . ADDITIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function displayHtml() {" . CR_LF . "?>" . CR_LF . HTML_PLACEHOLDER . CR_LF . "<?php" . CR_LF . "\t}" . CR_LF . '}' . CR_LF);
 define('PHX_SQL_LIMIT', '<phx:sql_limit />');
 
-//if(file_exists(STARTER_FILE)) {
-//    unlink(STARTER_FILE);
-//    file_put_contents(STARTER_FILE, "<?php\n", FILE_APPEND);
-//    
-//}
 define('RETURN_CODE', 1);
 define('INCLUDE_FILE', 2);
