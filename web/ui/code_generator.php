@@ -117,11 +117,11 @@ trait TCodeGenerator {
                     
                     $jsCode = '';
                     if(file_exists($fullJsCachePath)) {
-                        //$view->getResponse()->addScript($fullJsCachePath);
+                        $view->getResponse()->addScript($fullJsCachePath);
                     } else if(file_exists(APP_ROOT . $fullJsClassPath)) {
                         $jsCtrlCode = file_get_contents(APP_ROOT . $fullJsClassPath) . CR_LF;
                         file_put_contents($fullJsCachePath, $jsCtrlCode);
-                        //$view->getResponse()->addScript($fullJsCachePath);
+                        $view->getResponse()->addScript($fullJsCachePath);
                     }
                     TRegistry::setCode($fullClassPath, $code);
                 }
