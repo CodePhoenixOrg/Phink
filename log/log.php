@@ -40,10 +40,10 @@ class TLog
 
     private static function _setDebugLogFile()
     {
-        if(DOCUMENT_ROOT == '') {
+        if(APP_ROOT == '') {
             self::$_debugLogFile = './logs/debug.log';
         } else {
-            self::$_debugLogFile = DOCUMENT_ROOT . 'logs/debug.log';
+            self::$_debugLogFile = APP_ROOT . 'logs/debug.log';
         }
     }
 
@@ -62,8 +62,8 @@ class TLog
         self::_setDebugLogFile();
         $handle = fopen(self::$_debugLogFile, 'a');
 
-        if(DOCUMENT_ROOT) {
-            $filename = substr($filename, strlen(DOCUMENT_ROOT));
+        if(APP_ROOT) {
+            $filename = substr($filename, strlen(APP_ROOT));
         }
         $message = date('Y-m-d h:i:s') . ((isset($filename)) ? ":$filename" : '') . ((isset($line)) ? ":$line" : '') . " : $message" . CR_LF;
         fwrite($handle, $message . CR_LF);

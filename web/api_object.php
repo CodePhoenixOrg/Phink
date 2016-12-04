@@ -67,7 +67,7 @@ trait TApiObject {
 //        $this->code = $this->redis->mget($this->getCacheFileName());
 //        $this->code = $this->code[0];
             if(file_exists($this->getCacheFileName())) {
-                $this->code = file_get_contents($this->getCacheFileName());
+                $this->code = file_get_contents(APP_ROOT . $this->getCacheFileName());
             }
         }
 

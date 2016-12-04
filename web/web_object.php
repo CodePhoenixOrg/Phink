@@ -109,8 +109,8 @@ trait TWebObject {
         if(!$this->code) {
 //        $this->code = $this->redis->mget($this->getCacheFileName());
 //        $this->code = $this->code[0];
-            if(file_exists($this->getCacheFileName())) {
-                $this->code = file_get_contents($this->getCacheFileName());
+            if(file_exists(APP_ROOT . $this->getCacheFileName())) {
+                $this->code = file_get_contents(APP_ROOT . $this->getCacheFileName());
             }
         }
 

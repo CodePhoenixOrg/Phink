@@ -145,11 +145,11 @@ class TWebApplication extends \Phink\Core\TApplication
  
     public function dispatch()
     {
-        if(file_exists($this->cacheFileName)) {
+        if(file_exists(APP_ROOT . $this->cacheFileName)) {
             //\Phink\Log\TLog::debug('DISPATCH : ' . $this->cacheFileName);
             //$include = TAutoloader::includeClass($this->cacheFileName, false);
             //include $this->cacheFileName;
-            $classText = file_get_contents($this->cacheFileName);
+            $classText = file_get_contents(APP_ROOT . $this->cacheFileName);
             include $this->cacheFileName;
             
             $classText = str_replace("\r", '', $classText);

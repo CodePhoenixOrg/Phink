@@ -102,10 +102,14 @@ class TControl extends TCustomControl
             $this->response->addScript($cachedJsController);
         }
 */        
-        \Phink\Log\TLog::debug(__METHOD__ . '::1::' . $this->getJsControllerFileName());
-        if(file_exists($this->getJsControllerFileName())) {
-            \Phink\Log\TLog::debug(__METHOD__ . '::2::' . $this->getJsControllerFileName());
-            $this->response->addScript($this->getJsControllerFileName());
+        \Phink\Log\TLog::debug(__METHOD__ . '::3::' . $this->getJsControllerFileName());
+        if(file_exists(APP_ROOT . $this->getJsControllerFileName())) {
+            \Phink\Log\TLog::debug(__METHOD__ . '::4::' . $this->getJsControllerFileName());
+            $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
+            if(!file_exists(RUNTIME_JS_DIR . $cacheJsFilename)) {
+                copy(APP_ROOT . $this->getJsControllerFileName(), RUNTIME_JS_DIR . $cacheJsFilename);
+            }
+            $this->response->addScript(RUNTIME_JS_DIR . $cacheJsFilename);
         }
         $this->response->setData('view', $html);
 

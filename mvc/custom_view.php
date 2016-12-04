@@ -112,9 +112,11 @@ abstract class TCustomView extends \Phink\Web\UI\TCustomControl
         \Phink\Log\TLog::debug('PARSE FILE : ' . $this->viewFileName, __FILE__, __LINE__);
 //        $this->viewHtml = $this->redis->mget($templateName);
 //        $this->viewHtml = $this->viewHtml[0];
-
-        $this->viewHtml = file_get_contents($this->viewFileName, FILE_USE_INCLUDE_PATH);
-        
+        if (file_exists(APP_ROOT . $this->viewFileName)) {
+            $this->viewHtml = file_get_contents(APP_ROOT . $this->viewFileName);
+        } else {
+            $this->viewHtml = file_get_contents($this->viewFileName, FILE_USE_INCLUDE_PATH);
+        }
         
 //        $this->redis->mset($templateName, $this->viewHtml);
         //\Phink\Log\TLog::debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');

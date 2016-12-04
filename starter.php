@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- include 'phink/globals.php';
+include 'phink/globals.php';
 include 'phink/core/object.php';
 include 'phink/web/web_object.php';
 include 'phink/web/ui/custom_control.php';
@@ -72,6 +72,10 @@ include 'phink/web/ui/plugin/accordion.php';
 include 'phink/web/ui/plugin_renderer.php';
 include 'phink/web/ui/widget/plugin/plugin.class.php';
 include 'phink/web/ui/widget/plugin/plugin_child.php';
+
+error_reporting(E_ALL);
+//ini_set('display_errors', 'On');
+
 
 include 'phink/js/js_starter.php';
 include 'phink/css/css_starter.php';

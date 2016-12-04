@@ -135,12 +135,12 @@ class TAutoloader
     public static function includeClass($filename, $params = 0)
     {
 
-        if(!file_exists($filename)) {
+        if(!file_exists(APP_ROOT . $filename)) {
             //\Phink\Log\TLog::debug('INCLUDE CLASS : FILE ' . $filename . ' DOES NOT EXIST');
             return false;
         }
         
-        $classText = file_get_contents($filename, FILE_USE_INCLUDE_PATH);
+        $classText = file_get_contents(APP_ROOT . $filename, FILE_USE_INCLUDE_PATH);
         
         $code = $classText;
         
@@ -178,7 +178,7 @@ class TAutoloader
         Log\TLog::debug(__METHOD__ . '::' . $file, __FILE__, __LINE__);
         
         if((isset($params) && ($params && INCLUDE_FILE === INCLUDE_FILE)) && !class_exists('\\' . $fqcn))  {
-            include $filename;
+            include APP_ROOT . $filename;
         }
         
         return ['file' => $file, 'type' => $fqcn, 'code' => $code];
@@ -267,14 +267,14 @@ class TAutoloader
     {
         $result = false;
         $cacheFilename = '';
-        $classFilename = '';
+        //$classFilename = '';
         $cacheJsFilename = '';
         
         if($info = Core\TRegistry::classInfo($viewName)) {
-            $classFilename = ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;
+            //$classFilename = ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;
             $cacheFilename = RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName)) . CLASS_EXTENSION;
         } else {
-            $classFilename = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
+            //$classFilename = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
             $cacheFilename = RUNTIME_DIR . \Phink\TAutoloader::cacheFilenameFromView($viewName);
             $cacheJsFilename = RUNTIME_JS_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
             $cacheJsFilename = str_replace(CLASS_EXTENSION, JS_EXTENSION, $cacheJsFilename);

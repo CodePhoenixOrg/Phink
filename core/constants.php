@@ -26,9 +26,9 @@ namespace Phink\Core;
 define('WEB_SEPARATOR', '/');
 
 define ('TMP_DIR', 'tmp');
-define ('RUNTIME_DIR', 'runtime' . DIRECTORY_SEPARATOR);
-define ('RUNTIME_JS_DIR', 'runtime' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR);
-define ('CACHE_DIR', 'cache' . DIRECTORY_SEPARATOR);
+define ('RUNTIME_DIR', '..' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);
+define ('RUNTIME_JS_DIR', 'js' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);
+define ('CACHE_DIR', '..' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR);
 
 $PWD = '';
 if(isset($_SERVER['DOCUMENT_ROOT'])) {
@@ -52,12 +52,16 @@ if(isset($_SERVER['DOCUMENT_ROOT'])) {
     } elseif(strstr($_SERVER['SERVER_SOFTWARE'], 'nginx')) {
         define('HTTP_PROTOCOL', strstr($_SERVER['SERVER_PROTOCOL'], 'HTPPS') ? 'https' : 'http' );
     }
-
-    define('LOG_PATH', DOCUMENT_ROOT . 'logs/');
+    define('APP_ROOT', DOCUMENT_ROOT . '../');
+    define('LOG_PATH', APP_ROOT . 'logs/');
 } else {
+    define('APP_ROOT', './');
     define('DOCUMENT_ROOT', '');
-    define('LOG_PATH', DOCUMENT_ROOT . './');
+    define('LOG_PATH', './');
 }
+
+
+
 
 $appconf = DOCUMENT_ROOT . 'config' . DIRECTORY_SEPARATOR . 'app.ini';
 
@@ -90,7 +94,7 @@ define('LOGIN_PAGE', '/' . LOGIN_VIEW . '.html');
 define('MASTER_PAGE', '/' . MASTER_VIEW . '.html');
 define('HOME_PAGE', '/' . HOME_VIEW . '.html');
 define('LOG_FILE', LOG_PATH . 'debug.log');
-define('APP_DATA', DOCUMENT_ROOT . 'data' . DIRECTORY_SEPARATOR);
+define('APP_DATA', APP_ROOT . 'data' . DIRECTORY_SEPARATOR);
 define('APP_BUSINESS', DOCUMENT_ROOT . 'app' . DIRECTORY_SEPARATOR . 'business' . DIRECTORY_SEPARATOR);
 define('STARTER_FILE', 'starter.php');
 define('HTTP_USER_AGENT', $_SERVER['HTTP_USER_AGENT']);

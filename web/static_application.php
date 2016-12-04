@@ -36,14 +36,14 @@ class TStaticApplication extends TWebApplication
 
     public static function cache($filename, $content)
     {
-        $filename = DOCUMENT_ROOT . DIRECTORY_SEPARATOR . CAChE_DIR . DIRECTORY_SEPARATOR . $filename;
+        $filename = DOCUMENT_ROOT . CACHE_DIR . DIRECTORY_SEPARATOR . $filename;
         $filename = \Phink\Utils\TFileUtils::filePath($filename);
         file_put_contents($filename, $content);
     } 
 
     public function getStaticFileName()
     {
-        $filename = DOCUMENT_ROOT . 'cache' . ((REQUEST_URI == '/') ? MAIN_PAGE : REQUEST_URI);
+        $filename = DOCUMENT_ROOT . CACHE_DIR . ((REQUEST_URI == '/') ? MAIN_PAGE : REQUEST_URI);
         \Phink\Log\TLog::debug(__METHOD__ . '::' . $filename);
         
         if(strstr(HTTP_ACCEPT, 'json')) {

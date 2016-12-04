@@ -166,9 +166,24 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
 
         $this->response->setData('view', $html);
         
-        if(file_exists($this->jsControllerFileName)) {
-            $this->response->addScript($this->jsControllerFileName);
+/*        
+        $cachedJsController = RUNTIME_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
+        \Phink\Log\TLog::debug(__METHOD__ . '::1::' . $cachedJsController);
+        if(file_exists($cachedJsController)) {
+            $jsCode = file_get_contents($cachedJsController);
+            $html .= CR_LF . "?>" .CR_LF . $jsCode . CR_LF;
+            \Phink\Log\TLog::debug(__METHOD__ . '::2::' . $cachedJsController);
+            
+            $this->response->addScript($cachedJsController);
         }
+*/        
+        \Phink\Log\TLog::debug(__METHOD__ . '::1::' . $this->getJsControllerFileName());
+        if(file_exists(APP_ROOT . $this->getJsControllerFileName())) {
+            \Phink\Log\TLog::debug(__METHOD__ . '::2::' . $this->getJsControllerFileName());
+            $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
+            copy(APP_ROOT . $this->getJsControllerFileName(), RUNTIME_JS_DIR . $cacheJsFilename);
+            $this->response->addScript(RUNTIME_JS_DIR . $cacheJsFilename);
+        }        
     }
     
     
