@@ -25,30 +25,30 @@
 <p>Phink Framework is a component oriented PHP framework. It allows you to build sites like ASP.Net webform does with its user controls and master pages all in benefiting of an MVC architecture. It integrates a client-side layer in shape of a JavaScript API that looks very much like the PHP classes. This coupled solution is aiming to easily build Single Page Applications. A simple JavaScript starter statement can launch the entire application. Also, Phink contains different levels of security (Injection safety, CORS, HSTS) and cache (dynamic, pseudo-dynamic, static), etc. </p>
 
 <h1>
-<a id="sample-javascript-starter" class="anchor" href="#sample-javascript-starter" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample javascript starter</h1>
+<a id="sample-javascript-bootstrap-samplejs" class="anchor" href="#sample-javascript-bootstrap-samplejs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample javascript bootstrap sample.js</h1>
 
-<pre><code>            var sample = null;
-            Phink.DOM.ready(function () {
+<pre><code>var sample = null;
+Phink.DOM.ready(function () {
 
-                sample = TWebApplication.create('sample.com');
-                sample.main = sample.createView('main');
+    sample = TWebApplication.create('sample.com');
+    sample.main = sample.createView('main');
 
-                var sampleMain = sample.createController(sample.main, 'sample.main')
-                .actions({
-                    goHome : function () {
-                        sampleMain.getSimpleView('master.html', function(data) {
-                            $(document.body).html(data.view);
-                            sampleMain.getSimpleView('home.html', function(data) {
-                                $('#homeContent').html(data.view);
-                            });
-                        });        
-                    }
-                })
-                .onload(function () {
-                    sampleMain = this;
-                    this.goHome();
+    var sampleMain = sample.createController(sample.main, 'sample.main')
+    .actions({
+        goHome : function () {
+            sampleMain.getSimpleView('master.html', function(data) {
+                $(document.body).html(data.view);
+                sampleMain.getSimpleView('home.html', function(data) {
+                    $('#homeContent').html(data.view);
                 });
-            });
+            });        
+        }
+    })
+    .onload(function () {
+        sampleMain = this;
+        this.goHome();
+    });
+});
 </code></pre>
 
 <h1>
