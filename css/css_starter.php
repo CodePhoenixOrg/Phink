@@ -25,7 +25,7 @@
 
 $filenames = [
     'bootstrap.css'
-    ,   'bootstrap-theme.css'
+//    ,   'bootstrap-theme.css'
     ,   'jquery-ui.css'
     ,   'jquery-ui.structure.css'
     ,   'jquery-ui.theme.css'    
