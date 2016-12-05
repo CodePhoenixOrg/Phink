@@ -24,6 +24,54 @@
 
 <p>Phink Framework is a component oriented PHP framework. It allows you to build sites like ASP.Net webform does with its user controls and master pages all in benefiting of an MVC architecture. It integrates a client-side layer in shape of a JavaScript API that looks very much like the PHP classes. This coupled solution is aiming to easily build Single Page Applications. A simple JavaScript starter statement can launch the entire application. Also, Phink contains different levels of security (Injection safety, CORS, HSTS) and cache (dynamic, pseudo-dynamic, static), etc. </p>
 
+<h1>
+<a id="sample-javascript-starter" class="anchor" href="#sample-javascript-starter" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample javascript starter</h1>
+
+<pre><code>            var sample = null;
+            Phink.DOM.ready(function () {
+
+                sample = TWebApplication.create('sample.com');
+                sample.main = sample.createView('main');
+
+                var sampleMain = sample.createController(sample.main, 'sample.main')
+                .actions({
+                    goHome : function () {
+                        sampleMain.getSimpleView('master.html', function(data) {
+                            $(document.body).html(data.view);
+                            sampleMain.getSimpleView('home.html', function(data) {
+                                $('#homeContent').html(data.view);
+                            });
+                        });        
+                    }
+                })
+                .onload(function () {
+                    sampleMain = this;
+                    this.goHome();
+                });
+            });
+</code></pre>
+
+<h1>
+<a id="sample-html-page" class="anchor" href="#sample-html-page" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample HTML page</h1>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+    &lt;head&gt;
+        &lt;meta http-equiv="content-type" content="text/html; charset=UTF-8"&gt;
+        &lt;meta charset="utf-8"&gt;
+        &lt;title&gt;Sample&lt;/title&gt;
+        &lt;meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"&gt;
+        &lt;link href="css/_3rdparty.css" rel="stylesheet"&gt;
+    &lt;/head&gt;
+    &lt;body data-twttr-rendered="true" data-spy="scroll" &gt;
+        &lt;div id='body'&gt;&lt;/div&gt;
+        &lt;script type="text/javascript" src="js/_3rdparty.js"&gt;&lt;/script&gt;
+        &lt;script type="text/javascript" src="js/code_phoenix.js"&gt;&lt;/script&gt;
+        &lt;script type="text/javascript" src="js/sample.js"&gt;&lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/dpjb71/Phink">Phink</a> is maintained by <a href="https://github.com/dpjb71">dpjb71</a>.</span>
 
