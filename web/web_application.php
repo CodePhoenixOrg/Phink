@@ -38,11 +38,6 @@ class TWebApplication extends \Phink\Core\TApplication
     use \Phink\Web\TWebObject;
 
     protected $rawPhpName = '';
-    protected $className = '';
-    protected $namespace = '';
-    protected $controllerFileName = '';
-    protected $viewName = '';
-    protected $actionName = '';
     protected $params = '';
 
     public function __construct() 

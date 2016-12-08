@@ -24,7 +24,6 @@ use Phink\Core\TRegistry;
 
 abstract class TCustomView extends \Phink\Web\UI\TCustomControl
 {
-    use \Phink\Web\TWebObject;
     use \Phink\Web\UI\TCodeGenerator {
         writeDeclarations as private;
         writeHTML as private;
