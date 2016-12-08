@@ -22,7 +22,7 @@ use Phink\Crypto\TCrypto;
 use Phink\Data\TDataAccess;
 use Phink\Data\Client\PDO\TPdoCommand;
 
-class TAuthentication
+class TAuthentication extends \TStaticObject
 {
 
     protected $userId = null;
@@ -117,7 +117,7 @@ class TAuthentication
     {
         $result = false;
 
-        \Phink\Log\TLog::debug(__METHOD__ . '::TOKEN::' . $token);
+        self::$logger->debug(__METHOD__ . '::TOKEN::' . $token);
         
         if(strlen($token) > 0 && substr($token, 0, 1) == '!') {
             $result = $token;

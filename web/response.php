@@ -76,7 +76,7 @@ class TResponse implements \JsonSerializable
     public function setData($key, $value = '')
     {
         if(is_array($key)) {
-//            \Phink\Log\TLog::dump('KEY', $key);
+//            self::$logger->dump('KEY', $key);
             foreach ($key as $left => $right) {
                 $this->_data[$left] = $right;
             }

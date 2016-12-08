@@ -54,7 +54,7 @@ class TPdoCommand extends \Phink\Data\TCustomCommand
         //if($this->_connectionHandler instanceof \PDO) {
             $this->_connectionHandler->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 //        } else {
-//            \Phink\Log\TLog::debug('_connectionHandler', $this->_connectionHandler);
+//            self::$logger->debug('_connectionHandler', $this->_connectionHandler);
 //            throw new \Exception('PDO Connection is null ! Please check the parameters.');
 //        }
         
@@ -110,10 +110,10 @@ class TPdoCommand extends \Phink\Data\TCustomCommand
             
             $result = new TPdoDataStatement($this->_statement);
         } catch (\PDOException $ex) {
-            \Phink\Log\TLog::debug('SQL : ' . $sql . '; params : ' . print_r($params, true), $file, $line);
-            \Phink\Log\TLog::exception($ex, __FILE__, __LINE__);
+            self::$logger->debug('SQL : ' . $sql . '; params : ' . print_r($params, true), $file, $line);
+            self::$logger->exception($ex, __FILE__, __LINE__);
         } catch (\Exception $ex) {
-            \Phink\Log\TLog::exception($ex, __FILE__, __LINE__);
+            self::$logger->exception($ex, __FILE__, __LINE__);
         }
         
         return $result;
@@ -132,11 +132,11 @@ class TPdoCommand extends \Phink\Data\TCustomCommand
                 $this->_statement = $this->_connectionHandler->query($this->_commandText);
             }
             
-            \Phink\Log\TLog::debug('SQL : ' . $sql . '; params : ' . print_r($params, true), $file, $line);
+            self::$logger->debug('SQL : ' . $sql . '; params : ' . print_r($params, true), $file, $line);
             
             $result = new TPdoDataStatement($this->_statement);
         } catch (\Exception $ex) {
-            \Phink\Log\TLog::exception($ex, $file, $line);
+            self::$logger->exception($ex, $file, $line);
         }
         
         return $result;
@@ -160,7 +160,7 @@ class TPdoCommand extends \Phink\Data\TCustomCommand
                 $result = $row[0];
             }
         } catch (\Exception $ex) {
-            \Phink\Log\TLog::exception($ex, __FILE__, __LINE__);
+            self::$logger->exception($ex, __FILE__, __LINE__);
         }
         
         return $result;
@@ -179,14 +179,14 @@ class TPdoCommand extends \Phink\Data\TCustomCommand
                 $this->_statement = $this->_connectionHandler->query($this->_commandText);
             }
             
-            \Phink\Log\TLog::debug('SQL : ' . $sql . '; params : ' . print_r($params, true), $file, $line);
+            self::$logger->debug('SQL : ' . $sql . '; params : ' . print_r($params, true), $file, $line);
             
             $stmt = new TPdoDataStatement($this->_statement);
             if($row = $stmt->fetch()) {
                 $result = $row[0];
             }
         } catch (\Exception $ex) {
-            \Phink\Log\TLog::exception($ex, $file, $line);
+            self::$logger->exception($ex, $file, $line);
         }
         
         return $result;
@@ -202,7 +202,7 @@ class TPdoCommand extends \Phink\Data\TCustomCommand
 
     public function execLog($sql = '', $file = __FILE__, $line = __LINE__)
     {
-        \Phink\Log\TLog::debug('SQL : ' . $sql, $file, $line);
+        self::$logger->debug('SQL : ' . $sql, $file, $line);
         $this->_commandText = ($sql != '') ? $sql : $this->_commandText;
 
         return $this->_connectionHandler->exec($this->_commandText);

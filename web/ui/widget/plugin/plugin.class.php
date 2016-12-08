@@ -90,14 +90,14 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
     public static function getGridData($id, \Phink\Data\Client\PDO\TPdoCommand $cmd, $rowCount = 1)
     {
         $templateFilename = RUNTIME_JS_DIR . $id . '_template.json';
-        //\Phink\Log\TLog::debug('TEMPLATE FILE : ' . $templateFilename);
+        //self::$logger->debug('TEMPLATE FILE : ' . $templateFilename);
         $templates = '';
         if(file_exists($templateFilename)) {
             $templates = json_decode(file_get_contents($templateFilename));
         }
         
         $elementsFilename = RUNTIME_JS_DIR . $id . '_elements.json';
-        //\Phink\Log\TLog::debug('TEMPLATE FILE : ' . $elementsFilename);
+        //self::$logger->debug('TEMPLATE FILE : ' . $elementsFilename);
         $elements = '';
         if(file_exists($elementsFilename)) {
             $elements = json_decode(file_get_contents($elementsFilename));
@@ -123,7 +123,7 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
             $rowCount = $r;
 //        }
         
-        //\Phink\Log\TLog::dump('RECORDSET VALUES', $values);
+        //self::$logger->dump('RECORDSET VALUES', $values);
         $result = [
             'cols' => $fieldCount
             , 'rows' => $rowCount

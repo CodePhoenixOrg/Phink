@@ -41,7 +41,7 @@ abstract class TPluginRenderer extends \Phink\MVC\TPartialController
 //        } else {
             $this->getElements();
             $elements = $this->elements[$this->getPattern()];
-            //\Phink\Log\TLog::dump('PATTERN ELEMENTS', $elements);
+            //self::$logger->dump('PATTERN ELEMENTS', $elements);
 
             $id = $this->getParent()->getId();
 

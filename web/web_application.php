@@ -27,7 +27,6 @@ require_once 'phink/core/application.php';
  */
 use Phink\TAutoloader;
 use Phink\Auth\TAuthentication;
-use Phink\Crypto\TCrypto;
 
 /**
  * Description of router
@@ -123,6 +122,7 @@ class TWebApplication extends \Phink\Core\TApplication
             || $this->viewName == 'xml'
             || $this->viewName == 'notepad'
             || $this->viewName == 'mail'
+            || $this->viewName == 'sample'
 
         ) {
             // We renew the token
@@ -146,7 +146,7 @@ class TWebApplication extends \Phink\Core\TApplication
     public function dispatch()
     {
         if(file_exists(APP_ROOT . $this->cacheFileName)) {
-            //\Phink\Log\TLog::debug('DISPATCH : ' . $this->cacheFileName);
+            //self::$logger->debug('DISPATCH : ' . $this->cacheFileName);
             //$include = TAutoloader::includeClass($this->cacheFileName, false);
             //include $this->cacheFileName;
             $classText = file_get_contents(APP_ROOT . $this->cacheFileName);

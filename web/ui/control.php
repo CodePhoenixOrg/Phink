@@ -42,7 +42,7 @@ class TControl extends TCustomControl
         
         $include = \Phink\TAutoloader::includeModelByName($this->viewName);
         $modelClass = $include['type'];
-        //\Phink\Log\TLog::debug('TCONTROL MODEL OBJECT : ' . print_r($modelClass, true));
+        //self::$logger->debug('TCONTROL MODEL OBJECT : ' . print_r($modelClass, true));
         $this->model = new $modelClass();        
 
         $this->authentication = $parent->getAuthentication();
@@ -93,18 +93,18 @@ class TControl extends TCustomControl
 
 /*        
         $cachedJsController = RUNTIME_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
-        \Phink\Log\TLog::debug(__METHOD__ . '::1::' . $cachedJsController);
+        self::$logger->debug(__METHOD__ . '::1::' . $cachedJsController);
         if(file_exists($cachedJsController)) {
             $jsCode = file_get_contents($cachedJsController);
             $html .= CR_LF . "?>" .CR_LF . $jsCode . CR_LF;
-            \Phink\Log\TLog::debug(__METHOD__ . '::2::' . $cachedJsController);
+            self::$logger->debug(__METHOD__ . '::2::' . $cachedJsController);
             
             $this->response->addScript($cachedJsController);
         }
 */        
-        \Phink\Log\TLog::debug(__METHOD__ . '::3::' . $this->getJsControllerFileName());
+        self::$logger->debug(__METHOD__ . '::3::' . $this->getJsControllerFileName());
         if(file_exists(APP_ROOT . $this->getJsControllerFileName())) {
-            \Phink\Log\TLog::debug(__METHOD__ . '::4::' . $this->getJsControllerFileName());
+            self::$logger->debug(__METHOD__ . '::4::' . $this->getJsControllerFileName());
             $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
             if(!file_exists(RUNTIME_JS_DIR . $cacheJsFilename)) {
                 copy(APP_ROOT . $this->getJsControllerFileName(), RUNTIME_JS_DIR . $cacheJsFilename);

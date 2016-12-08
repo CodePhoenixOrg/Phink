@@ -68,7 +68,7 @@ class TPdoConnection extends TObject implements IConnection, IConfigurable
                 $this->_state = new \PDO($this->_dsn, $this->_sqlConfig->getUser(), $this->_sqlConfig->getPassword());
             }
         } catch (\PDOException $ex) {
-            \Phink\Log\TLog::exception($ex, __FILE__, __LINE__);
+            self::$logger->exception($ex, __FILE__, __LINE__);
         }
 
         return $this->_state;

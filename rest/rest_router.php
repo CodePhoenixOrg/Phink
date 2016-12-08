@@ -78,7 +78,7 @@ class TRestRouter
         $include = \Phink\TAutoloader::includeClass($this->apiFileName, INCLUDE_FILE);
         $fqObject = $include['type'];
         
-        \Phink\Log\TLog::debug($fqObject);
+        self::$logger->debug($fqObject);
 
         $instance = new $fqObject($this->application);
         

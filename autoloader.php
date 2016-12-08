@@ -19,13 +19,14 @@
 namespace Phink;
 
 use Phink\Core\TRegistry;
-use Phink\Core\TObject;
+use Phink\Log\TLog;
 
 class TAutoloader
 {
     private $directory;
     private $prefix;
     private $prefixLength;
+    private static $logger = null;
 
     /**
      * @param string $baseDirectory Base directory where the source files are located.
@@ -35,6 +36,7 @@ class TAutoloader
         $this->directory = $baseDirectory;
         $this->prefix = __NAMESPACE__ . '\\';
         $this->prefixLength = strlen($this->prefix);
+        self::$logger = new TLog();
     }
 
     /**
@@ -103,7 +105,7 @@ class TAutoloader
     {
         $className = ucfirst($viewName);
         $filename = ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;
-        //\Phink\Log\TLog::debug('INCLUDE INNER PARTIAL CONTROLLER : ' . $filename, __FILE__, __LINE__);
+        //self::$logger->debug('INCLUDE INNER PARTIAL CONTROLLER : ' . $filename, __FILE__, __LINE__);
 
         $code = file_get_contents($filename, FILE_USE_INCLUDE_PATH);
         
@@ -136,7 +138,7 @@ class TAutoloader
     {
 
         if(!file_exists(APP_ROOT . $filename)) {
-            //\Phink\Log\TLog::debug('INCLUDE CLASS : FILE ' . $filename . ' DOES NOT EXIST');
+            //self::$logger->debug('INCLUDE CLASS : FILE ' . $filename . ' DOES NOT EXIST');
             return false;
         }
         
@@ -175,7 +177,7 @@ class TAutoloader
             TRegistry::setCode($filename, $code);
         }
         
-        Log\TLog::debug(__METHOD__ . '::' . $file, __FILE__, __LINE__);
+        self::$logger->debug(__METHOD__ . '::' . $file, __FILE__, __LINE__);
         
         if((isset($params) && ($params && INCLUDE_FILE === INCLUDE_FILE)) && !class_exists('\\' . $fqcn))  {
             include APP_ROOT . $filename;
@@ -189,7 +191,7 @@ class TAutoloader
     {
         $result = false;
         
-        //\Phink\Log\TLog::debug('MODEL NAME : ' . $modelName, __FILE__, __LINE__);
+        //self::$logger->debug('MODEL NAME : ' . $modelName, __FILE__, __LINE__);
         
         $modelFileName = 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $modelName . CLASS_EXTENSION;
         
@@ -230,12 +232,12 @@ class TAutoloader
         $result = false;
         $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
         if(file_exists($controllerFileName)) {
-            //\Phink\Log\TLog::debug('INCLUDE CUSTOM PARTIAL CONTROLLER : ' . $controllerFileName, __FILE__, __LINE__);
+            //self::$logger->debug('INCLUDE CUSTOM PARTIAL CONTROLLER : ' . $controllerFileName, __FILE__, __LINE__);
             $result = self::includeClass($controllerFileName, RETURN_CODE | INCLUDE_FILE);
         } elseif ($info = Core\TRegistry::classInfo($viewName)) {
             $result = self::_includeInnerClass($viewName, $info, true);
         } else {
-            //\Phink\Log\TLog::debug('INCLUDE DEFAULT PARTIAL CONTROLLER : ' . $controllerFileName, __FILE__, __LINE__);
+            //self::$logger->debug('INCLUDE DEFAULT PARTIAL CONTROLLER : ' . $controllerFileName, __FILE__, __LINE__);
             $namespace = self::getDefaultNamespace();
             $className = ucfirst($viewName);
             $result = self::includeDefaultPartialController($namespace, $className);
@@ -278,22 +280,22 @@ class TAutoloader
             $cacheFilename = RUNTIME_DIR . \Phink\TAutoloader::cacheFilenameFromView($viewName);
             $cacheJsFilename = RUNTIME_JS_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
             $cacheJsFilename = str_replace(CLASS_EXTENSION, JS_EXTENSION, $cacheJsFilename);
-            \Phink\Log\TLog::debug('CACHED JS FILENAME: ' . $cacheJsFilename, __FILE__, __LINE__);
+            self::$logger->debug('CACHED JS FILENAME: ' . $cacheJsFilename, __FILE__, __LINE__);
             
         }
         
         if(file_exists($cacheFilename)) {
 
             if(file_exists($cacheJsFilename)) {
-                \Phink\Log\TLog::debug('INCLUDE CACHED JS CONTROL: ' . $cacheJsFilename, __FILE__, __LINE__);
+                self::$logger->debug('INCLUDE CACHED JS CONTROL: ' . $cacheJsFilename, __FILE__, __LINE__);
                 $ctrl->getResponse()->addScript($cacheJsFilename);
             }
-            \Phink\Log\TLog::debug('INCLUDE CACHED CONTROL: ' . $cacheFilename, __FILE__, __LINE__);
+            self::$logger->debug('INCLUDE CACHED CONTROL: ' . $cacheFilename, __FILE__, __LINE__);
             self::includeClass($cacheFilename, RETURN_CODE | INCLUDE_FILE);
 
             
         } else {
-            //\Phink\Log\TLog::debug('INCLUDE NEW CONTROL : ' . $viewName, __FILE__, __LINE__);
+            //self::$logger->debug('INCLUDE NEW CONTROL : ' . $viewName, __FILE__, __LINE__);
             //include 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
             $result = self::includePartialControllerByName($viewName);
         }

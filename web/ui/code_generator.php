@@ -92,7 +92,7 @@ trait TCodeGenerator {
                 $fqcn = '';
                 $code  = '';
                 $info = TRegistry::classInfo($className);
-                //\Phink\Log\TLog::dump('REGISTRY INFO ' . $className, $info);
+                //self::$logger->dump('REGISTRY INFO ' . $className, $info);
                 if ($info) {
                     if(!$info->isAutoloaded) {
                         array_push($requires, '\\Phink\\TAutoloader::import($this, "' . $className . '");');
@@ -106,14 +106,14 @@ trait TCodeGenerator {
                     $fullJsCachePath = RUNTIME_JS_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
                     array_push($requires, '\\Phink\\TAutoloader::import($this, "' . $className . '");');
 
-                    \Phink\Log\TLog::dump('FULL_CLASS_PATH', $fullClassPath);                    
+                    self::$logger->dump('FULL_CLASS_PATH', $fullClassPath);                    
 
                     $class = \Phink\TAutoloader::includeClass($fullClassPath, RETURN_CODE | INCLUDE_FILE);
                     $fqcn = $class['type'];
                     $code = $class['code'];
                     
-                    \Phink\Log\TLog::dump('FILE', $class['file']);                    
-                    \Phink\Log\TLog::dump('FQCN', $class['type']);
+                    self::$logger->dump('FILE', $class['file']);                    
+                    self::$logger->dump('FQCN', $class['type']);
                     
                     $jsCode = '';
                     if(file_exists($fullJsCachePath)) {

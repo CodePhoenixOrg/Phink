@@ -30,7 +30,7 @@ class TPartialView extends TCustomView
         $this->className = $parent->getType();
         parent::__construct($parent);
 //        $this->depth += $this->view->getDepth();
-        //\Phink\Log\TLog::debug('FATHER TYPE <> PARENT TYPE : ' . $father->getType() . ' <> ' . $this->className, __FILE__, __LINE__);
+        //self::$logger->debug('FATHER TYPE <> PARENT TYPE : ' . $father->getType() . ' <> ' . $this->className, __FILE__, __LINE__);
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();        
 

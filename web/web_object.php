@@ -231,7 +231,7 @@ trait TWebObject {
         $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
         $this->className = ucfirst($this->viewName);
 
-//        //\Phink\Log\TLog::debug('VIEW NAME : '  . $this->viewName, __FILE__, __LINE__);
+//        //self::$logger->debug('VIEW NAME : '  . $this->viewName, __FILE__, __LINE__);
         
     }
     

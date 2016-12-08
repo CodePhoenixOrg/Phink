@@ -36,31 +36,31 @@ class TLog
 {
     //put your code here
     
-    private static $_debugLogFile = '';
+    private $_debugLogFile = '';
 
-    private static function _setDebugLogFile()
+    private function _setDebugLogFile()
     {
         if(APP_ROOT == '') {
-            self::$_debugLogFile = './logs/debug.log';
+            $this->_debugLogFile = './logs/debug.log';
         } else {
-            self::$_debugLogFile = APP_ROOT . 'logs/debug.log';
+            $this->_debugLogFile = APP_ROOT . 'logs/debug.log';
         }
     }
 
-    public static function file($filename, $object)
+    public function file($filename, $object)
     {
         file_put_contents (DOCUMENT_ROOT . RUNTIME_DIR . $filename . '.log', print_r($object, true) . CR_LF);
     }
     
-    public static function dump($message, $object)
+    public function dump($message, $object)
     {
-        self::debug($message . '::' . print_r($object, true) . CR_LF);
+        $this->debug($message . '::' . print_r($object, true) . CR_LF);
     }
 
-    public static function debug($message, $filename = null, $line = null)
+    public function debug($message, $filename = null, $line = null)
     {
-        self::_setDebugLogFile();
-        $handle = fopen(self::$_debugLogFile, 'a');
+        $this->_setDebugLogFile();
+        $handle = fopen($this->_debugLogFile, 'a');
 
         if(APP_ROOT) {
             $filename = substr($filename, strlen(APP_ROOT));
@@ -70,7 +70,7 @@ class TLog
         fclose($handle);
     }
 
-    public static function exception($ex, $filename = null, $line = null)
+    public function exception($ex, $filename = null, $line = null)
     {
         $message = '';
 
@@ -79,17 +79,7 @@ class TLog
         $message .= $ex->getMessage() . CR_LF;
         $message .= $ex->getTraceAsString() . CR_LF;
 
-        self::debug($message, $filename, $line);
+        $this->debug($message, $filename, $line);
     }
     
-}
-
-function debugLog(String $message, $filename = '', $line = 0)
-    {
-    TLog::debug($message, $filename, $line);
-}
-
-function exceptionLog(Exception $ex, $filename = '', $line = 0)
-    {
-    TLog::exception($ex, $filename, $line);
 }

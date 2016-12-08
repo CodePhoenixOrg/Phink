@@ -24,23 +24,25 @@
 namespace Phink\Core;
 
 use \ReflectionClass;
+
 /**
  * Description of TObject
  *
  * @author david
  */
 
-class TObject
+class TObject extends \TStaticObject
 {
     //put your code here
     
+    private $_reflection = null;
     protected $parent = null;
-    private $_reflection = NULL;
     protected $id = 'noname';
     protected $serialFilename = '';
     protected $isSerialized = '';
     protected $children = array();
     protected $fqClassName = '';
+    
 
     public function __construct(TObject $parent)
     {
@@ -55,7 +57,7 @@ class TObject
 
     public function setId($value)
     {
-        //\Phink\Log\TLog::dump(__CLASS__ . ':' . __METHOD__, $value);
+        //self::$logger->dump(__CLASS__ . ':' . __METHOD__, $value);
         $this->id = $value;
     }
 
@@ -132,12 +134,12 @@ class TObject
         
         if(count($values) > 0) {
             $args = '"' . implode('", "', $values) . '"';
-            \Phink\Log\TLog::debug(__METHOD__ . '::INVOKE_ACTION::' . $method  . '(' . $args . ')');
+            self::$logger->debug(__METHOD__ . '::INVOKE_ACTION::' . $method  . '(' . $args . ')');
 //            include 'data://text/plain;base64,' . base64_encode('<?php $this->' . $method  . '(' . $args . ')');
             $ref = new \ReflectionMethod($this->getFQClassName(), $method);
             $ref->invokeArgs($this, $values);
         } else {
-            \Phink\Log\TLog::debug(__METHOD__ . '::INVOKE_ACTION::' . $method  . '()');
+            self::$logger->debug(__METHOD__ . '::INVOKE_ACTION::' . $method  . '()');
 //            $ref->invoke($this);
             $this->$method();
         }        

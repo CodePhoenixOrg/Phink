@@ -107,9 +107,9 @@ abstract class TCustomView extends \Phink\Web\UI\TCustomControl
     
     public function parse()
     {
-        ////\Phink\Log\TLog::debug($this->controllerFileName . ' IS REGISTERED : ' . isset(\Phink\TAutoloader::getCode($this->controllerFileName)), __FILE__, __LINE__);
+        ////self::$logger->debug($this->controllerFileName . ' IS REGISTERED : ' . isset(\Phink\TAutoloader::getCode($this->controllerFileName)), __FILE__, __LINE__);
         
-        \Phink\Log\TLog::debug('PARSE FILE : ' . $this->viewFileName, __FILE__, __LINE__);
+        self::$logger->debug('PARSE FILE : ' . $this->viewFileName, __FILE__, __LINE__);
 //        $this->viewHtml = $this->redis->mget($templateName);
 //        $this->viewHtml = $this->viewHtml[0];
         if (file_exists(APP_ROOT . $this->viewFileName)) {
@@ -119,7 +119,7 @@ abstract class TCustomView extends \Phink\Web\UI\TCustomControl
         }
         
 //        $this->redis->mset($templateName, $this->viewHtml);
-        //\Phink\Log\TLog::debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');
+        //self::$logger->debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');
         $doc = new TXmlDocument($this->viewHtml);
         $doc->matchAll();
         if($doc->getCount() > 0) {
@@ -131,7 +131,7 @@ abstract class TCustomView extends \Phink\Web\UI\TCustomControl
             $this->afterBinding = $declarations->afterBinding;
             $this->viewHtml = $this->writeHTML($doc, $this);
 
-            //\Phink\Log\TLog::debug('CACHE FILE : ' . $this->cacheFileName, __FILE__, __LINE__);
+            //self::$logger->debug('CACHE FILE : ' . $this->cacheFileName, __FILE__, __LINE__);
         }
         
         $code = TRegistry::getCode($this->controllerFileName);

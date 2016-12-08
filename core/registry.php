@@ -25,12 +25,14 @@ namespace Phink\Core;
  * @author david
  */
 
-class TRegistry
+class TRegistry extends \TStaticObject
 {
     
     private static $_classRegistry = null;
     private static $_code = [];
     private static $_items = [];
+    
+    
     
     public static function init()
     {
@@ -114,7 +116,7 @@ class TRegistry
         //$id = str_replace(DIRECTORY_SEPARATOR, '_', $id);
         //file_put_contents(RUNTIME_DIR . $id . PREHTML_EXTENSION, $value);
         //$keys = array_keys(self::$_code);
-        //\Phink\Log\TLog::debug('CODE REGISTRY : ' . print_r($keys, true));
+        //self::$logger->debug('CODE REGISTRY : ' . print_r($keys, true));
     }
     
     public static function write($item, $key, $value) {

@@ -190,7 +190,7 @@ class TRequest extends \Phink\Core\TObject
 
             $result[$name] = (object) ['code' => (int)$code, 'header' => $header, 'html' => $html];
                         
-            \Phink\Log\TLog::dump('subrequests result', $result);
+            self::$logger->dump('subrequests result', $result);
         }
         
         return $result;

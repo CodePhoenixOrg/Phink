@@ -17,6 +17,7 @@
  */
  
 include 'phink/globals.php';
+include 'phink/core/static_object.php';
 include 'phink/core/object.php';
 include 'phink/web/web_object.php';
 include 'phink/web/ui/custom_control.php';

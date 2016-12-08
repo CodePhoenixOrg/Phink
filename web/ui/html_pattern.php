@@ -68,7 +68,7 @@ trait THtmlPattern {
 
         $patternName = $this->getPatternName();
         
-        //\Phink\Log\TLog::dump('PATTERN NAME', $patternName);
+        //self::$logger->dump('PATTERN NAME', $patternName);
         $contents = file_get_contents($patternName, FILE_USE_INCLUDE_PATH);
         
         $doc = new \Phink\Xml\TXmlDocument($contents);
