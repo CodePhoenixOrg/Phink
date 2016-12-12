@@ -31,7 +31,7 @@ include 'phink/core/core.php';
  *
  * @author David
  */
-class TRestApplication
+class TRestApplication extends \TStaticObject
 {
     //put your code here
     use THttpTransport;

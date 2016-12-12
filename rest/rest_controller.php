@@ -30,7 +30,7 @@ namespace Phink\Rest;
  *
  * @author David
  */
-class TRestController
+class TRestController extends \TStaticObject
 {
     use THttpTransport;
     //put your code here

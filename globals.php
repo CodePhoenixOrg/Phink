@@ -38,8 +38,9 @@ if (!function_exists('http_response_code'))
         if($newcode !== NULL)
         {
             header('X-PHP-Response-Code: '.$newcode, true, $newcode);
-            if(!headers_sent())
+            if(!headers_sent()) {
                 $code = $newcode;
+            }
         }       
         return $code;
     }

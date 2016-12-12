@@ -28,7 +28,7 @@
  *
  * @author David
  */
-class TRestRouter
+class TRestRouter extends \TStaticObject
 {
     use THttpTransport;
     
