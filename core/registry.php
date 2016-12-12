@@ -25,7 +25,7 @@ namespace Phink\Core;
  * @author david
  */
 
-class TRegistry extends \TStaticObject
+class TRegistry extends TStaticObject
 {
     
     private static $_classRegistry = null;

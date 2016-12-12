@@ -21,8 +21,9 @@ namespace Phink\Auth;
 use Phink\Crypto\TCrypto;
 use Phink\Data\TDataAccess;
 use Phink\Data\Client\PDO\TPdoCommand;
+use Phink\Core\TStaticObject;
 
-class TAuthentication extends \TStaticObject
+class TAuthentication extends TStaticObject
 {
 
     protected $userId = null;

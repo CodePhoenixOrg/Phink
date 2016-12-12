@@ -18,37 +18,26 @@
  
  
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+namespace Phink\Core;
 
-namespace Phink\Rest;
+require 'phink/log/log.php';
 
-use Phink\Core\TStaticObject;
-/**
- * Description of controller
- *
- * @author David
- */
-class TRestController extends TStaticObject
+use Phink\Log\TLog;
+
+class TStaticObject
 {
-    use THttpTransport;
-    //put your code here
-
-    public function __construct(TRestApplication $app)
+    protected static $logger;
+    
+    public function __construct()
     {
-        $this->authentication = $app->getAuthentication();
-        $this->request = $app->getRequest();
-        $this->response = $app->getResponse();
+        self::$logger = new TLog();
     }
-
-    public function head() {}
-    public function get() {}
-    public function post() {}
-    public function put() {}
-    public function patch() {}
-    public function delete() {}
-
-  
+    
+    public static function getLogger()
+    {
+        return self::$logger;
+    }
 }

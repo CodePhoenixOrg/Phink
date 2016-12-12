@@ -75,6 +75,12 @@ TController.prototype.actions = function (actions) {
     return this;
 };
 
+TController.prototype.route = function (route, callback) {
+    
+    var routeMatcher = new RegExp(route.replace(/:[^\s/]+/g, '([\\w-]+)'));
+    this.parent.requestView(view, action, args, callback);
+};
+
 TController.prototype.getSimpleView = function (view, callback) {
     this.parent.requestSimpleView(view, callback);
 };

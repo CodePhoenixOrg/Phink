@@ -31,7 +31,7 @@ use \ReflectionClass;
  * @author david
  */
 
-class TObject extends \TStaticObject
+class TObject extends TStaticObject
 {
     //put your code here
     

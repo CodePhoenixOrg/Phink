@@ -23,12 +23,14 @@
  * and open the template in the editor.
  */
 
+ use Phink\Core\TStaticObject;
+ 
 /**
  * Description of router
  *
  * @author David
  */
-class TRestRouter extends \TStaticObject
+class TRestRouter extends TStaticObject
 {
     use THttpTransport;
     

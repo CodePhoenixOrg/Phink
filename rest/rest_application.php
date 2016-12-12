@@ -25,13 +25,13 @@ include 'phink/core/core.php';
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+use Phink\Core\TStaticObject;
 /**
  * Description of application
  *
  * @author David
  */
-class TRestApplication extends \TStaticObject
+class TRestApplication extends TStaticObject
 {
     //put your code here
     use THttpTransport;
