@@ -55,7 +55,7 @@ TWebObject.prototype.getUrl = function() {
 TWebObject.prototype.getJSON = function(
     url, // Url du webService
     postData, // Tableau JSON des donn�es � poster au webserice
-    callBack // fonction qui g�re le retour du webservice
+    callback // fonction qui g�re le retour du webservice
 ) {
     //$("body").toggleClass('onLoad');
 //        spinner.spin();
@@ -63,34 +63,42 @@ TWebObject.prototype.getJSON = function(
     this.origin = TRegistry.getOrigin();
     
     var urls = this.getPath(url, this.domain);
-    $.ajax({
-        type: 'POST',
-        url: urls,
-        data: postData,
-        dataType: 'json',
-        async: true
-    }).done(function(data, textStatus, xhr) {
-        try 
-        {
-            if(data.error !== undefined) {
-                debugLog('Error : ' + data.error);
-            } else {
-                TRegistry.setToken(data.token);
-                TRegistry.setOrigin(xhr.getResponseHeader('origin'));
-                if($.isFunction(callBack)) {
-                    callBack.call(this, data, textStatus, xhr);
+    var xhr = new XMLHttpRequest()
+
+    var params = '';
+    for(var key in postData) {
+        if (postData.hasOwnProperty(key)) {
+            params += '&' + encodeURI(key + '=' + postData[key]);
+        }
+    }
+    params = params.substring(1);
+
+    xhr.open('POST', urls);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader("Accept", "application/json, text/javascript, */*; q=0.01");
+    xhr.onload = function() {
+        if(typeof callback === 'function') {
+            if (xhr.status === 200 || xhr.status === 202) {
+                var data = (xhr.responseText !== '') ? JSON.parse(xhr.responseText) : [];
+
+                try 
+                {
+                    if(data.error !== undefined) {
+                        debugLog('Error : ' + data.error);
+                    } else {
+                        TRegistry.setToken(data.token);
+                        TRegistry.setOrigin(xhr.getResponseHeader('origin'));
+                        callback.call(this, data, xhr.statusText, xhr);
+                    }
+                }
+                catch(e)
+                {
+                    debugLog(e);
                 }
             }
         }
-        catch(e)
-        {
-            debugLog(e);
-        }
-    }).fail(function(xhr, options, message) {
-        debugLog("Satus : " + xhr.status + "\r\n" +
-                "Options : " + options + "\r\n" +
-                "Message : " + message);
-    });
+    }
+    xhr.send(params);
 };
 
 TWebObject.prototype.getJSONP = function(url, postData, callBack) {

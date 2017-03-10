@@ -3,6 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+/* global TRest */
+
 //
 var TView = function(application, name) {
     
@@ -43,20 +45,23 @@ TView.prototype.requestView = function (view, action, args, callback) {
         }
     }
 
-    $.ajax({
-        type: 'POST',
-        url: urls,
-        data: postData,
-        dataType: 'json',
-        async: true,
-        headers: {
-            "Accept" : "application/json, text/javascript, request/view, */*; q=0.01"
+    var xhr = new XMLHttpRequest()
+
+    var params = '';
+    for(var key in postData) {
+        if (postData.hasOwnProperty(key)) {
+            params += '&' + encodeURI(key + '=' + postData[key]);
         }
-    }).done(function(data, textStatus, xhr) {
-        try {
-            if(data.error !== undefined) {
-                debugLog('Error : ' + data.error);
-            } else {
+    }
+    params = params.substring(1);
+
+    xhr.open('POST', urls);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader("Accept", "application/json, text/javascript, request/view, */*; q=0.01");
+    xhr.onload = function() {
+        if(typeof callback === 'function') {
+            if (xhr.status === 200) {
+                var data = (xhr.responseText !== '') ? JSON.parse(xhr.responseText) : [];
 
     //            var url = TWebObject.parseUrl(pageName);
     //            TRegistry.item(the.name).origin = xhr.getResponseHeader('origin');
@@ -77,16 +82,14 @@ TView.prototype.requestView = function (view, action, args, callback) {
                     $(document.body).html(data.view);
 
                 }
+            } else {
+                callback.call(this, xhr.status);
+                
             }
         }
-        catch(e) {
-            debugLog(e);
-        }
-    }).fail(function(xhr, options, message) {
-        debugLog("Satus : " + xhr.status + "\r\n" +
-            "Options : " + options + "\r\n" +
-            "Message : " + message);
-    });
+    }
+    xhr.send(params);
+
 };
 
 TView.prototype.requestPart = function (pageName, action, attach, postData, callback) {
@@ -101,48 +104,55 @@ TView.prototype.requestPart = function (pageName, action, attach, postData, call
     postData.token = token;
 
     var the = this;
-    $.ajax({
-        type: 'POST',
-        url: urls,
-        data: postData,
-        dataType: 'json',
-        async: true,
-        headers: {
-            "Accept" : "application/json, text/javascript, request/partialview, */*; q=0.01"
+    var xhr = new XMLHttpRequest()
+
+    var params = '';
+    for(var key in postData) {
+        if (postData.hasOwnProperty(key)) {
+            params += '&' + encodeURI(key + '=' + postData[key]);
         }
-    }).done(function(data, textStatus, xhr) {
-        try 
-        {
-            if(data.error !== undefined) {
-                debugLog('Error : ' + data.error);
-            } else {
-                TRegistry.setToken(data.token);
-                TRegistry.setOrigin(xhr.getResponseHeader('origin'));
+    }
+    params = params.substring(1);
 
-                if(data.scripts !== undefined) {
-                    var l = data.scripts.length;
-                    for(var i = 0; i < l; i++) {
-                        the.getScript(data.scripts[i]);
+    xhr.open('POST', urls);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader("Accept", "application/json, text/javascript, request/partialview, */*; q=0.01");
+    xhr.onload = function() {
+        try {
+            if(typeof callback === 'function') {
+                var data = [];
+                data.status = xhr.status;
+
+                if (xhr.status === 200) {
+                    var data = (xhr.responseText !== '') ? JSON.parse(xhr.responseText) : [];
+                    TRegistry.setToken(data.token);
+                    TRegistry.setOrigin(xhr.getResponseHeader('origin'));
+
+                    if(data.scripts !== undefined) {
+                        var l = data.scripts.length;
+                        for(var i = 0; i < l; i++) {
+                            the.getScript(data.scripts[i]);
+                        }
                     }
-                }
 
-                var html = base64_decode(data.view);
-                $(attach).html(html);
+                    var html = base64_decode(data.view);
+                    $(attach).html(html);
 
-                if(typeof callback === 'function') {
-                    callback.call(this, data);
+                    if(typeof callback === 'function') {
+                        callback.call(this, data);
+                    }
+                } else {
+                    callback.call(this, xhr.status);
+
                 }
             }
         }
-        catch(e)
-        {
+        catch(e) {
             debugLog(e);
-        }
-    }).fail(function(xhr, options, message) {
-        debugLog("Satus : " + xhr.status + "\r\n" +
-                "Options : " + options + "\r\n" +
-                "Message : " + message);
-    });
+        }    
+    }
+    xhr.send(params);
+    
 };
 
 TView.prototype.parseResponse = function(response, callback) {
@@ -204,23 +214,14 @@ TView.prototype.attachView = function (pageName, anchor) {
         }
     });
 };
-
     
 TView.prototype.attachIframe = function(id, src, anchor) {
-//    var iframe = document.createElement('iframe');
-//    iframe.frameBorder = 0;
-//    iframe.width = "100%";
-//    iframe.height = "100%";
-//    iframe.id = id;
-//    iframe.setAttribute("src", src);
-//    document.getElementById(anchor).appendChild(iframe);
-
-    $(anchor).html('');
-    $('<iframe>', {
-        src: src,
-        id:  id,
-        frameborder: 0,
-        scrolling: 'no'
-    }).appendTo(anchor);
+    var iframe = document.createElement('iframe');
+    iframe.frameBorder = 0;
+    iframe.width = "100%";
+    iframe.height = "100%";
+    iframe.id = id;
+    iframe.setAttribute("src", src);
+    document.getElementById(anchor).appendChild(iframe);
 
 };
