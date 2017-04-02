@@ -93,12 +93,13 @@ class TObject extends TStaticObject
         $result = [];
         
         if(!method_exists($this, $method)) {
-            throw new \Exception($this->getFQClassName() . "::$method is undefined");
+            throw new \BadMethodCallException($this->getFQClassName() . "::$method is undefined");
         } else {
 
             $params = $this->getMethodParameters($method);
             
             $args = $_REQUEST;
+            if(isset($args['PHPSESSID'])) unset($args['PHPSESSID']);
             if(isset($args['action'])) unset($args['action']);
             if(isset($args['token'])) unset($args['token']);
             if(isset($args['q'])) unset($args['q']);
@@ -128,9 +129,7 @@ class TObject extends TStaticObject
 
     public function invoke($method, $params = array())
     {
-
         $values = array_values($params);
-
         
         if(count($values) > 0) {
             $args = '"' . implode('", "', $values) . '"';

@@ -68,13 +68,13 @@ class TWebApplication extends \Phink\Core\TApplication
     
     public static function create($params = array())
     {
+        session_start();
+        
         (new TWebApplication())->run($params);
     }
 
     public function run($params)
     {
-        session_start();
-        
         $this->params = $params;
         if($this->validateToken()) {
             $this->dispatch();

@@ -110,7 +110,7 @@ class TPdoCommand extends \Phink\Data\TCustomCommand
             
             $result = new TPdoDataStatement($this->_statement);
         } catch (\PDOException $ex) {
-            self::$logger->debug('SQL : ' . $sql . '; params : ' . print_r($params, true), $file, $line);
+            self::$logger->debug('SQL : ' . $sql . '; params : ' . print_r($params, true), __FILE__, __LINE__);
             self::$logger->exception($ex, __FILE__, __LINE__);
         } catch (\Exception $ex) {
             self::$logger->exception($ex, __FILE__, __LINE__);
