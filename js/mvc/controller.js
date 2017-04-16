@@ -3,12 +3,12 @@ var Phink = Phink || {}
 Phink.MVC = Phink.MVC || {}
 
 Phink.MVC.Controller = function(view, name) {
-    TWebObject.call(this);
+    Phink.Web.Object.call(this);
     context = this;
     this.domain = (view !== undefined) ? view.getDomain() : '';
     this.hasView = true;
     
-    if(view instanceof TView) {
+    if(view instanceof Phink.MVC.View) {
         this.parent = view;
     } else if(typeof view === 'Object') {
         throw new Error('Not a valid view');
@@ -20,7 +20,7 @@ Phink.MVC.Controller = function(view, name) {
     
 };
 
-Phink.MVC.Controller.prototype = new TWebObject();
+Phink.MVC.Controller.prototype = new Phink.Web.Object();
 Phink.MVC.Controller.prototype.constructor = Phink.MVC.Controller;
 
 Phink.MVC.Controller.create = function(parent, name) {

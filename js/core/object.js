@@ -27,7 +27,7 @@ Phink.Object.prototype.getName = function() {
     return this.name;
 };
 
-//TObject.prototype.setParent = function(value) {
+//Phink.Object.prototype.setParent = function(value) {
 //    this.parent = value;
 //    
 //    return this;

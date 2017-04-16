@@ -4,7 +4,7 @@ Phink.MVC = Phink.MVC || {}
 
 Phink.MVC.View = function (application, name) {
     
-    TWebObject.call(this);
+    Phink.Web.Object.call(this);
     
     this.id = 'view' + Date.now();
     this.domain = (application !== undefined) ? application.getDomain() : '';
@@ -13,11 +13,11 @@ Phink.MVC.View = function (application, name) {
     
     this.parent = application;
     
-    TRegistry.item(this.domain).view = this;
+    Phink.Registry.item(this.domain).view = this;
     
 };
 
-Phink.MVC.View.prototype = new TWebObject();
+Phink.MVC.View.prototype = new Phink.Web.Object();
 Phink.MVC.View.prototype.constructor = Phink.MVC.View;
 
 Phink.MVC.View.create = function(parent, name) {
@@ -25,13 +25,13 @@ Phink.MVC.View.create = function(parent, name) {
 };
 
 Phink.MVC.View.prototype.requestSimpleView = function (view, callback) {
-    this.requesPhink.MVC.View(view, 'gePhink.MVC.ViewHtml', null, callback);
+    this.requestView(view, 'getViewHtml', null, callback);
 }
 
-Phink.MVC.View.prototype.requesPhink.MVC.View = function (view, action, args, callback) {
+Phink.MVC.View.prototype.requestView = function (view, action, args, callback) {
     
     var the = this;
-    var token = TRegistry.getToken();
+    var token = Phink.Registry.getToken();
     var urls = this.getPath(view, this.domain);
     
     var postData = {"action" : action, "token" : token};
@@ -59,10 +59,10 @@ Phink.MVC.View.prototype.requesPhink.MVC.View = function (view, action, args, ca
             if (xhr.status === 200) {
                 var data = (xhr.responseText !== '') ? JSON.parse(xhr.responseText) : [];
 
-    //            var url = TWebObject.parseUrl(pageName);
-    //            TRegistry.item(the.name).origin = xhr.getResponseHeader('origin');
-                TRegistry.setOrigin(xhr.getResponseHeader('origin'));
-                TRegistry.setToken(data.token);
+    //            var url = Phink.Web.Object.parseUrl(pageName);
+    //            Phink.Registry.item(the.name).origin = xhr.getResponseHeader('origin');
+                Phink.Registry.setOrigin(xhr.getResponseHeader('origin'));
+                Phink.Registry.setToken(data.token);
 
                 if(data.scripts !== undefined) {
                     var l = data.scripts.length;
@@ -91,7 +91,7 @@ Phink.MVC.View.prototype.requesPhink.MVC.View = function (view, action, args, ca
 Phink.MVC.View.prototype.requestPart = function (pageName, action, attach, postData, callback) {
 
     var the = this;
-    var token = TRegistry.getToken();
+    var token = Phink.Registry.getToken();
     var urls = this.getPath(pageName, this.domain);
 
     postData = postData || {};
@@ -121,8 +121,8 @@ Phink.MVC.View.prototype.requestPart = function (pageName, action, attach, postD
 
                 if (xhr.status === 200) {
                     var data = (xhr.responseText !== '') ? JSON.parse(xhr.responseText) : [];
-                    TRegistry.setToken(data.token);
-                    TRegistry.setOrigin(xhr.getResponseHeader('origin'));
+                    Phink.Registry.setToken(data.token);
+                    Phink.Registry.setOrigin(xhr.getResponseHeader('origin'));
 
                     if(data.scripts !== undefined) {
                         var l = data.scripts.length;
@@ -189,11 +189,11 @@ Phink.MVC.View.prototype.attachWindow = function (pageName, anchor) {
 
 Phink.MVC.View.prototype.attachView = function (pageName, anchor) {
     var the = this;
-    var myToken = TRegistry.getToken();
+    var myToken = Phink.Registry.getToken();
     
-    this.getJSON(pageName, {"action" : 'gePhink.MVC.ViewHtml', "token" : myToken}, function(data) {
+    this.getJSON(pageName, {"action" : 'getViewHtml', "token" : myToken}, function(data) {
         try {
-            TRegistry.setToken(data.token);
+            Phink.Registry.setToken(data.token);
 
             if(data.scripts !== undefined) {
                 var l = data.scripts.length;
