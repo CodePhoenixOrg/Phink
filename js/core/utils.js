@@ -1,14 +1,10 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+var Phink = Phink || {}
 
-var TUtils = function() {
+Phink.Utils = function () {
     
 };
 
-TUtils.find = function(haystack, index, needle) {
+Phink.Utils.find = function(haystack, index, needle) {
     var result = [];
 
     if(haystack.length === 0) return result;
@@ -33,7 +29,7 @@ TUtils.find = function(haystack, index, needle) {
  * @param {type} needle
  * @returns {Array|TUtils.grep.haystack}
  */
-TUtils.grep = function(haystack, key, needle) {
+Phink.Utils.grep = function(haystack, key, needle) {
     var result = [];
 
     if(haystack.length === 0) return result;
@@ -51,15 +47,15 @@ TUtils.grep = function(haystack, key, needle) {
     return result;
 };
 
-TUtils.resizeIframe = function(ui) {
+Phink.Utils.resizeIframe = function(ui) {
     ui.style.height = ui.contentWindow.document.body.scrollHeight + 'px';
 };
 
-TUtils.html64 = function(container, html) {
+Phink.Utils.html64 = function(container, html) {
     $(container).html(base64_decode(html));
 };
 
-TUtils.secondsToString = function(seconds) {
+Phink.Utils.secondsToString = function(seconds) {
      var minutes = Math.floor(seconds / 60)
      var seconds = seconds - (minutes * 60)
      

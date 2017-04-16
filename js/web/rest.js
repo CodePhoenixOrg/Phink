@@ -1,5 +1,8 @@
+var Phink = Phink || {}
 
-var TRest = (function() {
+Phink.Web = Phink.Web || {}
+
+Phink.Web.Rest = (function() {
     var F = function() {
 
     }

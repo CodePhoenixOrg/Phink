@@ -1,25 +1,20 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+var Phink = Phink || {}
+Phink.Web = Phink.Web || {}
+Phink.Web.UI = Phink.Web.UI || {}
 
-
-var TList = function() {
-    TPlugin.call(this);
-    
-    
+Phink.Web.UI.List = function() {
+    Phink.Web.UI.Plugin.call(this);
 };
 
-TList.prototype = new TPlugin();
-TList.prototype.constructor = TList;
+Phink.Web.UI.List.prototype = new Phink.Web.UI.Plugin();
+Phink.Web.UI.List.prototype.constructor = Phink.Web.UI.List;
 
-TList.create = function() {
-    return new TList();
+Phink.Web.UI.List.create = function() {
+    return new Phink.Web.UI.List();
 };
 
 
-TList.prototype.bind = function(container, data, callback) {
+Phink.Web.UI.List.prototype.bind = function(container, data, callback) {
     var names = data.names;
     var values = data.values;
     var templates = data.templates;
@@ -42,7 +37,7 @@ TList.prototype.bind = function(container, data, callback) {
         result += str_replace('%s', '', elements[1].opening) + "\n";
         for(j = 0; j < colNum; j++) {
             var k = i * colNum + j;
-            html = TPlugin.applyTemplate(templates, row, j);
+            html = Phink.Web.UI.Plugin.applyTemplate(templates, row, j);
             if(templates[j]['enabled'] == 1 && row[j] != oldValue[j]) {
                 result += str_replace('%s', '', elements[2].opening) + html + elements[2].closing + "\n";
             }

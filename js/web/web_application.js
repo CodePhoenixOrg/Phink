@@ -1,11 +1,8 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+var Phink = Phink || {}
 
+Phink.Web = Phink.Web || {}
 
-var TWebApplication = function(domain, name, isSSL) {
+Phink.Web.Application = function (domain, name, isSSL) {
     TWebObject.call(this, domain, isSSL);
     
     this.id = 'app' + Date.now();
@@ -20,14 +17,14 @@ var TWebApplication = function(domain, name, isSSL) {
   
 };
 
-TWebApplication.prototype = new TWebObject();
-TWebApplication.prototype.constructor = TWebApplication;
+Phink.Web.Application.prototype = new Phink.Web.Object();
+Phink.Web.Application.prototype.constructor = Phink.Web.Application;
 
-TWebApplication.create = function(domain, name, isSSL) {
-    return new TWebApplication(domain, name, isSSL);
+Phink.Web.Application.create = function(domain, name, isSSL) {
+    return new Phink.Web.Application(domain, name, isSSL);
 };
 
-TWebApplication.prototype.includeView = function(name) {
+Phink.Web.Application.prototype.includeView = function(name) {
     include('app/controllers/' + name + '/' + name + '.js');
     var newView = TView.create(this, name);
     this.addView(newView);
@@ -35,7 +32,7 @@ TWebApplication.prototype.includeView = function(name) {
     return newView;
 };
 
-TWebApplication.prototype.createView = function(name) {
+Phink.Web.Application.prototype.createView = function(name) {
     var newView = TView.create(this, name);
     this.addView(newView);
     
@@ -43,14 +40,14 @@ TWebApplication.prototype.createView = function(name) {
 };
 
 
-TWebApplication.prototype.createController = function(view, name) {
+Phink.Web.Application.prototype.createController = function(view, name) {
     var newCtrl = TController.create(view, name);
     this.addController(newCtrl);
     
     return newCtrl;
 };
 
-TWebApplication.prototype.getViewByName = function(viewName) {
+Phink.Web.Application.prototype.getViewByName = function(viewName) {
     var result = null;
     
     for(var name in this.viewCollection) {
@@ -63,7 +60,7 @@ TWebApplication.prototype.getViewByName = function(viewName) {
     return result;
 }
 
-TWebApplication.prototype.addView = function(view) {
+Phink.Web.Application.prototype.addView = function(view) {
     if(view === undefined) return null;
 
     if(!(view instanceof TView)) {
@@ -74,7 +71,7 @@ TWebApplication.prototype.addView = function(view) {
 
 };
 
-TWebApplication.prototype.addController = function(controller) {
+Phink.Web.Application.prototype.addController = function(controller) {
     if(controller === undefined) return null;
 
     if(!(controller instanceof TController)) {

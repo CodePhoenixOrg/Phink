@@ -1,25 +1,20 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+var Phink = Phink || {}
+Phink.Web = Phink.Web || {}
+Phink.Web.UI = Phink.Web.UI || {}
 
-
-var TAccordion = function() {
-    TPlugin.call(this);
-    
-    
+Phink.Web.UI.Accordion = function() {
+    Phink.Web.UI.Plugin.call(this);
 };
 
-TAccordion.prototype = new TPlugin();
-TAccordion.prototype.constructor = TAccordion;
+Phink.Web.UI.Accordion.prototype = new Phink.Web.UI.Plugin();
+Phink.Web.UI.Accordion.prototype.constructor = Phink.Web.UI.Accordion;
 
-TAccordion.create = function() {
-    return new TAccordion();
+Phink.Web.UI.Accordion.create = function() {
+    return new Phink.Web.UI.Accordion();
 };
 
 
-TAccordion.prototype.bind = function(container, data, callback) {
+Phink.Web.UI.Accordion.prototype.bind = function(container, data, callback) {
     var names = data.names;
     var values = data.values;
     var templates = data.templates;
@@ -66,7 +61,7 @@ TAccordion.prototype.bind = function(container, data, callback) {
             }
             //html = this.applyTemplate(templates[j], colNum, row, i);
             //html = row[index];
-            html = TPlugin.applyTemplate(templates, row, j);
+            html = Phink.Web.UI.Plugin.applyTemplate(templates, row, j);
 
             if(level === 0) {
                 if(i > 0) {

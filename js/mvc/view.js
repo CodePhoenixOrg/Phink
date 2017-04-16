@@ -1,12 +1,8 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-/* global TRest */
+var Phink = Phink || {}
 
-//
-var TView = function(application, name) {
+Phink.MVC = Phink.MVC || {}
+
+Phink.MVC.View = function (application, name) {
     
     TWebObject.call(this);
     
@@ -21,18 +17,18 @@ var TView = function(application, name) {
     
 };
 
-TView.prototype = new TWebObject();
-TView.prototype.constructor = TView;
+Phink.MVC.View.prototype = new TWebObject();
+Phink.MVC.View.prototype.constructor = Phink.MVC.View;
 
-TView.create = function(parent, name) {
-    return new TView(parent, name);
+Phink.MVC.View.create = function(parent, name) {
+    return new Phink.MVC.View(parent, name);
 };
 
-TView.prototype.requestSimpleView = function (view, callback) {
-    this.requestView(view, 'getViewHtml', null, callback);
+Phink.MVC.View.prototype.requestSimpleView = function (view, callback) {
+    this.requesPhink.MVC.View(view, 'gePhink.MVC.ViewHtml', null, callback);
 }
 
-TView.prototype.requestView = function (view, action, args, callback) {
+Phink.MVC.View.prototype.requesPhink.MVC.View = function (view, action, args, callback) {
     
     var the = this;
     var token = TRegistry.getToken();
@@ -92,7 +88,7 @@ TView.prototype.requestView = function (view, action, args, callback) {
 
 };
 
-TView.prototype.requestPart = function (pageName, action, attach, postData, callback) {
+Phink.MVC.View.prototype.requestPart = function (pageName, action, attach, postData, callback) {
 
     var the = this;
     var token = TRegistry.getToken();
@@ -155,7 +151,7 @@ TView.prototype.requestPart = function (pageName, action, attach, postData, call
     
 };
 
-TView.prototype.parseResponse = function(response, callback) {
+Phink.MVC.View.prototype.parseResponse = function(response, callback) {
     if(response === '') {
         throw new Error('Response is empty !');
     }
@@ -181,7 +177,7 @@ TView.prototype.parseResponse = function(response, callback) {
 
 };
 
-TView.prototype.attachWindow = function (pageName, anchor) {
+Phink.MVC.View.prototype.attachWindow = function (pageName, anchor) {
     this.requestSimpleView(pageName, function(data) {
         if(anchor !== undefined) {
             $(anchor).html(data.view);
@@ -191,11 +187,11 @@ TView.prototype.attachWindow = function (pageName, anchor) {
     });
 };
 
-TView.prototype.attachView = function (pageName, anchor) {
+Phink.MVC.View.prototype.attachView = function (pageName, anchor) {
     var the = this;
     var myToken = TRegistry.getToken();
     
-    this.getJSON(pageName, {"action" : 'getViewHtml', "token" : myToken}, function(data) {
+    this.getJSON(pageName, {"action" : 'gePhink.MVC.ViewHtml', "token" : myToken}, function(data) {
         try {
             TRegistry.setToken(data.token);
 
@@ -215,7 +211,7 @@ TView.prototype.attachView = function (pageName, anchor) {
     });
 };
     
-TView.prototype.attachIframe = function(id, src, anchor) {
+Phink.MVC.View.prototype.attachIframe = function(id, src, anchor) {
     var iframe = document.createElement('iframe');
     iframe.frameBorder = 0;
     iframe.width = "100%";

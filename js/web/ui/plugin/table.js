@@ -1,21 +1,19 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+var Phink = Phink || {}
+Phink.Web = Phink.Web || {}
+Phink.Web.UI = Phink.Web.UI || {}
 
-var TTable = function() {
-    TPlugin.call(this);
+Phink.Web.UI.Table = function() {
+    Phink.Web.UI.Plugin.call(this);
 };
 
-TTable.prototype = new TPlugin();
-TTable.prototype.constructor = TTable;
+Phink.Web.UI.Table.prototype = new Phink.Web.UI.Plugin();
+Phink.Web.UI.Table.prototype.constructor = Phink.Web.UI.Table;
 
-TTable.create = function() {
-    return new TTable();
+Phink.Web.UI.Table.create = function() {
+    return new Phink.Web.UI.Table();
 };
     
-TTable.prototype.bind = function(tableId, data, callback) {
+Phink.Web.UI.Table.prototype.bind = function(tableId, data, callback) {
     var values = data.values;
     var templates = data.templates;
     var colNum = templates.length;
@@ -24,7 +22,7 @@ TTable.prototype.bind = function(tableId, data, callback) {
         var row = JSON.parse(values[j]);
         for (var i=0; i < colNum; i++) {
             var template = templates[i];
-            var html = TPlugin.applyTemplate(templates, row, i);
+            var html = Phink.Web.UI.Plugin.applyTemplate(templates, row, i);
             if(template.enabled) {
                 $(tableId + 'td' + (i + colNum * j).toString()).html(html);
             }

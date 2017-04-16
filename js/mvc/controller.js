@@ -1,11 +1,8 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+var Phink = Phink || {}
 
-var context = null;
-var TController = function(view, name) {
+Phink.MVC = Phink.MVC || {}
+
+Phink.MVC.Controller = function(view, name) {
     TWebObject.call(this);
     context = this;
     this.domain = (view !== undefined) ? view.getDomain() : '';
@@ -23,17 +20,17 @@ var TController = function(view, name) {
     
 };
 
-TController.prototype = new TWebObject();
-TController.prototype.constructor = TController;
+Phink.MVC.Controller.prototype = new TWebObject();
+Phink.MVC.Controller.prototype.constructor = Phink.MVC.Controller;
 
-TController.create = function(parent, name) {
+Phink.MVC.Controller.create = function(parent, name) {
     if (name === undefined) {
         name = 'ctrl' + Date.now();
     }
-    return new TController(parent, name);
+    return new Phink.MVC.Controller(parent, name);
 };
 
-TController.prototype.oninit = function (callback) {
+Phink.MVC.Controller.prototype.oninit = function (callback) {
 
     if(typeof callback === 'function') {
         callback.call(this);
@@ -42,7 +39,7 @@ TController.prototype.oninit = function (callback) {
     return this;
 };
 
-TController.prototype.onload = function (callback) {
+Phink.MVC.Controller.prototype.onload = function (callback) {
 
     var the = this
     Phink.DOM.ready(function() {
@@ -54,7 +51,7 @@ TController.prototype.onload = function (callback) {
     return this;
 };
 
-TController.prototype.render = function () {
+Phink.MVC.Controller.prototype.render = function () {
 
     if(typeof this.oninit === 'function') {
         this.oninit();
@@ -64,7 +61,7 @@ TController.prototype.render = function () {
     }
 };
 
-TController.prototype.actions = function (actions) {
+Phink.MVC.Controller.prototype.actions = function (actions) {
 
     for(var key in actions) {
         this[key] = actions[key];
@@ -75,36 +72,36 @@ TController.prototype.actions = function (actions) {
     return this;
 };
 
-TController.prototype.route = function (route, callback) {
+Phink.MVC.Controller.prototype.route = function (route, callback) {
     
     var routeMatcher = new RegExp(route.replace(/:[^\s/]+/g, '([\\w-]+)'));
     this.parent.requestView(view, action, args, callback);
 };
 
-TController.prototype.getSimpleView = function (view, callback) {
+Phink.MVC.Controller.prototype.getSimpleView = function (view, callback) {
     this.parent.requestSimpleView(view, callback);
 };
 
-TController.prototype.getView = function (view, action, args, callback) {
+Phink.MVC.Controller.prototype.getView = function (view, action, args, callback) {
     this.parent.requestView(view, action, args, callback);
 };
 
-TController.prototype.getPartialView = function (pageName, action, attach, postData, callback) {
+Phink.MVC.Controller.prototype.getPartialView = function (pageName, action, attach, postData, callback) {
     this.parent.requestPart(pageName, action, attach, postData, callback);
 };
 
-TController.prototype.parseViewResponse = function (pageName, callback) {
+Phink.MVC.Controller.prototype.parseViewResponse = function (pageName, callback) {
     this.parent.parseResponse(pageName, callback);
 };
 
-TController.prototype.attachWindow = function (pageName, anchor) {
+Phink.MVC.Controller.prototype.attachWindow = function (pageName, anchor) {
     this.parent.attachWindow(pageName, anchor);
 };
 
-TController.prototype.attachView = function (pageName, anchor) {
+Phink.MVC.Controller.prototype.attachView = function (pageName, anchor) {
     this.parent.attachView(pageName, anchor);
 };
     
-TController.prototype.attachIframe = function(id, src, anchor) {
+Phink.MVC.Controller.prototype.attachIframe = function(id, src, anchor) {
     this.parent.attachIframe(id, src, anchor);
 };

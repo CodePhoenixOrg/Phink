@@ -1,11 +1,6 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+var Phink = Phink || {}
 
-
-var TUrl = function (url, domain, isSSL) {
+Phink.Url = function (url, domain, isSSL) {
 
     this.url = url;
     this.isParsed = false;
@@ -22,7 +17,7 @@ var TUrl = function (url, domain, isSSL) {
     
 }
 
-TUrl.prototype.parse = function () {
+Phink.Url.prototype.parse = function () {
         
     var result = [];
     
@@ -109,7 +104,7 @@ TUrl.prototype.parse = function () {
     return result;
 };
 
-TUrl.prototype.toString = function urlToString() {
+Phink.Url.prototype.toString = function urlToString() {
     if(!this.isParsed) {
         this.parse();
     }

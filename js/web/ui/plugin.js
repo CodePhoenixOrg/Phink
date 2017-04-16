@@ -1,23 +1,20 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+var Phink = Phink || {}
+Phink.Web = Phink.Web || {}
+Phink.Web.UI = Phink.Web.UI || {}
 
-
-var TPlugin = function() {
-    TWebObject.call(this);
+Phink.Web.UI.Plugin = function() {
+    Phink.Web.Object.call(this);
     
 };
 
-TPlugin.prototype = new TWebObject();
-TPlugin.prototype.constructor = TPlugin;
+Phink.Web.UI.Plugin.prototype = new Phink.Web.Object();
+Phink.Web.UI.Plugin.prototype.constructor = Phink.Web.UI.Plugin;
 
-TPlugin.create = function() {
-    return new TPlugin();
+Phink.Web.UI.Plugin.create = function() {
+    return new Phink.Web.UI.Plugin();
 };
 
-TPlugin.applyTemplate = function(templates, row, i) {
+Phink.Web.UI.Plugin.applyTemplate = function(templates, row, i) {
     var html = row[i];
     
 //    if(templates[i] === undefined) {
@@ -45,7 +42,7 @@ TPlugin.applyTemplate = function(templates, row, i) {
     return html;
 };
 
-TPlugin.applyDragHelper = function(templates, row, i) {
+Phink.Web.UI.Plugin.applyDragHelper = function(templates, row, i) {
     var html = row[i];
     
     if(templates[i].dragHelper !== '' && templates[i].enabled) {
@@ -68,7 +65,7 @@ TPlugin.applyDragHelper = function(templates, row, i) {
     return html;
 };
 
-TPlugin.prototype.dataBind = function(tableId, values, templates) {
+Phink.Web.UI.Plugin.prototype.dataBind = function(tableId, values, templates) {
     var colNum = templates.length;
     var rowNum = values.length;
     for(var j=0; j < rowNum; j++) {

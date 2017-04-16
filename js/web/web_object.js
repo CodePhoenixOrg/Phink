@@ -1,11 +1,8 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+var Phink = Phink || {}
 
+Phink.Web = Phink.Web || {}
 
-var TWebObject = function(domain, isSSL) {
+Phink.Web.Object = function(domain, isSSL) {
     TObject.call(this);
     
     this.isSSL = isSSL;
@@ -15,44 +12,44 @@ var TWebObject = function(domain, isSSL) {
     this.domain = domain;
 };
 
-TWebObject.prototype = new TObject();
-TWebObject.prototype.constructor = TWebObject;
+Phink.Web.Object.prototype = new Phink.Object();
+Phink.Web.Object.prototype.constructor = Phink.Web.Object;
 
-TWebObject.prototype.getDomain = function() {
+Phink.Web.Object.prototype.getDomain = function() {
     return this.domain;
 };
 
-TWebObject.prototype.setOrigin = function(value) {
+Phink.Web.Object.prototype.setOrigin = function(value) {
     this.origin = value;
     
     return this;
 };
 
-TWebObject.prototype.getOrigin = function() {
+Phink.Web.Object.prototype.getOrigin = function() {
     return this.origin;
 };
 
 
-TWebObject.prototype.setToken = function(value) {
+Phink.Web.Object.prototype.setToken = function(value) {
     this.token = value;
     
     return this;
 };
 
-TWebObject.prototype.getToken = function() {
+Phink.Web.Object.prototype.getToken = function() {
     return this.token;
 };
 
-TWebObject.prototype.getPath = function(url, domain) {
+Phink.Web.Object.prototype.getPath = function(url, domain) {
     this.url = new TUrl(url, domain, this.isSSL);
     return this.url.toString();
 };
 
-TWebObject.prototype.getUrl = function() {
+Phink.Web.Object.prototype.getUrl = function() {
     return this.url;
 };
 
-TWebObject.prototype.getJSON = function(
+Phink.Web.Object.prototype.getJSON = function(
     url, // Url du webService
     postData, // Tableau JSON des donn�es � poster au webserice
     callback // fonction qui g�re le retour du webservice
@@ -101,7 +98,7 @@ TWebObject.prototype.getJSON = function(
     xhr.send(params);
 };
 
-TWebObject.prototype.getJSONP = function(url, postData, callBack) {
+Phink.Web.Object.prototype.getJSONP = function(url, postData, callBack) {
     postData.token = TRegistry.getToken();
     this.origin = TRegistry.getOrigin();
     var urls = this.getPath(url, this.domain);
@@ -131,7 +128,7 @@ TWebObject.prototype.getJSONP = function(url, postData, callBack) {
     });
 };
 
-TWebObject.prototype.getScript = function (url, callback) {
+Phink.Web.Object.prototype.getScript = function (url, callback) {
     var urls = this.getPath(url, this.domain);
 
     $.getScript(urls)
@@ -147,7 +144,7 @@ TWebObject.prototype.getScript = function (url, callback) {
     });       
 }
 
-TWebObject.getCSS = function(attributes) {
+Phink.Web.Object.getCSS = function(attributes) {
     // setting default attributes
     if(typeof attributes === "string") {
         var href = attributes;
