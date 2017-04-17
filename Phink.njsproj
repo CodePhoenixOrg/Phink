@@ -1,0 +1,214 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <Name>Phink</Name>
+    <RootNamespace>phk</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>0a0416dc-6942-4b35-abc9-d6467dadd20c</ProjectGuid>
+    <ProjectHome>
+    </ProjectHome>
+    <StartupFile>
+    </StartupFile>
+    <StartWebBrowser>False</StartWebBrowser>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <StartWebBrowser>false</StartWebBrowser>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include=".gitignore" />
+    <Content Include="auth\authentication.php" />
+    <Content Include="autoloader.php" />
+    <Content Include="collections\array_list.php" />
+    <Content Include="composer.json" />
+    <Content Include="configuration\configelement.php" />
+    <Content Include="configuration\configurable.php" />
+    <Content Include="configuration\configuration.php" />
+    <Content Include="configuration\data\data_configuration.php" />
+    <Content Include="configuration\data\fileconfiguration.php" />
+    <Content Include="core\application.php" />
+    <Content Include="core\constants.php" />
+    <Content Include="core\core.php" />
+    <Content Include="core\object.php" />
+    <Content Include="core\registry.php" />
+    <Content Include="core\router.php" />
+    <Content Include="core\static_object.php" />
+    <Content Include="crypto\crypto.php" />
+    <Content Include="css\css_starter.php" />
+    <Content Include="data\client\mysql\mysql_command.php" />
+    <Content Include="data\client\mysql\mysql_configuration.php" />
+    <Content Include="data\client\mysql\mysql_connection.php" />
+    <Content Include="data\client\mysql\mysql_data_reader.php" />
+    <Content Include="data\client\pdo\pdo_command.php" />
+    <Content Include="data\client\pdo\pdo_configuration.php" />
+    <Content Include="data\client\pdo\pdo_connection.php" />
+    <Content Include="data\client\pdo\pdo_data_statement.php" />
+    <Content Include="data\client\redis\redis_configuration.php" />
+    <Content Include="data\client\redis\redis_connection.php" />
+    <Content Include="data\client\sqlite\sqlite_command.php" />
+    <Content Include="data\client\sqlite\sqlite_configuration.php" />
+    <Content Include="data\client\sqlite\sqlite_connection.php" />
+    <Content Include="data\client\sqlite\sqlite_data_reader.php" />
+    <Content Include="data\client\sqlserver\sqlserver_command.php" />
+    <Content Include="data\client\sqlserver\sqlserver_configuration.php" />
+    <Content Include="data\client\sqlserver\sqlserver_connection.php" />
+    <Content Include="data\client\sqlserver\sqlserver_data_reader.php" />
+    <Content Include="data\connection.php" />
+    <Content Include="data\connector.php" />
+    <Content Include="data\crud_queries.php" />
+    <Content Include="data\custom_command.php" />
+    <Content Include="data\data_access.php" />
+    <Content Include="data\data_statement.php" />
+    <Content Include="data\server_type.php" />
+    <Content Include="data\sql_parameters.php" />
+    <Content Include="data\ui\data_binder.php" />
+    <Content Include="data\ui\data_tag.php" />
+    <Content Include="data\ui\select.php" />
+    <Content Include="globals.php" />
+    <Content Include="js\js_starter.php" />
+    <Content Include="LICENSE.TXT" />
+    <Content Include="log\log.php" />
+    <Content Include="mvc\collection.php" />
+    <Content Include="mvc\controller.php" />
+    <Content Include="mvc\custom_controller.php" />
+    <Content Include="mvc\custom_view.php" />
+    <Content Include="mvc\model.php" />
+    <Content Include="mvc\partial_controller.php" />
+    <Content Include="mvc\partial_view.php" />
+    <Content Include="mvc\view.php" />
+    <Content Include="README.md" />
+    <Content Include="rest\http_transport.php" />
+    <Content Include="rest\rest_application.php" />
+    <Content Include="rest\rest_controller.php" />
+    <Content Include="rest\rest_router.php" />
+    <Content Include="starter.php" />
+    <Content Include="text\regex.php" />
+    <Content Include="text\regex_match.php" />
+    <Content Include="tools\batidb1" />
+    <Content Include="tools\batiweb1" />
+    <Content Include="tools\chwsdk" />
+    <Content Include="tools\chwww" />
+    <Content Include="tools\clog" />
+    <Content Include="tools\llog" />
+    <Content Include="tools\ltmp" />
+    <Content Include="tools\rlog" />
+    <Content Include="tools\server_start" />
+    <Content Include="tools\server_stop" />
+    <Content Include="tools\slog" />
+    <Content Include="tools\solweb1" />
+    <Content Include="ui\console_application.php" />
+    <Content Include="utils\array_utils.php" />
+    <Content Include="utils\date_utils.php" />
+    <Content Include="utils\file_utils.php" />
+    <Content Include="utils\javascript_utils.php" />
+    <Content Include="utils\mail_utils.php" />
+    <Content Include="utils\sql_utils.php" />
+    <Content Include="utils\string_utils.php" />
+    <Content Include="utils\text_utils.php" />
+    <Content Include="web\api_application.php" />
+    <Content Include="web\api_object.php" />
+    <Content Include="web\request.php" />
+    <Content Include="web\response.php" />
+    <Content Include="web\static_application.php" />
+    <Content Include="web\ui\code_generator.php" />
+    <Content Include="web\ui\control.php" />
+    <Content Include="web\ui\custom_control.php" />
+    <Content Include="web\ui\html.pattern.phtml" />
+    <Content Include="web\ui\html_control.php" />
+    <Content Include="web\ui\html_element.php" />
+    <Content Include="web\ui\html_objects.php" />
+    <Content Include="web\ui\html_pattern.php" />
+    <Content Include="web\ui\html_template.php" />
+    <Content Include="web\ui\plugin\accordion.php" />
+    <Content Include="web\ui\plugin\custom_plugin.php" />
+    <Content Include="web\ui\plugin\list.php" />
+    <Content Include="web\ui\plugin\olli.php" />
+    <Content Include="web\ui\plugin\table.php" />
+    <Content Include="web\ui\plugin\ulli.php" />
+    <Content Include="web\ui\plugin_renderer.php" />
+    <Content Include="web\ui\widget\pager\pager.class.php" />
+    <Content Include="web\ui\widget\pager\pager.phtml" />
+    <Content Include="web\ui\widget\plugin\plugin.class.php" />
+    <Content Include="web\ui\widget\plugin\plugin.phtml" />
+    <Content Include="web\ui\widget\plugin\plugin_child.php" />
+    <Content Include="web\web_application.php" />
+    <Content Include="web\web_object.php" />
+    <Content Include="xml\xml_document.php" />
+    <Content Include="xml\xml_match.php" />
+    <Content Include="xml\xml_utils.php" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="auth\" />
+    <Folder Include="collections\" />
+    <Folder Include="configuration\" />
+    <Folder Include="configuration\data\" />
+    <Folder Include="core\" />
+    <Folder Include="crypto\" />
+    <Folder Include="css\" />
+    <Folder Include="data\" />
+    <Folder Include="data\client\" />
+    <Folder Include="data\client\mysql\" />
+    <Folder Include="data\client\pdo\" />
+    <Folder Include="data\client\redis\" />
+    <Folder Include="data\client\sqlite\" />
+    <Folder Include="data\client\sqlserver\" />
+    <Folder Include="data\ui\" />
+    <Folder Include="js\" />
+    <Folder Include="js\core\" />
+    <Folder Include="js\mvc\" />
+    <Folder Include="js\web\" />
+    <Folder Include="js\web\ui\" />
+    <Folder Include="js\web\ui\plugin\" />
+    <Folder Include="log\" />
+    <Folder Include="mvc\" />
+    <Folder Include="rest\" />
+    <Folder Include="text\" />
+    <Folder Include="tools\" />
+    <Folder Include="ui\" />
+    <Folder Include="utils\" />
+    <Folder Include="web\" />
+    <Folder Include="web\ui\" />
+    <Folder Include="web\ui\plugin\" />
+    <Folder Include="web\ui\widget\" />
+    <Folder Include="web\ui\widget\pager\" />
+    <Folder Include="web\ui\widget\plugin\" />
+    <Folder Include="xml\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="js\core\console.js" />
+    <Compile Include="js\core\debug.js" />
+    <Compile Include="js\core\object.js" />
+    <Compile Include="js\core\registry.js" />
+    <Compile Include="js\core\url.js" />
+    <Compile Include="js\core\utils.js" />
+    <Compile Include="js\global.js" />
+    <Compile Include="js\jphink.js" />
+    <Compile Include="js\mvc\controller.js" />
+    <Compile Include="js\mvc\view.js" />
+    <Compile Include="js\web\rest.js" />
+    <Compile Include="js\web\ui\plugin.js" />
+    <Compile Include="js\web\ui\plugin\accordion.js" />
+    <Compile Include="js\web\ui\plugin\list.js" />
+    <Compile Include="js\web\ui\plugin\table.js" />
+    <Compile Include="js\web\web_application.js" />
+    <Compile Include="js\web\web_object.js" />
+    <Compile Include="web\ui\widget\pager\pager.js" />
+  </ItemGroup>
+  <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+</Project>
