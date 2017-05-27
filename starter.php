@@ -55,6 +55,7 @@ include 'phink/xml/xml_utils.php';
 include 'phink/mvc/partial_controller.php';
 include 'phink/mvc/partial_view.php';
 include 'phink/rest/http_transport.php';
+include 'phink/core/custom_router.php';
 include 'phink/rest/rest_router.php';
 include 'phink/rest/rest_controller.php';
 include 'phink/web/ui/control.php';

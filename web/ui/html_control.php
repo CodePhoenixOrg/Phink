@@ -84,7 +84,7 @@ trait THtmlControl
         $this->content = $value;
         if(isset($this->content[0]) && $this->content[0] === '@') {
             $templateName = str_replace(PREHTML_EXTENSION, '', substr($this->content,1));
-            $templateName = APP_ROOT . 'app' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $templateName . DIRECTORY_SEPARATOR . $templateName . PREHTML_EXTENSION;
+            $templateName = APP_ROOT . 'app' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $templateName . PREHTML_EXTENSION;
 
             if(file_exists($templateName)) {
                 $contents = file_get_contents($templateName, FILE_USE_INCLUDE_PATH);
@@ -102,7 +102,7 @@ trait THtmlControl
         $this->dragHelper = $value;
         if($this->dragHelper[0] == '@') {
             $templateName = str_replace(PREHTML_EXTENSION, '', substr($this->dragHelper,1));
-            $templateName = 'app' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $templateName . DIRECTORY_SEPARATOR . $templateName . PREHTML_EXTENSION;
+            $templateName = 'app' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $templateName . PREHTML_EXTENSION;
 
             if(file_exists($templateName)) {
                 $contents = file_get_contents($templateName, FILE_USE_INCLUDE_PATH);

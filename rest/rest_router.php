@@ -17,11 +17,6 @@
  */
  
  namespace Phink\Rest;
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
  use Phink\Core\TStaticObject;
  
@@ -30,23 +25,12 @@
  *
  * @author David
  */
-class TRestRouter extends TStaticObject
+class TRestRouter extends TCustomRouter
 {
-    use THttpTransport;
-    
-    //put your code here
-    private $application = null;
-    private $apiName = '';
-    private $className = '';
-    private $baseNamespace = '';
-    private $apiFileName = '';
-    private $parameter = '';
-
-    public function __construct(TRestApplication $app)
+   
+    public function __construct($parent, $request, $response)
     {
-        $this->application = $app;
-        $this->request = $app->getRequest();
-        $this->response = $app->getResponse();
+        parent::__construct($parent, $request, $response);
     }
 
     public function translate()
@@ -82,7 +66,7 @@ class TRestRouter extends TStaticObject
         
         self::$logger->debug($fqObject);
 
-        $instance = new $fqObject($this->application);
+        $instance = new $fqObject($this);
         
         $request_body = file_get_contents('php://input');
         if(!empty($request_body)) {

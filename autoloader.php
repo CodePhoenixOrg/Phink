@@ -68,11 +68,11 @@ class TAutoloader
     }
 
     public static function cacheFilenameFromView($viewName) {
-        return strtolower('app_controllers_' . $viewName . '_' . $viewName . CLASS_EXTENSION);
+        return strtolower('app_controllers_' . $viewName . CLASS_EXTENSION);
     }
 
     public static function cacheJsFilenameFromView($viewName) {
-        return strtolower('app_controllers_' . $viewName . '_' . $viewName . JS_EXTENSION);
+        return strtolower('app_controllers_' . $viewName . JS_EXTENSION);
     }
 
     public static function cachePath($filepath) {
@@ -207,7 +207,7 @@ class TAutoloader
     public static function includeControllerByName($viewName)
     {
         $result = false;
-        $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
+        $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
         
         $result = self::includeClass($controllerFileName, RETURN_CODE | INCLUDE_FILE);
         if(!$result) {
@@ -230,7 +230,7 @@ class TAutoloader
     public static function includePartialControllerByName($viewName)
     {
         $result = false;
-        $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
+        $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
         if(file_exists($controllerFileName)) {
             //self::$logger->debug('INCLUDE CUSTOM PARTIAL CONTROLLER : ' . $controllerFileName, __FILE__, __LINE__);
             $result = self::includeClass($controllerFileName, RETURN_CODE | INCLUDE_FILE);
@@ -276,7 +276,7 @@ class TAutoloader
             //$classFilename = ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;
             $cacheFilename = RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName)) . CLASS_EXTENSION;
         } else {
-            //$classFilename = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
+            //$classFilename = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
             $cacheFilename = RUNTIME_DIR . \Phink\TAutoloader::cacheFilenameFromView($viewName);
             $cacheJsFilename = RUNTIME_JS_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
             $cacheJsFilename = str_replace(CLASS_EXTENSION, JS_EXTENSION, $cacheJsFilename);
@@ -296,7 +296,7 @@ class TAutoloader
             
         } else {
             //self::$logger->debug('INCLUDE NEW CONTROL : ' . $viewName, __FILE__, __LINE__);
-            //include 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
+            //include 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
             $result = self::includePartialControllerByName($viewName);
         }
 

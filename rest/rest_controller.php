@@ -36,7 +36,7 @@ class TRestController extends TStaticObject
     use THttpTransport;
     //put your code here
 
-    public function __construct(TRestApplication $app)
+    public function __construct(TCustomRouter $app)
     {
         $this->authentication = $app->getAuthentication();
         $this->request = $app->getRequest();
