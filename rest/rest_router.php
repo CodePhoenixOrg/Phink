@@ -84,13 +84,16 @@ class TRestRouter extends TCustomRouter
                 $params = [$this->parameter];
             }
         }
-            
-        $ref = new \ReflectionMethod($instance, $method);
-        if(count($params) > 0) {
-            $ref->invokeArgs($instance, $params);
-        } else {
-            $ref->invoke($instance);
+        
+        foreach ($params as $key=>$value) {
+            $fqObject->$key = $value;
         }
+        
+//        if(count($params) > 0) {
+//            $ref->invokeArgs($instance, $params);
+//        } else {
+//            $ref->invoke($instance);
+//        }
         
         $this->response->sendData();		
     }
