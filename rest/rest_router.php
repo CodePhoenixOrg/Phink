@@ -28,9 +28,9 @@
 class TRestRouter extends TCustomRouter
 {
    
-    public function __construct($parent, $request, $response)
+    public function __construct($parent)
     {
-        parent::__construct($parent, $request, $response);
+        parent::__construct($parent);
     }
 
     public function translate()
@@ -69,31 +69,39 @@ class TRestRouter extends TCustomRouter
         $instance = new $fqObject($this);
         
         $request_body = file_get_contents('php://input');
+        
+        self::getLogger()->debug($request_body);
         if(!empty($request_body)) {
             $data = json_decode($request_body, true);
         }
         
-        $params = [];
+        self::getLogger()->debug($data);
+//        $params = [];
+//        if(count($data) > 0) {
+//            $params = array_values($data);
+//            if($this->parameter !== null) {
+//                array_unshift($params, $this->parameter);
+//            }
+//        } else {
+//            if($this->parameter !== null) {
+//                $params = [$this->parameter];
+//            }
+//        }
+        
         if(count($data) > 0) {
-            $params = array_values($data);
-            if($this->parameter !== null) {
-                array_unshift($params, $this->parameter);
-            }
-        } else {
-            if($this->parameter !== null) {
-                $params = [$this->parameter];
+            foreach ($data as $key=>$value) {
+                $instance->$key = $value;
+                self::getLogger()->debug("instance->$key = $value");
             }
         }
-        
-        foreach ($params as $key=>$value) {
-            $fqObject->$key = $value;
-        }
-        
+
+
 //        if(count($params) > 0) {
 //            $ref->invokeArgs($instance, $params);
 //        } else {
 //            $ref->invoke($instance);
 //        }
+        $instance->$method();
         
         $this->response->sendData();		
     }

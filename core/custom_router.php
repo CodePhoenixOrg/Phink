@@ -29,7 +29,7 @@ class TCustomRouter extends TStaticObject {
             $this->className = $parent->className;
 
         } else {
-            (parent);
+            //(parent);
             $this->translation = '';
             $this->requestType = REQUEST_TYPE_WEB;
             $this->className = '';

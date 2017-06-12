@@ -54,6 +54,7 @@ class TLog
 
     public function debug($message, $filename = null, $line = null)
     {
+        $message = (is_array($message)) ? print_r($message, true) : $message;
         $this->_setDebugLogFile();
         $handle = fopen($this->_debugLogFile, 'a');
 
