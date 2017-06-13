@@ -1,3 +1,0 @@
-#!/bin/bash
-clear && docker exec -it sol_web_1 bash;
-exit 0;

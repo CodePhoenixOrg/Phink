@@ -71,7 +71,7 @@ Phink.MVC.View.prototype.requestView = function (view, action, args, callback) {
                     }
                 }
 
-                data.view = base64_decode(data.view);
+                data.view = btoa(data.view);
                 if(typeof callback === 'function') {
                     callback.call(this, data);
                 } else {
@@ -131,7 +131,7 @@ Phink.MVC.View.prototype.requestPart = function (pageName, action, attach, postD
                         }
                     }
 
-                    var html = base64_decode(data.view);
+                    var html = btoa(data.view);
                     $(attach).html(html);
 
                     if(typeof callback === 'function') {
@@ -157,7 +157,7 @@ Phink.MVC.View.prototype.parseResponse = function(response, callback) {
     }
     var the = this;
     
-    response = base64_decode(response);
+    response = btoa(response);
     
     var data = JSON.parse(response);
     if(data['view'] === undefined) {
@@ -202,7 +202,7 @@ Phink.MVC.View.prototype.attachView = function (pageName, anchor) {
                 }
             }
 
-            var html = base64_decode(data.view);
+            var html = btoa(data.view);
             $(anchor).html(html);                
         }
         catch(e) {
