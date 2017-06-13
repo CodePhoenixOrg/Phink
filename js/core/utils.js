@@ -52,7 +52,7 @@ Phink.Utils.resizeIframe = function(ui) {
 };
 
 Phink.Utils.html64 = function(container, html) {
-    $(container).html(btoa(html));
+    $(container).html(base64_decode(html));
 };
 
 Phink.Utils.secondsToString = function(seconds) {

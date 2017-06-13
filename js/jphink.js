@@ -73,7 +73,7 @@ if(!Object.create) {
                 if($.isFunction(callBack)) {
                     callBack.call(this, data);
                 } else {
-                    var html = btoa(data.view);
+                    var html = base64_decode(data.view);
                     $(attach).html(html);
 
                 }
@@ -100,7 +100,7 @@ if(!Object.create) {
                     $.getScript(data.scripts[i]);
                 }
                 
-                var html = btoa(data.view);
+                var html = base64_decode(data.view);
                 $(anchor).html(html);
                 
             }
@@ -111,7 +111,7 @@ if(!Object.create) {
     };
 
     $.jPhink.html64 = function(container, html) {
-        $(container).html(btoa(html));
+        $(container).html(base64_decode(html));
         //$(container).html(html);
     } 
 
