@@ -31,14 +31,14 @@ $srcdir =  dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR 
 $js_filename = $destdir . '_3rdparty.js';
 
 $filenames = [
-       'widgets.js'
-    ,   'jquery.js'
-    ,   'jquery-ui.js'
-    ,   'jquery.ui.touch-punch.min.js'
-    ,   'jquery.mousewheel.min.js'
+//       'widgets.js'
+       'jquery.js'
+//    ,   'jquery-ui.js'
+//    ,   'jquery.ui.touch-punch.min.js'
+//    ,   'jquery.mousewheel.min.js'
 //    ,   'jquery.mCustomScrollbar.js'
-    //,   'multiaccordion.jquery.js'
-    ,   'bootstrap.js'
+//    ,   'multiaccordion.jquery.js'
+//    ,   'bootstrap.js'
     //,   'holder.js'
     //,   'prettify.js'
     ,   'php.default.min.js'
