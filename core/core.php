@@ -27,7 +27,7 @@ namespace Phink\Core;
 
 require_once 'constants.php';
 
-include 'phink/'.STARTER_FILE;
+include 'phink/phink.inc';
 
 require_once 'phink/autoloader.php';
 \Phink\TAutoLoader::register();

@@ -20,5 +20,6 @@ error_reporting(E_ALL);
 //ini_set('display_errors', 'On');
 
 
-include 'phink/js/js_starter.php';
-include 'phink/css/css_starter.php';
+include 'phink/js/js_builder.php';
+include 'phink/css/css_builder.php';
+include 'phink/phink_builder.php';
