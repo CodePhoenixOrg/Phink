@@ -36,7 +36,15 @@ $filenames = [
 //    ,   'drag-and-drop.css'
 ];
 
-$srcdir =  dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..'  . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'thirdparty' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR;
+$path = explode(DIRECTORY_SEPARATOR, __DIR__);
+array_pop($path);
+array_pop($path);
+if(strstr(__DIR__, 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink')) {
+    array_pop($path);
+}
+$vendor = implode(DIRECTORY_SEPARATOR, $path) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR;
+
+$srcdir = $vendor . 'components' . DIRECTORY_SEPARATOR;
 
 $destdir = DOCUMENT_ROOT . 'css' . DIRECTORY_SEPARATOR;
 

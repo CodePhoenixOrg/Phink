@@ -4,6 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
+    "hash": "6df2723eace9ed01de65522bec8cf9a4",
     "content-hash": "5f5cc210cc13ca58139bf307df54ac0c",
     "packages": [
         {
@@ -72,7 +73,7 @@
                 "responsive",
                 "web"
             ],
-            "time": "2016-07-26T05:59:20+00:00"
+            "time": "2016-07-26 05:59:20"
         },
         {
             "name": "components/bootstrap-default",
@@ -125,7 +126,7 @@
                 "bootstrap",
                 "css"
             ],
-            "time": "2015-06-18T12:28:13+00:00"
+            "time": "2015-06-18 12:28:13"
         },
         {
             "name": "components/jquery",
@@ -167,7 +168,7 @@
             ],
             "description": "jQuery JavaScript Library",
             "homepage": "http://jquery.com",
-            "time": "2017-03-21T07:01:49+00:00"
+            "time": "2017-03-21 07:01:49"
         },
         {
             "name": "twitter/bootstrap",
@@ -218,7 +219,7 @@
                 "responsive",
                 "web"
             ],
-            "time": "2016-07-25T15:51:55+00:00"
+            "time": "2016-07-25 15:51:55"
         }
     ],
     "packages-dev": [],
