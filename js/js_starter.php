@@ -17,81 +17,96 @@
  */
  
  
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+class JsBuilder {
 
+    public static function main () {
+        $destdir = DOCUMENT_ROOT . 'js' . DIRECTORY_SEPARATOR;
 
-$destdir = DOCUMENT_ROOT . 'js' . DIRECTORY_SEPARATOR;
+        $js_filename = $destdir . '_3rdparty.js';
 
-$srcdir =  dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..'  . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'thirdparty' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR;
+        $path = explode(DIRECTORY_SEPARATOR, __DIR__);
+        array_pop($path);
+        if(strstr(__DIR__, 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink')) {
+            array_pop($path);
+            array_pop($path);
+        }
+        $vendor = implode(DIRECTORY_SEPARATOR, $path) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR;
+        
+        $srcdir = $vendor . 'components' . DIRECTORY_SEPARATOR;
 
-$js_filename = $destdir . '_3rdparty.js';
+        $js_content = '';
 
-$filenames = [
-//       'widgets.js'
-       'jquery.js'
-//    ,   'jquery-ui.js'
-//    ,   'jquery.ui.touch-punch.min.js'
-//    ,   'jquery.mousewheel.min.js'
-//    ,   'jquery.mCustomScrollbar.js'
-//    ,   'multiaccordion.jquery.js'
-//    ,   'bootstrap.js'
-    //,   'holder.js'
-    //,   'prettify.js'
-    ,   'php.default.min.js'
-//    ,   'tiny-console.js'
-//    ,   'drag-and-drop.js'
-];
+        $filenames = [
+                'jquery/jquery.js'
+            ,   'jquery/jquery-ui.js'
+            ,   'bootstrap/js/bootstrap.js'
+        ];
 
-$js_content = '';
-foreach ($filenames as $filename) {
-    $js_content .= file_get_contents($srcdir . $filename, FILE_USE_INCLUDE_PATH);
-}
-file_put_contents($js_filename, $js_content);
+        foreach ($filenames as $filename) {
+            $js_content .= file_get_contents($srcdir . $filename, FILE_USE_INCLUDE_PATH);
+        }
+        
+        $srcdir =  __DIR__ . DIRECTORY_SEPARATOR . 'thirdparty' . DIRECTORY_SEPARATOR;
+        
+        $filenames = [
+                'php.default.min.js'
+            ,   'jquery.ui.touch-punch.min.js'
+            ,   'jquery.mousewheel.min.js'
+            ,   'widgets.js'
 
-$dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+        ];
 
-$js_filename = $destdir . 'code_phoenix.js';
+        foreach ($filenames as $filename) {
+            $js_content .= file_get_contents($srcdir . $filename, FILE_USE_INCLUDE_PATH);
+        }
+        
+        file_put_contents($js_filename, $js_content);
 
-$filenames = [
-        'global.js'
-    ,   'core' . DIRECTORY_SEPARATOR . 'registry.js'
-    ,   'core' . DIRECTORY_SEPARATOR . 'utils.js'
-    ,   'core' . DIRECTORY_SEPARATOR . 'object.js'
-    ,   'core' . DIRECTORY_SEPARATOR . 'url.js'
-    ,   'web' . DIRECTORY_SEPARATOR . 'rest.js'
-    ,   'web' . DIRECTORY_SEPARATOR . 'web_object.js'
-    ,   'web' . DIRECTORY_SEPARATOR . 'web_application.js'
-    ,   'mvc' . DIRECTORY_SEPARATOR . 'view.js'
-    ,   'mvc' . DIRECTORY_SEPARATOR . 'controller.js'
-    ,   'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'plugin.js'
-    ,   'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'accordion.js'
-    ,   'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'list.js'
-    ,   'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'table.js'
-];
+        $dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
 
-$js_content = '';
+        $js_filename = $destdir . 'code_phoenix.js';
 
-foreach ($filenames as $filename) {
-    $js_content .= file_get_contents($dir . $filename);
-}
+        $filenames = [
+                'global.js'
+            ,   'core/registry.js'
+            ,   'core/utils.js'
+            ,   'core/object.js'
+            ,   'core/url.js'
+            ,   'web/rest.js'
+            ,   'web/web_object.js'
+            ,   'web/web_application.js'
+            ,   'mvc/view.js'
+            ,   'mvc/controller.js'
+            ,   'web/ui/plugin.js'
+            ,   'web/ui/plugin/accordion.js'
+            ,   'web/ui/plugin/list.js'
+            ,   'web/ui/plugin/table.js'
+        ];
 
-file_put_contents($js_filename, $js_content);
+        $js_content = '';
 
-$filenames = [
-        'core' . DIRECTORY_SEPARATOR . 'debug.js'
-    ,   'core' . DIRECTORY_SEPARATOR . 'console.js'
-    ,   'jphink.js'
-];
+        foreach ($filenames as $filename) {
+            $js_content .= file_get_contents($dir . $filename);
+        }
 
-$js_content = '';
+        file_put_contents($js_filename, $js_content);
 
-foreach ($filenames as $filename) {
-    $js_content = file_get_contents($dir . $filename);
-    $info = explode(DIRECTORY_SEPARATOR, $filename);
-    $filename = array_pop($info);
-    file_put_contents($destdir . $filename, $js_content);
+        $filenames = [
+                'core/debug.js'
+            ,   'core/console.js'
+            ,   'jphink.js'
+        ];
+
+        $js_content = '';
+
+        foreach ($filenames as $filename) {
+            $filename = str_replace("/", DIRECTORY_SEPARATOR, $filename);    
+            $js_content = file_get_contents($dir . $filename);
+            $info = explode(DIRECTORY_SEPARATOR, $filename);
+            $filename = array_pop($info);
+            file_put_contents($destdir . $filename, $js_content);
+        }
+
+    }
+
 }
