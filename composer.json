@@ -12,9 +12,9 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "twitter/bootstrap": ">=3.0.0",
+        "components/jquery": ">=1.9.1",
+        "components/font-awesome": ">=1.9.1",
         "components/bootstrap": ">=3.0.0",
         "components/bootstrap-default": ">=3.0.0",
-        "components/jquery": ">=1.9.1"
     }
 }
