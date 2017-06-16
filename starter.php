@@ -74,5 +74,3 @@ include 'phink/web/ui/plugin/accordion.php';
 include 'phink/web/ui/plugin_renderer.php';
 include 'phink/web/ui/widget/plugin/plugin.class.php';
 include 'phink/web/ui/widget/plugin/plugin_child.php';
-
-include 'phink/build.php';
