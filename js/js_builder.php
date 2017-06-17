@@ -64,7 +64,7 @@ class JsBuilder {
 
         $srcdir = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'bower_components' . DIRECTORY_SEPARATOR . 'phinkjs' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR;
 
-        $js_filename = $destdir . 'code_phoenix.js';
+        $js_filename = DOCUMENT_ROOT . 'phink.js';
 
         $filenames = [
                 'main.js'
@@ -86,7 +86,7 @@ class JsBuilder {
         $js_content = '';
 
         foreach ($filenames as $filename) {
-            $js_content .= file_get_contents($dir . $filename);
+            $js_content .= file_get_contents($srcdir . $filename);
         }
 
         file_put_contents($js_filename, $js_content);
@@ -97,11 +97,13 @@ class JsBuilder {
             ,   'jphink.js'
         ];
 
+        $srcdir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+        
         $js_content = '';
 
         foreach ($filenames as $filename) {
             $filename = str_replace("/", DIRECTORY_SEPARATOR, $filename);    
-            $js_content = file_get_contents($dir . $filename);
+            $js_content = file_get_contents($srcdir . $filename);
             $info = explode(DIRECTORY_SEPARATOR, $filename);
             $filename = array_pop($info);
             file_put_contents($destdir . $filename, $js_content);
@@ -110,3 +112,5 @@ class JsBuilder {
     }
 
 }
+
+JsBuilder::main();
