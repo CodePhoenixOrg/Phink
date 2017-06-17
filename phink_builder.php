@@ -81,15 +81,18 @@ class PhinkBuilder {
             'web/ui/widget/plugin/plugin_child.php'
         ];
 
-        $fw_content = '';
+//        $fw_content = '';
         foreach ($filenames as $filename) {
             $filename = str_replace("/", DIRECTORY_SEPARATOR, $filename);
-            $fw_content .= file_get_contents($filename, FILE_USE_INCLUDE_PATH);
+            include $filename;
+//            $fw_content .= file_get_contents($filename, FILE_USE_INCLUDE_PATH);
         }
         
-        $fw_content = '<?php' . str_replace('<?php', '', $fw_content);
+//        $fw_content = '<?php' . str_replace('<?php', '', $fw_content);
         
-        file_put_contents('phink.inc', $fw_content);
+//        file_put_contents('phink.inc', $fw_content);
+        
+        
         
     }
 }
