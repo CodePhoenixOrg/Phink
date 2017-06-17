@@ -62,14 +62,14 @@ class JsBuilder {
         
         file_put_contents($js_filename, $js_content);
 
-        $dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+        $srcdir = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'bower_components' . DIRECTORY_SEPARATOR . 'phinkjs' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR;
 
         $js_filename = $destdir . 'code_phoenix.js';
 
         $filenames = [
-                'global.js'
+                'main.js'
+            ,   'utils/text.js'
             ,   'core/registry.js'
-            ,   'core/utils.js'
             ,   'core/object.js'
             ,   'core/url.js'
             ,   'web/rest.js'
