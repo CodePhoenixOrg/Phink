@@ -17,27 +17,31 @@
  */
  
  
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+//function value($array, $key)
+//    {
+//    $result = false;
+//
+//    
+//    if(array_key_exists($key, $array)) {
+//        $result = $array[$key];
+//    }
+//    
+//    return $result;
+//}
 
-namespace Phink\Core;
-
-require_once 'constants.php';
-
-if(!file_exists('js_builder.lock')) {
-    include 'phink/js/js_builder.php';
-    file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
+// For 4.3.0 <= PHP <= 5.4.0
+if (!function_exists('http_response_code'))
+{
+    function http_response_code($newcode = NULL)
+    {
+        static $code = 200;
+        if($newcode !== NULL)
+        {
+            header('X-PHP-Response-Code: '.$newcode, true, $newcode);
+            if(!headers_sent()) {
+                $code = $newcode;
+            }
+        }       
+        return $code;
+    }
 }
-
-if(!file_exists('css_builder.lock')) {
-    include 'phink/css/css_builder.php';
-    file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
-}
-
-include 'phink/phink_builder.php';
-
-require_once 'phink/autoloader.php';
-\Phink\TAutoLoader::register();

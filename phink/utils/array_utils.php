@@ -16,28 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+ namespace Phink\Utils {
 
-namespace Phink\Core;
+/**
+* Description of tarrayutils
+*
+* @author david
+*/
+class TArrayUtils
+{
+        //put your code here
 
-require_once 'constants.php';
+    public static function assocArrayByAttribute(array $array, $attribute)
+    {
+            $result = array();
 
-if(!file_exists('js_builder.lock')) {
-    include 'phink/js/js_builder.php';
-    file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
+            $c = count($array);
+            for ($i = 0; $i < $c; $i++) {
+                $method = 'get' . AStringUtils::phraseCase($attribute);
+                $object = $array[$i];
+                $intermediate = $object->$method();
+                $result[$intermediate] = $object;
+            }
+
+            return $result;
+        }
+    }
 }
 
-if(!file_exists('css_builder.lock')) {
-    include 'phink/css/css_builder.php';
-    file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
-}
-
-include 'phink/phink_builder.php';
-
-require_once 'phink/autoloader.php';
-\Phink\TAutoLoader::register();

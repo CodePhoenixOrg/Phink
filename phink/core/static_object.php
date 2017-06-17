@@ -18,26 +18,26 @@
  
  
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 namespace Phink\Core;
 
-require_once 'constants.php';
+require 'phink/log/log.php';
 
-if(!file_exists('js_builder.lock')) {
-    include 'phink/js/js_builder.php';
-    file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
+use Phink\Log\TLog;
+
+class TStaticObject
+{
+    protected static $logger;
+    
+    public function __construct()
+    {
+        self::$logger = new TLog();
+    }
+    
+    public static function getLogger()
+    {
+        return self::$logger;
+    }
 }
-
-if(!file_exists('css_builder.lock')) {
-    include 'phink/css/css_builder.php';
-    file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
-}
-
-include 'phink/phink_builder.php';
-
-require_once 'phink/autoloader.php';
-\Phink\TAutoLoader::register();

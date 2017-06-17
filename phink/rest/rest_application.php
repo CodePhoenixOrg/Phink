@@ -16,28 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- 
+ namespace Phink\Rest;
+
+include 'phink/core/core.php';
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+use Phink\Core\TStaticObject;
+/**
+ * Description of application
+ *
+ * @author David
+ */
+class TRestApplication extends TStaticObject
+{
+    //put your code here
+    use THttpTransport;
+    
+    public static function create()
+    {
+        (new TRestApplication())->run();
+    }
 
-namespace Phink\Core;
-
-require_once 'constants.php';
-
-if(!file_exists('js_builder.lock')) {
-    include 'phink/js/js_builder.php';
-    file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
+    public function run()
+    {
+        $this->authentication = new \Phink\Auth\TAuthentication();
+        $this->request = new \Phink\Web\TRequest();
+        $this->response = new \Phink\Web\TResponse();
+        
+        $router = new TRestRouter($this);
+        if($router->translate()) {
+            $router->dispatch();
+        } else {
+            $this->response->setReturn(404);
+            $this->response->sendData(['Error' => "404 : You're searching in the wrong place"]);
+            
+        }
+        
+    }
 }
-
-if(!file_exists('css_builder.lock')) {
-    include 'phink/css/css_builder.php';
-    file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
-}
-
-include 'phink/phink_builder.php';
-
-require_once 'phink/autoloader.php';
-\Phink\TAutoLoader::register();

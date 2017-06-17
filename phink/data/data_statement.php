@@ -17,27 +17,24 @@
  */
  
  
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+namespace Phink\Data;
+/* 
+ * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 
-namespace Phink\Core;
-
-require_once 'constants.php';
-
-if(!file_exists('js_builder.lock')) {
-    include 'phink/js/js_builder.php';
-    file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
+/**
+ *
+ * @author david
+ */
+interface IDataStatement {
+    public function fetch();
+    public function fetchAll();
+    public function fetchObject();
+    public function getFieldCount();
+    public function getRowCount();
+    public function getFieldName($i);
+    public function getFieldType($i);
+    public function getFieldLen($i);
 }
-
-if(!file_exists('css_builder.lock')) {
-    include 'phink/css/css_builder.php';
-    file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
-}
-
-include 'phink/phink_builder.php';
-
-require_once 'phink/autoloader.php';
-\Phink\TAutoLoader::register();
+?>

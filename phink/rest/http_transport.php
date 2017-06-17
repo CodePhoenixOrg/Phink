@@ -23,21 +23,32 @@
  * and open the template in the editor.
  */
 
-namespace Phink\Core;
+namespace Phink\Rest;
 
-require_once 'constants.php';
+/**
+ * Description of httpTransport
+ *
+ * @author David
+ */
+trait THttpTransport
+{
+    //put your code here
+    protected $request = null;
+    protected $response = null;
+    protected $authentication = null;
+    
+    public function getAuthentication()
+    {
+        return $this->authentication;
+    }
 
-if(!file_exists('js_builder.lock')) {
-    include 'phink/js/js_builder.php';
-    file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    public function getResponse()
+    {
+        return $this->response;
+    }
 }
-
-if(!file_exists('css_builder.lock')) {
-    include 'phink/css/css_builder.php';
-    file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
-}
-
-include 'phink/phink_builder.php';
-
-require_once 'phink/autoloader.php';
-\Phink\TAutoLoader::register();

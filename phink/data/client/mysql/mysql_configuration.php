@@ -17,27 +17,23 @@
  */
  
  
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+namespace Phink\Data\Client\MySQL;
+
+//require_once 'phink/configuration/data/sqlconfiguration.php';
+
+use Phink\Configuration\Data\TDataConfiguration;
+
+/**
+ * Description of mysqlconfiguration
+ *
+ * @author david
  */
-
-namespace Phink\Core;
-
-require_once 'constants.php';
-
-if(!file_exists('js_builder.lock')) {
-    include 'phink/js/js_builder.php';
-    file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
+class TMySqlConfiguration extends TDataConfiguration
+{
+    public function __construct($driver, $host, $user, $password, $databaseName)
+    {
+        parent::__construct(\Phink\Data\TServerType::MYSQL, $host, $user, $password, $databaseName);
+    }
+    //put your code here
 }
-
-if(!file_exists('css_builder.lock')) {
-    include 'phink/css/css_builder.php';
-    file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
-}
-
-include 'phink/phink_builder.php';
-
-require_once 'phink/autoloader.php';
-\Phink\TAutoLoader::register();
+?>

@@ -16,28 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ namespace Phink\Web\UI\Widget\Plugin;
+
+/**
+ * Description of adatacolumn
+ *
+ * @author david
  */
+class TPluginChild extends \Phink\Core\TObject
+{
+    use \Phink\Web\UI\THtmlControl;
+    
+    private $_value;
 
-namespace Phink\Core;
+    public function getValue()
+    {
+        return $this->_value;
+    }
+    public function setValue($value)
+    {
+        $this->_value = $value;
+    }
 
-require_once 'constants.php';
+    public function data()
+    {
+        return $this->_value;
+    }
 
-if(!file_exists('js_builder.lock')) {
-    include 'phink/js/js_builder.php';
-    file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
 }
 
-if(!file_exists('css_builder.lock')) {
-    include 'phink/css/css_builder.php';
-    file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
-}
-
-include 'phink/phink_builder.php';
-
-require_once 'phink/autoloader.php';
-\Phink\TAutoLoader::register();

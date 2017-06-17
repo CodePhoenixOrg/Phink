@@ -16,28 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- 
+ namespace Phink\Data\Client\Redis;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+use Phink\Configuration\Data\TDataConfiguration;
 
-namespace Phink\Core;
-
-require_once 'constants.php';
-
-if(!file_exists('js_builder.lock')) {
-    include 'phink/js/js_builder.php';
-    file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
+/**
+ * Description of redis
+ *
+ * @author David
+ */
+class TRedisConfiguration extends TDataConfiguration
+{
+    //put your code here
+    
 }
-
-if(!file_exists('css_builder.lock')) {
-    include 'phink/css/css_builder.php';
-    file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
-}
-
-include 'phink/phink_builder.php';
-
-require_once 'phink/autoloader.php';
-\Phink\TAutoLoader::register();

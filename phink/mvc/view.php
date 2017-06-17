@@ -18,26 +18,29 @@
  
  
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+namespace Phink\MVC;
 
-namespace Phink\Core;
+/**
+ * Description of view
+ *
+ * @author david
+ */
+class TView extends TCustomView
+{
+    //put your code here
+    
+    public function __construct(\Phink\Web\TWebApplication $parent)
+    {
 
-require_once 'constants.php';
+        parent::__construct($parent);
+        
+        $this->authentication = $parent->getAuthentication();
+        $this->request = $parent->getRequest();
+        $this->response = $parent->getResponse();
+        
+    }
 
-if(!file_exists('js_builder.lock')) {
-    include 'phink/js/js_builder.php';
-    file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
 }
-
-if(!file_exists('css_builder.lock')) {
-    include 'phink/css/css_builder.php';
-    file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
-}
-
-include 'phink/phink_builder.php';
-
-require_once 'phink/autoloader.php';
-\Phink\TAutoLoader::register();

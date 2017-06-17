@@ -27,17 +27,7 @@ namespace Phink\Core;
 
 require_once 'constants.php';
 
-if(!file_exists('js_builder.lock')) {
-    include 'phink/js/js_builder.php';
-    file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
-}
-
-if(!file_exists('css_builder.lock')) {
-    include 'phink/css/css_builder.php';
-    file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
-}
-
-include 'phink/phink_builder.php';
+include 'phink/'.STARTER_FILE;
 
 require_once 'phink/autoloader.php';
 \Phink\TAutoLoader::register();

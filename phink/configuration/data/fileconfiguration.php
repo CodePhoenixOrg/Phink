@@ -16,28 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ namespace Phink\Configuration\Data;
+
+//require_once 'phink/configuration/TConfiguration.php';
+
+use Phink\Configuration\TConfiguration;
+
+/**
+ * Description of TFileConfiguration
+ *
+ * @author david
  */
+class TFileConfiguration extends TConfiguration
+{
+    //put your code here
+    private $_fileName;
 
-namespace Phink\Core;
+    public function __construct($fileName)
+    {
+        parent::__construct($this);
+        $this->_fileName = $fileName;
 
-require_once 'constants.php';
+    }
 
-if(!file_exists('js_builder.lock')) {
-    include 'phink/js/js_builder.php';
-    file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
+
+    public function getFileName()
+    {
+        return $this->_fileName;
+    }
 }
-
-if(!file_exists('css_builder.lock')) {
-    include 'phink/css/css_builder.php';
-    file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
-}
-
-include 'phink/phink_builder.php';
-
-require_once 'phink/autoloader.php';
-\Phink\TAutoLoader::register();

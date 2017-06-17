@@ -23,21 +23,32 @@
  * and open the template in the editor.
  */
 
-namespace Phink\Core;
+namespace Phink\Rest;
 
-require_once 'constants.php';
+use Phink\Core\TStaticObject;
+/**
+ * Description of controller
+ *
+ * @author David
+ */
+class TRestController extends TStaticObject
+{
+    use THttpTransport;
+    //put your code here
 
-if(!file_exists('js_builder.lock')) {
-    include 'phink/js/js_builder.php';
-    file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
+    public function __construct(TCustomRouter $app)
+    {
+        $this->authentication = $app->getAuthentication();
+        $this->request = $app->getRequest();
+        $this->response = $app->getResponse();
+    }
+
+    public function head() {}
+    public function get() {}
+    public function post() {}
+    public function put() {}
+    public function patch() {}
+    public function delete() {}
+
+  
 }
-
-if(!file_exists('css_builder.lock')) {
-    include 'phink/css/css_builder.php';
-    file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
-}
-
-include 'phink/phink_builder.php';
-
-require_once 'phink/autoloader.php';
-\Phink\TAutoLoader::register();

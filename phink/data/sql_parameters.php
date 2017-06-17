@@ -17,27 +17,26 @@
  */
  
  
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+namespace Phink\Data;
 
-namespace Phink\Core;
+//require_once 'phink/core/aobject.php';
+use Phink\Core\TObject;
 
-require_once 'constants.php';
+class TSqlParameters extends TObject
+{
+    public $Host = '';
+    public $User = '';
+    public $Password = '';
+    public $DatabaseName = '';
+    public $ServerType = 0;
 
-if(!file_exists('js_builder.lock')) {
-    include 'phink/js/js_builder.php';
-    file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
+    public function __construct($host, $user, $password, $databaseName, $serverType)
+    {
+        $this->Host = $host;
+        $this->User = $user;
+        $this->Password = $password;
+        $this->DatabaseName = $databaseName;
+        $this->ServerType = $serverType;
+    }
+
 }
-
-if(!file_exists('css_builder.lock')) {
-    include 'phink/css/css_builder.php';
-    file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
-}
-
-include 'phink/phink_builder.php';
-
-require_once 'phink/autoloader.php';
-\Phink\TAutoLoader::register();
