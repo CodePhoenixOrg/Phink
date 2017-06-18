@@ -155,11 +155,11 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
         $this->data = self::getGridData($this->getParent()->getViewName(), $this->command, $this->_rowCount);
     
         $id = $this->getParent()->getViewName();
-        $scriptFilename = RUNTIME_JS_DIR . $id . '_data.js';
+        $scriptFilename = $id . '_data.js';
         $json = json_encode($this->data);
-        file_put_contents($scriptFilename, 'var ' . $id . 'Data = ' . $json . ';');
+        file_put_contents(RUNTIME_JS_DIR . $scriptFilename, 'var ' . $id . 'Data = ' . $json . ';');
         
-        $this->response->addScript($scriptFilename);
+        $this->response->addScript(REL_RUNTIME_JS_DIR . $scriptFilename);
 
         parent::renderHtml();
 

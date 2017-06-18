@@ -104,13 +104,13 @@ class TControl extends TCustomControl
         }
 */        
         self::$logger->debug(__METHOD__ . '::3::' . $this->getJsControllerFileName());
-        if(file_exists(APP_ROOT . $this->getJsControllerFileName())) {
+        if(file_exists(SITE_ROOT . $this->getJsControllerFileName())) {
             self::$logger->debug(__METHOD__ . '::4::' . $this->getJsControllerFileName());
             $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
-            if(!file_exists(RUNTIME_JS_DIR . $cacheJsFilename)) {
-                copy(APP_ROOT . $this->getJsControllerFileName(), RUNTIME_JS_DIR . $cacheJsFilename);
+            if(!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
+                copy(SITE_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
             }
-            $this->response->addScript(RUNTIME_JS_DIR . $cacheJsFilename);
+            $this->response->addScript($cacheJsFilename);
         }
         $this->response->setData('view', $html);
 
@@ -137,7 +137,7 @@ class TControl extends TCustomControl
     {
         $this->createObjects();
         $this->init();
-        if($this->request->isAJAX()) {
+        if($this->getRequest()->isAJAX()) {
             try {
                 $actionName = $this->actionName;
 

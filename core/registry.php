@@ -157,7 +157,7 @@ class TRegistry extends TStaticObject
     public static function item($item, $value = null) {
         if($item === '' || $item === null) return $item;
 
-        if(self::$_items[$item] !== null) {
+        if(isset(self::$_items[$item])) {
             if($value != null) {
                 self::$_items[$item] = $value;
             } else {

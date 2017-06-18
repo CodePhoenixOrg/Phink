@@ -68,11 +68,11 @@ class TAutoloader
     }
 
     public static function cacheFilenameFromView($viewName) {
-        return strtolower('app_controllers_' . $viewName . CLASS_EXTENSION);
+        return REL_RUNTIME_DIR . strtolower('app_controllers_' . $viewName . CLASS_EXTENSION);
     }
 
     public static function cacheJsFilenameFromView($viewName) {
-        return strtolower('app_controllers_' . $viewName . JS_EXTENSION);
+        return REL_RUNTIME_JS_DIR . strtolower('app_controllers_' . $viewName . JS_EXTENSION);
     }
 
     public static function cachePath($filepath) {
@@ -137,12 +137,12 @@ class TAutoloader
     public static function includeClass($filename, $params = 0)
     {
 
-        if(!file_exists(APP_ROOT . $filename)) {
+        if(!file_exists(SITE_ROOT . $filename)) {
             //self::$logger->debug('INCLUDE CLASS : FILE ' . $filename . ' DOES NOT EXIST');
             return false;
         }
         
-        $classText = file_get_contents(APP_ROOT . $filename, FILE_USE_INCLUDE_PATH);
+        $classText = file_get_contents(SITE_ROOT . $filename, FILE_USE_INCLUDE_PATH);
         
         $code = $classText;
         
@@ -180,7 +180,7 @@ class TAutoloader
         self::$logger->debug(__METHOD__ . '::' . $file, __FILE__, __LINE__);
         
         if((isset($params) && ($params && INCLUDE_FILE === INCLUDE_FILE)) && !class_exists('\\' . $fqcn))  {
-            include APP_ROOT . $filename;
+            include SITE_ROOT . $filename;
         }
         
         return ['file' => $file, 'type' => $fqcn, 'code' => $code];
@@ -277,20 +277,19 @@ class TAutoloader
             $cacheFilename = RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName)) . CLASS_EXTENSION;
         } else {
             //$classFilename = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
-            $cacheFilename = RUNTIME_DIR . \Phink\TAutoloader::cacheFilenameFromView($viewName);
-            $cacheJsFilename = RUNTIME_JS_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
-            $cacheJsFilename = str_replace(CLASS_EXTENSION, JS_EXTENSION, $cacheJsFilename);
+            $cacheFilename = \Phink\TAutoloader::cacheFilenameFromView($viewName);
+            $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
             self::$logger->debug('CACHED JS FILENAME: ' . $cacheJsFilename, __FILE__, __LINE__);
             
         }
         
-        if(file_exists($cacheFilename)) {
+        if(file_exists(SITE_ROOT . $cacheFilename)) {
 
-            if(file_exists($cacheJsFilename)) {
-                self::$logger->debug('INCLUDE CACHED JS CONTROL: ' . $cacheJsFilename, __FILE__, __LINE__);
+            if(file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
+                self::$logger->debug('INCLUDE CACHED JS CONTROL: ' . DOCUMENT_ROOT . $cacheJsFilename, __FILE__, __LINE__);
                 $ctrl->getResponse()->addScript($cacheJsFilename);
             }
-            self::$logger->debug('INCLUDE CACHED CONTROL: ' . $cacheFilename, __FILE__, __LINE__);
+            self::$logger->debug('INCLUDE CACHED CONTROL: ' . SITE_ROOT . $cacheFilename, __FILE__, __LINE__);
             self::includeClass($cacheFilename, RETURN_CODE | INCLUDE_FILE);
 
             

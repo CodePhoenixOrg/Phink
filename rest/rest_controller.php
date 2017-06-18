@@ -33,14 +33,14 @@ use Phink\Core\TStaticObject;
  */
 class TRestController extends TStaticObject
 {
-    use THttpTransport;
+    use \Phink\Web\THttpTransport;
     //put your code here
 
-    public function __construct(TCustomRouter $app)
+    public function __construct(TRestRouter $router)
     {
-        $this->authentication = $app->getAuthentication();
-        $this->request = $app->getRequest();
-        $this->response = $app->getResponse();
+        $this->authentication = $router->getAuthentication();
+        $this->request = $router->getRequest();
+        $this->response = $router->getResponse();
     }
 
     public function head() {}

@@ -32,7 +32,7 @@ class TDataAccess
     public static function getCryptoDB()
     {
 
-        $databaseName = \Phink\Utils\TFileUtils::filePath(APP_ROOT . 'data/crypto.db');
+        $databaseName = \Phink\Utils\TFileUtils::filePath(SITE_ROOT . 'data/crypto.db');
 
         $sqlConfig = new TPdoConfiguration(TServerType::SQLITE, $databaseName);
         $connection = new TPdoConnection($sqlConfig);

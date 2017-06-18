@@ -52,6 +52,8 @@ trait TCodeGenerator {
         $childName = array();
         $childrenIndex = array();
         
+        $doc->getLogger()->debug('DOC LIST');
+        $doc->getLogger()->debug($docList);
 //        array_push($creations, array());
         
         $isFirst = true;
@@ -103,24 +105,24 @@ trait TCodeGenerator {
                     $viewName = lcfirst($className);
                     $fullClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
                     $fullJsClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . JS_EXTENSION;
-                    $fullJsCachePath = RUNTIME_JS_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
+                    $fullJsCachePath = \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
                     array_push($requires, '\\Phink\\TAutoloader::import($this, "' . $className . '");');
 
-                    self::$logger->dump('FULL_CLASS_PATH', $fullClassPath);                    
+                    self::$logger->dump('FULL_CLASS_PATH', $fullClassPath);            
 
                     $class = \Phink\TAutoloader::includeClass($fullClassPath, RETURN_CODE | INCLUDE_FILE);
                     $fqcn = $class['type'];
                     $code = $class['code'];
                     
-                    self::$logger->dump('FILE', $class['file']);                    
-                    self::$logger->dump('FQCN', $class['type']);
+                    self::$logger->dump('FULL_QUALIFIED_CLASS_NAME: ', $fqcn);
+                    
                     
                     $jsCode = '';
-                    if(file_exists($fullJsCachePath)) {
+                    if(file_exists(DOCUMENT_ROOT . $fullJsCachePath)) {
                         $view->getResponse()->addScript($fullJsCachePath);
-                    } else if(file_exists(APP_ROOT . $fullJsClassPath)) {
-                        $jsCtrlCode = file_get_contents(APP_ROOT . $fullJsClassPath) . CR_LF;
-                        file_put_contents($fullJsCachePath, $jsCtrlCode);
+                    } else if(file_exists(SITE_ROOT . $fullJsClassPath)) {
+                        $jsCtrlCode = file_get_contents(SITE_ROOT . $fullJsClassPath) . CR_LF;
+                        file_put_contents(DOCUMENT_ROOT . $fullJsCachePath, $jsCtrlCode);
                         $view->getResponse()->addScript($fullJsCachePath);
                     }
                     TRegistry::setCode($fullClassPath, $code);

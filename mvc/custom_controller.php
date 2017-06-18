@@ -178,11 +178,11 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
         }
 */        
         self::$logger->debug(__METHOD__ . '::1::' . $this->getJsControllerFileName());
-        if(file_exists(APP_ROOT . $this->getJsControllerFileName())) {
+        if(file_exists(SITE_ROOT . $this->getJsControllerFileName())) {
             self::$logger->debug(__METHOD__ . '::2::' . $this->getJsControllerFileName());
             $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
-            copy(APP_ROOT . $this->getJsControllerFileName(), RUNTIME_JS_DIR . $cacheJsFilename);
-            $this->response->addScript(RUNTIME_JS_DIR . $cacheJsFilename);
+            copy(SITE_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
+            $this->response->addScript($cacheJsFilename);
         }        
     }
     

@@ -31,7 +31,7 @@ namespace Phink\Web;
  
 
 trait TWebObject {
-    //put your code here
+    
     private static $_currentDirectory;
     private static $_currentFilePath;
     private static $_currentClassName;
@@ -100,7 +100,7 @@ trait TWebObject {
 
     public function getCacheFileName()
     {
-        $this->cacheFileName = RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $this->controllerFileName);
+        $this->cacheFileName = RUNTIME_DIR . strtolower(str_replace(DIRECTORY_SEPARATOR, '_', $this->controllerFileName));
         return $this->cacheFileName;
     }
     
@@ -110,8 +110,8 @@ trait TWebObject {
         if(!$this->code) {
 //        $this->code = $this->redis->mget($this->getCacheFileName());
 //        $this->code = $this->code[0];
-            if(file_exists(APP_ROOT . $this->getCacheFileName())) {
-                $this->code = file_get_contents(APP_ROOT . $this->getCacheFileName());
+            if(file_exists($this->getCacheFileName())) {
+                $this->code = file_get_contents($this->getCacheFileName());
             }
         }
 
@@ -256,6 +256,20 @@ trait TWebObject {
         $this->jsControllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
         
         $this->getCacheFileName();
+
+    }
+
+    public function cloneNamesFrom($parent)
+    {
+        $this->className = $parent->getClassName();
+        $this->actionName = $parent->getActionName();
+        $this->modelFileName = $parent->getModelFileName();
+        $this->viewFileName = $parent->getViewFileName();
+        $this->cssFileName = $parent->getCssFileName();
+        $this->controllerFileName = $parent->getControllerFileName();
+        $this->jsControllerFileName = $parent->getJsControllerFileName();
+        
+        $this->cacheFileName = $parent->getCacheFileName();
 
     }
 

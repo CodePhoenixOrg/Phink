@@ -25,30 +25,33 @@
  *
  * @author David
  */
-class TRestRouter extends TCustomRouter
+class TRestRouter extends \Phink\Core\TRouter
 {
-   
     public function __construct($parent)
     {
         parent::__construct($parent);
+        
+        $this->authentication = $parent->getAuthentication();
+        $this->request = $parent->getRequest();
+        $this->response = $parent->getResponse();
+        
+        $this->translation = $parent->getTranslation();
+        $this->parameters = $parent->getParameters();
+        $this->path = $parent->getPath();
     }
 
     public function translate()
     {
-        $nsParts = explode('\\', __NAMESPACE__);
-        $this->baseNamespace = array_shift($nsParts);
-
-        $qstring = str_replace('/api/', '', REQUEST_URI);
-        $qParts = explode('/', $qstring);
-        $this->apiName = array_shift($qParts);
-        $this->parameter = array_shift($qParts);
- 
-//        $this->apiName = preg_replace('/[^a-z0-9_]+/i','', array_shift($qParts));
-        $this->className = ucfirst($this->apiName);
         
-        $this->apiFileName = 'app' . DIRECTORY_SEPARATOR . 'rest' . DIRECTORY_SEPARATOR . $this->apiName . CLASS_EXTENSION;
+        $path = explode('/', $this->getPath());
         
-        return file_exists(APP_ROOT . $this->apiFileName);
+        $className = array_pop($path);
+     
+        $this->className = 'app' . DIRECTORY_SEPARATOR . 'rest' . DIRECTORY_SEPARATOR . $className . CLASS_EXTENSION;
+        
+        $this->getLogger()->debug('REST CONTROLLER: ' . SITE_ROOT . $this->className);
+        
+        return file_exists(SITE_ROOT . $this->className);
     }
 
     public function dispatch()
@@ -56,12 +59,12 @@ class TRestRouter extends TCustomRouter
         $data = [];
         $method = REQUEST_METHOD;
 
-        $model = str_replace('rest', 'models', $this->apiFileName);
-        if(file_exists(APP_ROOT . $model)) {
-            include APP_ROOT . $model;
+        $model = str_replace('rest', 'models', $this->className);
+        if(file_exists(SITE_ROOT . $model)) {
+            include SITE_ROOT . $model;
         }
         
-        $include = \Phink\TAutoloader::includeClass($this->apiFileName, INCLUDE_FILE);
+        $include = \Phink\TAutoloader::includeClass($this->className, INCLUDE_FILE);
         $fqObject = $include['type'];
         
         self::$logger->debug($fqObject);
@@ -76,6 +79,14 @@ class TRestRouter extends TCustomRouter
         }
         
         self::getLogger()->debug($data);
+        
+        if(count($this->getParameters()) === 0) {
+            $this->parameters = [];
+        }
+        
+        if(count($data) > 0) {
+            $this->parameters = array_merge($this->getParameters(), $data);
+        }
 //        $params = [];
 //        if(count($data) > 0) {
 //            $params = array_values($data);
@@ -88,8 +99,8 @@ class TRestRouter extends TCustomRouter
 //            }
 //        }
         
-        if(count($data) > 0) {
-            foreach ($data as $key=>$value) {
+        if(count($this->parameters) > 0) {
+            foreach ($this->parameters as $key=>$value) {
                 $instance->$key = $value;
                 self::getLogger()->debug("instance->$key = $value");
             }
@@ -103,6 +114,6 @@ class TRestRouter extends TCustomRouter
 //        }
         $instance->$method();
         
-        $this->response->sendData();		
+        $this->getResponse()->sendData();		
     }
 }

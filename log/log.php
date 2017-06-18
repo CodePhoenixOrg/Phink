@@ -35,10 +35,10 @@ class TLog
 
     private function _setDebugLogFile()
     {
-        if(APP_ROOT == '') {
+        if(SITE_ROOT == '') {
             $this->_debugLogFile = './logs/debug.log';
         } else {
-            $this->_debugLogFile = APP_ROOT . 'logs/debug.log';
+            $this->_debugLogFile = SITE_ROOT . 'logs/debug.log';
         }
     }
 
@@ -58,8 +58,8 @@ class TLog
         $this->_setDebugLogFile();
         $handle = fopen($this->_debugLogFile, 'a');
 
-        if(APP_ROOT) {
-            $filename = substr($filename, strlen(APP_ROOT));
+        if(SITE_ROOT) {
+            $filename = substr($filename, strlen(SITE_ROOT));
         }
         $message = date('Y-m-d h:i:s') . ((isset($filename)) ? ":$filename" : '') . ((isset($line)) ? ":$line" : '') . " : $message" . CR_LF;
         fwrite($handle, $message . CR_LF);

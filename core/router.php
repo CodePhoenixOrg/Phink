@@ -16,28 +16,131 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace Phink\Core;
 
-/**
- * Description of router
- *
- * @author david
- */
-class TRouter extends TObject
-{
-    //put your code here
-    public function __construct(\Phink\Configuration\TConfiguration $conf)
+use \Phink\Core\TObject;
+use \Phink\Web\TWebRouter;
+use \Phink\Rest\TRestRouter;
+
+
+class TRouter extends TObject {
+
+    use \Phink\Web\TWebObject;
+   
+    protected $apiName = '';
+    protected $className = '';
+    protected $baseNamespace = '';
+    protected $apiFileName = '';
+    protected $parameters = [];
+    protected $path = '';
+    protected $translation = '';
+    protected $routes = [];
+    protected $requestType = REQUEST_TYPE_WEB;
+
+    public function __construct($parent)
     {
-        
-        
+        parent::__construct($parent);
+        $this->authentication = $parent->getAuthentication();
+        $this->request = $parent->getRequest();
+        $this->response = $parent->getResponse();        
     }
     
+    public function getTranslation() {
+        return $this->translation;
+    }
     
+    public function getRequestType() {
+        return $this->requestType;
+    }
+    
+    public function getParameters() {
+        return $this->parameters;
+    }
+    
+    public function getPath() {
+        return $this->path;
+    }
+    
+    public function match() {
+        $result = REQUEST_TYPE_WEB;
+        
+        if ($this->routes()) {
+
+            foreach($this->routes as $key=>$value) {
+                if($key === 'rest') {
+                    $result = REQUEST_TYPE_REST;
+                    $this->requestType = REQUEST_TYPE_REST;
+                }
+                
+                $methods = $value;
+                $method = strtolower(REQUEST_METHOD);
+
+                if (isset($methods[$method])) {
+                    $routes = $methods[$method];
+                    $url = REQUEST_URI;
+                    foreach($routes as $key=>$value) {
+                        $key = str_replace("/", "\/", $key);
+                        $matches = \preg_replace('/' . $key . '/', $value, $url);
+                        \Phink\Core\TRegistry::getLogger()->debug('URL: ' . $url);
+                        \Phink\Core\TRegistry::getLogger()->debug('MATCHES');
+                        \Phink\Core\TRegistry::getLogger()->debug($matches);
+
+                        if ($matches !== $url) {
+                            $this->requestType = $key;
+                            $this->translation = $matches;
+                            $baseurl = parse_url($this->translation);
+                            
+                            $this->path = $baseurl['path'];
+                            
+                            \Phink\Core\TRegistry::getLogger()->debug('PATH');                            
+                            \Phink\Core\TRegistry::getLogger()->debug($this->path);                            
+                            
+                            $this->parameters = [];
+                            parse_str($baseurl['query'], $this->parameters);
+
+                            \Phink\Core\TRegistry::getLogger()->debug('PARAMETERS');                            
+                            \Phink\Core\TRegistry::getLogger()->debug($this->parameters);                            
+                            
+                            return $result;
+                        }
+                    }
+                }
+
+            }
+        }
+
+        if ($this->translation === '') {
+            $this->requestType = REQUEST_TYPE_WEB;
+            $result = REQUEST_TYPE_WEB;
+        }
+
+        return $result;
+    }
+
+    public function routes() {
+        $routesArray = \Phink\Core\TRegistry::item('routes');
+
+        if (count($routesArray) === 0 && file_exists(DOCUMENT_ROOT . 'routes.json')) {
+            $routesFile = file_get_contents(DOCUMENT_ROOT . 'routes.json');
+
+            if (strlen($routesFile) === 0) {
+                return false;
+            }
+
+            $routesArray = json_decode($routesFile, true);
+            foreach($routesArray as $key=>$value) {
+                \Phink\Core\TRegistry::write('routes', $key, $value);
+            }
+        }
+
+        $this->routes = $routesArray;
+        
+        return $routesArray;
+    }
+
+    public function translate() {}
+
+    public function dispatch() {}
 }
+
+

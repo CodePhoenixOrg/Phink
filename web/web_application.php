@@ -27,6 +27,9 @@ require_once 'phink/core/application.php';
  */
 use Phink\TAutoloader;
 use Phink\Auth\TAuthentication;
+use Phink\Core\TRouter;
+use Phink\Rest\TRestRouter;
+use Phink\Web\TWebRouter;
 
 /**
  * Description of router
@@ -36,7 +39,7 @@ use Phink\Auth\TAuthentication;
 class TWebApplication extends \Phink\Core\TApplication
 {
     use \Phink\Web\TWebObject;
-
+    
     protected $rawPhpName = '';
     protected $params = '';
 
@@ -76,25 +79,25 @@ class TWebApplication extends \Phink\Core\TApplication
     public function run($params)
     {
         $this->params = $params;
-        if($this->validateToken()) {
-            $this->dispatch();
-        }
-    }
+        
+        $router = new \Phink\Core\TRouter($this);
+        $reqtype = $router->match();
 
-
-    public function setNamespace()
-    {
-        if(strstr(SERVER_NAME, 'localhost')) {
-            $this->namespace = CUSTOM_NAMESPACE;
-        } else {
-            $sa = explode('.', SERVER_NAME);
-            array_pop($sa);
-            if(count($sa) == 2) {
-                array_shift($sa);
+        if($reqtype == REQUEST_TYPE_WEB) {
+            if($this->validateToken()) {
+                $router = new TWebRouter($router);
             }
-            $this->namespace = str_replace('-', '_', ucfirst($sa[0]));
+        } else {
+            $router = new TRestRouter($router);
         }
-        $this->namespace .= '\\Controllers'; 
+
+        if($router->translate()) {
+            $this->getLogger()->debug("Ready to dispatch");
+            $router->dispatch();
+
+        } else {
+            $this->response->setReturn(404);
+        }
     }
 
     public function validateToken()
@@ -112,13 +115,6 @@ class TWebApplication extends \Phink\Core\TApplication
             || $this->viewName == MASTER_VIEW 
             || $this->viewName == LOGIN_VIEW  
             || $this->viewName == HOME_VIEW
-            || $this->viewName == 'sol'
-            || $this->viewName == 'info'
-            || $this->viewName == 'xml'
-            || $this->viewName == 'notepad'
-            || $this->viewName == 'mail'
-            || $this->viewName == 'sample'
-
         ) {
             // We renew the token
             // ... we'll try to match the user with this token and alternatively get a new token
@@ -138,82 +134,5 @@ class TWebApplication extends \Phink\Core\TApplication
         return $result;
     }
  
-    public function dispatch()
-    {
-        if(file_exists(APP_ROOT . $this->cacheFileName)) {
-            //self::$logger->debug('DISPATCH : ' . $this->cacheFileName);
-            //$include = TAutoloader::includeClass($this->cacheFileName, false);
-            //include $this->cacheFileName;
-            $classText = file_get_contents(APP_ROOT . $this->cacheFileName);
-            include $this->cacheFileName;
-            
-            $classText = str_replace("\r", '', $classText);
-            $classText = str_replace("\n", '', $classText);
-
-            $start = strpos($classText, 'namespace');
-            $namespace = '';
-            if ($start > 0) {
-                $start += 10;
-                $end = strpos($classText, ';', $start);
-                $namespace = substr($classText, $start, $end - $start);
-                $className = $namespace . '\\' . $this->className;
-            }
-            //$className = $include['type'];
-            $class = new $className($this);
-            $class->perform();
-            return;
-        }
-
-        $include = NULL;
-        $modelClass = ($include = TAutoloader::includeModelByName($this->viewName)) ? $include['type'] : DEFALT_MODEL;
-        $model = new $modelClass();
-        
-        $include = $this->includePrimaryController();
-        $controllerClass = $include['type'];
-        
-        $view = new \Phink\MVC\TView($this);
-        
-        $controller = new $controllerClass($view, $model);
-        if($this->request->isAJAX() && $this->request->isPartialView()) {
-            $include = $this->includeController();
-            $partialClass = $include['type'];
-
-            $partialController = new $partialClass($controller);
-
-            $partialController->perform();
-            
-        } else {
-            $controller->perform();
-        }         
-    }
-
-    public function includeController()
-    {
-        $result = false;
-        
-        $result = TAutoloader::includeClass($this->controllerFileName, RETURN_CODE | INCLUDE_FILE);
-        if(!$result) {
-            if($this->request->isAJAX() && $this->request->isPartialView()) {
-                $result = TAutoloader::includeDefaultPartialController($this->namespace, $this->className);
-            } else {
-                $result = TAutoloader::includeDefaultController($this->namespace, $this->className);
-            }
-            \Phink\Core\TRegistry::setCode($this->controllerFileName, $result['code']);
-        }
-
-        return $result;
-    }
-    
-    public function includePrimaryController()
-    {
-        if($this->request->isAJAX() && $this->request->isPartialView()) {
-            $result = TAutoloader::includeDefaultController($this->namespace, $this->className);
-            \Phink\Core\TRegistry::setCode(strtolower($this->controllerFileName), $result['code']);
-        } else {
-            $result = $this->includeController();
-        }
-        
-        return $result;
-    }
     
 }

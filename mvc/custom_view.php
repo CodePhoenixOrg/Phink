@@ -111,8 +111,8 @@ abstract class TCustomView extends \Phink\Web\UI\TCustomControl
         self::$logger->debug('PARSE FILE : ' . $this->viewFileName, __FILE__, __LINE__);
 //        $this->viewHtml = $this->redis->mget($templateName);
 //        $this->viewHtml = $this->viewHtml[0];
-        if (file_exists(APP_ROOT . $this->viewFileName)) {
-            $this->viewHtml = file_get_contents(APP_ROOT . $this->viewFileName);
+        if (file_exists(SITE_ROOT . $this->viewFileName)) {
+            $this->viewHtml = file_get_contents(SITE_ROOT . $this->viewFileName);
         } else {
             $this->viewHtml = file_get_contents($this->viewFileName, FILE_USE_INCLUDE_PATH);
         }
@@ -144,7 +144,7 @@ abstract class TCustomView extends \Phink\Web\UI\TCustomControl
         $code = str_replace(CONTROLLER, CONTROL, $code);
         $code = str_replace(PARTIAL_CONTROLLER, CONTROL, $code);
         if(!empty(trim($code))) {
-            file_put_contents(strtolower($this->getCacheFileName()), $code);
+            file_put_contents($this->getCacheFileName(), $code);
         }
       
 //        $this->redis->mset($this->preHtmlName, $this->declarations . $this->viewHtml);

@@ -49,22 +49,22 @@ if(isset($_SERVER['DOCUMENT_ROOT'])) {
         define('HTTP_PROTOCOL', strstr($_SERVER['SERVER_PROTOCOL'], 'HTPPS') ? 'https' : 'http' );
     }
     
-    $web = substr(DOCUMENT_ROOT, -4);
-    
-    if($web === 'web/') {
-        define('APP_ROOT', substr(DOCUMENT_ROOT, 0, -4));
-        define('RUNTIME_DIR', '..' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);
-        define('RUNTIME_JS_DIR', 'js' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);
-        define('CACHE_DIR', '..' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR);
+    if(substr(DOCUMENT_ROOT, -4) === 'web/') {
+        define('SITE_ROOT', substr(DOCUMENT_ROOT, 0, -4));
     } else {
-        define('APP_ROOT', DOCUMENT_ROOT);
-        define('RUNTIME_DIR', 'runtime' . DIRECTORY_SEPARATOR);
-        define('RUNTIME_JS_DIR', 'runtime' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR);
-        define('CACHE_DIR', 'cache' . DIRECTORY_SEPARATOR);
+        define('SITE_ROOT', DOCUMENT_ROOT);
     }
+    
+    define('APP_ROOT', SITE_ROOT . 'app' . DIRECTORY_SEPARATOR);
+    define('REL_RUNTIME_DIR', 'runtime' . DIRECTORY_SEPARATOR);
+    define('RUNTIME_DIR', SITE_ROOT . REL_RUNTIME_DIR);
+    define('REL_RUNTIME_JS_DIR', 'js' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);
+    define('RUNTIME_JS_DIR', DOCUMENT_ROOT . REL_RUNTIME_JS_DIR);
+    define('CACHE_DIR', SITE_ROOT . 'cache' . DIRECTORY_SEPARATOR);
     
     define('LOG_PATH', APP_ROOT . 'logs/');
 } else {
+    define('SITE_ROOT', DOCUMENT_ROOT);
     define('APP_ROOT', './');
     define('DOCUMENT_ROOT', '');
     define('LOG_PATH', './');
@@ -101,13 +101,13 @@ define('LOGIN_PAGE', '/' . LOGIN_VIEW . '.html');
 define('MASTER_PAGE', '/' . MASTER_VIEW . '.html');
 define('HOME_PAGE', '/' . HOME_VIEW . '.html');
 define('LOG_FILE', LOG_PATH . 'debug.log');
-define('APP_DATA', APP_ROOT . 'data' . DIRECTORY_SEPARATOR);
-define('APP_BUSINESS', DOCUMENT_ROOT . 'app' . DIRECTORY_SEPARATOR . 'business' . DIRECTORY_SEPARATOR);
+define('APP_DATA', SITE_ROOT . 'data' . DIRECTORY_SEPARATOR);
+define('APP_BUSINESS', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
 define('STARTER_FILE', 'starter.php');
 define('HTTP_USER_AGENT', $_SERVER['HTTP_USER_AGENT']);
 define('HTTP_HOST', $_SERVER['HTTP_HOST']);
 define('HTTP_ORIGIN', (isset($_SERVER['HTTP_ORIGIN'])) ? $_SERVER['HTTP_ORIGIN'] : '');
-define('HTTP_ACCEPT', $_SERVER['HTTP_ACCEPT']);
+define('HTTP_ACCEPT', (isset($_SERVER['HTTP_ACCEPT'])) ? $_SERVER['HTTP_ACCEPT'] : '');
 define('HTTP_PORT', $_SERVER['SERVER_PORT']);
 define('REQUEST_URI', $_SERVER['REQUEST_URI']);
 define('REQUEST_METHOD', $_SERVER['REQUEST_METHOD']);

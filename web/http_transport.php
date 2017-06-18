@@ -23,7 +23,7 @@
  * and open the template in the editor.
  */
 
-namespace Phink\Rest;
+namespace Phink\Web;
 
 /**
  * Description of httpTransport
