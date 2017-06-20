@@ -35,7 +35,23 @@ class TWebRouter extends \Phink\Core\TRouter
         $this->authentication = $parent->getAuthentication();
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();
-        $this->setViewName();
+                
+        $this->translation = $parent->getTranslation();
+        $this->parameters = $parent->getParameters();
+        $this->path = $parent->getPath();
+        
+//        $this->setViewName();        
+        
+        $requestUriParts = explode('/', $this->path);
+        $this->viewName = array_pop($requestUriParts);
+        $viewNameParts = explode('.',$this->viewName);
+        $this->viewName = array_shift($viewNameParts);
+
+        $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
+        $this->className = ucfirst($this->viewName);
+        
+        $this->getLogger()->debug('VIEW NAME: ' . $this->viewName);
+        
         $this->setNamespace();
         $this->setNames();
     }

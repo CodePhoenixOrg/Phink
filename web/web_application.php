@@ -127,7 +127,7 @@ class TWebApplication extends \Phink\Core\TApplication
                     
         } else {
             $this->response->setReturn(403);
-            $this->response->redirect(SERVER_ROOT . MAIN_PAGE);
+//            $this->response->redirect(SERVER_ROOT . MAIN_PAGE);
             $result = true;
         }
         

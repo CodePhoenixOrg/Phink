@@ -67,10 +67,8 @@ class TRouter extends TObject {
         if ($this->routes()) {
 
             foreach($this->routes as $key=>$value) {
-                if($key === 'rest') {
-                    $result = REQUEST_TYPE_REST;
-                    $this->requestType = REQUEST_TYPE_REST;
-                }
+                $result = $key;
+                $this->requestType = $key;
                 
                 $methods = $value;
                 $method = strtolower(REQUEST_METHOD);
@@ -96,7 +94,9 @@ class TRouter extends TObject {
                             \Phink\Core\TRegistry::getLogger()->debug($this->path);                            
                             
                             $this->parameters = [];
-                            parse_str($baseurl['query'], $this->parameters);
+                            if(isset($baseur['query'])) {
+                                parse_str($baseurl['query'], $this->parameters);
+                            }
 
                             \Phink\Core\TRegistry::getLogger()->debug('PARAMETERS');                            
                             \Phink\Core\TRegistry::getLogger()->debug($this->parameters);                            

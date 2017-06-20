@@ -147,5 +147,5 @@ define('PHX_SQL_LIMIT', '<phx:sql_limit />');
 
 define('RETURN_CODE', 1);
 define('INCLUDE_FILE', 2);
-define('REQUEST_TYPE_WEB', 4);
-define('REQUEST_TYPE_REST', 8);
+define('REQUEST_TYPE_WEB', 'web');
+define('REQUEST_TYPE_REST', 'rest');
