@@ -38,7 +38,6 @@ class TRequest extends \Phink\Core\TObject
     private $_contents = array();
     private $_subRequests = array();
     private $_isView = '';
-    //private $_subRequestsHandler = null;
     
     public function __construct()
     {
@@ -74,26 +73,24 @@ class TRequest extends \Phink\Core\TObject
         return $result;
     }
 
-    private function _getHeader($page) 
+    private function _getHeader($method, $uri) 
     {
         $cookie = session_id();
         $host = HTTP_HOST;
         $ua = HTTP_USER_AGENT;
         
-        $url = parse_url($page);
+        $url = parse_url($uri);
         if($url['host'] === '') {
-            $page = SERVER_ROOT . '/' . $page;
+            $uri = SERVER_ROOT . '/' . $uri;
         }
   
         $result = [
-              "POST ".$page." HTTP/1.0"
+              "$method $uri HTTP/1.0"
             , "Content-Type:text/html; charset=UTF-8"
             , "Accept:text/html, */*; q=0.01"
             , "Cache-Control: no-cache"
             , "Pragma: no-cache"
-//            , "Cookie:PHPSESSID=$cookie"
-//            , "Host:$host"
-            , "User-Agent:$ua"
+            , "User-Agent: $ua"
         ];
         
         if(HTTP_ORIGIN !== '')
@@ -104,6 +101,28 @@ class TRequest extends \Phink\Core\TObject
         return $result;
     }
     
+    private function _getCustomHeaders($method, $uri, $headers) {
+        $result = [];
+        $cookie = session_id();
+        $host = HTTP_HOST;
+        $ua = HTTP_USER_AGENT;
+        
+        $url = parse_url($uri);
+        if($url['host'] === '') {
+            $uri = SERVER_ROOT . '/' . $uri;
+        }
+        
+        array_push($result, "$method $uri HTTP/1.0");
+        
+        foreach ($result as $key=>$value) {
+            array_push($result, "$key: $value");
+        }
+        
+        array_push($result, "User-Agent:$ua");
+        
+        return $result;
+    }
+
     private function _getViewHeader($page) {
         $cookie = session_id();
         $host = HTTP_HOST;
@@ -133,10 +152,14 @@ class TRequest extends \Phink\Core\TObject
         return $result;
     }
     
-    public function addSubRequest($name, $uri, $data = null)
+    public function addSubRequest($name, $method, $uri, $headers = [], $data = null)
     {
-        $header = $this->_getHeader($uri);
-        $this->_subRequests[$name] = ['uri' => $uri, 'header' => $header, 'data' => $data];
+        if(count($headers) > 0) {
+            $headers = $this->_getCustomHeaders($method, $uri, $headers);;
+        } else {
+            $headers = $this->_getHeader($method, $uri);
+        }
+        $this->_subRequests[$name] = ['uri' => $uri, 'header' => $headers, 'data' => $data];
     }
     
     public function addViewSubRequest($name, $uri, $data = null)
@@ -162,9 +185,11 @@ class TRequest extends \Phink\Core\TObject
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 //            curl_setopt($ch, CURLOPT_CAINFO, $certpath);
 //            curl_setopt($ch, CURLOPT_CAPATH, $certpath);
+            if(count($request['header']) > 0) {
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $request['header']);
+            }
             if(is_array($request['data'])) {
                 $queryString = http_build_query($request['data']);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $request['header']);
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $queryString);
             }
