@@ -42,18 +42,7 @@ class TWebRouter extends \Phink\Core\TRouter
         
 //        $this->setViewName();        
         
-        $requestUriParts = explode('/', $this->path);
-        $this->viewName = array_pop($requestUriParts);
-        $viewNameParts = explode('.',$this->viewName);
-        $this->viewName = array_shift($viewNameParts);
 
-        $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
-        $this->className = ucfirst($this->viewName);
-        
-        $this->getLogger()->debug('VIEW NAME: ' . $this->viewName);
-        
-        $this->setNamespace();
-        $this->setNames();
     }
 
     public function translate()
@@ -70,6 +59,19 @@ class TWebRouter extends \Phink\Core\TRouter
 //        $this->className = ucfirst($this->apiName);
 //        
 //        $this->apiFileName = 'app' . DIRECTORY_SEPARATOR . 'rest' . DIRECTORY_SEPARATOR . $this->apiName . CLASS_EXTENSION;
+        $requestUriParts = explode('/', $this->path);
+        $this->viewName = array_pop($requestUriParts);
+        $viewNameParts = explode('.',$this->viewName);
+        $this->viewName = array_shift($viewNameParts);
+
+        $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
+        $this->className = ucfirst($this->viewName);
+        
+        $this->getLogger()->debug('VIEW NAME: ' . $this->viewName);
+        
+        $this->setNamespace();
+        $this->setNames();
+
         $this->getLogger()->debug('CACHE: ' . $this->cacheFileName);
         $this->getLogger()->debug('VIEW: ' . SITE_ROOT . $this->viewFileName);
         

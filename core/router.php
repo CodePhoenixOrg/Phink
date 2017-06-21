@@ -79,9 +79,9 @@ class TRouter extends TObject {
                     foreach($routes as $key=>$value) {
                         $key = str_replace("/", "\/", $key);
                         $matches = \preg_replace('/' . $key . '/', $value, $url);
-                        \Phink\Core\TRegistry::getLogger()->debug('URL: ' . $url);
-                        \Phink\Core\TRegistry::getLogger()->debug('MATCHES');
-                        \Phink\Core\TRegistry::getLogger()->debug($matches);
+                        $this->getLogger()->debug('URL: ' . $url);
+                        $this->getLogger()->debug('MATCHES');
+                        $this->getLogger()->debug($matches);
 
                         if ($matches !== $url) {
                             $this->requestType = $key;
@@ -90,16 +90,18 @@ class TRouter extends TObject {
                             
                             $this->path = $baseurl['path'];
                             
-                            \Phink\Core\TRegistry::getLogger()->debug('PATH');                            
-                            \Phink\Core\TRegistry::getLogger()->debug($this->path);                            
-                            
+                            $this->getLogger()->debug('PATH');                       
+                            $this->getLogger()->debug($this->path);                      
+                            $this->getLogger()->debug('BASEURL');                       
+                            $this->getLogger()->debug($baseurl);                    
+
                             $this->parameters = [];
-                            if(isset($baseur['query'])) {
+                            if(isset($baseurl['query'])) {
                                 parse_str($baseurl['query'], $this->parameters);
                             }
 
-                            \Phink\Core\TRegistry::getLogger()->debug('PARAMETERS');                            
-                            \Phink\Core\TRegistry::getLogger()->debug($this->parameters);                            
+                            $this->getLogger()->debug('PARAMETERS');                            
+                            $this->getLogger()->debug($this->parameters);                            
                             
                             return $result;
                         }

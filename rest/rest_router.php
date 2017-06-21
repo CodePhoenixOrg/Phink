@@ -67,8 +67,6 @@ class TRestRouter extends \Phink\Core\TRouter
         $include = \Phink\TAutoloader::includeClass($this->className, INCLUDE_FILE);
         $fqObject = $include['type'];
         
-        self::$logger->debug($fqObject);
-
         $instance = new $fqObject($this);
         
         $request_body = file_get_contents('php://input');

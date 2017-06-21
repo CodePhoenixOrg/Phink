@@ -81,7 +81,10 @@ class TControl extends TCustomControl
     
     public function getViewHtml()
     {
-        self::$logger->debug(__METHOD__ . '::PHPSESSID::' . $_REQUEST['PHPSESSID']);
+        if(isset($_REQUEST['PHPSESSID'])) {
+            self::$logger->debug(__METHOD__ . '::PHPSESSID::' . $_REQUEST['PHPSESSID']);
+            
+        }
         ob_start();
         if(!$this->isDreclared) {
             //$this->createObjects();
