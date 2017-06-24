@@ -32,6 +32,8 @@ namespace Phink\Web;
 
 trait TWebObject {
     
+    use THttpTransport;
+    
     private static $_currentDirectory;
     private static $_currentFilePath;
     private static $_currentClassName;
@@ -40,8 +42,8 @@ trait TWebObject {
     private static $_pageNumber;
     private static $_pageCount;
     protected $redis = null;
-    protected $response = null;
-    protected $request = null;
+//    protected $response = null;
+//    protected $request = null;
     protected $modelFileName = '';
     protected $viewFileName = '';
     protected $controllerFileName = '';
@@ -54,7 +56,7 @@ trait TWebObject {
     protected $className = '';
     protected $namespace = '';
     protected $code = '';
-    protected $authentication = null;
+//    protected $authentication = null;
     
 //    public function __construct(TObject $parent)
 //    {
@@ -162,15 +164,15 @@ trait TWebObject {
         return $this->redis;
     }
     
-    public function getRequest()
-    {
-        return $this->request;
-    }
-    
-    public function getResponse()
-    {
-        return $this->response;
-    }
+//    public function getRequest()
+//    {
+//        return $this->request;
+//    }
+//    
+//    public function getResponse()
+//    {
+//        return $this->response;
+//    }
     
     public function getClassName()
     {

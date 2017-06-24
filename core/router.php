@@ -23,7 +23,7 @@ use \Phink\Web\TWebRouter;
 use \Phink\Rest\TRestRouter;
 
 
-class TRouter extends TObject {
+class TRouter extends TObject implements \Phink\Web\IWebObject {
 
     use \Phink\Web\TWebObject;
    

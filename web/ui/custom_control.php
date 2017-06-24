@@ -30,7 +30,7 @@ namespace Phink\Web\UI;
  *
  * @author David
  */
-abstract class TCustomControl extends \Phink\Core\TObject
+abstract class TCustomControl extends \Phink\Core\TObject implements \Phink\Web\IHttpTransport, \Phink\Web\IWebObject
 {
     use \Phink\Web\TWebObject;
 

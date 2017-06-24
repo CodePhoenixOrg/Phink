@@ -18,29 +18,21 @@
  
  
 /*
- * To change this template, choose Tools | Templates
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phink\MVC;
+
+namespace Phink\Web;
 
 /**
- * Description of view
+ * Description of httpTransport
  *
- * @author david
+ * @author David
  */
-class TView extends TCustomView
+interface IHttpTransport
 {
-    //put your code here
-    
-    public function __construct(\Phink\Web\IHttpTransport $parent)
-    {
-
-        parent::__construct($parent);
-        
-        $this->authentication = $parent->getAuthentication();
-        $this->request = $parent->getRequest();
-        $this->response = $parent->getResponse();
-        
-    }
-
+    public function getAuthentication();
+    public function getRequest();
+    public function getResponse();
 }

@@ -92,25 +92,8 @@ class TWebRouter extends \Phink\Core\TRouter
     public function dispatch()
     {
         if($this->_isCached) {
-            $classText = file_get_contents($this->cacheFileName);
-            include $this->cacheFileName;
-            
-            $classText = str_replace("\r", '', $classText);
-            $classText = str_replace("\n", '', $classText);
+            TAutoloader::loadCachedFile($this);
 
-            $start = strpos($classText, 'namespace');
-            $namespace = '';
-            if ($start > 0) {
-                $start += 10;
-                $end = strpos($classText, ';', $start);
-                $namespace = substr($classText, $start, $end - $start);
-                $className = $namespace . '\\' . $this->className;
-            }
-            //$className = $include['type'];
-            $class = new $className($this);
-            
-            $class->perform();
-            
             return true;
         }
 
@@ -122,19 +105,25 @@ class TWebRouter extends \Phink\Core\TRouter
         $controllerClass = $include['type'];
         
         $view = new \Phink\MVC\TView($this->parent->getParent());
+        $view->parse();
         
-        $controller = new $controllerClass($view, $model);
-        if($this->request->isAJAX() && $this->request->isPartialView()) {
-            $include = $this->includeController();
-            $partialClass = $include['type'];
-
-            $partialController = new $partialClass($controller);
-
-            $partialController->perform();
-            
-        } else {
-            $controller->perform();
-        }         
+        if(file_exists($this->getCacheFileName())) {
+            TAutoloader::loadCachedFile($view);
+            return true;
+        }
+        
+//        $controller = new $controllerClass($view, $model);
+//        if($this->request->isAJAX() && $this->request->isPartialView()) {
+//            $include = $this->includeController();
+//            $partialClass = $include['type'];
+//
+//            $partialController = new $partialClass($controller);
+//
+//            $partialController->perform();
+//            
+//        } else {
+//            $controller->perform();
+//        }         
         
 //        $data = [];
 //        $method = REQUEST_METHOD;
@@ -189,6 +178,8 @@ class TWebRouter extends \Phink\Core\TRouter
 //        $this->response->sendData();		
         return true;
     }
+
+
     
     public function setNamespace()
     {

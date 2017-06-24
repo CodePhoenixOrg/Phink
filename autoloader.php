@@ -178,7 +178,7 @@ class TAutoloader extends TStaticObject
         self::getLogger()->debug(__METHOD__ . '::' . $file, __FILE__, __LINE__);
         
         if((isset($params) && ($params && INCLUDE_FILE === INCLUDE_FILE)) && !class_exists('\\' . $fqcn))  {
-            include SITE_ROOT . $filename;
+//            include SITE_ROOT . $filename;
         }
         
         return ['file' => $file, 'type' => $fqcn, 'code' => $code];
@@ -292,6 +292,17 @@ class TAutoloader extends TStaticObject
 
             
         } else {
+          
+                self::getLogger()->debug('PARSING ' . $viewName . '!!!');
+                $view = new \Phink\MVC\TView($ctrl);
+                $view->parse();
+                
+                $include = $view->getCacheFileName();
+                
+                include $include;
+                
+                return true;
+          
             //self::getLogger()->debug('INCLUDE NEW CONTROL : ' . $viewName, __FILE__, __LINE__);
             //include 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
             $result = self::includePartialControllerByName($viewName);
@@ -299,7 +310,31 @@ class TAutoloader extends TStaticObject
 
         return $result;
     }
-    
+
+    public static function loadCachedFile(Web\IWebObject $parent) {
+        
+        $cacheFilename = $parent->getCacheFilename();
+        $classText = file_get_contents($cacheFilename);
+        include $cacheFilename;
+
+        $classText = str_replace("\r", '', $classText);
+        $classText = str_replace("\n", '', $classText);
+
+        $start = strpos($classText, 'namespace');
+        $namespace = '';
+        if ($start > 0) {
+            $start += 10;
+            $end = strpos($classText, ';', $start);
+            $namespace = substr($classText, $start, $end - $start);
+            $className = $namespace . '\\' . $parent->getClassName();
+        }
+        //$className = $include['type'];
+        $class = new $className($parent);
+
+        $class->perform();
+        
+    }
+
     public static function getDefaultNamespace()
     {
         $sa = explode('.', SERVER_NAME);

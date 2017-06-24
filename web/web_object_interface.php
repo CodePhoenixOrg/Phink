@@ -21,26 +21,26 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phink\MVC;
+namespace Phink\Web;
 
-/**
- * Description of view
+ /**
+ * Description of TObject
  *
  * @author david
  */
-class TView extends TCustomView
-{
-    //put your code here
+ 
+
+ interface IWebObject extends IHttpTransport {
+ 
+    public function getCacheFileName();
+    public function getClassName();
+    public function getActionName();
+    public function getModelFileName();
+    public function getViewFileName();
+    public function getControllerFileName();
+    public function getJsControllerFileName();
+    public function getCssFileName();
+    public function getViewName();
     
-    public function __construct(\Phink\Web\IHttpTransport $parent)
-    {
-
-        parent::__construct($parent);
-        
-        $this->authentication = $parent->getAuthentication();
-        $this->request = $parent->getRequest();
-        $this->response = $parent->getResponse();
-        
-    }
-
+    
 }

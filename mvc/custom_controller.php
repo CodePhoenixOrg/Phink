@@ -91,14 +91,20 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
     public function renderCreations()
     {
         if(!empty($this->creations)) {
-            include "data://text/plain;base64," . base64_encode('<?php' . $this->creations . '?>');
+            /*
+             * include "data://text/plain;base64," . base64_encode('<?php' . $this->creations . '?>');
+             */
+            eval($this->creations);
         }
     }
 
     public function renderDeclarations()
     {
         if(!empty($this->declarations)) {
-            include "data://text/plain;base64," . base64_encode('<?php' . $this->declarations . '?>');
+             /* 
+             * include "data://text/plain;base64," . base64_encode('<?php' . $this->declarations . '?>');
+             */
+            eval($this->declarations);
         }
     }
 
@@ -113,12 +119,15 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
 
     public function renderView()
     {
-        include "data://text/plain;base64," . base64_encode($this->viewHtml);
+//        include "data://text/plain;base64," . base64_encode($this->viewHtml);
+        eval('?>' . $this->viewHtml . '<?php ');
     }
 
     public function renderedHtml()
     {
-        include "data://text/plain;base64," . base64_encode($this->innerHtml);
+//        include "data://text/plain;base64," . base64_encode($this->innerHtml);
+//        echo $this->innerHtml;
+        eval('?>' . $this->innerHtml . '<?php ');
     }
 
     public function perform()
@@ -143,7 +152,7 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
                 }
                 $this->unload();
             } catch (\BadMethodCallException $ex) {
-                $this->response->setData('error', $ex->getMessage());
+                $this->response->setException($ex);
             }
             $this->response->sendData();
         } else {

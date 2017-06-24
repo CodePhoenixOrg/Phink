@@ -86,6 +86,15 @@ class TResponse implements \JsonSerializable
             
     }
     
+    public function setException(\Exception $ex) {
+        $this->setData('error', 
+            $ex->getCode() . CR_LF . 
+            $ex->getFile() . CR_LF .
+            $ex->getMessage() . CR_LF .
+            $ex->getTraceAsString() . CR_LF
+        );
+    }
+    
     private function _getHeaders($hsts = false) {
         $result = 200;
         

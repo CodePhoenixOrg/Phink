@@ -138,6 +138,12 @@ class TControl extends TCustomControl
     
     public function perform()
     {
+        if($this->parent instanceof \Phink\MVC\TView) {
+            $this->getLogger()->debug('PARSING ' . $this->viewName . '!!!');
+            $view = new \Phink\MVC\TView($this->parent);
+            $view->parse();
+        } 
+        
         $this->createObjects();
         $this->init();
         if($this->getRequest()->isAJAX()) {
