@@ -293,16 +293,18 @@ class TAutoloader extends TStaticObject
             
         } else {
           
-                self::getLogger()->debug('PARSING ' . $viewName . '!!!');
-                $view = new \Phink\MVC\TView($ctrl);
-                $view->parse();
-                
-                $include = $view->getCacheFileName();
-                
-                include $include;
-                
-                return true;
-          
+            self::getLogger()->debug('PARSING ' . $viewName . '!!!');
+            $view = new \Phink\MVC\TView($ctrl);
+            $view->setNames($viewName);
+            $view->setNamespace();
+            $view->setViewName();
+            $view->parse();
+
+            if(file_exists($view->getCacheFileName())) {
+               TAutoloader::loadCachedFile($view);
+               return true;
+            }
+             
             //self::getLogger()->debug('INCLUDE NEW CONTROL : ' . $viewName, __FILE__, __LINE__);
             //include 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
             $result = self::includePartialControllerByName($viewName);

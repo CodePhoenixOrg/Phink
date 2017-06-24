@@ -36,7 +36,7 @@ use Phink\Web\TWebRouter;
  *
  * @author David
  */
-class TWebApplication extends \Phink\Core\TApplication implements IHttpTransport
+class TWebApplication extends \Phink\Core\TApplication implements IHttpTransport, IWebObject
 {
     use \Phink\Web\TWebObject;
     
@@ -133,6 +133,5 @@ class TWebApplication extends \Phink\Core\TApplication implements IHttpTransport
         
         return $result;
     }
- 
-    
+
 }

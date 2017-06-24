@@ -32,7 +32,7 @@ class TView extends TCustomView
 {
     //put your code here
     
-    public function __construct(\Phink\Web\IHttpTransport $parent)
+    public function __construct(\Phink\Web\IWebObject $parent)
     {
 
         parent::__construct($parent);

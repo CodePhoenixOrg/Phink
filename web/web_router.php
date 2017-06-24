@@ -107,7 +107,7 @@ class TWebRouter extends \Phink\Core\TRouter
         $view = new \Phink\MVC\TView($this->parent->getParent());
         $view->parse();
         
-        if(file_exists($this->getCacheFileName())) {
+        if(file_exists($view->getCacheFileName())) {
             TAutoloader::loadCachedFile($view);
             return true;
         }

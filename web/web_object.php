@@ -224,9 +224,10 @@ trait TWebObject {
         return $this->viewName;
     }
     
-    public function setViewName()
+    public function setViewName($viewName = null)
     {
-        $requestUriParts = explode('/', REQUEST_URI);
+        $uri = ($viewName === null) ? REQUEST_URI : $viewName;
+        $requestUriParts = explode('/', $uri);
         $this->viewName = array_pop($requestUriParts);
         $viewNameParts = explode('.',$this->viewName);
         $this->viewName = array_shift($viewNameParts);

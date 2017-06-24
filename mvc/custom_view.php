@@ -21,8 +21,10 @@
 use Phink\Core\TObject;
 use Phink\Xml\TXmlDocument;
 use Phink\Core\TRegistry;
+use Phink\Web\IWebObject;
+use Phink\Web\UI\TCustomControl;
 
-abstract class TCustomView extends \Phink\Web\UI\TCustomControl
+abstract class TCustomView extends TCustomControl
 {
     use \Phink\Web\UI\TCodeGenerator {
         writeDeclarations as private;
@@ -46,7 +48,7 @@ abstract class TCustomView extends \Phink\Web\UI\TCustomControl
     protected $parentView = NULL;
     protected $parentType = NULL;
 
-    public function __construct(TObject $parent)
+    public function __construct(IWebObject $parent)
     {
         $this->setParent($parent);
         //$this->redis = new Client($this->context->getRedis());

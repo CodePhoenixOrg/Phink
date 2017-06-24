@@ -39,7 +39,7 @@ class TPartialView extends TCustomView
 //        }
     }
 
-    public function setViewName()
+    public function setViewName($viewName = null)
     {
         $this->viewName = lcfirst($this->className);
     }
