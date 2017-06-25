@@ -294,8 +294,8 @@ class TAutoloader extends TStaticObject
         } else {
             $viewName = lcfirst($viewName);
             $include = NULL;
-            $modelClass = ($include = TAutoloader::includeModelByName($viewName)) ? $include['type'] : DEFALT_MODEL;
-            include SITE_ROOT . $include['file'];
+//            $modelClass = ($include = TAutoloader::includeModelByName($viewName)) ? $include['type'] : DEFALT_MODEL;
+//            include SITE_ROOT . $include['file'];
 //            $model = new $modelClass();
 
           
@@ -304,7 +304,7 @@ class TAutoloader extends TStaticObject
             $view->setViewName($viewName);
             $view->setNamespace();
             $view->setNames();
-            $include = self::includeClass($view->getControllerFileName());
+            $include = self::includeClass($view->getControllerFileName(), RETURN_CODE);
             
             TRegistry::setCode($view->getControllerFileName(), $include['code']);
             self::getLogger()->debug('CACHE FILE NAME OF THE PARSED VIEW: ' . $view->getCacheFileName());

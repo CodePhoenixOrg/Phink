@@ -97,10 +97,10 @@ class TWebRouter extends \Phink\Core\TRouter
             return true;
         }
 
-        $include = NULL;
-        $modelClass = ($include = TAutoloader::includeModelByName($this->viewName)) ? $include['type'] : DEFALT_MODEL;
-        include $include['file'];
-        $model = new $modelClass();
+//        $include = NULL;
+//        $modelClass = ($include = TAutoloader::includeModelByName($this->viewName)) ? $include['type'] : DEFALT_MODEL;
+//        include $include['file'];
+//        $model = new $modelClass();
         
         $include = $this->includePrimaryController();
         $controllerClass = $include['type'];
