@@ -41,9 +41,15 @@ class TControl extends TCustomControl
         $this->viewName = lcfirst($this->className);
         
         $include = \Phink\TAutoloader::includeModelByName($this->viewName);
-        $modelClass = $include['type'];
-        //self::$logger->debug('TCONTROL MODEL OBJECT : ' . print_r($modelClass, true));
-        $this->model = new $modelClass();        
+        $model = SITE_ROOT . $include['file'];
+        $this->getLogger()->debug(__METHOD__ . '::' . $model, __FILE__, __LINE__);
+        if(file_exists($model)) {
+            include $model;
+            $modelClass = $include['type'];
+
+            $this->model = new $modelClass();        
+        }
+        
 
         $this->authentication = $parent->getAuthentication();
         $this->request = $parent->getRequest();
@@ -138,12 +144,6 @@ class TControl extends TCustomControl
     
     public function perform()
     {
-        if($this->parent instanceof \Phink\MVC\TView) {
-            $this->getLogger()->debug('PARSING ' . $this->viewName . '!!!');
-            $view = new \Phink\MVC\TView($this->parent);
-            $view->parse();
-        } 
-        
         $this->createObjects();
         $this->init();
         if($this->getRequest()->isAJAX()) {

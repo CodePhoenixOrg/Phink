@@ -178,7 +178,7 @@ class TAutoloader extends TStaticObject
         self::getLogger()->debug(__METHOD__ . '::' . $file, __FILE__, __LINE__);
         
         if((isset($params) && ($params && INCLUDE_FILE === INCLUDE_FILE)) && !class_exists('\\' . $fqcn))  {
-//            include SITE_ROOT . $filename;
+            //include SITE_ROOT . $filename;
         }
         
         return ['file' => $file, 'type' => $fqcn, 'code' => $code];
@@ -290,24 +290,37 @@ class TAutoloader extends TStaticObject
             self::getLogger()->debug('INCLUDE CACHED CONTROL: ' . SITE_ROOT . $cacheFilename, __FILE__, __LINE__);
             self::includeClass($cacheFilename, RETURN_CODE | INCLUDE_FILE);
 
-            
+            include SITE_ROOT . $cacheFilename;
         } else {
+            $viewName = lcfirst($viewName);
+            $include = NULL;
+            $modelClass = ($include = TAutoloader::includeModelByName($viewName)) ? $include['type'] : DEFALT_MODEL;
+            include SITE_ROOT . $include['file'];
+//            $model = new $modelClass();
+
           
             self::getLogger()->debug('PARSING ' . $viewName . '!!!');
             $view = new \Phink\MVC\TView($ctrl);
-            $view->setNames($viewName);
+            $view->setViewName($viewName);
             $view->setNamespace();
-            $view->setViewName();
+            $view->setNames();
+            $include = self::includeClass($view->getControllerFileName());
+            
+            TRegistry::setCode($view->getControllerFileName(), $include['code']);
+            self::getLogger()->debug('CACHE FILE NAME OF THE PARSED VIEW: ' . $view->getCacheFileName());
             $view->parse();
+            
+            include SITE_ROOT . $cacheFilename;
 
-            if(file_exists($view->getCacheFileName())) {
-               TAutoloader::loadCachedFile($view);
-               return true;
-            }
+//
+//            if(file_exists($view->getCacheFileName())) {
+//               TAutoloader::loadCachedFile($view);
+//               return true;
+//            }
              
             //self::getLogger()->debug('INCLUDE NEW CONTROL : ' . $viewName, __FILE__, __LINE__);
             //include 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
-            $result = self::includePartialControllerByName($viewName);
+//            $result = self::includePartialControllerByName($viewName);
         }
 
         return $result;
@@ -316,6 +329,9 @@ class TAutoloader extends TStaticObject
     public static function loadCachedFile(Web\IWebObject $parent) {
         
         $cacheFilename = $parent->getCacheFilename();
+        
+        self::getLogger()->debug('CACHE FILE NAME TO INCLUDE: ' . $cacheFilename);
+        
         $classText = file_get_contents($cacheFilename);
         include $cacheFilename;
 

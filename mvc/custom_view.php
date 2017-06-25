@@ -108,7 +108,7 @@ abstract class TCustomView extends TCustomControl
     
     public function parse()
     {
-        ////self::$logger->debug($this->controllerFileName . ' IS REGISTERED : ' . isset(\Phink\TAutoloader::getCode($this->controllerFileName)), __FILE__, __LINE__);
+        self::$logger->debug($this->controllerFileName . ' IS REGISTERED : ' . (TRegistry::exists('code', $this->controllerFileName) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
         
         self::$logger->debug('PARSE FILE : ' . $this->viewFileName, __FILE__, __LINE__);
 //        $this->viewHtml = $this->redis->mget($templateName);

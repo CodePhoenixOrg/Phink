@@ -234,6 +234,8 @@ trait TWebObject {
 
         $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
         $this->className = ucfirst($this->viewName);
+        
+//        $this->viewName = strtolower($this->viewName);
 
 //        //self::$logger->debug('VIEW NAME : '  . $this->viewName, __FILE__, __LINE__);
         

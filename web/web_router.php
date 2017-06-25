@@ -99,6 +99,7 @@ class TWebRouter extends \Phink\Core\TRouter
 
         $include = NULL;
         $modelClass = ($include = TAutoloader::includeModelByName($this->viewName)) ? $include['type'] : DEFALT_MODEL;
+        include $include['file'];
         $model = new $modelClass();
         
         $include = $this->includePrimaryController();
@@ -217,7 +218,7 @@ class TWebRouter extends \Phink\Core\TRouter
     {
         if($this->getRequest()->isAJAX() && $this->request->isPartialView()) {
             $result = TAutoloader::includeDefaultController($this->namespace, $this->className);
-            \Phink\Core\TRegistry::setCode(strtolower($this->controllerFileName), $result['code']);
+            \Phink\Core\TRegistry::setCode($this->controllerFileName, $result['code']);
         } else {
             $result = $this->includeController();
         }
