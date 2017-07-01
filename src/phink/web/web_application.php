@@ -78,6 +78,19 @@ class TWebApplication extends \Phink\Core\TApplication implements IHttpTransport
 
     public function run($params)
     {
+        
+
+        if(!file_exists('js_builder.lock')) {
+            \Phink\JavaScript\Builder::build();
+            file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
+        }
+
+        if(!file_exists('css_builder.lock')) {
+            \Phink\CascadingStyleSheet\Builder::build();
+            file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
+        }
+
+
         $this->params = $params;
         
         $router = new \Phink\Core\TRouter($this);

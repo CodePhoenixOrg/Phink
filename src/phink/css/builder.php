@@ -23,7 +23,9 @@
  * and open the template in the editor.
  */
 
-class CssBuilder {
+namespace Phink\CascadingStyleSheet;
+
+class Builder {
 
     public static function deltree($path) {
         $class_func = array(__CLASS__, __FUNCTION__);
@@ -32,7 +34,7 @@ class CssBuilder {
                 array_map($class_func, glob($path.'/*')) == @rmdir($path);
     }
 
-    public static function main () {
+    public static function build () {
         $theme = 'base';
 
         $images = [
@@ -131,5 +133,3 @@ class CssBuilder {
     }
     
 }
-
-CssBuilder::main();

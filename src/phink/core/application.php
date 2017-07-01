@@ -29,7 +29,7 @@ namespace Phink\Core;
 //    'database' => 15
 //);
 
-require_once 'core.php';
+include 'constants.php';
 
 /**
  * Description of Application
