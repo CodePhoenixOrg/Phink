@@ -22,5 +22,8 @@
         "components/font-awesome": ">=4.7.0",
         "components/bootstrap": ">=3.0.0",
         "components/bootstrap-default": ">=3.0.0"
-    }
+    },
+    "include-path": [
+        ""
+    ]
 }
