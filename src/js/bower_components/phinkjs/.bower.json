@@ -1,0 +1,28 @@
+{
+  "name": "phinkjs",
+  "description": "A client and server side JavaScript framework to be used standalone or in Phink PHP projects",
+  "main": "bootstrap.js",
+  "authors": [
+    "David Blanchard <dblanchard1@bbox.fr>"
+  ],
+  "license": "GPL-3.0",
+  "homepage": "https://github.com/dpjb71/PhinkJS",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "version": "0.1.13",
+  "_release": "0.1.13",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.13",
+    "commit": "2667aa4d793e93be8b8a8d7104854482314c74c7"
+  },
+  "_source": "https://github.com/dpjb71/PhinkJS.git",
+  "_target": "^0.1.13",
+  "_originalSource": "phinkjs",
+  "_direct": true
+}

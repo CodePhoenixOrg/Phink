@@ -1,0 +1,9 @@
+{
+  "name": "PhinkJS",
+  "version": "0.1.13",
+  "description": "A client and server side JavaScript framework to be used standalone or in Phink PHP projects",
+  "main": "bootstrap.js",
+  "repository": "https://github.com/dpjb71/PhinkJS.git",
+  "author": "David Blanchard <dblanchard1@bbox.fr>",
+  "license": "GPL-3.0"
+}

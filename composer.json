@@ -7,9 +7,14 @@
             "name": "David Blanchard",
             "email": "dblanchard1@bbox.fr",
             "homepage": "https://phink.org",
-            "role": "Developer"
+            "role": "Project owner"
         }
     ],
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },    
     "require": {
         "php": ">=5.4.0",
         "components/jquery": ">=1.9.1",

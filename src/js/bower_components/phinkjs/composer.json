@@ -1,0 +1,15 @@
+{
+    "license": "GPL-3.0+",
+    "name": "phink/phinkjs",
+    "description": "Client and server side Javascript framework",
+    "authors": [
+        {
+            "name": "David Blanchard",
+            "email": "dblanchard1@bbox.fr",
+            "homepage": "https://phink.org",
+            "role": "Developer"
+        }
+    ],    
+    "require": {
+    }
+}
