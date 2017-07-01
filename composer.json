@@ -24,6 +24,6 @@
         "components/bootstrap-default": ">=3.0.0"
     },
     "include-path": [
-        ""
+        "src"
     ]
 }
