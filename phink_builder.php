@@ -24,7 +24,12 @@ class PhinkBuilder {
             'globals.php',
             'core/static_object.php',
             'core/object.php',
+            'core/application.php',
+            'web/web_application.php',
+            'web/static_application.php',
+            'web/http_transport_interface.php',
             'web/http_transport.php',
+            'web/web_object_interface.php',
             'web/web_object.php',
             'core/router.php',
             'web/response.php',
@@ -84,7 +89,7 @@ class PhinkBuilder {
 
 //        $fw_content = '';
         foreach ($filenames as $filename) {
-            $filename = str_replace("/", DIRECTORY_SEPARATOR, $filename);
+            $filename = 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . str_replace("/", DIRECTORY_SEPARATOR,  $filename);
             include $filename;
 //            $fw_content .= file_get_contents($filename, FILE_USE_INCLUDE_PATH);
         }
