@@ -64,14 +64,12 @@ class Zip {
                         $file_name = $dest_dir.zip_entry_name($zip_entry);
 
                         // Check if the files should be overwritten or not
-                        if ($overwrite === true || $overwrite === false && !is_file($file_name))
+                        if (is_file($file_name) && ($overwrite === true || ($overwrite === false && !file_exists($file_name))))
                         {
                             // Get the content of the zip entry
                             $fstream = zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
 
                             file_put_contents($file_name, $fstream );
-                            // Set the rights
-                            chmod($file_name, 0777);
                         }
 
                         // Close the entry

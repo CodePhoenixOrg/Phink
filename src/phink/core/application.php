@@ -87,7 +87,9 @@ class TApplication extends TObject
         array_push($this->_parameters, ['long' => $long, 'short' => $short]);
         
         if(DOCUMENT_ROOT == '') {
-            for ($i = 0; $i < count($this->_argv); $i++) {
+            
+            $c = count($this->_argv);
+            for ($i = 0; $i < $c; $i++) {
                 if ($this->_argv[$i] == '--' . $long)  {
                     if(isset($this->_argv[$i+1])) {
                         if(substr($this->_argv[$i+1], 0, 1) == '-') {
@@ -100,7 +102,7 @@ class TApplication extends TObject
                     }
                     $isFound = true;
                     break;
-                } else if(strstr($this->_argv[$i], '-' . $short)) {
+                } else if($this->_argv[$i] == '-' . $short) {
 
                     $sa = explode('=', $this->_argv[$i]);
                     if(count($sa) > 1) {
@@ -221,11 +223,11 @@ class TApplication extends TObject
     private static function _requireMaster()
     {
         if(!function_exists('curl_init')) {
-            throw new Exception("Please install curl extension");
+            throw new \Exception("Please install curl extension");
         }
 
         if(!function_exists('zip_open')) {
-            throw new Exception("Please install zip extension");
+            throw new \Exception("Please install zip extension");
         }
 
         $curl = new \Phink\Web\Curl();

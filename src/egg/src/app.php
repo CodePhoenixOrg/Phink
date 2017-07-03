@@ -65,7 +65,7 @@ class Egg extends Phink\Core\TApplication {
                 $egg->delete();
             }
 
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             echo $ex->getMessage() . PHP_EOL;
         }
     }
