@@ -16,22 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class PhinkBuilder {
+class PhinkLibrary {
 
-    public static function main() {
+    public static function mount() {
 
         $filenames = [ 
-            'globals.php',
+            'log/log.php',
             'core/static_object.php',
             'core/object.php',
             'core/application.php',
-            'web/web_application.php',
-            'web/static_application.php',
             'web/http_transport_interface.php',
             'web/http_transport.php',
             'web/web_object_interface.php',
             'web/web_object.php',
+            'web/web_application.php',
+            'web/static_application.php',
             'core/router.php',
+            'web/curl.php',
             'web/response.php',
             'web/ui/custom_control.php',
             'web/ui/control.php',
@@ -61,6 +62,7 @@ class PhinkBuilder {
             'data/client/pdo/pdo_command.php',
             'data/data_statement.php',
             'data/client/pdo/pdo_data_statement.php',
+            'utils/zip.php',
             'utils/string_utils.php',
             'collections/array_list.php',
             'text/regex_match.php',
@@ -89,8 +91,8 @@ class PhinkBuilder {
 
 //        $fw_content = '';
         foreach ($filenames as $filename) {
-            $filename = 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . str_replace("/", DIRECTORY_SEPARATOR,  $filename);
-            include $filename;
+            $filename = 'phink' . DIRECTORY_SEPARATOR . str_replace("/", DIRECTORY_SEPARATOR,  $filename);
+            include  __DIR__ . DIRECTORY_SEPARATOR . $filename;
 //            $fw_content .= file_get_contents($filename, FILE_USE_INCLUDE_PATH);
         }
         
@@ -103,4 +105,4 @@ class PhinkBuilder {
     }
 }
 
-PhinkBuilder::main();
+PhinkLibrary::mount();

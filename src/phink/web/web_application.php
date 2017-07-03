@@ -43,7 +43,7 @@ class TWebApplication extends \Phink\Core\TApplication implements IHttpTransport
     protected $rawPhpName = '';
     protected $params = '';
 
-    public function __construct() 
+    public function __construct()
     {
         $this->authentication = new TAuthentication();
         $this->request = new TRequest();

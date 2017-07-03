@@ -1,6 +1,7 @@
 <?php
-/*
- * Copyright (C) 2016 David Blanchard
+
+/* 
+ * Copyright (C) 2017 dpjb
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,27 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
- 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-namespace Phink\Core;
 
-use Phink\Log\TLog;
-
-class TStaticObject
-{
-    protected static $logger;
-    
-    public function __construct()
-    {
-        self::$logger = new TLog();
-    }
-    
-    public static function getLogger()
-    {
-        return self::$logger;
-    }
+if(!class_exists('\Phink\TAutoloader')) {
+    include 'phink/autoloader.php';
+    \Phink\TAutoLoader::register();
 }

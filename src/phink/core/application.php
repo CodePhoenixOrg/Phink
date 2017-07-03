@@ -16,11 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 namespace Phink\Core;
 
 //$single_server = array(
@@ -49,37 +45,64 @@ class TApplication extends TObject
     const TEST_MODE = 'TEST';
     const PROD_MODE = 'PROD';
     
-    // Récupère tous les clubs dans un tableau associatif sous la forme numéro=>nom
+    
     private static $_executionMode = self::PROD_MODE;
     private static $_verboseMode = false;
     private static $_useTransactions = true;
-    private static $_log = null;
     private $_argv;
+    private $_argc;
     private $_parameters = array();
-    
+    private $_name = 'program';
+    private $_appDirectory = '';
+
+
     private $redis = null;
+
+    public function __construct($argv = [], $argc = 0, $appDirectory = '') {
+
+//        if(!class_exists('\Phink\TAutoloader')) {
+//            include 'phink/autoloader.php';
+//            \Phink\TAutoLoader::register();
+//        }
+        $this->_appDirectory = $appDirectory;
+        
+        $this->_name = $argv[0];
+        $this->_argv = $argv;
+        $this->_argc = $argc;
+        
+        if($this->getArgument('make-phar')) {
+            $this->makePhar();
+        }
+        
+        if($this->getArgument('require-master')) {
+            $this->_requireMaster();
+        }
+        
+    }
     
-    public function getArgument($short, $long = '')
+    public function getArgument($long, $short = '')
     {
         $result = false;
         $isFound = false;
-        array_push($this->_parameters, array('short' => $short, 'long' => $long));
+        array_push($this->_parameters, ['long' => $long, 'short' => $short]);
         
         if(DOCUMENT_ROOT == '') {
-            for ($i = 0; $i < count($this->_argv); $i++) {
+            
+            $c = count($this->_argv);
+            for ($i = 0; $i < $c; $i++) {
                 if ($this->_argv[$i] == '--' . $long)  {
                     if(isset($this->_argv[$i+1])) {
                         if(substr($this->_argv[$i+1], 0, 1) == '-') {
                             $result = true;
                         } else {
-                            $result = $this->_argv[$i+1];
+                            $result = $this->_argv[$i + 1];
                         }
                     } else {
                         $result = true;
                     }
                     $isFound = true;
                     break;
-                } else if(strstr($this->_argv[$i], '-' . $short)) {
+                } else if($this->_argv[$i] == '-' . $short) {
 
                     $sa = explode('=', $this->_argv[$i]);
                     if(count($sa) > 1) {
@@ -195,6 +218,52 @@ class TApplication extends TObject
         }
         
         return $token;
+    }
+        
+    private static function _requireMaster()
+    {
+        if(!function_exists('curl_init')) {
+            throw new \Exception("Please install curl extension");
+        }
+
+        if(!function_exists('zip_open')) {
+            throw new \Exception("Please install zip extension");
+        }
+
+        $curl = new \Phink\Web\Curl();
+        
+        $result = $curl->request('https://codeload.github.com/dpjb71/Phink/zip/master');
+        
+//        var_dump($result);
+        
+        file_put_contents('master.zip', $result->content);
+        
+        $zip = new \Phink\Utils\Zip();
+        $zip->deflat('master.zip');
+
+        
+    }
+    
+    public function makePhar() {
+        if(DOCUMENT_ROOT != '') {
+            throw new \Exception('Still cannot make a phar of a web application!');
+        }
+        ini_set('phar.readonly', 0);
+        
+         // the current directory must be src
+        $srcRoot = $this->_appDirectory;
+        $buildRoot = $this->_appDirectory . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'build';
+        $pharName = $this->_name . ".phar";
+
+        $phar = new \Phar(
+            $buildRoot . DIRECTORY_SEPARATOR . $pharName
+            , \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::KEY_AS_FILENAME
+            , $pharName
+        );
+        
+        $phar["app.php"] = file_get_contents($srcRoot . "/app.php");
+        $phar["lib.php"] = file_get_contents($srcRoot . "/lib.php");
+        $phar->setStub($phar->createDefaultStub("app.php"));
     }
 
 }

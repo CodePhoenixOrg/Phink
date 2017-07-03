@@ -44,7 +44,7 @@ class TAutoloader extends TStaticObject
      */
     public static function register($prepend = false)
     {
-        // spl_autoload_register(array(new self, 'autoload'), true, $prepend);
+        spl_autoload_register(array(new self, 'autoload'), true, $prepend);
     }
 
     public static function classNameToFilename($className)
@@ -82,7 +82,7 @@ class TAutoloader extends TStaticObject
      *
      * @param string $className Fully qualified name of a class.
      */
-    public function autoload_($className)
+    public function autoload($className)
     {
         if (0 === strpos($className, $this->prefix)) {
             $parts = explode('\\', substr($className, $this->prefixLength));
