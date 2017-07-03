@@ -32,8 +32,6 @@ $document_root = isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 
 
 if($document_root != '') {
 
-    var_dump($document_root);
-    
     define('BR', "<br />");
     if(PHP_OS == 'WINNT') {
         define('CR_LF', "\r\n");
