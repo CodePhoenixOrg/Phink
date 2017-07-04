@@ -65,8 +65,13 @@ class TApplication extends TObject
 //            \Phink\TAutoLoader::register();
 //        }
         $this->_appDirectory = $appDirectory;
+        $path = explode(DIRECTORY_SEPARATOR, $appDirectory);
+        array_pop($path);
+        $this->_name = array_pop($path);
         
-        $this->_name = $argv[0];
+        \Phink\UI\TConsole::writeLine($this->_name);
+        
+        //$this->_name = $argv[0];
         $this->_argv = $argv;
         $this->_argc = $argc;
         
@@ -76,6 +81,10 @@ class TApplication extends TObject
         
         if($this->getArgument('require-master')) {
             $this->_requireMaster();
+        }
+        
+        if($this->getArgument('display-tree')) {
+            $this->_displayTree();
         }
         
     }
@@ -221,49 +230,90 @@ class TApplication extends TObject
     }
         
     private static function _requireMaster()
-    {
-        if(!function_exists('curl_init')) {
-            throw new \Exception("Please install curl extension");
+    {   
+        $result = [];
+        $dirname = 'master';
+        $filename = $dirname . '.zip';
+
+        \Phink\UI\TConsole::writeLine(file_exists($filename) ? 'TRUE' : 'FALSE');
+        
+        if(!file_exists($filename)) {
+            \Phink\UI\TConsole::writeLine('Downloading Phink github master');
+            $curl = new \Phink\Web\Curl();
+            $result = $curl->request('https://codeload.github.com/dpjb71/Phink/zip/master');
+            file_put_contents($filename, $result->content);   
         }
 
-        if(!function_exists('zip_open')) {
-            throw new \Exception("Please install zip extension");
+        if(file_exists($filename)) {
+            \Phink\UI\TConsole::writeLine('Deflating Phink master archive');
+            $zip = new \Phink\Utils\Zip();
+            $zip->deflat($filename);
+            
         }
-
-        $curl = new \Phink\Web\Curl();
         
-        $result = $curl->request('https://codeload.github.com/dpjb71/Phink/zip/master');
+        if(file_exists($dirname)) {
+            //$phinkDir = 'master' . DIRECTORY_SEPARATOR . 'Phink-master' . DIRECTORY_SEPARATOR. 'src' . DIRECTORY_SEPARATOR . 'phink';
+            $phinkDir = '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'phink';
+            $tree = \Phink\TAutoloader::walkTree($phinkDir, ['php']);
+            
+        }
         
-//        var_dump($result);
+        $result = ['path' => $phinkDir, 'tree' => $tree];
         
-        file_put_contents('master.zip', $result->content);
-        
-        $zip = new \Phink\Utils\Zip();
-        $zip->deflat('master.zip');
-
+        return (object)$result;
         
     }
     
-    public function makePhar() {
+    public function makePhar()
+    {
         if(DOCUMENT_ROOT != '') {
             throw new \Exception('Still cannot make a phar of a web application!');
         }
         ini_set('phar.readonly', 0);
         
          // the current directory must be src
-        $srcRoot = $this->_appDirectory;
-        $buildRoot = $this->_appDirectory . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'build';
+        $srcRoot = $this->_appDirectory . DIRECTORY_SEPARATOR;
+        $buildRoot = $srcRoot . '..' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
         $pharName = $this->_name . ".phar";
+        
+        if(file_exists($buildRoot . $pharName)) {
+            unlink($buildRoot . $pharName);
+        }
 
         $phar = new \Phar(
-            $buildRoot . DIRECTORY_SEPARATOR . $pharName
+            $buildRoot . $pharName
             , \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::KEY_AS_FILENAME
             , $pharName
         );
         
-        $phar["app.php"] = file_get_contents($srcRoot . "/app.php");
-        $phar["lib.php"] = file_get_contents($srcRoot . "/lib.php");
+//        $phar["app.php"] = file_get_contents($srcRoot . "/app.php");
+//        $phar["lib.php"] = file_get_contents($srcRoot . "/lib.php");
+        $phar->addFile($srcRoot . "app.php", "app.php");
+        $phar->addFile($srcRoot . "lib.php", "lib.php");
+        
+        $master = self::_requireMaster();
+        
+        foreach($master->tree as $file) {
+            $filename = $srcRoot . $master->path . $file;
+            
+            $filename = \Phink\Utils\TFileUtils::relativePathToAbsolute($filename);
+            
+            $info = pathinfo($filename);
+//            \Phink\UI\TConsole::writeLine(print_r($info, true));
+            
+            \Phink\UI\TConsole::writeLine("Adding %s as %s", $filename, 'phink' . $file);
+            $phar->addFile($filename, 'phink' . $file);
+            
+//            $phar[$filename] = file_get_contents($master->path . DIRECTORY_SEPARATOR . $file);
+        }
+//        var_dump($phar->getStub());
         $phar->setStub($phar->createDefaultStub("app.php"));
     }
 
+    private function _displayTree()
+    {
+        
+        $tree = \Phink\TAutoloader::includeTree('master' . DIRECTORY_SEPARATOR . 'Phink-master' . DIRECTORY_SEPARATOR. 'src' . DIRECTORY_SEPARATOR . 'phink');
+        print_r($tree);
+    }
 }

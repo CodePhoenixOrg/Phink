@@ -62,14 +62,20 @@ class Zip {
 
                         // The name of the file to save on the disk
                         $file_name = $dest_dir.zip_entry_name($zip_entry);
+                        
+                        echo $file_name . PHP_EOL;
 
                         // Check if the files should be overwritten or not
-                        if (is_file($file_name) && ($overwrite === true || ($overwrite === false && !file_exists($file_name))))
+                        if (($overwrite === true || ($overwrite === false && !file_exists($file_name))))
                         {
                             // Get the content of the zip entry
-                            $fstream = zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
+                            $size = zip_entry_filesize($zip_entry);
+                            $fstream = zip_entry_read($zip_entry, $size);
 
-                            file_put_contents($file_name, $fstream );
+                            if($size > 0) {
+                                file_put_contents($file_name, $fstream );
+                            }
+                            
                         }
 
                         // Close the entry

@@ -326,7 +326,8 @@ class TAutoloader extends TStaticObject
         return $result;
     }
 
-    public static function loadCachedFile(Web\IWebObject $parent) {
+    public static function loadCachedFile(Web\IWebObject $parent)
+    {
         
         $cacheFilename = $parent->getCacheFilename();
         
@@ -352,6 +353,45 @@ class TAutoloader extends TStaticObject
         $class->perform();
         
     }
+
+    public static function walkTree($path, $filter = [])
+    {
+        $result = [];
+        
+        $l = strlen($path);
+        
+        $dir_iterator = new \RecursiveDirectoryIterator($path);
+        $iterator = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
+        // could use CHILD_FIRST if you so wish
+
+        foreach ($iterator as $file) {
+            $fi = pathinfo($file->getPathName());
+            
+            if($fi['basename'] ==  '.' || $fi['basename'] == '..') {
+                continue;
+            }
+            
+            if(isset($fi['extension'])) {
+                if(count($filter) > 0 && in_array($fi['extension'], $filter)) {
+                    array_push($result, substr($file->getPathName(), $l));
+                } elseif (count($filter) === 0) {
+                    array_push($result, substr($file->getPathName(), $l));
+                }
+            }
+            
+        }
+
+        return $result;
+                
+    }
+    
+    public static function includeTree($path)
+    {
+        $tree = self::walkTree($path, ['php']);
+        
+        return $tree;
+    }
+    
 
     public static function getDefaultNamespace()
     {

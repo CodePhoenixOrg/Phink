@@ -40,9 +40,9 @@ class TConsoleApplication extends TApplication
     {
         if($argv == null) $argv = array();
         $this->_argv = $argv;
-        $useTransaction = $this->getArgument('ut', 'useTransactions');
-        $execution = $this->getArgument('em', 'executionMode');
-        $verbose = $this->getArgument('v', 'verbose');
+        $useTransaction = $this->getArgument('useTransactions');
+        $execution = $this->getArgument('executionMode');
+        $verbose = $this->getArgument('verbose');
         TApplication::setExecutionMode($execution);
         TApplication::useTransactions($useTransaction);
         
@@ -55,7 +55,7 @@ class TConsoleApplication extends TApplication
         $this->log($this->getOS());
         $this->log('Expected parameters : ');
         foreach ($this->_parameters as $parameter) {
-            $this->log(' -' . $parameter['short'] . (($parameter['long'] != '') ? ' ou --' . $parameter['long'] : ''));
+            $this->log(' -' . $parameter['short'] . (($parameter['long'] != '') ? ' or --' . $parameter['long'] : ''));
         }
     }
     
