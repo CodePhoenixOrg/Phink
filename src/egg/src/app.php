@@ -17,7 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include __DIR__ . '/../../phink_library.php';
+$filename = __DIR__ . '/../../phink_library.php';
+if(Phar::running() != '') {
+    $filename =  './phink/phink_library.php';
+}
+include $filename;
+
 include 'lib.php';
 
 class Egg extends Phink\Core\TApplication {

@@ -23,6 +23,8 @@ class PhinkLibrary {
         $filenames = [ 
             'log/log.php',
             'core/static_object.php',
+            'ui/console.php',
+            'autoloader.php',
             'core/object.php',
             'core/application.php',
             'web/http_transport_interface.php',
@@ -91,8 +93,14 @@ class PhinkLibrary {
 
 //        $fw_content = '';
         foreach ($filenames as $filename) {
-            $filename = 'phink' . DIRECTORY_SEPARATOR . str_replace("/", DIRECTORY_SEPARATOR,  $filename);
-            include  __DIR__ . DIRECTORY_SEPARATOR . $filename;
+            $file = 'phink' . DIRECTORY_SEPARATOR . str_replace("/", DIRECTORY_SEPARATOR,  $filename);
+            
+//            $file = __DIR__ . DIRECTORY_SEPARATOR . $filename;
+            if(Phar::running() != '') {
+//                $file = pathinfo($filename, PATHINFO_BASENAME);
+                $file = $filename;
+            }
+            include $file;
 //            $fw_content .= file_get_contents($filename, FILE_USE_INCLUDE_PATH);
         }
         
