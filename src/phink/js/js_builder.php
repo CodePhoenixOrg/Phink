@@ -18,7 +18,7 @@
  
 namespace Phink\JavaScript;
  
-class Builder {
+class JsBuilder {
 
     public static function build () {
         $destdir = DOCUMENT_ROOT . 'js' . DIRECTORY_SEPARATOR;

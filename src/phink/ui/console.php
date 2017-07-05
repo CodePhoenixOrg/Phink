@@ -55,7 +55,7 @@ class TConsole extends \Phink\Core\TStaticObject
         if(DOCUMENT_ROOT == '') {
             print $result . PHP_EOL;
         } else {
-            self::getLogger()->debug($result) . PHP_EOL;
+            self::getLogger()->debug($result . PHP_EOL);
         }
     }
 

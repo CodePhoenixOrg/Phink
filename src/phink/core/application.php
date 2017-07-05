@@ -292,17 +292,20 @@ class TApplication extends TObject
         $phar->addFile($srcRoot . "lib.php", "lib.php");
         
         $master = self::_requireMaster();
-        
+        $phink_builder = $srcRoot . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'phink_library.php';
+        $phink_builder = \Phink\Utils\TFileUtils::relativePathToAbsolute($phink_builder);
+        $phar->addFile($phink_builder, "phink_library.php");
+
         foreach($master->tree as $file) {
             $filename = $srcRoot . $master->path . $file;
             
             $filename = \Phink\Utils\TFileUtils::relativePathToAbsolute($filename);
             
-            $info = pathinfo($filename);
+            $info = pathinfo($filename, PATHINFO_BASENAME);
 //            \Phink\UI\TConsole::writeLine(print_r($info, true));
             
-            \Phink\UI\TConsole::writeLine("Adding %s as %s", $filename, 'phink' . $file);
-            $phar->addFile($filename, 'phink' . $file);
+            \Phink\UI\TConsole::writeLine("Adding %s as %s", $filename, $info);
+            $phar->addFile($filename, $info);
             
 //            $phar[$filename] = file_get_contents($master->path . DIRECTORY_SEPARATOR . $file);
         }

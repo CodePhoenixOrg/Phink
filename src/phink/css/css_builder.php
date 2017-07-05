@@ -25,7 +25,7 @@
 
 namespace Phink\CascadingStyleSheet;
 
-class Builder {
+class CssBuilder {
 
     public static function deltree($path) {
         $class_func = array(__CLASS__, __FUNCTION__);

@@ -19,7 +19,7 @@
 
 $filename = __DIR__ . '/../../phink_library.php';
 if(Phar::running() != '') {
-    $filename =  './phink/phink_library.php';
+    $filename =  'phink_library.php';
 }
 include $filename;
 
@@ -52,7 +52,8 @@ class Egg extends Phink\Core\TApplication {
      */
     public function __construct($args_v, $args_c = 0)
     {
-        parent::__construct($args_v, $args_c, __DIR__);
+        $dir = dirname(__FILE__);
+        parent::__construct($args_v, $args_c, $dir);
         
         try {
             $egg = new EggLib();

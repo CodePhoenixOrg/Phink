@@ -26,6 +26,8 @@ class PhinkLibrary {
             'ui/console.php',
             'autoloader.php',
             'core/object.php',
+            'css/css_builder.php',
+            'js/js_builder.php',
             'core/application.php',
             'web/http_transport_interface.php',
             'web/http_transport.php',
@@ -97,8 +99,8 @@ class PhinkLibrary {
             
 //            $file = __DIR__ . DIRECTORY_SEPARATOR . $filename;
             if(Phar::running() != '') {
-//                $file = pathinfo($filename, PATHINFO_BASENAME);
-                $file = $filename;
+                $file = pathinfo($filename, PATHINFO_BASENAME);
+//                $file = $filename;
             }
             include $file;
 //            $fw_content .= file_get_contents($filename, FILE_USE_INCLUDE_PATH);
