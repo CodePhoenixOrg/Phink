@@ -81,12 +81,12 @@ class TWebApplication extends \Phink\Core\TApplication implements IHttpTransport
         
 
         if(!file_exists('js_builder.lock')) {
-            \Phink\JavaScript\Builder::build();
+            \Phink\JavaScript\JsBuilder::build();
             file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
         }
 
         if(!file_exists('css_builder.lock')) {
-            \Phink\CascadingStyleSheet\Builder::build();
+            \Phink\CascadingStyleSheet\CssBuilder::build();
             file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
         }
 
