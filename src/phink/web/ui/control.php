@@ -106,7 +106,7 @@ class TControl extends TCustomControl
         self::$logger->debug(__METHOD__ . '::1::' . $cachedJsController);
         if(file_exists($cachedJsController)) {
             $jsCode = file_get_contents($cachedJsController);
-            $html .= CR_LF . "?>" .CR_LF . $jsCode . CR_LF;
+            $html .= PHP_EOL . "?>" .PHP_EOL . $jsCode . PHP_EOL;
             self::$logger->debug(__METHOD__ . '::2::' . $cachedJsController);
             
             $this->response->addScript($cachedJsController);

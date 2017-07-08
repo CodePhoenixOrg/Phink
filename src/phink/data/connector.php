@@ -96,7 +96,7 @@ class TConnector implements IStaticConnector
     }
     public static function connect()
     {
-        TConsole::log('Connexion par défaut');
+        TConsoleApplication::writeLine('Connexion par défaut');
         self::$_isAlive = self::getInstance()->connect();
         return self::$_isAlive;
     }
@@ -154,15 +154,15 @@ class TConnector implements IStaticConnector
     }
     public static function close()
     {
-        TConsole::log('Ferme la connexion');
+        TConsoleApplication::writeLine('Ferme la connexion');
         self::$_isConnected = !self::getInstance()->close();
         return self::$_isConnected;
     }
     public static function kill()
     {
-        TConsole::log('Ferme la connexion');
+        TConsoleApplication::writeLine('Ferme la connexion');
         self::$_isConnected = !self::getInstance()->close();
-        TConsole::log("Tue l'instance");
+        TConsoleApplication::writeLine("Tue l'instance");
         unset(self::$_instance);
         self::$_instance = NULL;
         self::$_isAlive = false;
@@ -178,15 +178,15 @@ class TConnector implements IStaticConnector
     public static function useTransactions($set = true)
     {
         if($set) {
-            TConsole::log('Autorise les transactions');
+            TConsoleApplication::writeLine('Autorise les transactions');
         } else {
-            TConsole::log("N'autorise pas les transactions");
+            TConsoleApplication::writeLine("N'autorise pas les transactions");
         }
         return self::getInstance()->useTransactions($set);
     }
     public static function beginTransaction()
     {
-        if($set) TConsole::log('Commence une transaction');
+        if($set) TConsoleApplication::writeLine('Commence une transaction');
         return self::getInstance()->beginTransaction();
     }
     public static function getTransactionLevel()
@@ -195,12 +195,12 @@ class TConnector implements IStaticConnector
     }
     public static function commit()
     {
-        if($set) TConsole::log('Valide la transaction');
+        if($set) TConsoleApplication::writeLine('Valide la transaction');
         return self::getInstance()->commit($set);
     }
     public static function rollback()
     {
-        if($set) TConsole::log('Invalide la transaction');
+        if($set) TConsoleApplication::writeLine('Invalide la transaction');
         return self::getInstance()->rollback($set);
     }
     public static function identity()
@@ -576,7 +576,7 @@ class TSqlSrvDbConnector implements IConnector
         $result = false;
         
         if($data = sqlsrv_errors()) {
-            $result = $data['SQLSTATE'] . CR_LF . $data['code'] . CR_LF . $data['message'];
+            $result = $data['SQLSTATE'] . PHP_EOL . $data['code'] . PHP_EOL . $data['message'];
         }
         
         return $result;
@@ -588,11 +588,11 @@ class TSqlSrvDbConnector implements IConnector
         $this->_transactionLevel = 0;
         if(!$this->_useTransactions) {
             if(TApplication::getVerboseMode()) {
-                TConsole::log('Transaction non-autorisée');
+                TConsoleApplication::writeLine('Transaction non-autorisée');
             }
         } else {
             if(TApplication::getVerboseMode()) {
-                TConsole::log('Transaction autorisée');
+                TConsoleApplication::writeLine('Transaction autorisée');
             }
         }
     }
@@ -602,13 +602,13 @@ class TSqlSrvDbConnector implements IConnector
         $result = false;
         $this->_transactionLevel++;
         if(TApplication::getVerboseMode()) {
-            TConsole::log('Niveau de transaction : ' . $this->_transactionLevel);
+            TConsoleApplication::writeLine('Niveau de transaction : ' . $this->_transactionLevel);
         }
         $setTransaction = ($this->_useTransactions && $this->_transactionLevel == 1);
         
         if($this->_connection && $setTransaction) {
             if(TApplication::getVerboseMode()) {
-                TConsole::log('transaction initiée');
+                TConsoleApplication::writeLine('transaction initiée');
             }
             $result = sqlsrv_begin_transaction($this->_connection);
         } elseif($this->_connection && !$setTransaction) {
@@ -627,7 +627,7 @@ class TSqlSrvDbConnector implements IConnector
     {
         $result = false;
         if(TApplication::getVerboseMode()) {
-            TConsole::log('Niveau de transaction : ' . $this->_transactionLevel);
+            TConsoleApplication::writeLine('Niveau de transaction : ' . $this->_transactionLevel);
         }
         $setTransaction =  ($this->_useTransactions && $this->_transactionLevel == 1);
         $this->_transactionLevel--;
@@ -635,7 +635,7 @@ class TSqlSrvDbConnector implements IConnector
         if($this->_connection && $setTransaction) {
             $result = sqlsrv_commit($this->_connection);
             if(TApplication::getVerboseMode()) {
-                TConsole::log('transaction validée');
+                TConsoleApplication::writeLine('transaction validée');
             }
         } elseif($this->_connection && !$setTransaction) {
             $result = true;
@@ -648,7 +648,7 @@ class TSqlSrvDbConnector implements IConnector
     {
         $result = false;
         if(TApplication::getVerboseMode()) {
-            TConsole::log('Niveau de transaction : ' . $this->_transactionLevel);
+            TConsoleApplication::writeLine('Niveau de transaction : ' . $this->_transactionLevel);
         }
         $setTransaction =  ($this->_useTransactions && $this->_transactionLevel == 1);
         $this->_transactionLevel--;
@@ -656,7 +656,7 @@ class TSqlSrvDbConnector implements IConnector
         if($this->_connection && $setTransaction) {
             $result = sqlsrv_rollback($this->_connection);
             if(TApplication::getVerboseMode()) {
-                TConsole::log('transaction annulée');
+                TConsoleApplication::writeLine('transaction annulée');
             }
         } elseif($this->_connection && !$setTransaction) {
             $result = true;
@@ -927,9 +927,9 @@ class TMsSqlDbConnector implements IConnector
         $this->_useTransactions = $set;
         $this->_transactionLevel = 0;
         if(!$this->_useTransactions) {
-            TConsole::log('Transaction non-autorisée');
+            TConsoleApplication::writeLine('Transaction non-autorisée');
         } else {
-            TConsole::log('Transaction autorisée');
+            TConsoleApplication::writeLine('Transaction autorisée');
         }
     }
 
@@ -937,11 +937,11 @@ class TMsSqlDbConnector implements IConnector
     {
         $result = false;
         $this->_transactionLevel++;
-        TConsole::log('Niveau de transaction : ' . $this->_transactionLevel);
+        TConsoleApplication::writeLine('Niveau de transaction : ' . $this->_transactionLevel);
         $setTransaction =  ($this->_useTransactions && $this->_transactionLevel == 1);
         
         if($this->_connection && $setTransaction) {
-            TConsole::log('transaction initiée');
+            TConsoleApplication::writeLine('transaction initiée');
             $result = mssql_query('BEGIN TRAN', $this->_connection);
         } elseif($this->_connection && !$setTransaction) {
             $result = true;
@@ -958,7 +958,7 @@ class TMsSqlDbConnector implements IConnector
     public function commit()
     {
         $result = false;
-        TConsole::log('Niveau de transaction : ' . $this->_transactionLevel);
+        TConsoleApplication::writeLine('Niveau de transaction : ' . $this->_transactionLevel);
         $setTransaction =  ($this->_useTransactions && $this->_transactionLevel == 1);
         $this->_transactionLevel--;
         
@@ -974,7 +974,7 @@ class TMsSqlDbConnector implements IConnector
     public function rollback()
     {
         $result = false;
-        TConsole::log('Niveau de transaction : ' . $this->_transactionLevel);
+        TConsoleApplication::writeLine('Niveau de transaction : ' . $this->_transactionLevel);
         $setTransaction =  ($this->_useTransactions && $this->_transactionLevel == 1);
         $this->_transactionLevel--;
         
@@ -1207,9 +1207,9 @@ class TMySqlDbConnector implements IConnector
         $this->_useTransactions = $set;
         $this->_transactionLevel = 0;
         if(!$this->_useTransactions) {
-            TConsole::log('Transaction non-autorisée');
+            TConsoleApplication::writeLine('Transaction non-autorisée');
         } else {
-            TConsole::log('Transaction autorisée');
+            TConsoleApplication::writeLine('Transaction autorisée');
         }
     }
 
@@ -1217,11 +1217,11 @@ class TMySqlDbConnector implements IConnector
     {
         $result = false;
         $this->_transactionLevel++;
-        TConsole::log('Niveau de transaction : ' . $this->_transactionLevel);
+        TConsoleApplication::writeLine('Niveau de transaction : ' . $this->_transactionLevel);
         $setTransaction =  ($this->_useTransactions && $this->_transactionLevel == 1);
         
         if($this->_connection && $setTransaction) {
-            TConsole::log('transaction initiée');
+            TConsoleApplication::writeLine('transaction initiée');
             $result = mysqli_query('START TRANSACTION', $this->_connection);
         } elseif($this->_connection && !$setTransaction) {
             $result = true;
@@ -1238,7 +1238,7 @@ class TMySqlDbConnector implements IConnector
     public function commit()
     {
         $result = false;
-        TConsole::log('Niveau de transaction : ' . $this->_transactionLevel);
+        TConsoleApplication::writeLine('Niveau de transaction : ' . $this->_transactionLevel);
         $setTransaction =  ($this->_useTransactions && $this->_transactionLevel == 1);
         $this->_transactionLevel--;
         
@@ -1254,7 +1254,7 @@ class TMySqlDbConnector implements IConnector
     public function rollback()
     {
         $result = false;
-        TConsole::log('Niveau de transaction : ' . $this->_transactionLevel);
+        TConsoleApplication::writeLine('Niveau de transaction : ' . $this->_transactionLevel);
         $setTransaction =  ($this->_useTransactions && $this->_transactionLevel == 1);
         $this->_transactionLevel--;
         

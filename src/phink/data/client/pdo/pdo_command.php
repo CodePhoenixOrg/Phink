@@ -89,7 +89,7 @@ class TPdoCommand extends \Phink\Data\TCustomCommand
 //        if(strstr($driver, 'mysql')) {
             $start = (!$start) ? 1 : $start;
             //$sql = str_replace(PHX_MYSQL_LIMIT, ' LIMIT ' . (($start - 1) * $count). ', ' . $count, $this->getSelectQuery());
-            $sql = $this->getSelectQuery() . CR_LF . ' LIMIT ' . (($start - 1) * $count). ', ' . $count . CR_LF;
+            $sql = $this->getSelectQuery() . PHP_EOL . ' LIMIT ' . (($start - 1) * $count). ', ' . $count . PHP_EOL;
 
             $this->setSelectQuery($sql);
 //        }

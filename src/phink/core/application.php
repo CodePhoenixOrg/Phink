@@ -53,29 +53,39 @@ class TApplication extends TObject
     private $_argc;
     private $_parameters = array();
     private $_name = 'program';
-    private $_appDirectory = '';
+    protected $appDirectory = '';
 
 
     private $redis = null;
 
     public function __construct($argv = [], $argc = 0, $appDirectory = '') {
 
+        parent::__construct();
 //        if(!class_exists('\Phink\TAutoloader')) {
 //            include 'phink/autoloader.php';
 //            \Phink\TAutoLoader::register();
 //        }
-        $this->_appDirectory = $appDirectory;
+        $this->appDirectory = $appDirectory . DIRECTORY_SEPARATOR;
         $path = explode(DIRECTORY_SEPARATOR, $appDirectory);
+        
         array_pop($path);
+        if(APP_IS_PHAR) {
+            array_pop($path);
+            $currentDir = $this->appDirectory . '..';
+            $currentDir = \Phink\Utils\TFileUtils::relativePathToAbsolute($currentDir);
+            $this->appDirectory = str_replace('phar://', '', $currentDir) . DIRECTORY_SEPARATOR;
+        }         
+        
         $this->_name = array_pop($path);
         
-        \Phink\UI\TConsole::writeLine($this->_name);
+        \Phink\UI\TConsoleApplication::writeLine($this->_name);
         
         //$this->_name = $argv[0];
         $this->_argv = $argv;
         $this->_argc = $argc;
         
         if($this->getArgument('make-phar')) {
+            \Phink\UI\TConsoleApplication::writeLine('MAKE PHAR');
             $this->makePhar();
         }
         
@@ -84,18 +94,26 @@ class TApplication extends TObject
         }
         
         if($this->getArgument('display-tree')) {
-            $this->_displayTree();
+            $dir = $this->appDirectory;
+            $this->displayTree($this->appDirectory);
         }
         
+        if($this->getArgument('display-master-tree')) {
+            $this->displayTree('master' . DIRECTORY_SEPARATOR . 'Phink-master' . DIRECTORY_SEPARATOR. 'src' . DIRECTORY_SEPARATOR . 'phink');
+        }
     }
     
+    public function getApplicationDirectory() {
+        return $this->appDirectory;
+    }
+
     public function getArgument($long, $short = '')
     {
         $result = false;
         $isFound = false;
         array_push($this->_parameters, ['long' => $long, 'short' => $short]);
         
-        if(DOCUMENT_ROOT == '') {
+        if(!APP_IS_WEB) {
             
             $c = count($this->_argv);
             for ($i = 0; $i < $c; $i++) {
@@ -160,7 +178,7 @@ class TApplication extends TObject
     public static function setExecutionMode($myExecutionMode)
     {
         if(!$myExecutionMode) {
-            $myExecutionMode = (DOCUMENT_ROOT == '') ?  'debug' : 'prod';
+            $myExecutionMode = (APP_IS_WEB) ?  'debug' : 'prod';
         }
         
         $prod = ($myExecutionMode == 'prod');
@@ -235,17 +253,17 @@ class TApplication extends TObject
         $dirname = 'master';
         $filename = $dirname . '.zip';
 
-        \Phink\UI\TConsole::writeLine(file_exists($filename) ? 'TRUE' : 'FALSE');
+        \Phink\UI\TConsoleApplication::writeLine(file_exists($filename) ? 'TRUE' : 'FALSE');
         
         if(!file_exists($filename)) {
-            \Phink\UI\TConsole::writeLine('Downloading Phink github master');
+            \Phink\UI\TConsoleApplication::writeLine('Downloading Phink github master');
             $curl = new \Phink\Web\Curl();
             $result = $curl->request('https://codeload.github.com/dpjb71/Phink/zip/master');
             file_put_contents($filename, $result->content);   
         }
 
         if(file_exists($filename)) {
-            \Phink\UI\TConsole::writeLine('Deflating Phink master archive');
+            \Phink\UI\TConsoleApplication::writeLine('Deflating Phink master archive');
             $zip = new \Phink\Utils\Zip();
             $zip->deflat($filename);
             
@@ -266,13 +284,13 @@ class TApplication extends TObject
     
     public function makePhar()
     {
-        if(DOCUMENT_ROOT != '') {
+        if(APP_IS_WEB) {
             throw new \Exception('Still cannot make a phar of a web application!');
         }
         ini_set('phar.readonly', 0);
         
          // the current directory must be src
-        $srcRoot = $this->_appDirectory . DIRECTORY_SEPARATOR;
+        $srcRoot = $this->appDirectory;
         $buildRoot = $srcRoot . '..' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
         $pharName = $this->_name . ".phar";
         
@@ -302,9 +320,9 @@ class TApplication extends TObject
             $filename = \Phink\Utils\TFileUtils::relativePathToAbsolute($filename);
             
             $info = pathinfo($filename, PATHINFO_BASENAME);
-//            \Phink\UI\TConsole::writeLine(print_r($info, true));
+//            \Phink\UI\TConsoleApplication::writeLine(print_r($info, true));
             
-            \Phink\UI\TConsole::writeLine("Adding %s as %s", $filename, $info);
+            \Phink\UI\TConsoleApplication::writeLine("Adding %s as %s", $filename, $info);
             $phar->addFile($filename, $info);
             
 //            $phar[$filename] = file_get_contents($master->path . DIRECTORY_SEPARATOR . $file);
@@ -313,10 +331,11 @@ class TApplication extends TObject
         $phar->setStub($phar->createDefaultStub("app.php"));
     }
 
-    private function _displayTree()
+    
+    public function displayTree($path)
     {
         
-        $tree = \Phink\TAutoloader::includeTree('master' . DIRECTORY_SEPARATOR . 'Phink-master' . DIRECTORY_SEPARATOR. 'src' . DIRECTORY_SEPARATOR . 'phink');
-        print_r($tree);
+        $tree = \Phink\TAutoloader::includeTree($path);
+        \Phink\UI\TConsoleApplication::writeLine($tree);
     }
 }

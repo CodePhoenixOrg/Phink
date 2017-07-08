@@ -121,7 +121,7 @@ trait TCodeGenerator {
                     if(file_exists(DOCUMENT_ROOT . $fullJsCachePath)) {
                         $view->getResponse()->addScript($fullJsCachePath);
                     } else if(file_exists(SITE_ROOT . $fullJsClassPath)) {
-                        $jsCtrlCode = file_get_contents(SITE_ROOT . $fullJsClassPath) . CR_LF;
+                        $jsCtrlCode = file_get_contents(SITE_ROOT . $fullJsClassPath) . PHP_EOL;
                         file_put_contents(DOCUMENT_ROOT . $fullJsCachePath, $jsCtrlCode);
                         $view->getResponse()->addScript($fullJsCachePath);
                     }
@@ -195,9 +195,9 @@ trait TCodeGenerator {
                 }
                 array_push($additions[$j], '$this->addChild(' . $thisControl . ');');
                 
-                $creations[$j] = implode(CR_LF, $creations[$j]);
-                $additions[$j] = implode(CR_LF, $additions[$j]);
-                $afterBinding[$j] = implode(CR_LF, $afterBinding[$j]);
+                $creations[$j] = implode(PHP_EOL, $creations[$j]);
+                $additions[$j] = implode(PHP_EOL, $additions[$j]);
+                $afterBinding[$j] = implode(PHP_EOL, $afterBinding[$j]);
             }
 
             
@@ -209,28 +209,28 @@ trait TCodeGenerator {
         }
 
         $requires = array_unique($requires);
-        $requires = implode(CR_LF, $requires);
+        $requires = implode(PHP_EOL, $requires);
         $uses = array_unique($uses);
-        $uses = implode(CR_LF, $uses);
+        $uses = implode(PHP_EOL, $uses);
 
-        $objectCreation = CR_LF;
-        $objectCreation .= $requires . CR_LF;
-        $objectCreation .= $uses . CR_LF;
+        $objectCreation = PHP_EOL;
+        $objectCreation .= $requires . PHP_EOL;
+        $objectCreation .= $uses . PHP_EOL;
         foreach($matches as $matchIndex) {
             if(!isset($creations[$matchIndex])) continue;
-            $objectCreation .= $creations[$matchIndex] . CR_LF;
+            $objectCreation .= $creations[$matchIndex] . PHP_EOL;
         }
         
-        $objectAdditions = CR_LF;
+        $objectAdditions = PHP_EOL;
         foreach($matches as $matchIndex) {
             if(!isset($additions[$matchIndex])) continue;
-            $objectAdditions .= $additions[$matchIndex] . CR_LF;
+            $objectAdditions .= $additions[$matchIndex] . PHP_EOL;
         }
 
-        $objectAfterBiding = CR_LF;
+        $objectAfterBiding = PHP_EOL;
         foreach($matches as $matchIndex) {
             if(!isset($afterBinding[$matchIndex])) continue;
-            $objectAfterBiding .= $afterBinding[$matchIndex] . CR_LF;
+            $objectAfterBiding .= $afterBinding[$matchIndex] . PHP_EOL;
         }
         
         return (object)['creations' => $objectCreation, 'additions' => $objectAdditions, 'afterBinding' => $objectAfterBiding];
@@ -239,14 +239,14 @@ trait TCodeGenerator {
     function writeHTML(TXmlDocument $doc, TCustomView $view)
     {
 //        if(file_exists($this->jsControllerFileName) && !strstr($this->jsControllerFileName, 'main.js')) {
-//            $pageCode = "<script data-getscript='itsme' src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . \Phink\Utils\TFileUtils::webPath($this->jsControllerFileName) . "'></script>" . CR_LF . $pageCode;        
+//            $pageCode = "<script data-getscript='itsme' src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . \Phink\Utils\TFileUtils::webPath($this->jsControllerFileName) . "'></script>" . PHP_EOL . $pageCode;        
 //        }
         
         $pageCode = $view->getViewHtml();
                
         if(file_exists($this->cssFileName)) {
-//            $pageCode = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . "/" . $this->cssFileName . "' />" . CR_LF . $pageCode;
-            $pageCode = "<script>TWebObject.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . \Phink\Utils\TFileUtils::webPath($this->cssFileName) . "');</script>" . CR_LF . $pageCode;        
+//            $pageCode = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . "/" . $this->cssFileName . "' />" . PHP_EOL . $pageCode;
+            $pageCode = "<script>TWebObject.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . \Phink\Utils\TFileUtils::webPath($this->cssFileName) . "');</script>" . PHP_EOL . $pageCode;        
         }
         
         $count = $doc->getCount();

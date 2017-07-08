@@ -23,12 +23,12 @@ class PhinkLibrary {
         $filenames = [ 
             'log/log.php',
             'core/static_object.php',
-            'ui/console.php',
             'autoloader.php',
             'core/object.php',
             'css/css_builder.php',
             'js/js_builder.php',
             'core/application.php',
+            'ui/console_application.php',
             'web/http_transport_interface.php',
             'web/http_transport.php',
             'web/web_object_interface.php',

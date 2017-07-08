@@ -113,7 +113,7 @@ class TAutoloader extends TStaticObject
         }
        
         if($withCode) {
-            $code = substr(trim($code), 0, -2) . CR_LF . CONTROL_ADDITIONS;
+            $code = substr(trim($code), 0, -2) . PHP_EOL . CONTROL_ADDITIONS;
             TRegistry::setCode($filename, $code);
         }
         
@@ -171,7 +171,7 @@ class TAutoloader extends TStaticObject
         
         $file = $filename;
         if(isset($params) && ($params && RETURN_CODE === RETURN_CODE)) {
-            $code = substr(trim($code), 0, -2) . CR_LF . CONTROL_ADDITIONS;
+            $code = substr(trim($code), 0, -2) . PHP_EOL . CONTROL_ADDITIONS;
             TRegistry::setCode($filename, $code);
         }
         

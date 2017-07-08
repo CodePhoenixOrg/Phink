@@ -30,18 +30,18 @@ $PWD = '';
 
 $document_root = isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '';
 
+define('APP_IS_WEB', ($document_root != ''));
+define('APP_IS_PHAR', (\Phar::running() != ''));
+
 if($document_root != '') {
 
     define('BR', "<br />");
     if(PHP_OS == 'WINNT') {
-        define('CR_LF', "\r\n");
-        $document_root = str_replace('\\\\', '\\', $_SERVER['DOCUMENT_ROOT']) . '\\';
+        $document_root = str_replace('\\\\', '\\', $document_root) . '\\';
     } elseif(PHP_OS == 'Linux') {
-        define('CR_LF', "\n");
-        $document_root = $_SERVER['DOCUMENT_ROOT'] . '/';
+        $document_root = $document_root . '/';
     } else {
-        define('CR_LF', "\n");
-        $document_root = $_SERVER['DOCUMENT_ROOT'] . '/';
+        $document_root = $document_root . '/';
     }
     $scheme = 'http';
     if(strstr($_SERVER['SERVER_SOFTWARE'], 'IIS')) {
@@ -125,9 +125,9 @@ if($document_root != '') {
     define('AFTERBINDING_PLACEHOLDER', '<phx:afterBindingPlaceHolder />');
     define('HTML_PLACEHOLDER', '<phx:htmlPlaceHolder />');
     /*
-     * define('CONTROL_ADDITIONS', CR_LF . "\tpublic function createObjects() {" . CR_LF . CREATIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function declareObjects() {" . CR_LF . ADDITIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function afterBindingObjects() {" . CR_LF . AFTERBINDING_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function displayHtml() {" . CR_LF . "?>" . CR_LF . HTML_PLACEHOLDER . CR_LF . "<?php" . CR_LF . "\t}" . CR_LF . '}' . CR_LF);
+     * define('CONTROL_ADDITIONS', PHP_EOL . "\tpublic function createObjects() {" . PHP_EOL . CREATIONS_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function declareObjects() {" . PHP_EOL . ADDITIONS_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function afterBindingObjects() {" . PHP_EOL . AFTERBINDING_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function displayHtml() {" . PHP_EOL . "?>" . PHP_EOL . HTML_PLACEHOLDER . PHP_EOL . "<?php" . PHP_EOL . "\t}" . PHP_EOL . '}' . PHP_EOL);
      */
-    define('CONTROL_ADDITIONS', CR_LF . "\tpublic function createObjects() {" . CR_LF . CREATIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function declareObjects() {" . CR_LF . ADDITIONS_PLACEHOLDER . CR_LF . "\t}" . CR_LF . CR_LF . "\tpublic function displayHtml() {" . CR_LF . "?>" . CR_LF . HTML_PLACEHOLDER . CR_LF . "<?php" . CR_LF . "\t}" . CR_LF . '}' . CR_LF);
+    define('CONTROL_ADDITIONS', PHP_EOL . "\tpublic function createObjects() {" . PHP_EOL . CREATIONS_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function declareObjects() {" . PHP_EOL . ADDITIONS_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function displayHtml() {" . PHP_EOL . "?>" . PHP_EOL . HTML_PLACEHOLDER . PHP_EOL . "<?php" . PHP_EOL . "\t}" . PHP_EOL . '}' . PHP_EOL);
     define('PHX_SQL_LIMIT', '<phx:sql_limit />');
 
     define('RETURN_CODE', 1);

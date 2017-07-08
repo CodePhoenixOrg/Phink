@@ -60,11 +60,11 @@ class THtmlObjects
 
         $colCount = abs($length / $colNumber);
 
-        $result = "<$listType$class>" . CR_LF;
+        $result = "<$listType$class>" . PHP_EOL;
         $i = 0;
         foreach($dictionary as  $key=>$value) {
             if($i == $colNumber) {
-                $result .= "</$listType>" . CR_LF . "<$listType$class>" . CR_LF;
+                $result .= "</$listType>" . PHP_EOL . "<$listType$class>" . PHP_EOL;
                 $i = 0;
             }
             
@@ -86,7 +86,7 @@ class THtmlObjects
 
         }
 
-        $result .= "</$listType>" . CR_LF;
+        $result .= "</$listType>" . PHP_EOL;
 
 
         return $result;
@@ -103,12 +103,12 @@ class THtmlObjects
         $cssArray = explode(',', $css);
         $class = (isset($cssArray[0])) ? ' class="' . $cssArray[0] . '"' : '';
 
-        $result = '<' . $listType . $class . '>' . CR_LF;
+        $result = '<' . $listType . $class . '>' . PHP_EOL;
 
         $count = count($dictionary);
         foreach($dictionary as  $key=>$subArray) {
             if($i == $colNumber) {
-                $result .= '</' . $listType . '>' . CR_LF . '<' . $listType . $class . '>' . CR_LF;
+                $result .= '</' . $listType . '>' . PHP_EOL . '<' . $listType . $class . '>' . PHP_EOL;
                 $i = 0;
             }
             
@@ -180,7 +180,7 @@ class THtmlObjects
 
         }
 
-        $result .= '</' . $listType . '>' . CR_LF;
+        $result .= '</' . $listType . '>' . PHP_EOL;
 
 
         return $result;

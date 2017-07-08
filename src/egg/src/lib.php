@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class EggLib extends Phink\Core\TStaticObject {
+class EggLib extends Phink\Core\TObject {
 
     /**
      * Defines the full directory tree of a Phink web application
@@ -58,11 +58,14 @@ class EggLib extends Phink\Core\TStaticObject {
     ];
     
 
+    protected $appDir = '' ;
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct(\Phink\UI\TConsoleApplication  $parent)
     {
+        $this->setParent($parent);
+        $this->appDir = $parent->getApplicationDirectory();
     }
     
 
@@ -85,13 +88,18 @@ class EggLib extends Phink\Core\TStaticObject {
     /**
      * Create the skeleton of the application
      */
-    public function create () 
+    public function createTree () 
     {
+        $this->parent->writeLine("Current directory %s", $currentDir);
+        
         sort($this->directories);
         foreach ($this->directories as $directory){
             if(!file_exists($directory)) {
-                echo "creating directory $directory" . PHP_EOL;
+                $this->parent->writeLine("Creating directory %s", $directory);
                 mkdir($directory, 0755, true);
+            } else {
+                $this->parent->writeLine("Directory %s already exist", $directory);
+                
             }
         }
 		
@@ -100,15 +108,19 @@ class EggLib extends Phink\Core\TStaticObject {
     /**
      * Deletes recursively all known directories of the application 
      */
-    public function delete () 
+    public function deleteTree () 
     {
+        $this->parent->writeLine("Current directory %s", $this->appDir);
+
         rsort($this->directories);
         foreach ($this->directories as $directory){
-            if(file_exists($directory)) {
-                echo "removing directory $directory" . PHP_EOL;
-                
-                $this->_deltree($directory);
+            $dir = $this->appDir . $directory;
+            if(file_exists($dir)) {
+                $this->parent->writeLine("Removing directory %s", $dir);
+                $this->_deltree($dir);
                         
+            } else {
+                $this->parent->writeLine("Cannot find directory %s", $dir);
             }
         }
 		
