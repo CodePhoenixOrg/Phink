@@ -29,7 +29,7 @@ class Egg extends \Phink\UI\TConsoleApplication {
      * @param int $argc Count the number of these arguments
      */
     public static function main($args_v, $args_c = 0) {
-        (new Egg($args_v, $args_c))->run();
+        (new Egg($args_v, $args_c));
     }
 
     /**
@@ -45,10 +45,12 @@ class Egg extends \Phink\UI\TConsoleApplication {
         parent::__construct($args_v, $args_c, $dir);
     }
     
+    /**
+     * Entrypoint of a TConsoleApplication
+     */
     public function run()
     {
         try {
-            BZip::open();
             $egg = new EggLib($this);
             
             if ($this->getArgument('create')) {
@@ -61,8 +63,8 @@ class Egg extends \Phink\UI\TConsoleApplication {
 
         } catch(\Throwable $th) {
             self::writeException($th);
-//        } catch (\Exception $ex) {
-//            self::writeException($ex);
+        } catch (\Exception $ex) {
+            self::writeException($ex);
         }
     }
 

@@ -94,13 +94,19 @@ class TApplication extends TObject
         }
         
         if($this->getArgument('display-tree')) {
-            $dir = $this->appDirectory;
             $this->displayTree($this->appDirectory);
         }
         
         if($this->getArgument('display-master-tree')) {
-            $this->displayTree('master' . DIRECTORY_SEPARATOR . 'Phink-master' . DIRECTORY_SEPARATOR. 'src' . DIRECTORY_SEPARATOR . 'phink');
+            try {
+                $this->displayTree('master' . DIRECTORY_SEPARATOR . 'Phink-master' . DIRECTORY_SEPARATOR. 'src' . DIRECTORY_SEPARATOR . 'phink');
+            } catch (\Throwable $ex) {
+                \Phink\UI\TConsoleApplication::writeException($ex);
+            } catch (\Exception $ex) {
+                \Phink\UI\TConsoleApplication::writeException($ex);
+            }
         }
+        
     }
     
     public function getApplicationDirectory() {
@@ -304,6 +310,13 @@ class TApplication extends TObject
             , $pharName
         );
         
+        // start buffering. Mandatory to modify stub.
+        $phar->startBuffering();
+        
+        // Get the default stub. You can create your own if you have specific needs
+        $defaultStub = $phar->createDefaultStub("app.php");
+        
+
 //        $phar["app.php"] = file_get_contents($srcRoot . "/app.php");
 //        $phar["lib.php"] = file_get_contents($srcRoot . "/lib.php");
         $phar->addFile($srcRoot . "app.php", "app.php");
@@ -328,14 +341,35 @@ class TApplication extends TObject
 //            $phar[$filename] = file_get_contents($master->path . DIRECTORY_SEPARATOR . $file);
         }
 //        var_dump($phar->getStub());
-        $phar->setStub($phar->createDefaultStub("app.php"));
-    }
+        
 
+        // Create a custom stub to add the shebang
+        $execHeader = "#!/usr/bin/env php \n";
+        if(PHP_OS == 'WINNT') {
+            $execHeader = "@echo off\r\nphp.exe\r\n";
+        }
+        $stub = $execHeader . $defaultStub;
+
+        // Add the stub
+        $phar->setStub($stub);
+
+        $phar->stopBuffering();        
+
+        $buildRoot = $this->appDirectory . '..' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
+        $execname = $buildRoot . $this->_name;
+        if(PHP_OS == 'WINNT') {
+            $execname .= '.bat';
+        }
+
+        rename($buildRoot . $this->_name . '.phar', $execname);
+
+        
+    }
     
     public function displayTree($path)
     {
-        
-        $tree = \Phink\TAutoloader::includeTree($path);
+        $tree = \Phink\TAutoloader::walkTree($path);
         \Phink\UI\TConsoleApplication::writeLine($tree);
     }
+    
 }
