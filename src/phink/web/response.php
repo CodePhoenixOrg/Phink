@@ -88,10 +88,10 @@ class TResponse implements \JsonSerializable
     
     public function setException(\Exception $ex) {
         $this->setData('error', 
-            $ex->getCode() . CR_LF . 
-            $ex->getFile() . CR_LF .
-            $ex->getMessage() . CR_LF .
-            $ex->getTraceAsString() . CR_LF
+            $ex->getCode() . PHP_EOL . 
+            $ex->getFile() . PHP_EOL .
+            $ex->getMessage() . PHP_EOL .
+            $ex->getTraceAsString() . PHP_EOL
         );
     }
     

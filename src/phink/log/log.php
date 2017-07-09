@@ -35,34 +35,37 @@ class TLog
 
     private function _setDebugLogFile()
     {
-        if(SITE_ROOT == '') {
-            $this->_debugLogFile = './logs/debug.log';
-        } else {
+        $this->_debugLogFile = './logs/debug.log';
+        if(APP_IS_WEB) {
             $this->_debugLogFile = SITE_ROOT . 'logs/debug.log';
         }
     }
 
     public function file($filename, $object)
     {
-        file_put_contents (DOCUMENT_ROOT . RUNTIME_DIR . $filename . '.log', print_r($object, true) . CR_LF);
+        file_put_contents (DOCUMENT_ROOT . RUNTIME_DIR . $filename . '.log', print_r($object, true) . PHP_EOL);
     }
     
     public function dump($message, $object)
     {
-        $this->debug($message . '::' . print_r($object, true) . CR_LF);
+        $this->debug($message . '::' . print_r($object, true) . PHP_EOL);
     }
 
     public function debug($message, $filename = null, $line = null)
     {
         $message = (is_array($message)) ? print_r($message, true) : $message;
         $this->_setDebugLogFile();
+        
+        if(!file_exists('logs')) {
+            mkdir('logs', 0755);
+        }
         $handle = fopen($this->_debugLogFile, 'a');
 
         if(SITE_ROOT) {
             $filename = substr($filename, strlen(SITE_ROOT));
         }
-        $message = date('Y-m-d h:i:s') . ((isset($filename)) ? ":$filename" : '') . ((isset($line)) ? ":$line" : '') . " : $message" . CR_LF;
-        fwrite($handle, $message . CR_LF);
+        $message = date('Y-m-d h:i:s') . ((isset($filename)) ? ":$filename" : '') . ((isset($line)) ? ":$line" : '') . " : $message" . PHP_EOL;
+        fwrite($handle, $message . PHP_EOL);
         fclose($handle);
     }
 
@@ -70,10 +73,10 @@ class TLog
     {
         $message = '';
 
-        $message .= $ex->getCode() . CR_LF;
-        $message .= $ex->getFile() . CR_LF;
-        $message .= $ex->getMessage() . CR_LF;
-        $message .= $ex->getTraceAsString() . CR_LF;
+        $message .= $ex->getCode() . PHP_EOL;
+        $message .= $ex->getFile() . PHP_EOL;
+        $message .= $ex->getMessage() . PHP_EOL;
+        $message .= $ex->getTraceAsString() . PHP_EOL;
 
         $this->debug($message, $filename, $line);
     }

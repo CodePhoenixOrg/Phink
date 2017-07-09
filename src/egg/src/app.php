@@ -17,19 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$filename = __DIR__ . '/../../phink_library.php';
-if(Phar::running() != '') {
-    $filename =  'phink_library.php';
-}
-include $filename;
-
+include (\Phar::running() == '') ? __DIR__ . '/../../phink_library.php' : 'phink_library.php';
 include 'lib.php';
 
-class Egg extends Phink\Core\TApplication {
-
-    /**
-     * Defines the full directory tree of a Phink web application
-     */
+class Egg extends \Phink\UI\TConsoleApplication {
 
     /**
      * Application starter
@@ -38,9 +29,7 @@ class Egg extends Phink\Core\TApplication {
      * @param int $argc Count the number of these arguments
      */
     public static function main($args_v, $args_c = 0) {
-        
         (new Egg($args_v, $args_c));
-        
     }
 
     /**
@@ -54,25 +43,28 @@ class Egg extends Phink\Core\TApplication {
     {
         $dir = dirname(__FILE__);
         parent::__construct($args_v, $args_c, $dir);
-        
+    }
+    
+    /**
+     * Entrypoint of a TConsoleApplication
+     */
+    public function run()
+    {
         try {
-            $egg = new EggLib();
-            
-//            if(!class_exists('\Phink\TAutoloader')) {
-//                $this->_requirePhink();
-//            }
-//            
+            $egg = new EggLib($this);
             
             if ($this->getArgument('create')) {
-                $egg->create();
+                $egg->createTree();
             }
 
             if ($this->getArgument('delete')) {
-                $egg->delete();
+                $egg->deleteTree();
             }
 
+        } catch(\Throwable $th) {
+            self::writeException($th);
         } catch (\Exception $ex) {
-            echo $ex->getMessage() . PHP_EOL;
+            self::writeException($ex);
         }
     }
 

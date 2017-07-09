@@ -16,19 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace Phink\UI;
 
-//require_once 'application.php';
-
-use Phink\Core\TApplication;
-
-class TConsoleApplication extends TApplication
+class TConsoleApplication extends \Phink\Core\TApplication
 {
     //put your code here
     
@@ -36,15 +26,15 @@ class TConsoleApplication extends TApplication
 
     public function run() {}
 
-    public function __construct($argv = array())
+    public function __construct($arg_v = [], $arg_c = 0, $app_dir = '')
     {
-        if($argv == null) $argv = array();
-        $this->_argv = $argv;
+        parent::__construct($arg_v, $arg_c, $app_dir);
+    
         $useTransaction = $this->getArgument('useTransactions');
         $execution = $this->getArgument('executionMode');
         $verbose = $this->getArgument('verbose');
-        TApplication::setExecutionMode($execution);
-        TApplication::useTransactions($useTransaction);
+        self::setExecutionMode($execution);
+        self::useTransactions($useTransaction);
         
         $this->init();
         $this->run();
@@ -52,30 +42,77 @@ class TConsoleApplication extends TApplication
     
     public function printUsage()
     {
-        $this->log($this->getOS());
-        $this->log('Expected parameters : ');
+        $this->getLogger()->debug($this->getOS());
+        $this->getLogger()->debug('Expected parameters : ');
         foreach ($this->_parameters as $parameter) {
-            $this->log(' -' . $parameter['short'] . (($parameter['long'] != '') ? ' or --' . $parameter['long'] : ''));
+            $this->getLogger()->debug(' -' . $parameter['short'] . (($parameter['long'] != '') ? ' or --' . $parameter['long'] : ''));
         }
     }
     
-    public static function write($string = '', $params = null)
+    private static function _write($string, ...$params)
     {
-        if($params != null) {
-            printf($string, $params);
+        if(is_array($string)) {
+            $string = print_r($string, true);
+        }
+        $result = $string;
+        if(count($params) > 0 && is_array($params[0])) {
+            $result = vsprintf($string, $params[0]);
+        }
+        return $result;
+        
+    }
+
+
+    public static function write($string, ...$params)
+    {
+        $result = self::_write($string, $params);
+        if(!APP_IS_WEB) {
+            print $result;
         } else {
-            print $string;
+            self::getLogger()->debug($result);
         }
     }
     
-    public static function writeLine($string = '', $params = null)
+    public static function writeLine($string, ...$params)
     {
-        if($params != null) {
-            printf($string, $params) . CR_LF;
+        $result = self::_write($string, $params);
+        if(!APP_IS_WEB) {
+            print $result . PHP_EOL;
         } else {
-            print $string . CR_LF;
+            self::getLogger()->debug($result . PHP_EOL);
         }
     }
 
+    public static function writeException($ex, $file = null, $line = null)
+    {
+        if(!APP_IS_WEB) {
+            $message = '';
+
+            $message .= 'Error code: ' . $ex->getCode() . PHP_EOL;
+            $message .= 'In ' . $ex->getFile() . ', line ' . $ex->getLine() . PHP_EOL;
+            $message .= 'With the message: ' . $ex->getMessage() . PHP_EOL;
+            $message .= 'Stack trace: ' . $ex->getTraceAsString() . PHP_EOL;
+            
+            print  "\e[41m\033[37m" . $message . "\e[0m\033[0m";
+        } else {
+            self::getLogger()->exception($ex, $file, $line);
+        }
+    }
+
+    public static function writeThrowable(\Throwable $th, $file = null, $line = null)
+    {
+        if(!APP_IS_WEB) {
+            $message = '';
+
+            $message .= 'Error code: ' . $th->getCode() . PHP_EOL;
+            $message .= 'In ' . $th->getFile() . ', line ' . $th->getLine() . PHP_EOL;
+//            $message .= $th->getMessage() . PHP_EOL;
+//            $message .= $th->getTraceAsString() . PHP_EOL;
+            
+            print  "\e[41m\033[37m" . $message . "\e[0m\033[0m";
+        } else {
+            self::getLogger()->exception($th, $file, $line);
+        }
+    }
     
 }
