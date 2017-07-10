@@ -65,22 +65,22 @@ class TPdoCommand extends \Phink\Data\TCustomCommand
 
     public function querySelect()
     {
-        return $this->query($this->getSelectQuery());
+        return $this->query($this->getSelectQuery()->sql, $this->getSelectQuery()->params);
     }
     
     public function queryInsert()
     {
-        return $this->exec($this->getInsertQuery());
+        return $this->scalar($this->getInsertQuery()->sql, $this->getInsertQuery()->params);
     }
 
     public function queryUpdate()
     {
-        return $this->exec($this->getUpdateQuery());
+        return $this->scalar($this->getUpdateQuery()->sql, $this->getUpdateQuery()->params);
     }
 
     public function queryDelete()
     {
-        return $this->exec($this->getDeleteQuery());
+        return $this->scalar($this->getDeleteQuery()->sql, $this->getDeleteQuery()->params);
     }
 
     public function addSelectLimit($start, $count)
@@ -89,9 +89,9 @@ class TPdoCommand extends \Phink\Data\TCustomCommand
 //        if(strstr($driver, 'mysql')) {
             $start = (!$start) ? 1 : $start;
             //$sql = str_replace(PHX_MYSQL_LIMIT, ' LIMIT ' . (($start - 1) * $count). ', ' . $count, $this->getSelectQuery());
-            $sql = $this->getSelectQuery() . PHP_EOL . ' LIMIT ' . (($start - 1) * $count). ', ' . $count . PHP_EOL;
+            $sql = $this->getSelectQuery()->sql . PHP_EOL . ' LIMIT ' . (($start - 1) * $count). ', ' . $count . PHP_EOL;
 
-            $this->setSelectQuery($sql);
+            $this->setSelectQuery($sql, $this->getSelectQuery()->params);
 //        }
     }
     
