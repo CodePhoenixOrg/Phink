@@ -32,40 +32,45 @@ trait TCrudQueries  {
     private $_insert = '';
     private $_update = '';
     private $_delete = '';
+    private $_parametes = '';
 
     public function getSelectQuery()
     {
-        return $this->_select;
+        return (object)['sql' => $this->_select, 'params' => $this->_parametes];
     }
-    public function setSelectQuery($value)
+    public function setSelectQuery($value, $params = [])
     {
+        $this->_parametes = $params;
         $this->_select = $value;
     }
 
     public function getInsertQuery()
     {
-        return $this->_insert;
+        return (object)['sql' => $this->_insert, 'params' => $this->_parametes];
     }
-    public function setInsertQuery($value)
+    public function setInsertQuery($value, $params = [])
     {
+        $this->_parametes = $params;
         $this->_insert = $value;
     }
 
     public function getUpdateQuery()
     {
-        return $this->_update;
+        return (object)['sql' => $this->_update, 'params' => $this->_parametes];
     }
-    public function setUpdateQuery($value)
+    public function setUpdateQuery($value, $params = [])
     {
+        $this->_parametes = $params;
         $this->_update = $value;
     }
 
     public function getDeleteQuery()
     {
-        return $this->_delete;
+        return (object)['sql' => $this->_delete, 'params' => $this->_parametes];
     }
-    public function setDeleteQuery($value)
+    public function setDeleteQuery($value, $params = [])
     {
+        $this->_parametes = $params;
         $this->_delete = $value;
     }
 
