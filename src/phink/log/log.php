@@ -53,7 +53,7 @@ class TLog
 
     public function debug($message, $filename = null, $line = null)
     {
-        $message = (is_array($message)) ? print_r($message, true) : $message;
+        $message = (is_array($message) || is_object($message)) ? print_r($message, true) : $message;
         $this->_setDebugLogFile();
         
         if(!file_exists('logs')) {
