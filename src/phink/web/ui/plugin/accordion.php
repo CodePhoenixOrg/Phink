@@ -23,6 +23,9 @@
  * and open the template in the editor.
  */
 namespace Phink\Web\UI\Plugin;
+
+use \Phink\Web\UI\Widget\Plugin\TPlugin;
+
 /**
  * Description of newPHPClass
  *
@@ -41,10 +44,10 @@ class TAccordion extends TCustomPlugin
         $boundIndex = 0;
         $oldLevel = 0;
         $bound = array_fill(0, 3, false);
-        $head = $this->data['names'];
+        $names = $this->data['names'];
         $body = $this->data['values'];
         $this->rows = count($body);
-        $this->columns = count($head);
+        $this->columns = count($names);
         $dataIndex = 0;
         $templateNum = count($this->templates);
         $oldValue = array_fill(0, $this->columns, '');
@@ -77,8 +80,8 @@ class TAccordion extends TCustomPlugin
                 if($this->templates[$j]['enabled'] != 1) continue;
                 $index = $this->templates[$j]['index'];
                 $canBind = $row[$index] != $oldValue[$j];
-                //$canBind = $canBind && $this->templates[$j]['name'] === $head[$dataIndex];
-                ////self::$logger->debug('TEMPLATE NAME : ' . $this->templates[$j]['name'] . '; HEAD NAME :' . $head[$dataIndex]);
+                //$canBind = $canBind && $this->templates[$j]['name'] === $names[$dataIndex];
+                ////self::$logger->debug('TEMPLATE NAME : ' . $this->templates[$j]['name'] . '; HEAD NAME :' . $names[$dataIndex]);
                 if(!$canBind) {
                     $bound[$boundIndex] = $canBind;
                     //$bound[$boundIndex] = $canBind;
@@ -92,7 +95,13 @@ class TAccordion extends TCustomPlugin
                 
                 //$html = $row[$index];
                 //$html = $level . '[' . $oldLevel . ']' . '-' . $index . '::' . $row[$index];
-                $html = \Phink\Web\UI\Widget\Plugin\TPlugin::applyTemplate($this->templates, $row, $j);
+                $dataIndex = array_keys($names, $this->templates[$j]['name'])[0];
+                $noTHead = isset($this->templates[$j]['content']) && $this->templates[$j]['enabled'] == 1;
+
+                $html = $row[$dataIndex];
+                if($noTHead) {
+                    $html = TPlugin::applyTemplate($this->templates, $names, $row, $j);
+                }
 
                 //self::$logger->debug('INDEX::' . $index . "\r\n" . "\r\n");
                 //self::$logger->debug('LEVEL::' . $level . "\r\n" . "\r\n");

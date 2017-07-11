@@ -49,14 +49,18 @@ class TTable extends TCustomPlugin
         $thead .= str_replace('%s', $typeId0, $elements[3]->getOpening()) . "\n";
         for($j = 0; $j < $this->columns; $j++) {
             $k = $i * $this->columns + $j;
+            $colName = $this->templates[$j]['name'];
+            $colIndex = array_keys($head, $colName)[0];
             $typeId1 = 'id="' . $this->getId() .  $elements[4]->getType() . $k . '"';
-            $thead .= str_replace('%s', $typeId1, $elements[4]->getOpening()) . $head[$j] . $elements[4]->getClosing() . "\n";
+            $thead .= str_replace('%s', $typeId1, $elements[4]->getOpening()) . $head[$colIndex] . $elements[4]->getClosing() . "\n";
 
         }
         $thead .= $elements[3]->getClosing() . "\n";
         $thead .= $elements[1]->getClosing() . "\n";
 
         if(!$this->pivot) {
+
+                
             // values 
             $tbody = $elements[2]->getOpening() . "\n";
             $body = $this->data['values'];
@@ -65,12 +69,24 @@ class TTable extends TCustomPlugin
                 $row = (isset($body[$i])) ? json_decode($body[$i]) : array_fill(0, $this->columns, '&nbsp;');
                 $typeId0 = 'id="' . $this->getId() .  $elements[3]->getType() . ($i) . '"';
                 $tbody .= str_replace('%s', $typeId0, $elements[3]->getOpening()) . "\n";
+                
+                $this->getLogger()->debug('** BEGIN **');
+                $this->getLogger()->debug($head);
+                $this->getLogger()->debug($row);
+                $this->getLogger()->debug('** END **');
+            
                 for($j = 0; $j < $this->columns; $j++) {
                     $k = $i * $this->columns + $j;
+                    $dataIndex = array_keys($head, $this->templates[$j]['name'])[0];
+
                     $noTHead = $this->templates[$j]['content'] && $this->templates[$j]['enabled'] == 1;
-                    $html = \Phink\Web\UI\Widget\Plugin\TPlugin::applyTemplate($this->templates, $row, $j);
-                    $typeId1 = 'id="' . $this->getId() .  $elements[5]->getType() . $k . '"';
-                    if($this->templates[$j]['enabled'] == 1) {
+                    
+                    $html = $row[$dataIndex];
+                    if($noTHead) {
+                        $html = \Phink\Web\UI\Widget\Plugin\TPlugin::applyTemplate($this->templates, $head, $row, $j);
+                    }
+                    if($this->templates[$colIndex]['enabled'] == 1) {
+                        $typeId1 = 'id="' . $this->getId() .  $elements[5]->getType() . $k . '"';
                         $tbody .= str_replace('%s', $typeId1, $elements[5]->getOpening()) . $html . $elements[5]->getClosing() . "\n";
                     }
                 }
@@ -86,6 +102,10 @@ class TTable extends TCustomPlugin
             $oldValue = array();
             for($i = 0; $i < $this->rows; $i++) {
 
+                $this->getLogger()->debug('** BEGIN **');
+                $this->getLogger()->debug($this->rows);
+                $this->getLogger()->debug('** END **');
+
                 $row = (isset($body[$i])) ? json_decode($body[$i]) : array_fill(0, $this->columns, '&nbsp;');
                 $typeId0 = 'id="' . $this->getId() .  $elements[3]->getType() . ($i) . '"';
                 $tbody .= str_replace('%s', $typeId0, $elements[3]->getOpening()) . "\n";
@@ -93,8 +113,11 @@ class TTable extends TCustomPlugin
                     $k = $i * $this->columns + $j;
                     $noTHead = $this->templates[$j]['content'] && $this->templates[$j]['enabled'] == 1;
                     $html = \Phink\Web\UI\Widget\Plugin\TPlugin::applyTemplate($this->templates, $row, $j);
-                    $typeId1 = 'id="' . $this->getId() .  $elements[5]->getType() . $k . '"';
+                    $typeId1 = 'id="' . $this->getId() . $elements[5]->getType() . $k . '"';
+                    $name = $this->templates[$j]['name'];
+                    
                     if($this->templates[$j]['enabled'] == 1 && $row[$j] != $oldValue[$j]) {
+                        
                         $tbody .= $elements[3]->getOpening();
                         $tbody .= str_replace('%s', $typeId1, $elements[5]->getOpening()) . $html . $elements[5]->getClosing() . "\n";
                         $tbody .= $elements[3]->getClosing();

@@ -23,13 +23,17 @@
  * and open the template in the editor.
  */
 namespace Phink\Web\UI\Plugin;
+
+use \Phink\Web\UI\Widget\Plugin\TPlugin;
+
 /**
  * Description of newPHPClass
  *
- * @author Akades
+ * @author David
  */
 class TUlli extends TCustomPlugin
 {
+    
     //put your code here
     public function render()
     {
@@ -41,6 +45,7 @@ class TUlli extends TCustomPlugin
         $result = "\n";
         $tbody = str_replace('%s', $css, $elements[0]->getOpening()) . "\n";
         $body = $this->data['values'];
+        $names = $this->data['names'];
         $oldValue = [];
         $oldValue[0] = '&nbsp;';
         for($i = 0; $i < $this->rows; $i++) {
@@ -51,8 +56,14 @@ class TUlli extends TCustomPlugin
             $tbody .= str_replace('%s', $typeId0 . $css, $elements[1]->getOpening()) . "\n";
             for($j = 0; $j < $this->columns; $j++) {
                 $k = $i * $this->columns + $j;
-                $noTHead = $this->templates[$j]['content'] && $this->templates[$j]['enabled'] == 1;
-                $html = \Phink\Web\UI\Widget\Plugin\TPlugin::applyTemplate($this->templates, $row, $j);
+                
+                $dataIndex = array_keys($names, $this->templates[$j]['name'])[0];
+                $noTHead = isset($this->templates[$j]['content']) && $this->templates[$j]['enabled'] == 1;
+
+                $html = $row[$dataIndex];
+                if($noTHead) {
+                    $html = TPlugin::applyTemplate($this->templates, $names, $row, $j);
+                }
                 
                 if($this->templates[$j]['enabled'] == 1 && $row[$j] != $oldValue[$j]) {
                     $tbody .= str_replace('%s', '', $elements[2]->getOpening()) . $html . $elements[2]->getClosing() . "\n";
