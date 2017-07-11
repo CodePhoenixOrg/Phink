@@ -127,8 +127,8 @@ class TControl extends TCustomControl
     
     public function render()
     {
-        $this->createObjects();
         $this->init();
+        $this->createObjects();
         $this->beforeBinding();
         $this->declareObjects();
 //        $this->afterBinding();
@@ -144,8 +144,8 @@ class TControl extends TCustomControl
     
     public function perform()
     {
-        $this->createObjects();
         $this->init();
+        $this->createObjects();
         if($this->getRequest()->isAJAX()) {
             try {
                 $actionName = $this->actionName;

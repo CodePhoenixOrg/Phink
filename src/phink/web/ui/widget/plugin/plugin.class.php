@@ -87,7 +87,7 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
 //        }
     }
 
-    public static function getGridData($id, \Phink\Data\Client\TCustomCommand $cmd, $rowCount = 1)
+    public static function getGridData($id, \Phink\Data\ICommand $cmd, $rowCount = 1)
     {
         $templateFilename = RUNTIME_JS_DIR . $id . '_template.json';
         //self::$logger->debug('TEMPLATE FILE : ' . $templateFilename);

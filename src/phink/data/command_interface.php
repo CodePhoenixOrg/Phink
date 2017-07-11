@@ -24,13 +24,11 @@
  * @author david
  */
 
-abstract class TCustomCommand extends \Phink\Core\TObject implements ICommand
+interface ICommand
 {
-    use \Phink\Data\TCrudQueries;
-
-    public abstract function query($sql = '', array $params = null);
-    public abstract function exec($sql = '');
-    public abstract function getActiveConnection();
-    public abstract function getStatement();
+    public function query($sql = '', array $params = null);
+    public function exec($sql = '');
+    public function getActiveConnection();
+    public function getStatement();
 
 }
