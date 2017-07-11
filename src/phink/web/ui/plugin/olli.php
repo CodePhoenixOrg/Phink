@@ -23,10 +23,13 @@
  * and open the template in the editor.
  */
 namespace Phink\Web\UI\Plugin;
+
+use \Phink\Web\UI\Widget\Plugin\TPlugin;
+
 /**
  * Description of newPHPClass
  *
- * @author Akades
+ * @author David
  */
 class TOlli extends TCustomPlugin
 {
@@ -38,6 +41,7 @@ class TOlli extends TCustomPlugin
         $result = "\n";
         $tbody = $elements[0]->getOpening() . "\n";
         $body = $this->data['values'];
+        $names = $this->data['names'];
         $oldValue = array();
         for($i = 0; $i < $this->rows; $i++) {
 
@@ -46,10 +50,17 @@ class TOlli extends TCustomPlugin
             $tbody .= str_replace('%s', $typeId0, $elements[1]->getOpening()) . "\n";
             for($j = 0; $j < $this->columns; $j++) {
                 $k = $i * $this->columns + $j;
-                $noTHead = $this->templates[$j]['content'] && $this->templates[$j]['enabled'] == 1;
-                $html = $this->_applyTemplate($this->templates[$j], $this->columns, $row, $head, $j);
-                $typeId1 = 'id="' . $this->getId() .  $elements[2]->getType() . $k . '"';
+                
+                $dataIndex = array_keys($names, $this->templates[$j]['name'])[0];
+                $noTHead = isset($this->templates[$j]['content']) && $this->templates[$j]['enabled'] == 1;
+
+                $html = $row[$dataIndex];
+                if($noTHead) {
+                    $html = TPlugin::applyTemplate($this->templates, $names, $row, $j);
+                }
+
                 if($this->templates[$j]['enabled'] == 1 && $row[$j] != $oldValue[$j]) {
+                    $typeId1 = 'id="' . $this->getId() .  $elements[2]->getType() . $k . '"';
                     $tbody .= str_replace('%s', $typeId1, $elements[2]->getOpening()) . $html . $elements[2]->getClosing() . "\n";
                 }
                 $oldValue[$j] = $row[$j];

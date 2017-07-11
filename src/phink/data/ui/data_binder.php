@@ -27,7 +27,7 @@ namespace Phink\Data\UI;
 trait TDataBinder 
 {
     protected $columns = 0;
-    protected $rows = 0;
+    protected $valuess = 0;
     protected $data = array();
     protected $templates = array();
     protected $pivot = false;
@@ -84,38 +84,37 @@ trait TDataBinder
         $this->pivot = filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
     
-    public static function applyTemplate($templates, $row, $j) 
+    public static function applyTemplate($templates, $names, $values, $templateIndex) 
     {
-        $cols = count($row);
-        $html = $row[$j];
         
-        if($templates[$j]['content'] && $templates[$j]['enabled'] == 1) {
-            $html = $templates[$j]['content'];
-            $event = $templates[$j]['event'];
-            $e = explode('#', $event);
-            if($e[0] == 'href') {
-                $event = 'javascript:' . $e[1];
-            } else {    
-                $event = $e[0] . '="' . $e[1] . '"'; 
-            }
-            for ($m = 0; $m < $cols; $m++) {
-                $head = $templates[$m]['name'];
-                $html = str_replace('<% ' . $head . ' %>', $row[$m], $html);
-                $html = str_replace('<% ' . $head . ':index %>', $m, $html);
-                $event = str_replace($head, "'" . $row[$m] . "'", $event);
-                $html = str_replace('<% &' . $head . ' %>', $event, $html);
-                
-            }
-            
-            
+        $cols = count($values);
+
+        $html = $templates[$templateIndex]['content'];
+        $event = $templates[$templateIndex]['event'];
+        $e = explode('#', $event);
+        if($e[0] == 'href') {
+            $event = 'javascript:' . $e[1];
+        } else {    
+            $event = $e[0] . '="' . $e[1] . '"'; 
         }
+        for ($m = 0; $m < $cols; $m++) {
+            $head = $templates[$m]['name'];
+            $i = array_keys($names, $head)[0];
+
+            $html = str_replace('<% ' . $head . ' %>', $values[$i], $html);
+            $html = str_replace('<% ' . $head . ':index %>', $i, $html);
+            $event = str_replace($head, "'" . $values[$i] . "'", $event);
+            $html = str_replace('<% &' . $head . ' %>', $event, $html);
+
+        }
+
         return $html;
     }
     
-    public static function applyDragHelper($templates, $row, $j) 
+    public static function applyDragHelper($templates, $values, $j) 
     {
-        $cols = count($row);
-        $html = $row[$j];
+        $cols = count($values);
+        $html = $values[$j];
         
         if($templates[$j]['dragHelper'] && $templates[$j]['enabled'] == 1) {
             $html = $templates[$j]['dragHelper'];
@@ -128,9 +127,9 @@ trait TDataBinder
             }
             for ($m = 0; $m < $cols; $m++) {
                 $head = $templates[$m]['name'];
-                $html = str_replace('<% ' . $head . ' %>', $row[$m], $html);
+                $html = str_replace('<% ' . $head . ' %>', $values[$m], $html);
                 $html = str_replace('<% ' . $head . ':index %>', $m, $html);
-                $event = str_replace($head, "'" . $row[$m] . "'", $event);
+                $event = str_replace($head, "'" . $values[$m] . "'", $event);
                 $html = str_replace('<% &' . $head . ' %>', $event, $html);
             }
             
