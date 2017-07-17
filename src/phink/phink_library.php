@@ -35,6 +35,7 @@ class PhinkLibrary {
             'web/web_object.php',
             'web/web_application.php',
             'web/static_application.php',
+            'rest/rest_application.php',
             'core/router.php',
             'web/curl.php',
             'web/response.php',
