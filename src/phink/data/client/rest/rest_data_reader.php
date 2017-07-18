@@ -19,17 +19,44 @@
  
 namespace Phink\Data\Client\JSON;
 
-//require_once 'phink/configuration/data/fileconfiguration.php';
+//require_once 'phink/data/data_reader.php';
+//require_once 'phink/core/aobject.php';
 
-use Phink\Configuration\Data\TFileConfiguration;
+use Phink\Core\TObject;
+use Phink\Data\IDataReader;
 
 /**
- * Description of asqliteconfiguration
+ * Description of adatareader
  *
  * @author david
  */
-class TJsonConfiguration extends TFileConfiguration
+class TRestDataReader extends TObject implements IDataReader
 {
-    //put your code here
+
+    private $_result;
+    private $_values;
+
+    public function __construct($result)
+    {
+        $this->_result = $result;
+    }
+
+    public function values($i)
+    {
+        return $this->_values[$i];
+    }
+
+    public function read()
+    {
+        $this->_values = $this->_result->fetchArray();
+        if($this->_values > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
 ?>

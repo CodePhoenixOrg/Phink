@@ -19,24 +19,24 @@
  
 namespace Phink\Data\Client\JSON;
 
-//require_once 'sqlite_data_reader.php';
-//require_once 'sqlite_connection.php';
+//require_once 'jsonite_data_reader.php';
+//require_once 'jsonite_connection.php';
 //require_once 'phink/data/command.php';
 //require_once 'phink/data/crud_queries.php';
 //require_once 'phink/core/object.php';
 
 
 use Phink\Core\TObject;
-use Phink\Data\Client\JSON\TJsonDataReader;
+use Phink\Data\Client\JSON\TRestDataReader;
 use Phink\Data\ICommand;
 use Phink\Data\TCrudQueries;
 
 /**
- * Description of aJsoncommand
+ * Description of aRestcommand
  *
  * @author david
  */
-class TJsonCommand extends TObject implements ICommand
+class TRestCommand extends TObject implements ICommand
 {
     //put your code here
     private $_fieldCount;
@@ -47,10 +47,44 @@ class TJsonCommand extends TObject implements ICommand
     private $_activeConnection;
     private $_db = NULL;
 
-    public function __construct(AJsonConnection $activeConnection)
+    public function __construct(ARestConnection $activeConnection)
     {
         $this->_activeConnection = $activeConnection;
         $this->_queries = new TCrudQueries();
+    }
+    
+    public function getStatement()
+    {
+        ;
+    }
+
+    public function query($sql = '', array $params = null)
+    {
+        $result = false;
+        try {
+            $this->_commandText = ($sql != '') ? $sql : $this->_commandText;
+        
+            if($params != null) {
+                $this->_statement = $this->_connectionHandler->prepare($this->_commandText);
+                $this->_statement->execute($params);
+            } else {
+                $this->_statement = $this->_connectionHandler->query($this->_commandText);
+            }
+            
+            $result = new TPdoDataStatement($this->_statement);
+        } catch (\PDOException $ex) {
+            self::$logger->debug('SQL : ' . $sql . '; params : ' . print_r($params, true), __FILE__, __LINE__);
+            self::$logger->exception($ex, __FILE__, __LINE__);
+        } catch (\Exception $ex) {
+            self::$logger->exception($ex, __FILE__, __LINE__);
+        }
+        
+        return $result;
+    }
+    
+    public function exec($sql = '')
+    {
+        ;
     }
 
     public function executeReader()
@@ -58,7 +92,7 @@ class TJsonCommand extends TObject implements ICommand
         $this->_db = $this->_activeConnection->getState();
 
         $this->_result = $this->_db->query($this->_queries->getSelect());
-        $this->_reader = new TJsonDataReader($this->_result);
+        $this->_reader = new TRestDataReader($this->_result);
 
         return $this->_reader;
     }

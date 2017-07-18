@@ -21,27 +21,27 @@ namespace Phink\Data\Client\JSON;
 
 //require_once 'phink/configuration/configurable.php';
 //require_once 'phink/data/connection.php';
-//require_once 'sqlite_configuration.php';
+//require_once 'jsonite_configuration.php';
 
 use Phink\Core\TObject;
 use Phink\Configuration\IConfigurable;
 use Phink\Data\IConnection;
-use Phink\Data\Client\JSON\TJsonConfiguration;
+use Phink\Data\Client\JSON\TRestConfiguration;
 
 /**
- * Description of aJsonconnection
+ * Description of aRestconnection
  *
  * @author david
  */
-class TJsonConnection extends TObject implements IConnection, IConfigurable
+class TRestConnection extends TObject implements IConnection, IConfigurable
 {
 
-    private $_sqlConfig;
+    private $_jsonConfig;
     private $_state = NULL;
 
-    public function __construct(AJsonConfiguration $sqlConfig)
+    public function __construct(TRestConfiguration $jsonConfig)
     {
-        $this->_sqlConfig = $sqlConfig;
+        $this->_jsonConfig = $jsonConfig;
     }
 
     public function getState()
@@ -52,7 +52,7 @@ class TJsonConnection extends TObject implements IConnection, IConfigurable
     public function open()
     {
         try {
-            $this->_state = new JSON3($this->_sqlConfig->getFileName());
+            $this->_state = new JSON($this->_jsonConfig->getFileName());
         } catch (Exception $ex) {
             exception($ex);
         }
