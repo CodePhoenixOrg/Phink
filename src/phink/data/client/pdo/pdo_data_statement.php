@@ -66,7 +66,13 @@ class TPdoDataStatement extends TObject implements IDataStatement
     
     public function fetchAll()
     {
-        $this->_values = $this->_statement->fetchAll();
+        $this->_values = $this->_statement->fetchAll(\PDO::FETCH_NUM);
+        return $this->_values;
+    }
+
+    public function fetchAllAssoc()
+    {
+        $this->_values = $this->_statement->fetchAll(\PDO::FETCH_ASSOC);
         return $this->_values;
     }
 
