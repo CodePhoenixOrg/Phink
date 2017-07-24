@@ -17,7 +17,7 @@
  */
  
  
-namespace Phink\Data\Client\JSON;
+namespace Phink\Data\Client\Rest;
 
 //require_once 'phink/configuration/data/fileconfiguration.php';
 

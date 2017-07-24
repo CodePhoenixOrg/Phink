@@ -17,7 +17,7 @@
  */
  
  
-namespace Phink\Data\Client\JSON;
+namespace Phink\Data\Client\Rest;
 
 //require_once 'phink/data/data_reader.php';
 //require_once 'phink/core/aobject.php';

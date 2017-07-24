@@ -17,7 +17,7 @@
  */
  
  
-namespace Phink\Data\Client\JSON;
+namespace Phink\Data\Client\Rest;
 
 //require_once 'phink/configuration/configurable.php';
 //require_once 'phink/data/connection.php';
@@ -26,7 +26,7 @@ namespace Phink\Data\Client\JSON;
 use Phink\Core\TObject;
 use Phink\Configuration\IConfigurable;
 use Phink\Data\IConnection;
-use Phink\Data\Client\JSON\TRestConfiguration;
+use Phink\Data\Client\Rest\TRestConfiguration;
 
 /**
  * Description of aRestconnection

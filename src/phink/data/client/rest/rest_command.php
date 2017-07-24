@@ -17,7 +17,7 @@
  */
  
  
-namespace Phink\Data\Client\JSON;
+namespace Phink\Data\Client\Rest;
 
 //require_once 'jsonite_data_reader.php';
 //require_once 'jsonite_connection.php';
@@ -27,7 +27,7 @@ namespace Phink\Data\Client\JSON;
 
 
 use Phink\Core\TObject;
-use Phink\Data\Client\JSON\TRestDataReader;
+use Phink\Data\Client\Rest\TRestDataReader;
 use Phink\Data\ICommand;
 use Phink\Data\TCrudQueries;
 
@@ -47,7 +47,7 @@ class TRestCommand extends TObject implements ICommand
     private $_activeConnection;
     private $_db = NULL;
 
-    public function __construct(ARestConnection $activeConnection)
+    public function __construct(TRestConnection $activeConnection)
     {
         $this->_activeConnection = $activeConnection;
         $this->_queries = new TCrudQueries();
