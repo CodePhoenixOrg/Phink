@@ -49,7 +49,7 @@ abstract class TUrlConfiguration extends TStaticObject
         $this->_password = $password;
         $this->_port = $port;
     }
-
+    
     public function getMethod()
     {
         return $this->_driver;
@@ -79,4 +79,6 @@ abstract class TUrlConfiguration extends TStaticObject
     {
         return $this->_port;
     }
+    
+
 }

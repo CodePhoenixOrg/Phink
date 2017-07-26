@@ -36,12 +36,12 @@ use Phink\Data\Client\Rest\TRestConfiguration;
 class TRestConnection extends TObject implements IConnection, IConfigurable
 {
 
-    private $_jsonConfig;
+    private $_restConfig;
     private $_state = NULL;
 
     public function __construct(TRestConfiguration $jsonConfig)
     {
-        $this->_jsonConfig = $jsonConfig;
+        $this->_restConfig = $jsonConfig;
     }
 
     public function getState()
@@ -52,9 +52,13 @@ class TRestConnection extends TObject implements IConnection, IConfigurable
     public function open()
     {
         try {
-            $this->_state = new JSON($this->_jsonConfig->getFileName());
-        } catch (Exception $ex) {
-            exception($ex);
+            $this->_state =  new \Phink\Web\TCurl();
+            $this->_state->request($this->_restConfig->getUrl());
+
+        } catch (\Throwable $ex) {
+            $this->getLogger()->exception($ex);
+        } catch (\Exception $ex) {
+            $this->getLogger()->exception($ex);
         }
 
         return $this->_state;
@@ -62,11 +66,15 @@ class TRestConnection extends TObject implements IConnection, IConfigurable
 
     public function close()
     {
-        $this->_state->close();
-        $this->_state = NULL;
+        unset($this->_state);
         return NULL;
     }
 
+    public function getConfiguration()
+    {
+        return $this->_restConfig;
+    }
+    
     public function configure()
     {
 
@@ -77,4 +85,3 @@ class TRestConnection extends TObject implements IConnection, IConfigurable
         
     }
 }
-?>

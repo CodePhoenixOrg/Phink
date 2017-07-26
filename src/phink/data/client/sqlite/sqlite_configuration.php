@@ -32,4 +32,4 @@ class TSqliteConfiguration extends TFileConfiguration
 {
     //put your code here
 }
-?>
+

@@ -49,6 +49,11 @@ class TMySqlConnection extends TObject implements IConnection, IConfigurable
         return $this->_state;
     }
 
+    public function getConfiguration()
+    {
+        return $this->_sqlConfig;
+    }
+    
     public function open()
     {
         try {

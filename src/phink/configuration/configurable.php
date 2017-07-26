@@ -24,4 +24,5 @@
  */
 interface IConfigurable {
     public function configure();
+    public function getConfiguration();
 }

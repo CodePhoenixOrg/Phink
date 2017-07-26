@@ -19,60 +19,81 @@
  
 namespace Phink\Data\Client\Rest;
 
-//require_once 'jsonite_data_reader.php';
-//require_once 'jsonite_connection.php';
+//require_once 'phink/core/object.php';
 //require_once 'phink/data/command.php';
 //require_once 'phink/data/crud_queries.php';
-//require_once 'phink/core/object.php';
+//require_once 'pdo_data_statement.php';
+//require_once 'pdo_connection.php';
 
+use Phink\Data\Client\Rest\TRestConnection;
+use Phink\Data\Client\Rest\TRestDataStatement;
 
-use Phink\Core\TObject;
-use Phink\Data\Client\Rest\TRestDataReader;
-use Phink\Data\ICommand;
-use Phink\Data\TCrudQueries;
-
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 /**
- * Description of aRestcommand
+ * Description of amysqlcommand
  *
  * @author david
  */
-class TRestCommand extends TObject implements ICommand
+class TRestCommand extends \Phink\Data\TCustomCommand
 {
     //put your code here
-    private $_fieldCount;
-    //private $_rowCount;
-    private $_result;
-    private $_reader;
-    private $_queries;
+    private $_statement;
     private $_activeConnection;
-    private $_db = NULL;
-
-    public function __construct(TRestConnection $activeConnection)
+    private $_connectionHandler;
+    private $_commandText;
+    
+    public function __construct(TRestConnection $activeConnection, $commandText = '')
     {
+                
         $this->_activeConnection = $activeConnection;
-        $this->_queries = new TCrudQueries();
+        $this->_connectionHandler = $this->_activeConnection->getState();
+        
+
+        
+        if($commandText != '') {
+            $this->_commandText = $commandText;
+        }
+    }
+
+    public function querySelect()
+    {
+        return $this->query();
     }
     
-    public function getStatement()
+    public function queryInsert()
     {
-        ;
+        return $this->scalar();
     }
 
+    public function queryUpdate()
+    {
+        return $this->scalar();
+    }
+
+    public function queryDelete()
+    {
+        return $this->scalar();
+    }
+
+    public function addSelectLimit($start, $count)
+    {
+        // Implement pager here
+    }
+    
     public function query($sql = '', array $params = null)
     {
         $result = false;
         try {
             $this->_commandText = ($sql != '') ? $sql : $this->_commandText;
         
-            if($params != null) {
-                $this->_statement = $this->_connectionHandler->prepare($this->_commandText);
-                $this->_statement->execute($params);
-            } else {
-                $this->_statement = $this->_connectionHandler->query($this->_commandText);
-            }
+            $this->_statement = $this->_connectionHandler; 
             
-            $result = new TPdoDataStatement($this->_statement);
-        } catch (\PDOException $ex) {
+            
+            $result = new TRestDataStatement($this->_statement);
+        } catch (\Throwable $ex) {
             self::$logger->debug('SQL : ' . $sql . '; params : ' . print_r($params, true), __FILE__, __LINE__);
             self::$logger->exception($ex, __FILE__, __LINE__);
         } catch (\Exception $ex) {
@@ -81,42 +102,66 @@ class TRestCommand extends TObject implements ICommand
         
         return $result;
     }
+
+    public function queryLog($sql = '', array $params = null, $file = __FILE__, $line = __LINE__)
+    {
+        $result = false;
+        try {
+            $this->_commandText = ($sql != '') ? $sql : $this->_commandText;
+        
+            $this->_statement = $this->_connectionHandler; 
+            
+            $result = new TRestDataStatement($this->_statement);
+            
+            self::$logger->debug('SQL : ' . $sql . '; params : ' . print_r($params, true), $file, $line);
+            
+            $result = new TRestDataStatement($this->_statement);
+        } catch (\Throwable $ex) {
+            self::$logger->debug('SQL : ' . $sql . '; params : ' . print_r($params, true), __FILE__, __LINE__);
+            self::$logger->exception($ex, __FILE__, __LINE__);
+        } catch (\Exception $ex) {
+            self::$logger->exception($ex, $file, $line);
+        }
+        
+        return $result;
+    }    
     
+    public function scalar($sql = '', array $params = null)
+    {
+        $result = false;
+        return $result;
+    }
+    
+    public function scalarLog($sql = '', array $params = null, $file = __FILE__, $line = __LINE__)
+    {
+        $result = false;
+        return $result;
+    }    
+
     public function exec($sql = '')
     {
-        ;
+        $this->_commandText = ($sql != '') ? $sql : $this->_commandText;
+        $this->_commandText = ($sql != '') ? $sql : $this->_commandText;
+        
+        return $this->_connectionHandler->exec($this->_commandText);
     }
 
-    public function executeReader()
+    public function execLog($sql = '', $file = __FILE__, $line = __LINE__)
     {
-        $this->_db = $this->_activeConnection->getState();
+        self::$logger->debug('SQL : ' . $sql, $file, $line);
+        $this->_commandText = ($sql != '') ? $sql : $this->_commandText;
 
-        $this->_result = $this->_db->query($this->_queries->getSelect());
-        $this->_reader = new TRestDataReader($this->_result);
-
-        return $this->_reader;
+        return $this->_connectionHandler->exec($this->_commandText);
     }
 
-    public function executeLimitedReader()
+    public function getCommandText()
     {
-        return $this->executeReaderPage(APage::pageNumber(), APage::pageCount());
+        return $this->_commandText;
     }
 
-    public function executeReaderPage($page, $count)
+    public function setCommandText($value)
     {
-        $start = ($page - 1) * $count;
-        $this->_queries->setSelect($this->_queries->getSelect() . " LIMIT $start, $count");
-        return $this->executeReader();
-    }
-
-    public function executeNonQuery()
-    {
-
-    }
-
-    public function getQueries()
-    {
-        return $this->_queries;
+        $this->_commandText = $value;
     }
 
     public function getActiveConnection()
@@ -124,42 +169,19 @@ class TRestCommand extends TObject implements ICommand
         return $this->_activeConnection;
     }
 
-    public function getReader()
+    public function getStatement()
     {
-        return $this->_reader;
+        return $this->_statement;
+    }
+
+    public function closeCursor()
+    {
+        $this->_statement->closeCursor();
     }
     
-    public function getFieldCount()
-    {
-        if(!isset($this->_fieldCount)) {
-            $this->_fieldCount = $this->_result->numColumns();
-        }
-        return $this->_fieldCount;
-    }
-
-    public function getRowCount()
-    {
-        return -1;
-
-    }
-
-    public function fieldName($i)
-    {
-        return $this->_result->columnName($i);
-    }
-
-    public function fieldType($i)
-    {
-        return $this->_result->columnType($i);
-    }
-
-    public function fieldLen($i)
-    {
-        return -1;
-    }
-
     public function __destruct()
     {
-        $this->_result->reset();
+        unset($this->_statement);
+        unset($this->_connectionHandler);
     }
 }

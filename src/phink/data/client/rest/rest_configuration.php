@@ -21,15 +21,15 @@ namespace Phink\Data\Client\Rest;
 
 //require_once 'phink/configuration/data/fileconfiguration.php';
 
-use Phink\Configuration\Data\TFileConfiguration;
+use Phink\Configuration\Data\TUrlConfiguration;
 
 /**
  * Description of asqliteconfiguration
  *
  * @author david
  */
-class TRestConfiguration extends TFileConfiguration
+class TRestConfiguration extends TUrlConfiguration
 {
-    //put your code here
+    
 }
 ?>
