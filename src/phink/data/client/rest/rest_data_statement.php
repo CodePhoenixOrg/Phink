@@ -17,7 +17,7 @@
  */
  
  
-namespace Phink\Data\Client\PDO;
+namespace Phink\Data\Client\Rest;
 
 //require_once 'phink/data/data_statement.php';
 //require_once 'phink/core/object.php';
@@ -25,14 +25,12 @@ namespace Phink\Data\Client\PDO;
 use Phink\Core\TObject;
 use Phink\Data\IDataStatement;
 
-use PDOStatement;
-
 /**
  * Description of adatareader
  *
  * @author david
  */
-class TPdoDataStatement extends TObject implements IDataStatement
+class TRestDataStatement extends TObject implements IDataStatement
 {
 
 
@@ -54,25 +52,25 @@ class TPdoDataStatement extends TObject implements IDataStatement
 
     public function fetch()
     {
-        $this->_values = $this->_statement->fetch(\PDO::FETCH_NUM);
+        $this->_values = $this->_statement->content;
         return $this->_values;
     }
     
     public function fetchAssoc()
     {
-        $this->_values = $this->_statement->fetch(\PDO::FETCH_ASSOC);
+        $this->_values = $this->_statement->content;
         return $this->_values;
     }
     
     public function fetchAll()
     {
-        $this->_values = $this->_statement->fetchAll(\PDO::FETCH_NUM);
+        $this->_values = $this->_statement->content;
         return $this->_values;
     }
 
     public function fetchAllAssoc()
     {
-        $this->_values = $this->_statement->fetchAll(\PDO::FETCH_ASSOC);
+        $this->_values = $this->_statement->content;
         return $this->_values;
     }
 

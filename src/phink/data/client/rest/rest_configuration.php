@@ -16,13 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- namespace Phink\Configuration;
+ 
+namespace Phink\Data\Client\Rest;
+
+//require_once 'phink/configuration/data/fileconfiguration.php';
+
+use Phink\Configuration\Data\TUrlConfiguration;
 
 /**
+ * Description of asqliteconfiguration
  *
  * @author david
  */
-interface IConfigurable {
-    public function configure();
-    public function getConfiguration();
+class TRestConfiguration extends TUrlConfiguration
+{
+    
 }
+?>

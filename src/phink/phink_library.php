@@ -35,6 +35,7 @@ class PhinkLibrary {
             'web/web_object.php',
             'web/web_application.php',
             'web/static_application.php',
+            'rest/rest_application.php',
             'core/router.php',
             'web/curl.php',
             'web/response.php',
@@ -89,30 +90,16 @@ class PhinkLibrary {
             'web/ui/plugin/table.php',
             'web/ui/plugin/ulli.php',
             'web/ui/plugin/olli.php',
+            'web/ui/plugin/list.php',
             'web/ui/plugin/accordion.php',
             'web/ui/plugin_renderer.php',
             'web/ui/widget/plugin/plugin.class.php',
             'web/ui/widget/plugin/plugin_child.php'
         ];
 
-//        $fw_content = '';
         foreach ($filenames as $filename) {
-            $file = str_replace("/", DIRECTORY_SEPARATOR,  $filename);
-            
-//            $file = __DIR__ . DIRECTORY_SEPARATOR . $filename;
-            if(Phar::running() != '') {
-                $file = pathinfo($filename, PATHINFO_BASENAME);
-//                $file = $filename;
-            }
-            include $file;
-//            $fw_content .= file_get_contents($filename, FILE_USE_INCLUDE_PATH);
+            include __DIR__ . "/" . $filename;
         }
-        
-//        $fw_content = '<?php' . str_replace('<?php', '', $fw_content);
-        
-//        file_put_contents('phink.inc', $fw_content);
-        
-        
         
     }
 }

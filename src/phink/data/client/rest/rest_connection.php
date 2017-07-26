@@ -17,31 +17,31 @@
  */
  
  
-namespace Phink\Data\Client\MySQL;
+namespace Phink\Data\Client\Rest;
 
-//require_once 'phink/data/connection.php';
 //require_once 'phink/configuration/configurable.php';
-//require_once 'mysql_configuration.php';
+//require_once 'phink/data/connection.php';
+//require_once 'jsonite_configuration.php';
 
 use Phink\Core\TObject;
 use Phink\Configuration\IConfigurable;
 use Phink\Data\IConnection;
-use Phink\Data\Client\MySQL\TMySqlConfiguration;
+use Phink\Data\Client\Rest\TRestConfiguration;
 
 /**
- * Description of TMySqlConnection
+ * Description of aRestconnection
  *
  * @author david
  */
-class TMySqlConnection extends TObject implements IConnection, IConfigurable
+class TRestConnection extends TObject implements IConnection, IConfigurable
 {
 
-    private $_state = 0;
-    private $_sqlConfig;
+    private $_restConfig;
+    private $_state = NULL;
 
-    public function __construct(TMySqlConfiguration $sqlConfig)
+    public function __construct(TRestConfiguration $jsonConfig)
     {
-        $this->_sqlConfig = $sqlConfig;
+        $this->_restConfig = $jsonConfig;
     }
 
     public function getState()
@@ -49,18 +49,16 @@ class TMySqlConnection extends TObject implements IConnection, IConfigurable
         return $this->_state;
     }
 
-    public function getConfiguration()
-    {
-        return $this->_sqlConfig;
-    }
-    
     public function open()
     {
         try {
-            $this->_state = mysql_connect($this->_sqlConfig->getHost(), $this->_sqlConfig->getUser(), $this->_sqlConfig->getPassword());
-            mysql_select_db($this->_sqlConfig->getDatabaseName(), $this->_state);
-        } catch (Exception $ex) {
-            exception($ex);
+            $this->_state =  new \Phink\Web\TCurl();
+            $this->_state->request($this->_restConfig->getUrl());
+
+        } catch (\Throwable $ex) {
+            $this->getLogger()->exception($ex);
+        } catch (\Exception $ex) {
+            $this->getLogger()->exception($ex);
         }
 
         return $this->_state;
@@ -68,14 +66,22 @@ class TMySqlConnection extends TObject implements IConnection, IConfigurable
 
     public function close()
     {
-        mysql_close($this->_state);
-
-        return $this->_state;
+        unset($this->_state);
+        return NULL;
     }
 
+    public function getConfiguration()
+    {
+        return $this->_restConfig;
+    }
+    
     public function configure()
     {
 
     }
+    
+    public function getDriver()
+    {
+        
+    }
 }
-?>

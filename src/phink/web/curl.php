@@ -24,7 +24,7 @@ namespace Phink\Web;
  *
  * @author dpjb
  */
-class Curl extends \Phink\Core\TStaticObject {
+class TCurl extends \Phink\Core\TStaticObject {
     //put your code here
     
     public function request($uri, $header = [], $data = []) {
@@ -45,6 +45,7 @@ class Curl extends \Phink\Core\TStaticObject {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $queryString);
         }
+        curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 
         $content = curl_exec($ch);

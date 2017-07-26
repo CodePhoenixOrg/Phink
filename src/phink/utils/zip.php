@@ -24,7 +24,7 @@ namespace Phink\Utils;
  *
  * @author dpjb
  */
-class Zip {
+class TZip {
     //put your code here
     function deflat($src_file, $dest_dir=false, $create_zip_name_dir=true, $overwrite=true) 
     {

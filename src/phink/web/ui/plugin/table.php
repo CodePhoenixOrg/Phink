@@ -102,10 +102,6 @@ class TTable extends TCustomPlugin
             $oldValue = array();
             for($i = 0; $i < $this->rows; $i++) {
 
-                $this->getLogger()->debug('** BEGIN **');
-                $this->getLogger()->debug($this->rows);
-                $this->getLogger()->debug('** END **');
-
                 $row = (isset($body[$i])) ? json_decode($body[$i]) : array_fill(0, $this->columns, '&nbsp;');
                 $typeId0 = 'id="' . $this->getId() .  $elements[3]->getType() . ($i) . '"';
                 $tbody .= str_replace('%s', $typeId0, $elements[3]->getOpening()) . "\n";

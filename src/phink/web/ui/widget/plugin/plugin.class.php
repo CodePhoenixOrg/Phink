@@ -82,9 +82,7 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
         }
         
         $this->_rowCount = $this->pageCountByDefault($this->_rowCount);
-//        if($this->_rowCount === 0) {
-//            $this->_rowCount = $childrenCount;
-//        }
+
     }
 
     public static function getGridData($id, \Phink\Data\ICommand $cmd, $rowCount = 1)
@@ -108,21 +106,15 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
         $fieldCount = $stmt->getFieldCount();
                 
         $values = array();
-        while($row = $stmt->fetch()) {
-            $realRow = array();
-            foreach($row as $col) {
-                array_push($realRow, ($col));
-            }
-            array_push($values, json_encode($realRow));
+        $rows = $stmt->fetchAll();
+        $r = count($rows);
+        foreach($rows as $row) {
+            array_push($values, json_encode($row));
         }
-        $r = count($values);
         for($k = $r; $k < $rowCount; $k++) {
             array_push($values, json_encode(array_fill(0, $fieldCount, '&nbsp;')));
         }
-//        if($rowCount < 1) {
-            $rowCount = $r;
-//        }
-        
+
         //self::$logger->dump('RECORDSET VALUES', $values);
         $result = [
             'cols' => $fieldCount
@@ -145,9 +137,7 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
     {
         $this->data = self::getGridData($this->getParent()->getViewName(), $this->command, $this->_rowCount);
         $this->response->setData('data', $this->data);
-        
-        //if(!$this->getRequest()->isAjax()) {
-        //}
+
     }
     
     public function renderHtml()

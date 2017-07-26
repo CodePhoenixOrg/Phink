@@ -32,4 +32,4 @@ class TSqlServerConfiguration extends TDataConfiguration
 {
     //put your code here
 }
-?>
+

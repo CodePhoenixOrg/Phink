@@ -18,25 +18,23 @@
  
  namespace Phink\Rest;
 
-include 'phink/core/core.php';
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-use Phink\Core\TStaticObject;
+use Phink\Core\TObject;
 /**
  * Description of application
  *
  * @author David
  */
-class TRestApplication extends TStaticObject
+class TRestApplication extends TObject
 {
     //put your code here
-    use THttpTransport;
+    use \Phink\Web\THttpTransport;
     
-    public static function create()
+    public static function create($params = [])
     {
         (new TRestApplication())->run();
     }
@@ -47,12 +45,15 @@ class TRestApplication extends TStaticObject
         $this->request = new \Phink\Web\TRequest();
         $this->response = new \Phink\Web\TResponse();
         
-        $router = new TRestRouter($this);
+        $router = new \Phink\Core\TRouter($this);
+        $router->match();
+        
+        $router = new TRestRouter($router);
         if($router->translate()) {
             $router->dispatch();
         } else {
+//            $this->response->sendData(['Error' => "404 : You're searching in the wrong place"]);
             $this->response->setReturn(404);
-            $this->response->sendData(['Error' => "404 : You're searching in the wrong place"]);
             
         }
         

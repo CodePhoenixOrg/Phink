@@ -107,6 +107,10 @@ class TApplication extends TObject
             }
         }
         
+        if($this->getArgument('os')) {
+            \Phink\UI\TConsoleApplication::writeLine($this->getOS());
+        }
+        
     }
     
     public function getApplicationDirectory() {
@@ -263,14 +267,14 @@ class TApplication extends TObject
         
         if(!file_exists($filename)) {
             \Phink\UI\TConsoleApplication::writeLine('Downloading Phink github master');
-            $curl = new \Phink\Web\Curl();
+            $curl = new \Phink\Web\TCurl();
             $result = $curl->request('https://codeload.github.com/dpjb71/Phink/zip/master');
             file_put_contents($filename, $result->content);   
         }
 
         if(file_exists($filename)) {
             \Phink\UI\TConsoleApplication::writeLine('Deflating Phink master archive');
-            $zip = new \Phink\Utils\Zip();
+            $zip = new \Phink\Utils\TZip();
             $zip->deflat($filename);
             
         }

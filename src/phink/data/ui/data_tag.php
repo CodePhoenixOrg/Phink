@@ -59,7 +59,7 @@ trait TDataTag {
     {
         return $this->command;
     }
-    public function setCommand(\Phink\Data\Client\PDO\TPdoCommand $value)
+    public function setCommand(\Phink\Data\ICommand $value)
     {
         $this->command = $value;
     }
@@ -68,7 +68,7 @@ trait TDataTag {
     {
         return $this->statement;
     }
-    public function setStatement(\Phink\Data\Client\PDO\TPdoDataStatement $value)
+    public function setStatement(\Phink\Data\IDataStatement $value)
     {
         $this->statement = $value;
     }
