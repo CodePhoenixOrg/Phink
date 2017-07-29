@@ -64,6 +64,10 @@ if($document_root != '') {
     }
     
     define('APP_ROOT', SITE_ROOT . 'app' . DIRECTORY_SEPARATOR);
+    define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
+    define('MODEL_ROOT', APP_ROOT . 'models' . DIRECTORY_SEPARATOR);
+    define('REST_ROOT', APP_ROOT . 'rest' . DIRECTORY_SEPARATOR);
+    define('VIEW_ROOT', APP_ROOT . 'views' . DIRECTORY_SEPARATOR);
     define('REL_RUNTIME_DIR', 'runtime' . DIRECTORY_SEPARATOR);
     define('RUNTIME_DIR', SITE_ROOT . REL_RUNTIME_DIR);
     define('REL_RUNTIME_JS_DIR', 'js' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);

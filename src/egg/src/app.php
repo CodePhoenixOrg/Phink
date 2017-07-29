@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include (\Phar::running() == '') ? __DIR__ . '/../../phink_library.php' : 'phink_library.php';
+include (\Phar::running() == '') ? __DIR__ . '/../../phink/phink_library.php' : 'phink_library.php';
 include 'lib.php';
 
 class Egg extends \Phink\UI\TConsoleApplication {

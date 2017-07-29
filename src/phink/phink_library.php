@@ -60,11 +60,18 @@ class PhinkLibrary {
             'data/data_access.php',
             'data/server_type.php',
             'configuration/configurable.php',
+            'configuration/configuration.php',
             'configuration/data/data_configuration.php',
+            'configuration/data/file_configuration.php',
+            'configuration/data/url_configuration.php',
             'data/connection_interface.php',
             'data/command_interface.php',
             'data/data_statement_interface.php',
             'data/custom_command.php',
+            'data/client/rest/rest_configuration.php',
+            'data/client/rest/rest_connection.php',
+            'data/client/rest/rest_command.php',
+            'data/client/rest/rest_data_statement.php',
             'data/client/pdo/pdo_configuration.php',
             'data/client/pdo/pdo_connection.php',
             'data/client/pdo/pdo_command.php',
@@ -97,10 +104,15 @@ class PhinkLibrary {
             'web/ui/widget/plugin/plugin_child.php'
         ];
 
-        foreach ($filenames as $filename) {
-            include __DIR__ . "/" . $filename;
-        }
-        
+        if(Phar::running() != '') {
+            foreach ($filenames as $filename) {
+                include pathinfo($filename, PATHINFO_BASENAME);
+            }
+        } else {
+            foreach ($filenames as $filename) {
+                include __DIR__ . "/" . $filename;
+            }
+        }          
     }
 }
 
