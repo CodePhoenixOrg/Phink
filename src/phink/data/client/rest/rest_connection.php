@@ -54,11 +54,12 @@ class TRestConnection extends TObject implements IConnection, IConfigurable
         try {
             $this->_state =  new \Phink\Web\TCurl();
             $this->_state->request($this->_restConfig->getUrl());
+            $this->getLogger()->debug($this->_state);
 
         } catch (\Throwable $ex) {
-            $this->getLogger()->exception($ex);
+            throw new \Exception('An error occured while trying to open a connection on the URL ' . $this->_restConfig->getUrl(), -1, $ex);
         } catch (\Exception $ex) {
-            $this->getLogger()->exception($ex);
+            throw new \Exception('An error occured while trying to open a connection on the URL ' . $this->_restConfig->getUrl(), -1, $ex);
         }
 
         return $this->_state;

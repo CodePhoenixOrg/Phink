@@ -30,6 +30,9 @@ use Phink\Configuration\Data\TUrlConfiguration;
  */
 class TRestConfiguration extends TUrlConfiguration
 {
-    
+    public function __construct($url, $method = 'GET', $user = '', $password = '', $port = 0, $params = [])
+    {
+        parent::__construct($url, $method, $user, $password, $port, $params);
+    }
 }
-?>
+

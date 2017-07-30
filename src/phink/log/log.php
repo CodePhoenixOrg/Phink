@@ -32,12 +32,21 @@ class TLog
     //put your code here
     
     private $_debugLogFile = '';
+    private $_errorLogFile = '';
 
     private function _setDebugLogFile()
     {
         $this->_debugLogFile = './logs/debug.log';
         if(APP_IS_WEB) {
             $this->_debugLogFile = SITE_ROOT . 'logs/debug.log';
+        }
+    }
+
+    private function _setErrorLogFile()
+    {
+        $this->_errorLogFile = './logs/error.log';
+        if(APP_IS_WEB) {
+            $this->_errorLogFile = SITE_ROOT . 'logs/error.log';
         }
     }
 
@@ -80,5 +89,22 @@ class TLog
 
         $this->debug($message, $filename, $line);
     }
-    
+ 
+    public function error($message, $filename = null, $line = null)
+    {
+        $message = (is_array($message) || is_object($message)) ? print_r($message, true) : $message;
+        $this->_setErrorLogFile();
+        
+        if(!file_exists('logs')) {
+            mkdir('logs', 0755);
+        }
+        $handle = fopen($this->_setErrorLogFile, 'a');
+
+        if(SITE_ROOT) {
+            $filename = substr($filename, strlen(SITE_ROOT));
+        }
+        $message = date('Y-m-d h:i:s') . ((isset($filename)) ? ":$filename" : '') . ((isset($line)) ? ":$line" : '') . " : $message" . PHP_EOL;
+        fwrite($handle, $message . PHP_EOL);
+        fclose($handle);
+    }
 }
