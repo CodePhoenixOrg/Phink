@@ -39,9 +39,10 @@ Phink Framework is a component oriented PHP framework. It allows you to build si
 		</head>
 		<body data-twttr-rendered="true" data-spy="scroll" >
 			<div id='body'></div>
-			<script type="text/javascript" src="js/_3rdparty.js"></script>
-			<script type="text/javascript" src="js/code_phoenix.js"></script>
-			<script type="text/javascript" src="js/sample.js"></script>
+			<script type="text/javascript" src="phink.js"
+				data-depends="js/code_phoenix.js"
+				data-sources="js/sample.js">
+		        </script>
 		</body>
 	</html>
 
