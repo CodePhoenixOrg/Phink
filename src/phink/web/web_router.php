@@ -61,7 +61,7 @@ class TWebRouter extends \Phink\Core\TRouter
 //        $this->apiFileName = 'app' . DIRECTORY_SEPARATOR . 'rest' . DIRECTORY_SEPARATOR . $this->apiName . CLASS_EXTENSION;
         $requestUriParts = explode('/', $this->path);
         $this->viewName = array_pop($requestUriParts);
-        $viewNameParts = explode('.',$this->viewName);
+        $viewNameParts = explode('.', $this->viewName);
         $this->viewName = array_shift($viewNameParts);
 
         $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
@@ -105,7 +105,7 @@ class TWebRouter extends \Phink\Core\TRouter
         $include = $this->includePrimaryController();
         $controllerClass = $include['type'];
         
-        $view = new \Phink\MVC\TView($this->parent->getParent());
+        $view = new \Phink\MVC\TView($this);
         $view->parse();
         
         if(file_exists($view->getCacheFileName())) {

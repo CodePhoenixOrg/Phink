@@ -17,10 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include (\Phar::running() == '') ? __DIR__ . '/../../phink/phink_library.php' : 'phink_library.php';
+include (\Phar::running() == '') ? __DIR__ . '/../../phink/phink_library.php' : 'phink/phink_library.php';
 include 'lib.php';
 
-class Egg extends \Phink\UI\TConsoleApplication {
+class Egg extends \Phink\UI\TConsoleApplication implements \Phink\UI\IPhar {
 
     /**
      * Application starter
@@ -68,6 +68,16 @@ class Egg extends \Phink\UI\TConsoleApplication {
         }
     }
 
+    public function addPharFiles()
+    {
+        $this->addFileToPhar(SITE_ROOT . "app.php", "app.php");
+        $this->addFileToPhar(SITE_ROOT . "lib.php", "lib.php");
+        
+        $master = self::_requireMaster();
+        $phink_builder = $this->getNamespace() . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'phink_library.php';
+        $phink_builder = \Phink\Utils\TFileUtils::relativePathToAbsolute($phink_builder);
+        $this->addFileToPhar($phink_builder, "phink_library.php");        
+    }
    
 }
  

@@ -68,6 +68,8 @@ if($document_root != '') {
     define('MODEL_ROOT', APP_ROOT . 'models' . DIRECTORY_SEPARATOR);
     define('REST_ROOT', APP_ROOT . 'rest' . DIRECTORY_SEPARATOR);
     define('VIEW_ROOT', APP_ROOT . 'views' . DIRECTORY_SEPARATOR);
+    define('BUSINESS_ROOT', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
+
     define('REL_RUNTIME_DIR', 'runtime' . DIRECTORY_SEPARATOR);
     define('RUNTIME_DIR', SITE_ROOT . REL_RUNTIME_DIR);
     define('REL_RUNTIME_JS_DIR', 'js' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);
@@ -140,8 +142,8 @@ if($document_root != '') {
     define('REQUEST_TYPE_REST', 'rest');    
 } else {
     define('DOCUMENT_ROOT', '');
-    define('SITE_ROOT', DOCUMENT_ROOT);
-    define('APP_ROOT', './');
+//    define('SITE_ROOT', DOCUMENT_ROOT);
+//    define('APP_ROOT', './');
     define('LOG_PATH', './');
 }
 

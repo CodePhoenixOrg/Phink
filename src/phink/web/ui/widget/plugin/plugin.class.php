@@ -103,19 +103,21 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
         
         $stmt = $cmd->querySelect();
         
-        $fieldCount = $stmt->getFieldCount();
-                
-        $values = array();
         $rows = $stmt->fetchAll();
+        $fieldCount = $stmt->getFieldCount();
+        
+
+        $values = array();
         $r = count($rows);
         foreach($rows as $row) {
+            //$row = array_values($row);
             array_push($values, json_encode($row));
         }
         for($k = $r; $k < $rowCount; $k++) {
             array_push($values, json_encode(array_fill(0, $fieldCount, '&nbsp;')));
         }
 
-        //self::$logger->dump('RECORDSET VALUES', $values);
+        //self::$logger->dump('RECORD STMT', $stmt);
         $result = [
             'cols' => $fieldCount
             , 'rows' => $rowCount

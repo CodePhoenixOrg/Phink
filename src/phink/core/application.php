@@ -54,38 +54,59 @@ class TApplication extends TObject
     private $_parameters = array();
     private $_name = 'program';
     protected $appDirectory = '';
-
+    private $_phar = null;
+    private $_canStop = false;
 
     private $redis = null;
 
-    public function __construct($argv = [], $argc = 0, $appDirectory = '') {
+    public function __construct($argv = [], $argc = 0, $appDirectory = '.')
+    {
 
         parent::__construct();
 //        if(!class_exists('\Phink\TAutoloader')) {
 //            include 'phink/autoloader.php';
 //            \Phink\TAutoLoader::register();
 //        }
+        $this->_argv = $argv;
+        $this->_argc = $argc;
+
         $this->appDirectory = $appDirectory . DIRECTORY_SEPARATOR;
-        $path = explode(DIRECTORY_SEPARATOR, $appDirectory);
+        
+    }
+
+    protected function ignite()
+    {
+        
+        $path = explode(DIRECTORY_SEPARATOR, $this->appDirectory);
+        $scriptDir = $this->appDirectory . '..' . DIRECTORY_SEPARATOR;
+        $siteDir = $scriptDir . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
+        $siteDir = \Phink\Utils\TFileUtils::relativePathToAbsolute($siteDir);
+        $scriptDir = \Phink\Utils\TFileUtils::relativePathToAbsolute($scriptDir);
+        
+        define('SITE_ROOT', $siteDir);
+        define('SCRIPT_ROOT', $scriptDir);
         
         array_pop($path);
         if(APP_IS_PHAR) {
             array_pop($path);
-            $currentDir = $this->appDirectory . '..';
-            $currentDir = \Phink\Utils\TFileUtils::relativePathToAbsolute($currentDir);
-            $this->appDirectory = str_replace('phar://', '', $currentDir) . DIRECTORY_SEPARATOR;
+            $this->appDirectory = str_replace('phar://', '', $scriptDir);
         }         
         
+        define('APP_ROOT', SITE_ROOT . 'app' . DIRECTORY_SEPARATOR);
+        define('APP_SCRIPTS', APP_ROOT . 'scripts' . DIRECTORY_SEPARATOR);
+        define('APP_DATA', SITE_ROOT . 'data' . DIRECTORY_SEPARATOR);
+        define('APP_BUSINESS', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
+        define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
+        define('BUSINESS_ROOT', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
+        define('MODEL_ROOT', APP_ROOT . 'models' . DIRECTORY_SEPARATOR);
+        define('REST_ROOT', APP_ROOT . 'rest' . DIRECTORY_SEPARATOR);
+        define('VIEW_ROOT', APP_ROOT . 'views' . DIRECTORY_SEPARATOR);
+        define('CACHE_DIR', SITE_ROOT . 'cache' . DIRECTORY_SEPARATOR);
+    
+        array_pop($path);
         $this->_name = array_pop($path);
         
-        \Phink\UI\TConsoleApplication::writeLine($this->_name);
-        
-        //$this->_name = $argv[0];
-        $this->_argv = $argv;
-        $this->_argc = $argc;
-        
         if($this->getArgument('make-phar')) {
-            \Phink\UI\TConsoleApplication::writeLine('MAKE PHAR');
             $this->makePhar();
         }
         
@@ -111,9 +132,26 @@ class TApplication extends TObject
             \Phink\UI\TConsoleApplication::writeLine($this->getOS());
         }
         
+        if($this->getArgument('name')) {
+            \Phink\UI\TConsoleApplication::writeLine($this->getApplicationName());
+        } 
+    
+        if($this->getArgument('source-path')) {
+            \Phink\UI\TConsoleApplication::writeLine($this->getApplicationDirectory());
+        }         
+    
+        if($this->getArgument('script-path')) {
+            \Phink\UI\TConsoleApplication::writeLine(SCRIPT_ROOT);
+        }
     }
     
-    public function getApplicationDirectory() {
+    public function getApplicationName()
+    {
+        return $this->_name;
+    }
+
+    public function getApplicationDirectory()
+    {
         return $this->appDirectory;
     }
 
@@ -172,7 +210,14 @@ class TApplication extends TObject
             //throw new InvalidArgumentException("Argument$several introuvable$several : " . $short . $lonException);
         }
         
+        $this->_canStop = $isFound;
+        
         return $result;
+    }
+    
+    public function canStop()
+    {
+        return $this->_canStop;
     }
 
     public static function getExecutionMode()
@@ -273,7 +318,7 @@ class TApplication extends TObject
         }
 
         if(file_exists($filename)) {
-            \Phink\UI\TConsoleApplication::writeLine('Deflating Phink master archive');
+            \Phink\UI\TConsoleApplication::writeLine('Inflating Phink master archive');
             $zip = new \Phink\Utils\TZip();
             $zip->deflat($filename);
             
@@ -292,6 +337,10 @@ class TApplication extends TObject
         
     }
     
+    public function addFileToPhar($file, $name) {
+        $this->_phar->addFile($file, $name);
+    }
+    
     public function makePhar()
     {
         if(APP_IS_WEB) {
@@ -308,29 +357,20 @@ class TApplication extends TObject
             unlink($buildRoot . $pharName);
         }
 
-        $phar = new \Phar(
+        $this->_phar = new \Phar(
             $buildRoot . $pharName
             , \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::KEY_AS_FILENAME
             , $pharName
         );
         
         // start buffering. Mandatory to modify stub.
-        $phar->startBuffering();
+        $this->_phar->startBuffering();
         
         // Get the default stub. You can create your own if you have specific needs
-        $defaultStub = $phar->createDefaultStub("app.php");
+        $defaultStub = $this->_phar->createDefaultStub("app.php");
         
-
-//        $phar["app.php"] = file_get_contents($srcRoot . "/app.php");
-//        $phar["lib.php"] = file_get_contents($srcRoot . "/lib.php");
-        $phar->addFile($srcRoot . "app.php", "app.php");
-        $phar->addFile($srcRoot . "lib.php", "lib.php");
+        $this->addPharFiles();
         
-        $master = self::_requireMaster();
-        $phink_builder = $srcRoot . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'phink_library.php';
-        $phink_builder = \Phink\Utils\TFileUtils::relativePathToAbsolute($phink_builder);
-        $phar->addFile($phink_builder, "phink_library.php");
-
         foreach($master->tree as $file) {
             $filename = $srcRoot . $master->path . $file;
             
@@ -340,12 +380,9 @@ class TApplication extends TObject
 //            \Phink\UI\TConsoleApplication::writeLine(print_r($info, true));
             
             \Phink\UI\TConsoleApplication::writeLine("Adding %s as %s", $filename, $info);
-            $phar->addFile($filename, $info);
+            $this->_phar->addFile($filename, $info);
             
-//            $phar[$filename] = file_get_contents($master->path . DIRECTORY_SEPARATOR . $file);
         }
-//        var_dump($phar->getStub());
-        
 
         // Create a custom stub to add the shebang
         $execHeader = "#!/usr/bin/env php \n";
@@ -355,9 +392,9 @@ class TApplication extends TObject
         $stub = $execHeader . $defaultStub;
 
         // Add the stub
-        $phar->setStub($stub);
+        $this->_phar->setStub($stub);
 
-        $phar->stopBuffering();        
+        $this->_phar->stopBuffering();        
 
         $buildRoot = $this->appDirectory . '..' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
         $execname = $buildRoot . $this->_name;

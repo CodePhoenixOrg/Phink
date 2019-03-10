@@ -36,10 +36,12 @@ class TRouter extends TObject implements \Phink\Web\IWebObject {
     protected $translation = '';
     protected $routes = [];
     protected $requestType = REQUEST_TYPE_WEB;
+    private $_isFound = false;
 
     public function __construct($parent)
     {
-        parent::__construct($parent);
+        // parent::__construct($parent);
+        $this->parent = $parent;
         $this->authentication = $parent->getAuthentication();
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();        
@@ -59,6 +61,10 @@ class TRouter extends TObject implements \Phink\Web\IWebObject {
     
     public function getPath() {
         return $this->path;
+    }
+
+    public function isFound() {
+        return $this->_isFound;
     }
     
     public function match() {
@@ -80,10 +86,11 @@ class TRouter extends TObject implements \Phink\Web\IWebObject {
                         $key = str_replace("/", "\/", $key);
                         $matches = \preg_replace('/' . $key . '/', $value, $url);
                         $this->getLogger()->debug('URL: ' . $url);
-                        $this->getLogger()->debug('MATCHES');
-                        $this->getLogger()->debug($matches);
+                        $this->getLogger()->debug('MATCHES: ' . $matches);
+                        $this->getLogger()->debug('KEY: ' . $key);
 
                         if ($matches !== $url) {
+                            $this->_isFound = true;
                             $this->requestType = $key;
                             $this->translation = $matches;
                             $baseurl = parse_url($this->translation);

@@ -241,6 +241,11 @@ trait TWebObject {
         
     }
     
+    public function getNamespace()
+    {
+        return $this->namespace;
+    }
+
     public function setNamespace()
     {
         $this->namespace = $this->getFileNamespace();

@@ -29,6 +29,7 @@ class TConsoleApplication extends \Phink\Core\TApplication
     public function __construct($arg_v = [], $arg_c = 0, $app_dir = '')
     {
         parent::__construct($arg_v, $arg_c, $app_dir);
+        parent::ignite();
     
         $useTransaction = $this->getArgument('useTransactions');
         $execution = $this->getArgument('executionMode');

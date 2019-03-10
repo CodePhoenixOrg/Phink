@@ -77,8 +77,16 @@ class TRegistry extends TStaticObject
     
     public static function classInfo($className = '')
     {
+        $result = null;
+        
         self::init();
-        return (isset(self::$_classRegistry[$className]) ? (object) self::$_classRegistry[$className] : false);
+        if(isset(self::$_classRegistry[$className])) {
+            $result = (object) self::$_classRegistry[$className];
+        }
+
+        self::$logger->debug('CLASS INFO : ' . print_r($result, true));
+        
+        return $result;
     }
     
     public static function classPath($className = '')

@@ -23,6 +23,8 @@
  */
 namespace Phink\MVC;
 
+use \Phink\Core\TRouter;
+
 /**
  * Description of view
  *
@@ -37,6 +39,11 @@ class TView extends TCustomView
 
         parent::__construct($parent);
         
+        $this->viewName = $parent->getViewName();
+        $this->className = $parent->getClassName();
+        $this->namespace = $parent->getNamespace();
+        $this->setNames();
+
         $this->authentication = $parent->getAuthentication();
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();
