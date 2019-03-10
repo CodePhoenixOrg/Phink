@@ -41,10 +41,15 @@ class TPdoDataStatement extends TObject implements IDataStatement
     private $_fieldCount;
     private $_rowCount;
     private $_meta = array();
+    private $_colNames = [];
+    private $_connection = null;
 
-    public function __construct($statement)
+    public function __construct($statement, $connection = null)
     {
         $this->_statement = $statement;
+        //$this->_meta = $statement->getColumnMeta();
+        $this->_connection = $connection;
+        self::$logger->dump('STATEMENT', $statement);
     }
 
     public function getValue($i)
@@ -84,7 +89,16 @@ class TPdoDataStatement extends TObject implements IDataStatement
     public function getFieldCount()
     {
         if(!isset($this->_fieldCount)) {
-            $this->_fieldCount = $this->_statement->columnCount();
+            try {
+                $this->_fieldCount = $this->_statement->columnCount();
+            } catch (\PDOException $ex) {
+                if(isset($this->_values[0])) {
+                    $this->_fieldCount = count($this->_values[0]);
+                } else {
+                    throw new \Exception("Cannot count fields of a row before the resource is fetched", -1, $ex);
+                }
+            }
+
         }
         return $this->_fieldCount;
     }
@@ -92,7 +106,15 @@ class TPdoDataStatement extends TObject implements IDataStatement
     public function getRowCount()
     {
         if(!isset($this->_rowCount)) {
-            $this->_rowCount = $this->_statement->rowCount();
+            try {
+                $this->_rowCount = $this->_statement->rowCount();
+            } catch (\PDOException $ex) {
+                if(is_array($this->_values)) {
+                    $this->_rowCount = count($this->_values);
+                } else {
+                    throw new \Exception("Cannot count rows of a result set before the resource is fetched", -1, $ex);
+                }
+            }
         }
         return $this->_rowCount;
 
@@ -109,13 +131,25 @@ class TPdoDataStatement extends TObject implements IDataStatement
 
     public function getFieldNames()
     {
-        $result = array();
-        $this->getFieldCount();
-        for($j = 0; $j < $this->_fieldCount; $j++) {
-            array_push($result, $this->_statement->getColumnMeta($j)['name']);
+        if(count($this->_colNames) == 0 && $this->_connection !== null) {
+
+            $sql = $this->_statement->queryString;
+            self::$logger->dump('QUERY STRING', $sql);
+            $res = $this->_connection->query($sql);
+            $row = $res->fetch(\PDO::FETCH_ASSOC);
+
+            $this->_colNames = array_keys($row);
+
+            // $result = array();
+            // $this->getFieldCount();
+            // for($j = 0; $j < $this->_fieldCount; $j++) {
+            //     array_push($result, $this->_statement->getColumnMeta($j)['name']);
+            // }
+            // return $result;
+    
         }
-        
-        return $result;
+        return $this->_colNames;        
+
     }
 
     public function getFieldType($i)

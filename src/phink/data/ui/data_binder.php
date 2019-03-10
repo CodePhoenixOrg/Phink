@@ -86,7 +86,8 @@ trait TDataBinder
     
     public static function applyTemplate($templates, $names, $values, $templateIndex) 
     {
-        
+        self::$logger->debug('TEMPLATE : ' . print_r($templates[$templateIndex], true));
+
         $cols = count($values);
 
         $html = $templates[$templateIndex]['content'];
@@ -100,6 +101,9 @@ trait TDataBinder
         for ($m = 0; $m < $cols; $m++) {
             $head = $templates[$m]['name'];
             $i = array_keys($names, $head)[0];
+
+            //self::$logger->debug('HEAD : ' . $head);
+            //self::$logger->debug('NAMES : ' . $names);
 
             $html = str_replace('<% ' . $head . ' %>', $values[$i], $html);
             $html = str_replace('<% ' . $head . ':index %>', $i, $html);

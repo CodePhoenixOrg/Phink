@@ -108,7 +108,7 @@ class TPdoCommand extends \Phink\Data\TCustomCommand
                 $this->_statement = $this->_connectionHandler->query($this->_commandText);
             }
             
-            $result = new TPdoDataStatement($this->_statement);
+            $result = new TPdoDataStatement($this->_statement, $this->_connectionHandler);
         } catch (\PDOException $ex) {
             self::$logger->debug('SQL : ' . $sql . '; params : ' . print_r($params, true), __FILE__, __LINE__);
             self::$logger->exception($ex, __FILE__, __LINE__);

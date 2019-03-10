@@ -54,7 +54,7 @@ class TWebApplication extends \Phink\Core\TApplication implements IHttpTransport
         $this->setNames();
     }
     
-    public static function mediaPath() 
+    public static function mediaPath()
     {
         return SERVER_ROOT . '/media/';
     }
@@ -78,14 +78,12 @@ class TWebApplication extends \Phink\Core\TApplication implements IHttpTransport
 
     public function run($params)
     {
-        
-
-        if(!file_exists('js_builder.lock')) {
+        if (!file_exists('js_builder.lock')) {
             \Phink\JavaScript\JsBuilder::build();
             file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
         }
 
-        if(!file_exists('css_builder.lock')) {
+        if (!file_exists('css_builder.lock')) {
             \Phink\CascadingStyleSheet\CssBuilder::build();
             file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
         }
@@ -96,24 +94,28 @@ class TWebApplication extends \Phink\Core\TApplication implements IHttpTransport
         $router = new \Phink\Core\TRouter($this);
         $reqtype = $router->match();
 
-        if($reqtype == REQUEST_TYPE_WEB) {
-            if($this->validateToken()) {
+        if (!$router->isFound()) {
+            $this->response->setReturn(404);
+            return false;
+        }
+
+        if ($reqtype == REQUEST_TYPE_WEB) {
+            if ($this->validateToken($router)) {
                 $router = new TWebRouter($router);
             }
         } else {
             $router = new TRestRouter($router);
         }
 
-        if($router->translate()) {
+        if ($router->translate()) {
             $this->getLogger()->debug("Ready to dispatch");
             $router->dispatch();
-
         } else {
-            $this->response->setReturn(404);
+            $this->response->setReturn(403);
         }
     }
 
-    public function validateToken()
+    public function validateToken(TRouter $router)
     {
         $result = false;
         // We get the current token ...
@@ -123,11 +125,8 @@ class TWebApplication extends \Phink\Core\TApplication implements IHttpTransport
 //            $token = '#!';
 //            $token = TCrypto::generateToken('');
 //        }
-        if(is_string($token) 
-            || $this->viewName == MAIN_VIEW 
-            || $this->viewName == MASTER_VIEW 
-            || $this->viewName == LOGIN_VIEW  
-            || $this->viewName == HOME_VIEW
+        if ((is_string($token) || file_exists(APP_ROOT . $router->getPath()))
+            && $router->isFound()
         ) {
             // We renew the token
             // ... we'll try to match the user with this token and alternatively get a new token
@@ -137,14 +136,12 @@ class TWebApplication extends \Phink\Core\TApplication implements IHttpTransport
             // we place the new token in the response
             $this->response->setToken($token);
             $result = true;
-                    
         } else {
-            $this->response->setReturn(403);
+            $this->response->setReturn(404);
 //            $this->response->redirect(SERVER_ROOT . MAIN_PAGE);
-            $result = true;
+            $result = false;
         }
         
         return $result;
     }
-
 }

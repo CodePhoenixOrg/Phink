@@ -52,9 +52,9 @@ abstract class TCustomView extends TCustomControl
     {
         $this->setParent($parent);
         //$this->redis = new Client($this->context->getRedis());
-        $this->setViewName();
-        $this->setNamespace();
-        $this->setNames();
+        // $this->setViewName();
+        // $this->setNamespace();
+        // $this->setNames();
     }
 
     public function isDirty()

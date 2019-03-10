@@ -667,28 +667,28 @@ class TSqlSrvDbConnector implements IConnector
 
     public function getRecordset($sql)
     {
-	$recordset = (array) null;
-	$names = (array) null;
-	$types = (array) null;
-	$values = (array) null;
+        $recordset = (array) null;
+        $names = (array) null;
+        $types = (array) null;
+        $values = (array) null;
 
-	$result = self::query($sql) or die($sql);
-	$nfields = self::numFields($result);
-	//$nrows=DbConnector::numRows($result);
-	
-	for($i = 0; $i < $nfields; $i++) {
-		$names[$i]=self::fieldName($result, $i);
-	}
-	for($i = 0; $i < $nfields; $i++) {
-		$types[$i]=self::fieldType($result, $i);
-	}
-	
-	while($rows = self::fetchArray($result)) {
-		array_push($values, $rows);
-	}
-	$recordset = array("names" => $names, "values" => $values, "types" => $types);
+        $result = self::query($sql) or die($sql);
+        $nfields = self::numFields($result);
+        //$nrows=DbConnector::numRows($result);
         
-	return $recordset;
+        for($i = 0; $i < $nfields; $i++) {
+            $names[$i]=self::fieldName($result, $i);
+        }
+        for($i = 0; $i < $nfields; $i++) {
+            $types[$i]=self::fieldType($result, $i);
+        }
+        
+        while($rows = self::fetchArray($result)) {
+            array_push($values, $rows);
+        }
+        $recordset = array("names" => $names, "values" => $values, "types" => $types);
+            
+        return $recordset;
     }
     
 }
@@ -989,30 +989,30 @@ class TMsSqlDbConnector implements IConnector
     
     public function getRecordset($sql)
     {
-	$recordset = (array) null;
-	$names = (array) null;
-	$types = (array) null;
-	$values = (array) null;
+        $recordset = (array) null;
+        $names = (array) null;
+        $types = (array) null;
+        $values = (array) null;
 
-	$result = self::query($sql) or die($sql);
-	$nfields = self::numFields($result);
-	//$nrows=DbConnector::numRows($result);
-	
-	for($i = 0; $i < $nfields; $i++) {
-		$names[$i]=self::fieldName($result, $i);
-	}
-	for($i = 0; $i < $nfields; $i++) {
-		$types[$i]=self::fieldType($result, $i);
-	}
-	
-	$i=0;
-	while(($rows = self::fetchArray($result)) && ($i < 256)) {
-		$values[$i] = array_unique($rows);
-		$i++;
-	}
-	$recordset = array("names" => $names, "values" => $values, "types" => $types);
+        $result = self::query($sql) or die($sql);
+        $nfields = self::numFields($result);
+        //$nrows=DbConnector::numRows($result);
         
-	return $recordset;
+        for($i = 0; $i < $nfields; $i++) {
+            $names[$i]=self::fieldName($result, $i);
+        }
+        for($i = 0; $i < $nfields; $i++) {
+            $types[$i]=self::fieldType($result, $i);
+        }
+        
+        $i=0;
+        while(($rows = self::fetchArray($result)) && ($i < 256)) {
+            $values[$i] = array_unique($rows);
+            $i++;
+        }
+        $recordset = array("names" => $names, "values" => $values, "types" => $types);
+            
+        return $recordset;
     }
 
 }
@@ -1269,30 +1269,30 @@ class TMySqlDbConnector implements IConnector
 
     public function getRecordset($sql)
     {
-	$recordset = (array) null;
-	$names = (array) null;
-	$types = (array) null;
-	$values = (array) null;
+        $recordset = (array) null;
+        $names = (array) null;
+        $types = (array) null;
+        $values = (array) null;
 
-	$result = self::query($sql) or die($sql);
-	$nfields = self::numFields($result);
-	//$nrows=DbConnector::numRows($result);
-	
-	for($i = 0; $i < $nfields; $i++) {
-		$names[$i]=self::fieldName($result, $i);
-	}
-	for($i = 0; $i < $nfields; $i++) {
-		$types[$i]=self::fieldType($result, $i);
-	}
-	
-	$i=0;
-	while(($rows = self::fetchArray($result)) && ($i < 256)) {
-		$values[$i] = array_unique($rows);
-		$i++;
-	}
-	$recordset = array("names" => $names, "values" => $values, "types" => $types);
+        $result = self::query($sql) or die($sql);
+        $nfields = self::numFields($result);
+        //$nrows=DbConnector::numRows($result);
         
-	return $recordset;
+        for($i = 0; $i < $nfields; $i++) {
+            $names[$i]=self::fieldName($result, $i);
+        }
+        for($i = 0; $i < $nfields; $i++) {
+            $types[$i]=self::fieldType($result, $i);
+        }
+        
+        $i=0;
+        while(($rows = self::fetchArray($result)) && ($i < 256)) {
+            $values[$i] = array_unique($rows);
+            $i++;
+        }
+        $recordset = array("names" => $names, "values" => $values, "types" => $types);
+            
+        return $recordset;
     }
     
 }
