@@ -57,7 +57,8 @@ class TPartialView extends TCustomView
         
         if(!file_exists($this->viewFileName)) {
 
-            if($info = TRegistry::classInfo($this->className))
+            $info = TRegistry::classInfo($this->className);
+            if($info !== null)
             {
                 $this->viewName = \Phink\TAutoloader::classNameToFilename($this->className);
                 if($info->hasTemplate) {

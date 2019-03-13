@@ -72,11 +72,7 @@ class Egg extends \Phink\UI\TConsoleApplication implements \Phink\UI\IPhar {
     {
         $this->addFileToPhar(SITE_ROOT . "app.php", "app.php");
         $this->addFileToPhar(SITE_ROOT . "lib.php", "lib.php");
-        
-        $master = self::_requireMaster();
-        $phink_builder = $this->getNamespace() . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'phink_library.php';
-        $phink_builder = \Phink\Utils\TFileUtils::relativePathToAbsolute($phink_builder);
-        $this->addFileToPhar($phink_builder, "phink_library.php");        
+     
     }
    
 }

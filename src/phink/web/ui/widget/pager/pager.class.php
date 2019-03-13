@@ -66,7 +66,6 @@ class TPager extends \Phink\MVC\TPartialController
         $this->for = $value;
     }
 
-
     public function init()
     {
         $forControl = $this->parent->getChildById($this->for);

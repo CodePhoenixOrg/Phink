@@ -313,7 +313,7 @@ class TApplication extends TObject
         if(!file_exists($filename)) {
             \Phink\UI\TConsoleApplication::writeLine('Downloading Phink github master');
             $curl = new \Phink\Web\TCurl();
-            $result = $curl->request('https://codeload.github.com/dpjb71/Phink/zip/master');
+            $result = $curl->request('https://codeload.github.com/CodePhoenixOrg/Phink/zip/master');
             file_put_contents($filename, $result->content);   
         }
 
@@ -325,8 +325,8 @@ class TApplication extends TObject
         }
         
         if(file_exists($dirname)) {
-            //$phinkDir = 'master' . DIRECTORY_SEPARATOR . 'Phink-master' . DIRECTORY_SEPARATOR. 'src' . DIRECTORY_SEPARATOR . 'phink';
-            $phinkDir = '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'phink';
+            $phinkDir = 'master' . DIRECTORY_SEPARATOR . 'Phink-master' . DIRECTORY_SEPARATOR. 'src' . DIRECTORY_SEPARATOR . 'phink';
+            //$phinkDir = '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'phink';
             $tree = \Phink\TAutoloader::walkTree($phinkDir, ['php']);
             
         }
@@ -370,6 +370,13 @@ class TApplication extends TObject
         $defaultStub = $this->_phar->createDefaultStub("app.php");
         
         $this->addPharFiles();
+
+        $master = self::_requireMaster();
+        $phinkDir = 'master' . DIRECTORY_SEPARATOR . 'Phink-master' . DIRECTORY_SEPARATOR. 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR;
+        $phink_builder = $phinkDir . 'phink_library.php';
+
+        $phink_builder = \Phink\Utils\TFileUtils::relativePathToAbsolute($phink_builder);
+        $this->addFileToPhar($phink_builder, "phink_library.php");        
         
         foreach($master->tree as $file) {
             $filename = $srcRoot . $master->path . $file;
@@ -407,6 +414,19 @@ class TApplication extends TObject
         
     }
     
+    public function addPharFiles()
+    {
+        $tree = \Phink\TAutoloader::walkTree($this->appDirectory, ['php']);
+        if (isset($tree['app.php'])) {
+            unset($tree['app.php']);
+            $this->addFileToPhar($this->appDirectory . "app.php", "app.php");
+        }
+        foreach($tree as $filename) {
+            $this->addFileToPhar($this->appDirectory . $filename, $filename);
+
+        }        
+    }
+
     public function displayTree($path)
     {
         $tree = \Phink\TAutoloader::walkTree($path);
