@@ -302,35 +302,18 @@ class TAutoloader extends TStaticObject
         self::getLogger()->debug('PARSING ' . $viewName . '!!!');
         $view = new \Phink\MVC\TView($ctrl);
 
-
-        // if ($info !== null) {
-        //     $partialView = new \Phink\MVC\TPartialView($view, $ctrl);
-        //     $partialView->setViewName($viewName);
-        //     $partialView->setNamespace();
-        //     $partialView->setNames();
-        //     $include = self::_includeInnerClass($viewName, $info);
-        //     $partialView->parse();
-
-        // } else {
-            $view->setViewName($viewName);
-            $view->setNamespace();
-            $view->setNames();
-            if ($info !== null) {
-                $include = self::_includeInnerClass($viewName, $info);
-            } else {
-                $include = self::includeClass($view->getControllerFileName(), RETURN_CODE);
-            }
-            TRegistry::setCode($view->getControllerFileName(), $include['code']);
-            self::getLogger()->debug($view->getControllerFileName() . ' IS REGISTERED : ' . (TRegistry::exists('code', $view->getControllerFileName()) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
-            self::getLogger()->debug('CONTROLLER FILE NAME OF THE PARSED VIEW: ' . $view->getControllerFileName());
-            $view->parse();
-        // }
-
-        // self::getLogger()->debug('PARSING ' . $viewName . '!!!');
-        // $parentView = new \Phink\MVC\TView($ctrl);
-        // $parentView->setViewName($viewName);
-        // $parentView->setNamespace();
-        // $parentView->setNames();
+        $view->setViewName($viewName);
+        $view->setNamespace();
+        $view->setNames();
+        if ($info !== null) {
+            $include = self::_includeInnerClass($viewName, $info);
+        } else {
+            $include = self::includeClass($view->getControllerFileName(), RETURN_CODE);
+        }
+        TRegistry::setCode($view->getControllerFileName(), $include['code']);
+        self::getLogger()->debug($view->getControllerFileName() . ' IS REGISTERED : ' . (TRegistry::exists('code', $view->getControllerFileName()) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
+        self::getLogger()->debug('CONTROLLER FILE NAME OF THE PARSED VIEW: ' . $view->getControllerFileName());
+        $view->parse();
 
         self::getLogger()->debug('CACHE FILE NAME OF THE PARSED VIEW: ' . $view->getCacheFileName());
         self::getLogger()->debug('ROOT CACHE FILE NAME OF THE PARSED VIEW: ' . SITE_ROOT . $cacheFilename);

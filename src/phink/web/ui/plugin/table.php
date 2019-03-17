@@ -79,8 +79,10 @@ class TTable extends TCustomPlugin
                     $k = $i * $this->columns + $j;
                     $dataIndex = array_keys($head, $this->templates[$j]['name'])[0];
 
-                    $noTHead = $this->templates[$j]['content'] && $this->templates[$j]['enabled'] == 1;
+                    $noTHead = !empty($this->templates[$j]['content']) && $this->templates[$j]['enabled'] == 1;
                     
+                    $this->getLogger()->debug('NO THEAD: ' . \boolval($noTHead), __FILE__, __LINE__);
+
                     $html = $row[$dataIndex];
                     if($noTHead) {
                         $html = \Phink\Web\UI\Widget\Plugin\TPlugin::applyTemplate($this->templates, $head, $row, $j);

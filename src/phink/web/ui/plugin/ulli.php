@@ -37,8 +37,7 @@ class TUlli extends TCustomPlugin
     //put your code here
     public function render()
     {
-        
-        $noTHead = false; 
+        $noTHead = false;
         $elements = $this->elements;
         $css = $this->css ? ' class="' . $this->css . '"' : '';
         
@@ -46,27 +45,27 @@ class TUlli extends TCustomPlugin
         $tbody = str_replace('%s', $css, $elements[0]->getOpening()) . "\n";
         $body = $this->data['values'];
         $names = $this->data['names'];
-        $oldValue = [];
-        $oldValue[0] = '&nbsp;';
-        for($i = 0; $i < $this->rows; $i++) {
+        $oldValue = array_fill(0, count($this->rows), '&nbsp;');
+        for ($i = 0; $i < $this->rows; $i++) {
             $css = '';
 
             $row = (isset($body[$i])) ? json_decode($body[$i]) : array_fill(0, $this->columns, '&nbsp;');
             $typeId0 = 'id="' . $this->getId() .  $elements[1]->getType() . ($i) . '"';
             $tbody .= str_replace('%s', $typeId0 . $css, $elements[1]->getOpening()) . "\n";
-            for($j = 0; $j < $this->columns; $j++) {
+            for ($j = 0; $j < $this->columns; $j++) {
                 $k = $i * $this->columns + $j;
                 
                 $dataIndex = array_keys($names, $this->templates[$j]['name'])[0];
-                $noTHead = isset($this->templates[$j]['content']) && $this->templates[$j]['enabled'] == 1;
+                $noTHead = !empty($this->templates[$j]['content']) && $this->templates[$j]['enabled'] == 1;
 
                 $html = $row[$dataIndex];
-                if($noTHead) {
+                if ($noTHead) {
                     $html = TPlugin::applyTemplate($this->templates, $names, $row, $j);
                 }
-                
-                if($this->templates[$j]['enabled'] == 1 && $row[$j] != $oldValue[$j]) {
-                    $tbody .= str_replace('%s', '', $elements[2]->getOpening()) . $html . $elements[2]->getClosing() . "\n";
+                if (isset($row[$j]) && isset($this->templates[$j]) && isset($oldValue[$j])) {
+                    if ($this->templates[$j]['enabled'] == 1 && $row[$j] != $oldValue[$j]) {
+                        $tbody .= str_replace('%s', '', $elements[2]->getOpening()) . $html . $elements[2]->getClosing() . "\n";
+                    }
                 }
                 $oldValue[$j] = $row[$j];
             }

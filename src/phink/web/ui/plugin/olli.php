@@ -52,16 +52,18 @@ class TOlli extends TCustomPlugin
                 $k = $i * $this->columns + $j;
                 
                 $dataIndex = array_keys($names, $this->templates[$j]['name'])[0];
-                $noTHead = isset($this->templates[$j]['content']) && $this->templates[$j]['enabled'] == 1;
+                $noTHead = !empty($this->templates[$j]['content']) && $this->templates[$j]['enabled'] == 1;
 
                 $html = $row[$dataIndex];
                 if($noTHead) {
                     $html = TPlugin::applyTemplate($this->templates, $names, $row, $j);
                 }
 
-                if($this->templates[$j]['enabled'] == 1 && $row[$j] != $oldValue[$j]) {
-                    $typeId1 = 'id="' . $this->getId() .  $elements[2]->getType() . $k . '"';
-                    $tbody .= str_replace('%s', $typeId1, $elements[2]->getOpening()) . $html . $elements[2]->getClosing() . "\n";
+                if (isset($row[$j]) && isset($this->templates[$j]) && isset($oldValue[$j])) {
+                    if ($this->templates[$j]['enabled'] == 1 && $row[$j] != $oldValue[$j]) {
+                        $typeId1 = 'id="' . $this->getId() .  $elements[2]->getType() . $k . '"';
+                        $tbody .= str_replace('%s', $typeId1, $elements[2]->getOpening()) . $html . $elements[2]->getClosing() . "\n";
+                    }
                 }
                 $oldValue[$j] = $row[$j];
             }

@@ -96,7 +96,7 @@ class TAccordion extends TCustomPlugin
                 //$html = $row[$index];
                 //$html = $level . '[' . $oldLevel . ']' . '-' . $index . '::' . $row[$index];
                 $dataIndex = array_keys($names, $this->templates[$j]['name'])[0];
-                $noTHead = isset($this->templates[$j]['content']) && $this->templates[$j]['enabled'] == 1;
+                $noTHead = !empty($this->templates[$j]['content']) && $this->templates[$j]['enabled'] == 1;
 
                 $html = $row[$dataIndex];
                 if($noTHead) {

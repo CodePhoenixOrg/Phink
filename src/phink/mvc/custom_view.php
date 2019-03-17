@@ -108,12 +108,9 @@ abstract class TCustomView extends TCustomControl
     
     public function parse()
     {
-        if($this->viewName == 'tView') return false;
-         
-        self::$logger->debug('CUSTOM VIEW TYPE: ' .  $this->getViewName(), __FILE__, __LINE__);
+        self::$logger->debug($this->viewName . ' IS REGISTERED : ' . (TRegistry::exists('code', $this->controllerFileName) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
 
-        self::$logger->debug($this->controllerFileName . ' IS REGISTERED : ' . (TRegistry::exists('code', $this->controllerFileName) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
-        
+
         self::$logger->debug('PARSE FILE : ' . $this->viewFileName, __FILE__, __LINE__);
 //        $this->viewHtml = $this->redis->mget($templateName);
 //        $this->viewHtml = $this->viewHtml[0];
@@ -137,6 +134,10 @@ abstract class TCustomView extends TCustomControl
             $this->viewHtml = $this->writeHTML($doc, $this);
 
             //self::$logger->debug('CACHE FILE : ' . $this->cacheFileName, __FILE__, __LINE__);
+        }
+        if ($this->viewName == 'plugin') {
+            self::$logger->debug('NO NEED TO WRITE CODE: ' . $this->controllerFileName, __FILE__, __LINE__);
+            return false;
         }
         
         $code = TRegistry::getCode($this->controllerFileName);

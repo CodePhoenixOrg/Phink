@@ -27,7 +27,7 @@ namespace Phink\Data\UI;
 trait TDataBinder 
 {
     protected $columns = 0;
-    protected $valuess = 0;
+    protected $rows = 0;
     protected $data = array();
     protected $templates = array();
     protected $pivot = false;
@@ -93,10 +93,14 @@ trait TDataBinder
         $html = $templates[$templateIndex]['content'];
         $event = $templates[$templateIndex]['event'];
         $e = explode('#', $event);
-        if($e[0] == 'href') {
-            $event = 'javascript:' . $e[1];
-        } else {    
-            $event = $e[0] . '="' . $e[1] . '"'; 
+        if (count($e) > 1) {
+            if ($e[0] == 'href') {
+                $event = 'javascript:' . $e[1];
+            } else {
+                $event = $e[0] . '="' . $e[1] . '"';
+            }
+        } else {
+            $event = $e[0];
         }
         for ($m = 0; $m < $cols; $m++) {
             $head = $templates[$m]['name'];
