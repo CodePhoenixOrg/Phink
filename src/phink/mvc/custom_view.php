@@ -108,6 +108,10 @@ abstract class TCustomView extends TCustomControl
     
     public function parse()
     {
+        if($this->viewName == 'tView') return false;
+         
+        self::$logger->debug('CUSTOM VIEW TYPE: ' .  $this->getViewName(), __FILE__, __LINE__);
+
         self::$logger->debug($this->controllerFileName . ' IS REGISTERED : ' . (TRegistry::exists('code', $this->controllerFileName) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
         
         self::$logger->debug('PARSE FILE : ' . $this->viewFileName, __FILE__, __LINE__);
@@ -146,6 +150,7 @@ abstract class TCustomView extends TCustomControl
         $code = str_replace(CONTROLLER, CONTROL, $code);
         $code = str_replace(PARTIAL_CONTROLLER, CONTROL, $code);
         if(!empty(trim($code))) {
+            self::$logger->debug('SOMETHING TO CACHE : ' . $this->getCacheFileName(), __FILE__, __LINE__);
             file_put_contents($this->getCacheFileName(), $code);
         }
       
@@ -153,7 +158,7 @@ abstract class TCustomView extends TCustomControl
         
         
         // We generate the code, but we don't flag it as parsed because it was not "executed"
-        return false; //$include['type'];
+        return false;
         
     }
     

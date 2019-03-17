@@ -92,7 +92,6 @@ class PhinkLibrary {
             //'web/ui/grid.class.php',
             //'web/ui/pager.class.php',
             'data/ui/data_tag.php',
-            //'data/ui/data_grid.class.php',
             'data/ui/data_binder.php',
             'web/ui/plugin/custom_plugin.php',
             'web/ui/plugin/table.php',

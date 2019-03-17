@@ -109,17 +109,12 @@ class TAutoloader extends TStaticObject
 
         $code = file_get_contents($filename, FILE_USE_INCLUDE_PATH);
         
-        $file = str_replace('\\', '_', $info->namespace . '\\' . $viewName) . '.php';
-        if (!file_exists(RUNTIME_DIR . $file)) {
-            include $filename;
-        }
-       
         if ($withCode) {
             $code = substr(trim($code), 0, -2) . PHP_EOL . CONTROL_ADDITIONS;
             TRegistry::setCode($filename, $code);
         }
         
-        return ['file' => $file, 'type' => $info->namespace . '\\' . $className, 'code' => $code];
+        return ['file' => $filename, 'type' => $info->namespace . '\\' . $className, 'code' => $code];
     }
     
     /**
@@ -284,7 +279,7 @@ class TAutoloader extends TStaticObject
             self::getLogger()->debug('CACHED JS FILENAME: ' . $cacheJsFilename, __FILE__, __LINE__);
         }
         
-        if (file_exists($cacheFilename)) {
+        if (file_exists(SITE_ROOT . $cacheFilename)) {
             if (file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
                 self::getLogger()->debug('INCLUDE CACHED JS CONTROL: ' . DOCUMENT_ROOT . $cacheJsFilename, __FILE__, __LINE__);
                 $ctrl->getResponse()->addScript($cacheJsFilename);
@@ -308,27 +303,28 @@ class TAutoloader extends TStaticObject
         $view = new \Phink\MVC\TView($ctrl);
 
 
-        if ($info !== null) {
-            $partialView = new \Phink\MVC\TPartialView($ctrl, $view);
-            $partialView->setViewName($viewName);
-            $partialView->setNamespace();
-            $partialView->setNames();
-            $include = self::_includeInnerClass($viewName, $info);
-            $partialView->parse();
+        // if ($info !== null) {
+        //     $partialView = new \Phink\MVC\TPartialView($view, $ctrl);
+        //     $partialView->setViewName($viewName);
+        //     $partialView->setNamespace();
+        //     $partialView->setNames();
+        //     $include = self::_includeInnerClass($viewName, $info);
+        //     $partialView->parse();
 
-        } else {
+        // } else {
             $view->setViewName($viewName);
             $view->setNamespace();
             $view->setNames();
-
-            $include = self::includeClass($view->getControllerFileName(), RETURN_CODE);
+            if ($info !== null) {
+                $include = self::_includeInnerClass($viewName, $info);
+            } else {
+                $include = self::includeClass($view->getControllerFileName(), RETURN_CODE);
+            }
             TRegistry::setCode($view->getControllerFileName(), $include['code']);
-            self::getLogger()->dump('CONTROLLER FILE NAME OF THE PARSED VIEW: ', $include['code']);
-            self::$logger->debug($view->getControllerFileName() . ' IS REGISTERED : ' . (TRegistry::exists('code', $view->getControllerFileName()) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
+            self::getLogger()->debug($view->getControllerFileName() . ' IS REGISTERED : ' . (TRegistry::exists('code', $view->getControllerFileName()) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
             self::getLogger()->debug('CONTROLLER FILE NAME OF THE PARSED VIEW: ' . $view->getControllerFileName());
-            self::getLogger()->debug('CACHE FILE NAME OF THE PARSED VIEW: ' . $view->getCacheFileName());
             $view->parse();
-        }
+        // }
 
         // self::getLogger()->debug('PARSING ' . $viewName . '!!!');
         // $parentView = new \Phink\MVC\TView($ctrl);
@@ -336,7 +332,9 @@ class TAutoloader extends TStaticObject
         // $parentView->setNamespace();
         // $parentView->setNames();
 
-            
+        self::getLogger()->debug('CACHE FILE NAME OF THE PARSED VIEW: ' . $view->getCacheFileName());
+        self::getLogger()->debug('ROOT CACHE FILE NAME OF THE PARSED VIEW: ' . SITE_ROOT . $cacheFilename);
+
         include SITE_ROOT . $cacheFilename;
 
         return true;

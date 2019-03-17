@@ -29,6 +29,7 @@ namespace Phink\Web;
  * @author david
  */
  
+use Phink\Core\TRegistry;
 
 trait TWebObject {
     
@@ -265,6 +266,23 @@ trait TWebObject {
         $this->controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
         $this->jsControllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
         
+        if(!file_exists($this->viewFileName)) {
+
+            $info = TRegistry::classInfo($this->className);
+            if($info !== null)
+            {
+                $this->viewName = \Phink\TAutoloader::classNameToFilename($this->className);
+                if($info->hasTemplate) {
+                    $this->viewFileName = ROOT_PATH . $info->path . $this->viewName . PREHTML_EXTENSION;
+                } else {
+                    $this->viewFileName = '';
+                }
+                $this->controllerFileName = ROOT_PATH . $info->path . $this->viewName . CLASS_EXTENSION;
+                $this->jsControllerFileName = ROOT_PATH . $info->path . $this->viewName . JS_EXTENSION;
+                $this->className = $info->namespace . '\\' . $this->className;
+            }
+
+        }
         $this->getCacheFileName();
 
     }

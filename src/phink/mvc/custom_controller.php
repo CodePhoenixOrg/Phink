@@ -73,7 +73,8 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
        
     public function parse()
     {
-        $isAlreadyParsed = false; //file_exists(strtolower($this->getCacheFileName()));
+        $this->getLogger()->debug('CONTROLLER PARSE VIEW TYPE: ' .  $this->view->getType(), __FILE__, __LINE__);
+        $isAlreadyParsed = ($this->view->getType() == 'TView'); //file_exists($this->getCacheFileName());
 
         if(!$isAlreadyParsed) {
             $this->_type = $this->view->parse();
