@@ -29,14 +29,14 @@ openssl req -x509 \
 	-sha256 \
 	-days 1024 \
 	-out ca.pem \
-	-subj "/C=FR/ST=IDF/L=Clichy/O=CEWE/OU=IT/CN=E-Commerce/emailAddress=david.blanchard@cewe.fr"
+	-subj "/C=FR/ST=IDF/L=Paris/O=CodePhoenixOrg/OU=IT/CN=E-Commerce/emailAddress=david.blanchard@phink.org"
 
 openssl req \
  	-newkey rsa:2048 \
 	-nodes \
 	-keyout ${CN}.key \
 	-out ${CN}.csr \
-	-subj "/C=FR/ST=IDF/L=Clichy/O=CEWE/OU=${CU}/CN=${CN}/emailAddress=david.blanchard@cewe.fr"
+	-subj "/C=FR/ST=IDF/L=Paris/O=CodePhoenixOrg/OU=${CU}/CN=${CN}/emailAddress=david.blanchard@phink.org"
 
 openssl x509 \
 	-req -in ${CN}.csr \
