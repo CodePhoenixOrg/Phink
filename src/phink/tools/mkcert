@@ -1,0 +1,61 @@
+#!/bin/bash
+CU=$1;
+CN=$2;
+
+if [ -z "${CU}" ];
+then
+	echo "The customer name is missing";
+	exit 1;
+fi
+
+if [ -z "${CN}" ];
+then
+	echo "The domain is missing";
+	exit 1;
+fi
+
+if [ ! -d certs/${CN} ];
+then
+	mkdir -p certs/${CN};
+fi
+
+cd certs/${CN};
+
+
+openssl genrsa -out ca.key 2048
+openssl req -x509 \
+	-new -nodes \
+	-key ca.key \
+	-sha256 \
+	-days 1024 \
+	-out ca.pem \
+	-subj "/C=FR/ST=IDF/L=Clichy/O=CEWE/OU=IT/CN=E-Commerce/emailAddress=david.blanchard@cewe.fr"
+
+openssl req \
+ 	-newkey rsa:2048 \
+	-nodes \
+	-keyout ${CN}.key \
+	-out ${CN}.csr \
+	-subj "/C=FR/ST=IDF/L=Clichy/O=CEWE/OU=${CU}/CN=${CN}/emailAddress=david.blanchard@cewe.fr"
+
+openssl x509 \
+	-req -in ${CN}.csr \
+	-CA ca.pem \
+	-CAkey ca.key \
+	-CAcreateserial \
+	-out ${CN}.pem \
+	-days 1024 -sha256
+
+openssl x509 \
+	-signkey ${CN}.key \
+	-in ${CN}.csr \
+	-req \
+	-days 365 \
+	-out ${CN}.crt
+
+openssl pkcs12 -export -clcerts -in ${CN}.crt -inkey ${CN}.key -out ${CN}.p12
+
+echo Use ${CU}.pem as SSL certificate
+echo Use ${CU}.key as certificate key
+echo Use ${CU}.p12 as client side certificate
+
