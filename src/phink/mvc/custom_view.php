@@ -124,6 +124,7 @@ abstract class TCustomView extends TCustomControl
         //self::$logger->debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');
         $doc = new TXmlDocument($this->viewHtml);
         $doc->matchAll();
+
         if($doc->getCount() > 0) {
             // Il y a des éléments à traiter
             $this->_dirty = true;
@@ -136,6 +137,7 @@ abstract class TCustomView extends TCustomControl
             //self::$logger->debug('CACHE FILE : ' . $this->cacheFileName, __FILE__, __LINE__);
         }
         if ($this->viewName == 'plugin') {
+            // self::$logger->dump('PLUGIN DECLARATIONS: ', $declarations, __FILE__, __LINE__);
             self::$logger->debug('NO NEED TO WRITE CODE: ' . $this->controllerFileName, __FILE__, __LINE__);
             return false;
         }

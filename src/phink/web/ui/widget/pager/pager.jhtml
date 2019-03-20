@@ -1,4 +1,4 @@
-var TPager = Phink.MVC.Controller.create()
+var <% for %>Pager = Phink.MVC.Controller.create()
 .oninit(function (){
     this.index = '<% pageNum %>';
     this.count = '<% pageCount %>';

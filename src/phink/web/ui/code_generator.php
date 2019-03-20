@@ -246,7 +246,7 @@ trait TCodeGenerator {
                
         if(file_exists($this->cssFileName)) {
 //            $pageCode = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . "/" . $this->cssFileName . "' />" . PHP_EOL . $pageCode;
-            $pageCode = "<script>TWebObject.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . \Phink\Utils\TFileUtils::webPath($this->cssFileName) . "');</script>" . PHP_EOL . $pageCode;        
+            $pageCode = "<script>Phink.Web.Object.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . \Phink\Utils\TFileUtils::webPath($this->cssFileName) . "');</script>" . PHP_EOL . $pageCode;        
         }
         
         $count = $doc->getCount();
