@@ -267,11 +267,12 @@ class TAutoloader extends TStaticObject
         $cacheJsFilename = '';
 
         $info = Core\TRegistry::classInfo($viewName);
-        self::getLogger()->dump('CLASS INFO', $info);
+        self::getLogger()->dump('CLASS INFO: ', $info, __FILE__, __LINE__);
         
         if ($info !== null) {
             //$classFilename = ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;
-            $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName)) . CLASS_EXTENSION;
+            // $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName)) . CLASS_EXTENSION;
+            $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', ROOT_PATH . $info->path . $ctrl->getId()) . CLASS_EXTENSION;
         } else {
             //$classFilename = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
             $cacheFilename = \Phink\TAutoloader::cacheFilenameFromView($viewName);
@@ -307,6 +308,7 @@ class TAutoloader extends TStaticObject
         $view->setNames();
         if ($info !== null) {
             $include = self::_includeInnerClass($viewName, $info);
+            $view->setCacheFilename(SITE_ROOT . $cacheFilename);
         } else {
             $include = self::includeClass($view->getControllerFileName(), RETURN_CODE);
         }
@@ -325,6 +327,7 @@ class TAutoloader extends TStaticObject
 
     public static function loadCachedFile(Web\IWebObject $parent)
     {
+        $parent->setCacheFilename();
         $cacheFilename = $parent->getCacheFilename();
         
         self::getLogger()->debug('CACHE FILE NAME TO INCLUDE: ' . $cacheFilename);

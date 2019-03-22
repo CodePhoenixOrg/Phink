@@ -110,7 +110,6 @@ abstract class TCustomView extends TCustomControl
     {
         self::$logger->debug($this->viewName . ' IS REGISTERED : ' . (TRegistry::exists('code', $this->controllerFileName) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
 
-
         self::$logger->debug('PARSE FILE : ' . $this->viewFileName, __FILE__, __LINE__);
 //        $this->viewHtml = $this->redis->mget($templateName);
 //        $this->viewHtml = $this->viewHtml[0];
@@ -136,8 +135,10 @@ abstract class TCustomView extends TCustomControl
 
             //self::$logger->debug('CACHE FILE : ' . $this->cacheFileName, __FILE__, __LINE__);
         }
-        if ($this->viewName == 'plugin') {
-            // self::$logger->dump('PLUGIN DECLARATIONS: ', $declarations, __FILE__, __LINE__);
+
+        // if ($info !== null || $this->viewName == 'plugin') {
+        if(!TRegistry::exists('code', $this->controllerFileName)) {
+            self::$logger->dump('PLUGIN DECLARATIONS: ', $declarations, __FILE__, __LINE__);
             self::$logger->debug('NO NEED TO WRITE CODE: ' . $this->controllerFileName, __FILE__, __LINE__);
             return false;
         }
@@ -146,7 +147,6 @@ abstract class TCustomView extends TCustomControl
         // We store the parsed code in a file so that we know it's already parsed on next request.
         $code = str_replace(CREATIONS_PLACEHOLDER, $this->creations, $code);
         $code = str_replace(ADDITIONS_PLACEHOLDER, $this->additions, $code);
-//        $code = str_replace(AFTERBINDING_PLACEHOLDER, $this->afterBinding, $code);
         $code = str_replace(HTML_PLACEHOLDER, $this->viewHtml, $code);
         $code = str_replace(DEFAULT_CONTROLLER, DEFAULT_CONTROL, $code);
         $code = str_replace(DEFAULT_PARTIAL_CONTROLLER, DEFAULT_CONTROL, $code);

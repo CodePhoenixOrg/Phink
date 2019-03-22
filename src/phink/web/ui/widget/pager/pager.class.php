@@ -66,6 +66,10 @@ class TPager extends \Phink\MVC\TPartialController
         $this->for = $value;
     }
 
+    public function getCacheFilename() {
+        return SITE_ROOT . REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . $this->for . 'pager' . CLASS_EXTENSION);
+    }
+
     public function init()
     {
         $forControl = $this->parent->getChildById($this->for);
@@ -82,6 +86,7 @@ class TPager extends \Phink\MVC\TPartialController
         $this->pagerJS = str_replace('<% id %>', $this->id, $this->pagerJS);
         $this->pagerJS = str_replace('<% onclick %>', $this->onclick, $this->pagerJS);
         
+
         $this->script = REL_RUNTIME_JS_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . $this->for . 'pager.js');
 
         file_put_contents($this->script, $this->pagerJS);

@@ -45,7 +45,7 @@ class TRegistry extends TStaticObject
                 'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Pager', 
                 'hasTemplate' => true, 
                 'canRender' => true,
-                'isAutoloaded' => false
+                'isAutoloaded' => true
             )
             , 'TPluginRenderer' => array(
                 'alias' => 'pluginrenderer',

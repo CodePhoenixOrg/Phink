@@ -16,11 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 namespace Phink\Web;
 
  /**
@@ -101,9 +96,15 @@ trait TWebObject {
         return self::pageCount();
     }
 
+    public function setCacheFileName($value = '') {
+        $this->cacheFileName = $value;
+        if(empty($value)) {
+            $this->cacheFileName = RUNTIME_DIR . strtolower(str_replace(DIRECTORY_SEPARATOR, '_', $this->controllerFileName));
+        }
+    }
     public function getCacheFileName()
     {
-        $this->cacheFileName = RUNTIME_DIR . strtolower(str_replace(DIRECTORY_SEPARATOR, '_', $this->controllerFileName));
+
         return $this->cacheFileName;
     }
     
@@ -283,7 +284,7 @@ trait TWebObject {
             }
 
         }
-        $this->getCacheFileName();
+        $this->setCacheFileName();
 
     }
 

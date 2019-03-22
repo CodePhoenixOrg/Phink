@@ -16,18 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 namespace Phink\Web\UI\Plugin;
 
 use \Phink\Web\UI\Widget\Plugin\TPlugin;
 
 /**
- * Description of newPHPClass
+ * Description of TCustomPlugin
  *
  * @author David
  */
@@ -68,8 +62,6 @@ class TList extends TCustomPlugin
             }
         }
                         
-        //self::$logger->debug("\r\n" . "\r\n" . "\r\n" . 'LAST BINDABLE INDEX::' . $lastBindableIndex . "\r\n" . "\r\n" . "\r\n");
-                        
         for($i = 0; $i < $this->rows; $i++) {
             $row = (isset($body[$i])) ? json_decode($body[$i]) : array_fill(0, $this->columns, '&nbsp;');
             for($j = 0; $j < $templateNum; $j++) {
@@ -80,21 +72,15 @@ class TList extends TCustomPlugin
                 if($this->templates[$j]['enabled'] != 1) continue;
                 $index = $this->templates[$j]['index'];
                 $canBind = $row[$index] != $oldValue[$j];
-                //$canBind = $canBind && $this->templates[$j]['name'] === $names[$dataIndex];
-                ////self::$logger->debug('TEMPLATE NAME : ' . $this->templates[$j]['name'] . '; HEAD NAME :' . $names[$dataIndex]);
                 if(!$canBind) {
                     $bound[$boundIndex] = $canBind;
-                    //$bound[$boundIndex] = $canBind;
                     $oldLevel = $level;
-                    //$level++;
                     $oldValue[$j] = $row[$index];
                     $boundIndex++;
                     continue;
                 }
                 $level = (($index == $firstBindableIndex) ? 0 : (($index == $lastBindableIndex) ? 2 : 1))    ;  
                 
-                //$html = $row[$index];
-                //$html = $level . '[' . $oldLevel . ']' . '-' . $index . '::' . $row[$index];
                 $dataIndex = array_keys($names, $this->templates[$j]['name'])[0];
                 $noTHead = !empty($this->templates[$j]['content']) && $this->templates[$j]['enabled'] == 1;
 
@@ -103,16 +89,8 @@ class TList extends TCustomPlugin
                     $html = TPlugin::applyTemplate($this->templates, $names, $row, $j);
                 }
 
-                //self::$logger->debug('INDEX::' . $index . "\r\n" . "\r\n");
-                //self::$logger->debug('LEVEL::' . $level . "\r\n" . "\r\n");
-                //self::$logger->debug('HTML::' . $html . "\r\n" . "\r\n");
-                
                 if($level === 0) {
                     if($i > 0) {
-//                    if($oldLevel === 2) {
-//                        $tbody .= $elements[2]->getClosing() . "\n" . $elements[0]->getClosing() . "\n";
-//                    }
-                        //$bindablesCount = 3;
                         for($l = 1; $l < $bindablesCount; $l++) {
                             $tbody .= $elements[2]->getClosing() . "\n" . $elements[0]->getClosing() . "\n";
                         } 
@@ -126,9 +104,6 @@ class TList extends TCustomPlugin
                     if($i > 0 && !$bound[$boundIndex - 1]) {
                         $tbody .= $elements[2]->getClosing() . "\n" . $elements[0]->getClosing() . "\n";
                     } 
-//                    if($oldLevel === 2) {
-//                        $tbody .= $elements[2]->getClosing() . "\n" . $elements[0]->getClosing() . "\n";
-//                    }
                     $tbody .= str_replace('%s', 'odd', $elements[0]->getOpening()) . "\n";
                     $tbody .= $elements[1]->getOpening() . $html . $elements[1]->getClosing() . "\n";
                     $tbody .= $elements[2]->getOpening();
@@ -137,9 +112,7 @@ class TList extends TCustomPlugin
                     $tbody .= str_replace('%s', '', $elements[2]->getOpening()) . $html . $elements[2]->getClosing() . "\n";
                 }                
                 $bound[$boundIndex] = $canBind;
-                //$bound[$boundIndex] = $canBind;
                 $oldLevel = $level;
-                //$level++;
                 $boundIndex++;
                 $oldValue[$j] = $row[$index];
             }

@@ -26,7 +26,7 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
     private $_rowCount;
     private $_pageNum;
     private $_childrenCount;
-    protected $contents = NULL;
+    protected $contents = null;
     protected $hasChildren = false;
 
     public function getChildren()
@@ -66,7 +66,7 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
         $childrenCount = count($this->_children);
         $this->hasChildren = $childrenCount > 0;
 
-        if($this->hasChildren) {
+        if ($this->hasChildren) {
             $this->templates = $this->getControls($this->_children);
             $id = $this->getParent()->getId();
             
@@ -76,28 +76,39 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
             
             $this->_children = $this->assocArrayByAttribute($this->_children, 'name');
             $this->_childrenCount = count($this->_children);
-        }
-        else {
+        } else {
             $this->_childrenCount = $this->statement->getFieldCount();
         }
         
         $this->_rowCount = $this->pageCountByDefault($this->_rowCount);
-
     }
+
+    // public function createObjects()
+    // {
+    //     $this->setId("plugin");
+    // }
+
+    // public function declareObjects()
+    // {
+    //     $this->setPattern($this->getPattern());
+    //     $this->setCols($this->getChildrenCount());
+    //     $this->setRows($this->getRowCount());
+    //     $this->addChild($this);
+    // }
 
     public static function getGridData($id, \Phink\Data\ICommand $cmd, $rowCount = 1)
     {
         $templateFilename = RUNTIME_JS_DIR . $id . '_template.json';
         //self::$logger->debug('TEMPLATE FILE : ' . $templateFilename);
         $templates = '';
-        if(file_exists($templateFilename)) {
+        if (file_exists($templateFilename)) {
             $templates = json_decode(file_get_contents($templateFilename));
         }
         
         $elementsFilename = RUNTIME_JS_DIR . $id . '_elements.json';
         //self::$logger->debug('TEMPLATE FILE : ' . $elementsFilename);
         $elements = '';
-        if(file_exists($elementsFilename)) {
+        if (file_exists($elementsFilename)) {
             $elements = json_decode(file_get_contents($elementsFilename));
         }
         
@@ -109,11 +120,11 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
 
         $values = array();
         $r = count($rows);
-        foreach($rows as $row) {
+        foreach ($rows as $row) {
             //$row = array_values($row);
             array_push($values, json_encode($row));
         }
-        for($k = $r; $k < $rowCount; $k++) {
+        for ($k = $r; $k < $rowCount; $k++) {
             array_push($values, json_encode(array_fill(0, $fieldCount, '&nbsp;')));
         }
 
@@ -127,19 +138,17 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
         ];
 
         
-        if(isset($elements)) {
+        if (isset($elements)) {
             $result['elements'] = $elements;
         }
         
         return $result;
-
     }
     
-    public function getData() 
+    public function getData()
     {
         $this->data = self::getGridData($this->getParent()->getViewName(), $this->command, $this->_rowCount);
         $this->response->setData('data', $this->data);
-
     }
     
     public function renderHtml()
@@ -156,7 +165,5 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
         parent::renderHtml();
 
         $this->isRendered = true;
-        
     }
-
 }
