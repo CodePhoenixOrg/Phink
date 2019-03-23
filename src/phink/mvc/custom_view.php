@@ -138,7 +138,6 @@ abstract class TCustomView extends TCustomControl
 
         // if ($info !== null || $this->viewName == 'plugin') {
         if(!TRegistry::exists('code', $this->controllerFileName)) {
-            self::$logger->dump('PLUGIN DECLARATIONS: ', $declarations, __FILE__, __LINE__);
             self::$logger->debug('NO NEED TO WRITE CODE: ' . $this->controllerFileName, __FILE__, __LINE__);
             return false;
         }
