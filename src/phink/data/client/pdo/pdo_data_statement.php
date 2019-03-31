@@ -23,7 +23,12 @@ namespace Phink\Data\Client\PDO;
 //require_once 'phink/core/object.php';
 
 use Phink\Core\TObject;
+use Phink\Data\TServerType;
 use Phink\Data\IDataStatement;
+use Phink\Data\Client\PDO\TPdoConfiguration;
+use Phink\Data\Client\PDO\TPdoConnection;
+use Phink\Data\CLient\PDO\Mapper\TMySQLDataTypesMapper;
+use Phink\Data\CLient\PDO\Mapper\TSQLiteDataTypesMapper;
 
 use PDOStatement;
 
@@ -34,22 +39,31 @@ use PDOStatement;
  */
 class TPdoDataStatement extends TObject implements IDataStatement
 {
-
-
     private $_statement;
     private $_values;
     private $_fieldCount;
     private $_rowCount;
     private $_meta = array();
     private $_colNames = [];
+    private $_typesMapper = null;
+    private $_config = null;
     private $_connection = null;
+    private $_native_connection = null;
+    private $_sql = '';
+    private $_driver;
 
-    public function __construct($statement, $connection = null)
+    public function __construct($statement, TPdoConnection $connection = null, $sql = '')
     {
         $this->_statement = $statement;
-        //$this->_meta = $statement->getColumnMeta();
-        $this->_connection = $connection;
-        self::$logger->dump('STATEMENT', $statement);
+        $this->_sql = $sql;
+
+        if($connection !== null) {
+            $this->_connection = $connection;
+            $this->_native_connection = $connection->getState();
+            $this->_config = $connection->getConfiguration();
+            $this->_driver = $this->_config->getDriver();
+            // $this->_setTypesMapper();
+        } 
     }
 
     public function getValue($i)
@@ -57,21 +71,21 @@ class TPdoDataStatement extends TObject implements IDataStatement
         return $this->_values[$i];
     }
 
-    public function fetch()
+    public function fetch($mode = \PDO::FETCH_NUM)
     {
-        $this->_values = $this->_statement->fetch(\PDO::FETCH_NUM);
+        $this->_values = $this->_statement->fetch($mode);
+        return $this->_values;
+    }
+    
+    public function fetchAll($mode = \PDO::FETCH_NUM)
+    {
+        $this->_values = $this->_statement->fetchAll($mode);
         return $this->_values;
     }
     
     public function fetchAssoc()
     {
         $this->_values = $this->_statement->fetch(\PDO::FETCH_ASSOC);
-        return $this->_values;
-    }
-    
-    public function fetchAll()
-    {
-        $this->_values = $this->_statement->fetchAll(\PDO::FETCH_NUM);
         return $this->_values;
     }
 
@@ -98,8 +112,8 @@ class TPdoDataStatement extends TObject implements IDataStatement
                     throw new \Exception("Cannot count fields of a row before the resource is fetched", -1, $ex);
                 }
             }
-
         }
+
         return $this->_fieldCount;
     }
 
@@ -116,17 +130,8 @@ class TPdoDataStatement extends TObject implements IDataStatement
                 }
             }
         }
+
         return $this->_rowCount;
-
-    }
-
-    public function getFieldName($i)
-    {
-        if(!isset($this->_meta[$i])) {
-            $this->_meta[$i] = $this->_statement->getColumnMeta($i);
-        }
-
-        return $this->_meta[$i]['name'];
     }
 
     public function getFieldNames()
@@ -134,41 +139,88 @@ class TPdoDataStatement extends TObject implements IDataStatement
         if(count($this->_colNames) == 0 && $this->_connection !== null) {
 
             $sql = $this->_statement->queryString;
-            self::$logger->dump('QUERY STRING', $sql);
-            $res = $this->_connection->query($sql);
+            $res = $this->_native_connection->query($sql);
             $row = $res->fetch(\PDO::FETCH_ASSOC);
 
             $this->_colNames = array_keys($row);
-
-            // $result = array();
-            // $this->getFieldCount();
-            // for($j = 0; $j < $this->_fieldCount; $j++) {
-            //     array_push($result, $this->_statement->getColumnMeta($j)['name']);
-            // }
-            // return $result;
-    
         }
-        return $this->_colNames;        
 
+        return $this->_colNames;        
+    }
+
+    public function getFieldName($i)
+    {
+        $name = '';
+
+        if ($this->_typesMapper !== null) {
+            $info = $this->_typesMapper->getInfo($i);
+            $name = $info->name;
+        } else {
+            if (!isset($this->_meta[$i])) {
+                $this->_meta[$i] = $this->_statement->getColumnMeta($i);
+            }
+            $name = $this->_meta[$i]['name'];
+        }
+
+        return $name;
     }
 
     public function getFieldType($i)
     {
-        if(!isset($this->_meta[$i])) {
-            $this->_meta[$i] = $this->_statement->getColumnMeta($i);
+        $type = '';
+
+        if ($this->_typesMapper !== null) {
+            $info = $this->_typesMapper->getInfo($i);
+            $type = $info->type;
+        } else {
+            if (!isset($this->_meta[$i])) {
+                $this->_meta[$i] = $this->_statement->getColumnMeta($i);
+            }
+            $type = $this->_meta[$i]['native_type'];
         }
 
-        return $this->_meta[$i]['type'];
+        return $type;
     }
 
     public function getFieldLen($i)
     {
-        if(!isset($this->_meta[$i])) {
-            $this->_meta[$i] = $this->_statement->getColumnMeta($i);
+        $len = 0;
+
+        if ($this->_typesMapper !== null) {
+            $info = $this->_typesMapper->getInfo($i);
+            $len = $info->length;
+        } else {
+            if (!isset($this->_meta[$i])) {
+                $this->_meta[$i] = $this->_statement->getColumnMeta($i);
+            }
+            $len = $this->_meta[$i]['len'];
         }
 
-        return $this->_meta[$i]['len'];
+        return $len;
     }
 
-    
+    public function typeNumToName($type)
+    {
+        return $this->_typesMapper->typeNumToName($type);
+    }
+
+    public function typeNameToPhp($type)
+    {
+        return $this->_typesMapper->typeNameToPhp($type);
+    }
+
+    public function typeNumToPhp($type)
+    {
+        return $this->_typesMapper->typeNumToPhp($type);
+    }
+
+    private function _setTypesMapper()
+    {
+        if ($this->_driver === TServerType::MYSQL) {
+            $this->_typesMapper = new TMySQLDataTypesMapper($this->_config, $this->_sql);
+        }
+        if ($this->_driver === TServerType::SQLITE) {
+            $this->_typesMapper = new TSQLiteDataTypesMapper($this->_config, $this->_sql);
+        }
+    }    
 }

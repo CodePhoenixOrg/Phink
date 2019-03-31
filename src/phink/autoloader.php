@@ -171,9 +171,9 @@ class TAutoloader extends TStaticObject
         
         self::getLogger()->debug(__METHOD__ . '::' . $file, __FILE__, __LINE__);
         
-        if ((isset($params) && ($params && INCLUDE_FILE === INCLUDE_FILE)) && !class_exists('\\' . $fqcn)) {
-            //include SITE_ROOT . $filename;
-        }
+        // if ((isset($params) && ($params && INCLUDE_FILE === INCLUDE_FILE)) && !class_exists('\\' . $fqcn)) {
+        //     include SITE_ROOT . $filename;
+        // }
         
         return ['file' => $file, 'type' => $fqcn, 'code' => $code];
     }
@@ -271,7 +271,7 @@ class TAutoloader extends TStaticObject
         
         if ($info !== null) {
             //$classFilename = ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;
-            // $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName)) . CLASS_EXTENSION;
+            /* $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName)) . CLASS_EXTENSION; */
             $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', ROOT_PATH . $info->path . $ctrl->getId()) . CLASS_EXTENSION;
         } else {
             //$classFilename = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;

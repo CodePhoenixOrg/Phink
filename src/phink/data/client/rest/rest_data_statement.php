@@ -30,7 +30,7 @@ use Phink\Data\IDataStatement;
  *
  * @author david
  */
-class TRestDataStatement extends TObject implements IDataStatement
+class TRestDataStatement extends TObject
 {
 
 
