@@ -1,4 +1,5 @@
-/js/bower_components
-/nbproject
-/vendor
-/.vscode
+bower_components
+nbproject
+vendor
+.vscode
+.DS_Store

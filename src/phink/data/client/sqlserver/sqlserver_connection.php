@@ -73,4 +73,3 @@ class TSqlServerConnection extends TObject implements IConnection, IConfigurable
 
     }
 }
-?>

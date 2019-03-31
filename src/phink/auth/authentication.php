@@ -129,19 +129,19 @@ class TAuthentication extends TStaticObject
         $login = $this->getUserName();
         
         $connection = TDataAccess::getCryptoDB();
-        $command = new TPdoCommand($connection);
-        $stmt = $command->query("select * from crypto where token =:token and outdated=0;", ['token' => $token]);
+        // $command = new TPdoCommand($connection);
+        $stmt = $connection->query("select * from crypto where token =:token and outdated=0;", ['token' => $token]);
         if ($row = $stmt->fetchAssoc()) {
             
             $userId = $row["userId"];
             $login = $row["userName"];
             
-            $stmt = $command->query("UPDATE crypto SET outdated=1 WHERE token =:token;", ['token' => $token]);
+            $stmt = $connection->query("UPDATE crypto SET outdated=1 WHERE token =:token;", ['token' => $token]);
             
         }
         
         $token = TCrypto::generateToken('');
-        $command->query(
+        $connection->query(
             "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
             ,['token' => $token, 'userId' => $userId, 'login' => $login]
         );

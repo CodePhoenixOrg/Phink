@@ -20,7 +20,6 @@
 
 class TController extends TCustomController
 {
-
     public function __construct(TView $view, TModel $model)
     {
         parent::__construct($view);

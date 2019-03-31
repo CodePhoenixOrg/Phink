@@ -387,14 +387,6 @@ class THtmlObjects
 //                    }
 //            }
 
-    // DEBUG
-    /* begin
-            $lb="FROM PZ_DB_CONTROLS.PHP:\n";
-            $fh=fopen("./query.txt", "a");
-            fwrite($fh, $lb.$sql."\n\n");
-            fclose($fh);
-    // end*/
-
 
             //echo "page_link='$pageLink'<br>";
 

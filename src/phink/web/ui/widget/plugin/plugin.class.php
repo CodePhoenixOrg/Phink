@@ -96,7 +96,7 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
     //     $this->addChild($this);
     // }
 
-    public static function getGridData($id, \Phink\Data\ICommand $cmd, $rowCount = 1)
+    public static function getGridData($id, \Phink\Data\IDataStatement $stmt, $rowCount = 1)
     {
         $templateFilename = RUNTIME_JS_DIR . $id . '_template.json';
         //self::$logger->debug('TEMPLATE FILE : ' . $templateFilename);
@@ -112,7 +112,7 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
             $elements = json_decode(file_get_contents($elementsFilename));
         }
         
-        $stmt = $cmd->querySelect();
+        // $stmt = $cmd->querySelect();
         
         $rows = $stmt->fetchAll();
         $fieldCount = $stmt->getFieldCount();
@@ -147,13 +147,13 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
     
     public function getData()
     {
-        $this->data = self::getGridData($this->getParent()->getViewName(), $this->command, $this->_rowCount);
+        $this->data = self::getGridData($this->getParent()->getViewName(), $this->statement, $this->_rowCount);
         $this->response->setData('data', $this->data);
     }
     
     public function renderHtml()
     {
-        $this->data = self::getGridData($this->getParent()->getViewName(), $this->command, $this->_rowCount);
+        $this->data = self::getGridData($this->getParent()->getViewName(), $this->statement, $this->_rowCount);
     
         $id = $this->getParent()->getViewName();
         $scriptFilename = $id . '_data.js';

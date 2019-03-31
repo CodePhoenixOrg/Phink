@@ -42,7 +42,9 @@ class TTable extends TCustomPlugin
         $head = $this->data['names'];
 
         $result .= str_replace('%s', 'id="' . $this->getId() . $elements[0]->getType() . '" class="table table-striped table-hover table-condensed"', $elements[0]->getOpening()) . "\n";
-        // header 
+        /** 
+         * header
+         */
         $i = 0;
         $thead = $elements[1]->getOpening() . "\n";
         $typeId0 = 'id="' . $this->getId() .  $elements[3]->getType() . ($i) . '"';
@@ -61,7 +63,10 @@ class TTable extends TCustomPlugin
         if(!$this->pivot) {
 
                 
-            // values 
+            /** 
+             * values
+             */
+              
             $tbody = $elements[2]->getOpening() . "\n";
             $body = $this->data['values'];
             for($i = 0; $i < $this->rows; $i++) {
@@ -98,7 +103,10 @@ class TTable extends TCustomPlugin
 
             $result .= (($noTHead) ? '' : $thead) . $tbody;
         } else {
-            // values 
+            /**
+             * values
+             */
+             
             $tbody = $elements[2]->getOpening() . "\n";
             $body = $this->data['values'];
             $oldValue = array();
