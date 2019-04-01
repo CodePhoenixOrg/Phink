@@ -2,30 +2,29 @@
 
 namespace Phink\Data\CLient\PDO\Mapper;
 
-use TCustomDataTypesMapper;
+use Phink\Data\CLient\PDO\Mapper\TPdoCustomDataTypesMapper;
 
-class TPdoMySQLDataTypesMapper extends TPdoCustomDataTypesMapper {
-   
+class TPdoMySQLDataTypesMapper extends TPdoCustomDataTypesMapper
+{
     public function getInfo($index)
     {
-        if ($this->info === null) {
+        if ($this->result === null) {
             try {
-                $this->cs = new \mysqli(
+                $connection = new \mysqli(
                     $this->config->getHost(),
                     $this->config->getUser(),
                     $this->config->getPassword(),
-                    $this->config->getDatabase(),
+                    $this->config->getDatabaseName(),
                     ($this->config->getPort() !== '') ? $this->config->getPort() : null
                 );
 
-                $this->result = $cs->query($this->sql);
-                $this->info = $this->result->fetch_field_direct($index);
-
+                $this->result = $connection->query($this->sql);
             } catch (\Exception $ex) {
-                //\debugLog(__FILE__ . ':' . __LINE__ . ':' . __METHOD__ . ':', $ex);
                 return false;
             }
         }
+
+        $this->info = $this->result->fetch_field_direct($index);
 
         return $this->info;
     }
@@ -90,5 +89,4 @@ class TPdoMySQLDataTypesMapper extends TPdoCustomDataTypesMapper {
         $this->native2php_num[253] = "string";
         $this->native2php_num[254] = "string";
     }
-
 }

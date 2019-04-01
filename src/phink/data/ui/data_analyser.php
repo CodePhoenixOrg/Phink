@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 namespace Phink\Data;
 
 use Phink\Data\ISqlConnection;
+use Phink\Data\Client\PDO\TPdoDataStatement;
+
 
 class TAnalyzer
 {
@@ -40,7 +42,7 @@ class TAnalyzer
         // $rows=$stmt->fetch();
         // $k=sizeof($rows)/2;
 
-        $k = $stmt->columnCount();
+        $k = $stmt->getFieldCount();
     
         while ($i<$k) {
             $fieldname = $stmt->getFieldName($i);
@@ -145,6 +147,7 @@ class TAnalyzer
                         $L_formFields.="\t\t\t\t</tr>§";
                         $L_fieldDefs.="$fieldname,$fieldsize,$fieldtype,TEXTAREA,$cols,$lines;";
                     } else {
+                        $L_formFields.="\t\t\t\t<tr>\n";
                         $L_formFields.="\t\t\t\t\t<td>$fieldname</td>\n";
                         $L_formFields.="\t\t\t\t\t<td>\n";
                         $L_formFields.="\t\t\t\t\t\t<input type=\"text\" name=\"$fieldname\" size=\"$cols\" value=\"<?php echo $$fieldname?>\">\n";

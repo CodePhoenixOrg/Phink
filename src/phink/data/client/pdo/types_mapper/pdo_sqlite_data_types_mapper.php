@@ -2,7 +2,7 @@
 
 namespace Phink\Data\CLient\PDO\Mapper;
 
-use TCustomDataTypesMapper;
+use Phink\Data\CLient\PDO\Mapper\TPdoCustomDataTypesMapper;
 
 class TPdoSQLiteDataTypesMapper extends TPdoCustomDataTypesMapper
 {

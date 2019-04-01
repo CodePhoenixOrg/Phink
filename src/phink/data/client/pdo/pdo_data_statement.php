@@ -27,8 +27,8 @@ use Phink\Data\TServerType;
 use Phink\Data\IDataStatement;
 use Phink\Data\Client\PDO\TPdoConfiguration;
 use Phink\Data\Client\PDO\TPdoConnection;
-use Phink\Data\CLient\PDO\Mapper\TMySQLDataTypesMapper;
-use Phink\Data\CLient\PDO\Mapper\TSQLiteDataTypesMapper;
+use Phink\Data\CLient\PDO\Mapper\TPdoMySQLDataTypesMapper;
+use Phink\Data\CLient\PDO\Mapper\TPdoSQLiteDataTypesMapper;
 
 use PDOStatement;
 
@@ -62,7 +62,7 @@ class TPdoDataStatement extends TObject implements IDataStatement
             $this->_native_connection = $connection->getState();
             $this->_config = $connection->getConfiguration();
             $this->_driver = $this->_config->getDriver();
-            // $this->_setTypesMapper();
+            $this->_setTypesMapper();
         } 
     }
 
@@ -217,10 +217,10 @@ class TPdoDataStatement extends TObject implements IDataStatement
     private function _setTypesMapper()
     {
         if ($this->_driver === TServerType::MYSQL) {
-            $this->_typesMapper = new TMySQLDataTypesMapper($this->_config, $this->_sql);
+            $this->_typesMapper = new TPdoMySQLDataTypesMapper($this->_config, $this->_sql);
         }
         if ($this->_driver === TServerType::SQLITE) {
-            $this->_typesMapper = new TSQLiteDataTypesMapper($this->_config, $this->_sql);
+            $this->_typesMapper = new TPdoSQLiteDataTypesMapper($this->_config, $this->_sql);
         }
     }    
 }

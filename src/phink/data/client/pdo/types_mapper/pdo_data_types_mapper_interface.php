@@ -2,7 +2,7 @@
 
 namespace Phink\Data\CLient\PDO\Mapper;
 
-interface IPDODataTypesMapper
+interface IPdoDataTypesMapper
 {
     public function types();
 

@@ -2,11 +2,11 @@
 
 namespace Phink\Data\CLient\PDO\Mapper;
 
-use IDataTypesMapper;
+use Phink\Data\CLient\PDO\Mapper\IPdoDataTypesMapper;
 use Phink\Data\Client\PDO\TPdoConfiguration;
 
 
-abstract class TPdoCustomDataTypesMapper implements IPDODataTypesMapper
+abstract class TPdoCustomDataTypesMapper implements IPdoDataTypesMapper
 {
     protected $statement;
     protected $values;
