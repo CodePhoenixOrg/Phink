@@ -24,7 +24,6 @@
  * @author david
  */
 trait TDataTag {
-    protected $command;
     protected $statement;
 
     protected function assocArrayByAttribute(array $array, $attribute)
@@ -55,15 +54,6 @@ trait TDataTag {
         return $result;
     }
 
-    public function getCommand()
-    {
-        return $this->command;
-    }
-    public function setCommand(\Phink\Data\ICommand $value)
-    {
-        $this->command = $value;
-    }
-
     public function getStatement()
     {
         return $this->statement;
@@ -72,22 +62,10 @@ trait TDataTag {
     {
         $this->statement = $value;
     }
-//    public function getReader()
-//    {
-//        $reader = NULL;
-//        if(isset($this->_command)) {
-//            $reader = $this->_command->getReader();
-//            if(!isset($reader)) {
-//                throw new Exception('DataReader must be set before, by executing the command.', '123', NULL);
-//            }
-//        }
-//
-//        return $reader;
-//    }
 
     public function dataBind()
     {
-        if(isset($this->command)) {
+        if(isset($this->statement)) {
             $this->render();
         }
     }

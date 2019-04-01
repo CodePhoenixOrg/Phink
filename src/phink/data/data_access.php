@@ -23,7 +23,6 @@ namespace Phink\Data;
 
 use Phink\Data\Client\PDO\TPdoConfiguration;
 use Phink\Data\Client\PDO\TPdoConnection;
-use Phink\Data\Client\PDO\TPdoCommand;
 use Phink\Data\TServerType;
 
 class TDataAccess
@@ -41,11 +40,10 @@ class TDataAccess
         $connection->open();
         
         if(!$isFound) {
-            $command = new TPdoCommand($connection);
                     
-            $command->exec("CREATE TABLE crypto (id integer primary key autoincrement, token text, userId text, userName text, outdated integer);");
-            $command->exec("CREATE INDEX crypto_id ON crypto (id);");
-            $command->exec("CREATE UNIQUE INDEX covering_idx ON crypto (token, userId, userName, outdated);");
+            $connection->exec("CREATE TABLE crypto (id integer primary key autoincrement, token text, userId text, userName text, outdated integer);");
+            $connection->exec("CREATE INDEX crypto_id ON crypto (id);");
+            $connection->exec("CREATE UNIQUE INDEX covering_idx ON crypto (token, userId, userName, outdated);");
         }
 
         return $connection;

@@ -71,7 +71,7 @@ class TPdoConnection extends TObject implements ISqlConnection, IConfigurable
             if($this->_params != null) {
                 $this->_state = new \PDO($this->_dsn, $this->_config->getUser(), $this->_config->getPassword(), $this->_params);
             } else {
-                $this->_state = new \PDO($this->_dsn, $this->_config->getUser(), $this->_config->getPassword());
+                $this->_state = new \PDO($this->_dsn, $this->_config->getUser(), $this->_config->getPassword(), []);
             }
         } catch (\PDOException $ex) {
             self::$logger->exception($ex, __FILE__, __LINE__);

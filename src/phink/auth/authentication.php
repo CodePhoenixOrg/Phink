@@ -20,7 +20,6 @@ namespace Phink\Auth;
 
 use Phink\Crypto\TCrypto;
 use Phink\Data\TDataAccess;
-use Phink\Data\Client\PDO\TPdoCommand;
 use Phink\Core\TStaticObject;
 
 class TAuthentication extends TStaticObject
@@ -86,9 +85,8 @@ class TAuthentication extends TStaticObject
         $result = false;
         
         $connection = TDataAccess::getCryptoDB();
-        $command = new TPdoCommand($connection);
         $token = TCrypto::generateToken('');
-        $stmt = $command->query(
+        $stmt = $connection->query(
             "INSERT INTO crypto (token, userId, userName, outdated) VALUES(:token, :userId, :login, 0);"
             ,['token' => $token, 'userId' => $userId, 'login' => $login]
         );
@@ -101,13 +99,12 @@ class TAuthentication extends TStaticObject
         $result = false;
         
         $connection = TDataAccess::getCryptoDB();
-        $command = new TPdoCommand($connection);
-        $stmt = $command->query("select * from crypto where token=:token and outdated=0;", ['token' => $token]);
+        $stmt = $connection->query("select * from crypto where token=:token and outdated=0;", ['token' => $token]);
 
         if ($stmt->fetch()) {
-            $stmt = $command->query("UPDATE crypto SET outdated=1 WHERE token=:token;", ['token' => $token]);
+            $stmt = $connection->query("UPDATE crypto SET outdated=1 WHERE token=:token;", ['token' => $token]);
             if ($stmt->fetch()) {
-                $result = $command->getRowCount();
+                $result = $stmt->getRowCount();
             }
         }
         
@@ -129,7 +126,6 @@ class TAuthentication extends TStaticObject
         $login = $this->getUserName();
         
         $connection = TDataAccess::getCryptoDB();
-        // $command = new TPdoCommand($connection);
         $stmt = $connection->query("select * from crypto where token =:token and outdated=0;", ['token' => $token]);
         if ($row = $stmt->fetchAssoc()) {
             

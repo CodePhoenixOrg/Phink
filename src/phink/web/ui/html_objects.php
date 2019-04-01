@@ -30,7 +30,6 @@ namespace Phink\Web;
 use Phink;
 use Phink\Utils\TDateUtils;
 use Phink\Data\Client\PDO\TPdoConnection;
-use Phink\Data\Client\PDO\TPdoCommand;
 use Phink\Log\TLog;
 
 class THtmlObjects
@@ -241,10 +240,8 @@ class THtmlObjects
 //            
 //            $connection = new $connectionType();
 //            $connection->open();
-            $command = new TPdoCommand($connection);
                     
                     
-            //$command = new TPdoCommand($connection);
         
             $hasPager = isset($offset) && $step > 0;
             $criterion=$_REQUEST["criterion"];
@@ -410,7 +407,7 @@ class THtmlObjects
                 $pager=$pager_ctrl["pager_ctrl"];        
             }
 
-            $stmt = $command->queryLog($sql);
+            $stmt = $connection->query($sql);
 
             $table="";
             $table.="<table id='$name' class='table table-condensed' bordercolor='$border_color' bgcolor='white'>\n".
