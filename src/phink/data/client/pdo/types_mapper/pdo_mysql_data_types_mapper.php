@@ -29,7 +29,7 @@ class TPdoMySQLDataTypesMapper extends TPdoCustomDataTypesMapper
         return $this->info;
     }
 
-    public function types()
+    public function setTypes()
     {
         $this->native_types = (array) null;
         $this->native2php_assoc = (array) null;

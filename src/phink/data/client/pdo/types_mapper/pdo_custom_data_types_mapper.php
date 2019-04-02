@@ -29,9 +29,10 @@ abstract class TPdoCustomDataTypesMapper implements IPdoDataTypesMapper
     {
         $this->config = $config;
         $this->sql = $sql;
+        $this->setTypes();
     }
 
-    public function types() {}
+    public function setTypes() {}
 
     public function getInfo($index) {}
 

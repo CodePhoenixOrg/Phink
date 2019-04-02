@@ -4,7 +4,7 @@ namespace Phink\Data\CLient\PDO\Mapper;
 
 interface IPdoDataTypesMapper
 {
-    public function types();
+    public function setTypes();
 
     public function getInfo($index);
     
