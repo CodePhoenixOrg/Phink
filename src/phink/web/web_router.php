@@ -201,7 +201,7 @@ class TWebRouter extends \Phink\Core\TRouter
     {
         $result = false;
         
-        $result = TAutoloader::includeClass($this->controllerFileName, RETURN_CODE | INCLUDE_FILE);
+        $result = TAutoloader::includeClass($this->controllerFileName, RETURN_CODE);
         if(!$result) {
             if($this->getRequest()->isAJAX() && $this->request->isPartialView()) {
                 $result = TAutoloader::includeDefaultPartialController($this->namespace, $this->className);

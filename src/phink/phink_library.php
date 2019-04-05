@@ -65,6 +65,7 @@ class PhinkLibrary {
             'configuration/configuration.php',
             'configuration/data/data_configuration.php',
             'configuration/data/file_configuration.php',
+            'configuration/data/json_configuration.php',
             'configuration/data/url_configuration.php',
             'data/connection_interface.php',
             'data/sql_connection_interface.php',

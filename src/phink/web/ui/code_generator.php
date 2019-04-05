@@ -110,7 +110,7 @@ trait TCodeGenerator {
 
                     self::$logger->dump('FULL_CLASS_PATH', $fullClassPath);            
 
-                    $class = \Phink\TAutoloader::includeClass($fullClassPath, RETURN_CODE | INCLUDE_FILE);
+                    $class = \Phink\TAutoloader::includeClass($fullClassPath, RETURN_CODE);
                     $fqcn = $class['type'];
                     $code = $class['code'];
                     

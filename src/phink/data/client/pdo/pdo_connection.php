@@ -23,8 +23,7 @@ namespace Phink\Data\Client\PDO;
 //require_once 'phink/configuration/configurable.php';
 //require_once 'pdo_configuration.php';
 
-use Phink\Core\TObject;
-use Phink\Configuration\IConfigurable;
+use Phink\Configuration\TConfiguration;
 use Phink\Data\ISqlConnection;
 use Phink\Data\TServerType;
 use Phink\Data\Client\PDO\TPdoConfiguration;
@@ -36,7 +35,7 @@ use PDO;
  *
  * @author david
  */
-class TPdoConnection extends TObject implements ISqlConnection, IConfigurable
+class TPdoConnection extends TConfiguration implements ISqlConnection
 {
     private $_state = null;
     private $_config = null;
@@ -79,8 +78,8 @@ class TPdoConnection extends TObject implements ISqlConnection, IConfigurable
 
         return $this->_state;
     }
-
-    public function configure()
+    
+    public function configure() : void
     {
         $this->_dsn = '';
         $this->_params = (array) null;

@@ -19,20 +19,19 @@
  namespace Phink\Configuration\Data;
 
 //require_once 'phink/data/server_type.php';
-/* 
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-use Phink\Core\TObject;
+use Phink\Configuration\TConfiguration;
 
 /**
  * Description of TDataConfiguration
  *
  * @author david
  */
-abstract class TDataConfiguration extends TObject
+abstract class TDataConfiguration extends TConfiguration
 {
-
     private $_driver = '';
     private $_host = '';
     private $_databaseName = '';
@@ -50,6 +49,10 @@ abstract class TDataConfiguration extends TObject
         $this->_port = $port;
     }
 
+    public function configure() : void
+    {
+    }
+
     public function getDriver()
     {
         return $this->_driver;
@@ -60,7 +63,7 @@ abstract class TDataConfiguration extends TObject
         return $this->_databaseName;
     }
 
-    /* 
+    /*
      * Following properties are default null string in constructor because they may not be used (eg: SQLite)
      */
     public function getHost()

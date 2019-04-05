@@ -30,18 +30,20 @@ use Phink\Configuration\TConfiguration;
 class TFileConfiguration extends TConfiguration
 {
     //put your code here
-    private $_fileName;
-
-    public function __construct($fileName)
+    protected $innerList = [];
+    
+    public function configure() : void
     {
-        parent::__construct($this);
-        $this->_fileName = $fileName;
-
+        $this->innerList = file($this->filename);
     }
 
-
-    public function getFileName()
+    public function readLine() : string
     {
-        return $this->_fileName;
+        $result = each($this->innerList);
+        if (!$result) {
+            reset($this->innerList);
+        }
+
+        return $result;
     }
 }

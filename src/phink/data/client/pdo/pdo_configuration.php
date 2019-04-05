@@ -22,14 +22,77 @@ namespace Phink\Data\Client\PDO;
 //require_once 'phink/configuration/data/sqlconfiguration.php';
 //require_once 'phink/data/server_type.php';
 
-use Phink\Configuration\Data\TDataConfiguration;
+use Phink\Configuration\Data\TJsonConfiguration;
 use Phink\Data\TServerType;
 /**
  * Description of mysqlconfiguration
  *
  * @author david
  */
-class TPdoConfiguration extends TDataConfiguration
+class TPdoConfiguration extends TJsonConfiguration
 {
+    private $_driver = '';
+    private $_host = '';
+    private $_databaseName = '';
+    private $_user = '';
+    private $_password = '';
+    private $_port = '';
+
+    public function __construct(string $driver = '', string $databaseName = '', string $host = '', string $user = '', string $password = '', string $port = '')
+    {
+        $this->_driver = $driver ?? $driver;
+        $this->_databaseName = $databaseName ?? $databaseName;
+        $this->_host = $host ?? $host;
+        $this->_user = $user ?? $user;
+        $this->_password = $password ?? $password;
+        $this->_port = $port ?? $port;
+
+        $this->canConfigure = false;
+    }
+
+    public function configure() : void
+    {
+        parent::configure();
+
+        $this->_driver = $this->contents['driver'];
+        $this->_databaseName = $this->contents['database'];
+        $this->_host = $this->contents['host'];
+        $this->_user = $this->contents['user'];
+        $this->_password = $this->contents['password'];
+        $this->_port = $this->contents['port'];
+    }
+
+    public function getDriver()
+    {
+        return $this->_driver;
+    }
+    
+    public function getDatabaseName()
+    {
+        return $this->_databaseName;
+    }
+
+    /*
+     * Following properties are default null string in constructor because they may not be used (eg: SQLite)
+     */
+    public function getHost()
+    {
+        return $this->_host;
+    }
+
+    public function getUser()
+    {
+        return $this->_user;
+    }
+
+    public function getPassword()
+    {
+        return $this->_password;
+    }
+
+    public function getPort()
+    {
+        return $this->_port;
+    }
 
 }

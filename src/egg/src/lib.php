@@ -68,7 +68,50 @@ class EggLib extends Phink\Core\TObject {
         $this->appDir = $parent->getApplicationDirectory();
     }
     
+    public function printFieldDefs() {
+        require_once APP_DATA . 'ladmin_connection.php';
 
+        $userdb = 'ladmin';
+        $usertable = 'members';
+        $pa_id = 1;
+        $indexfield = 'mbr_id';
+        $secondfield = 'mbr_name';
+        $pa_filename = 'members.php';
+
+        \TAutoLoader::includeClass();
+        $cs = new \SoL\Data\LAdminConnection();
+        $cs->open();
+
+        $analyzer = new \Phink\Data\TAnalyzer();
+        $references = $analyzer->searchReferences($userdb, $usertable, $cs);
+     
+        $A_fieldDefs = $references["field_defs"];
+		$sql = "show fields from $usertable;";
+
+		$L_sqlFields = "";
+		$A_sqlFields = [];
+		
+		$stmt = $cs->query($sql);
+		while($rows = $stmt->fetch()) {
+			$L_sqlFields .= $rows[0].",";
+		}
+
+		$L_sqlFields = substr($L_sqlFields, 0, strlen($L_sqlFields)-1);
+		$A_sqlFields = explode(",", $L_sqlFields);
+		$indexfield = $A_sqlFields[0];
+        $secondfield = $A_sqlFields[1];
+        
+        $scriptMaker = new \Phink\Web\UI\TScriptMaker();
+		$code = $scriptMaker->makeCode($userdb, $usertable, $stmt, $pa_id, $indexfield, $secondfield, $A_fieldDefs, $cs, false);
+		
+		$page = $scriptMaker->makePage($userdb, $usertable, $pa_filename, $pa_id, $indexfield, $secondfield, $A_sqlFields, $cs, false);
+        
+        print_r($references);
+        print_r($code);
+        print_r($page);
+
+    }
+    
     /**
      * Deletes recursively a tree of directories containing files.
      * It is a workaround for rmdir which doesn't allow the deletion

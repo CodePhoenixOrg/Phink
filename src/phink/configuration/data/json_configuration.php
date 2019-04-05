@@ -16,13 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- namespace Phink\Configuration;
+ namespace Phink\Configuration\Data;
+
+//require_once 'phink/configuration/TConfiguration.php';
+
+use Phink\Configuration\TConfiguration;
 
 /**
+ * Description of TFileConfiguration
  *
  * @author david
  */
-interface IConfigurable {
-    public function configure() : void;
-    public function loadConfiguration(string $filename) : bool;
+class TJsonConfiguration extends TConfiguration
+{
+    protected $contents = [];
+
+    public function configure() : void
+    {
+        $text = file_get_contents(APP_DATA . $this->filename);
+        $this->contents = \json_decode($text, true);
+    }
 }

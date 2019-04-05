@@ -33,9 +33,8 @@ use Phink\Data\Client\Rest\TRestConfiguration;
  *
  * @author david
  */
-class TRestConnection extends TObject implements IConnection, IConfigurable
+class TRestConnection extends TObject implements IConnection
 {
-
     private $_restConfig;
     private $_state = NULL;
 
@@ -71,16 +70,7 @@ class TRestConnection extends TObject implements IConnection, IConfigurable
         return NULL;
     }
 
-    public function getConfiguration()
-    {
-        return $this->_restConfig;
-    }
-    
-    public function configure()
-    {
 
-    }
-    
     public function getDriver()
     {
         

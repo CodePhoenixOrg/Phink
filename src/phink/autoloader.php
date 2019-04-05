@@ -171,9 +171,13 @@ class TAutoloader extends TStaticObject
         
         self::getLogger()->debug(__METHOD__ . '::' . $file, __FILE__, __LINE__);
         
-        // if ((isset($params) && ($params && INCLUDE_FILE === INCLUDE_FILE)) && !class_exists('\\' . $fqcn)) {
-        //     include SITE_ROOT . $filename;
-        // }
+        if ((isset($params) && ($params && INCLUDE_FILE === INCLUDE_FILE)) && !class_exists('\\' . $fqcn)) {
+            if (\Phar::running() != '') {
+                include pathinfo($filename, PATHINFO_BASENAME);
+            } else {
+                // include SITE_ROOT . $filename;
+            }
+        }
         
         return ['file' => $file, 'type' => $fqcn, 'code' => $code];
     }
@@ -200,7 +204,7 @@ class TAutoloader extends TStaticObject
         $result = false;
         $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
         
-        $result = self::includeClass($controllerFileName, RETURN_CODE | INCLUDE_FILE);
+        $result = self::includeClass($controllerFileName, RETURN_CODE);
         if (!$result) {
             $sa = explode('.', SERVER_NAME);
             array_pop($sa);
@@ -224,7 +228,7 @@ class TAutoloader extends TStaticObject
         $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
         if (file_exists($controllerFileName)) {
             //self::getLogger()->debug('INCLUDE CUSTOM PARTIAL CONTROLLER : ' . $controllerFileName, __FILE__, __LINE__);
-            $result = self::includeClass($controllerFileName, RETURN_CODE | INCLUDE_FILE);
+            $result = self::includeClass($controllerFileName, RETURN_CODE);
         } elseif ($info = Core\TRegistry::classInfo($viewName)) {
             $result = self::_includeInnerClass($viewName, $info, true);
         } else {
@@ -286,7 +290,7 @@ class TAutoloader extends TStaticObject
                 $ctrl->getResponse()->addScript($cacheJsFilename);
             }
             self::getLogger()->debug('INCLUDE CACHED CONTROL: ' . SITE_ROOT . $cacheFilename, __FILE__, __LINE__);
-            self::includeClass($cacheFilename, RETURN_CODE | INCLUDE_FILE);
+            self::includeClass($cacheFilename, RETURN_CODE);
 
             include SITE_ROOT . $cacheFilename;
 

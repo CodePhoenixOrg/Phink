@@ -18,39 +18,28 @@
  
  namespace Phink\Configuration;
 
+ use Phink\Configuration\IConfigurable;
 /**
  * Description of aconfig
  *
  * @author david
  */
-abstract class TConfiguration extends \Phink\Core\TObject
+abstract class TConfiguration extends \Phink\Core\TObject implements IConfigurable
 {
-    private $_innerList = array();
+    protected $filename = '';
+    protected $canConfigure = false;
     
-    public function __construct($parent)
+    public function loadConfiguration(string $filename) : bool
     {
-        parent::__construct($parent);
-    }
+        $this->canConfigure = file_exists(APP_DATA . $filename);
 
-    public function loadFromFile($filename)
-    {
-        if(!file_exists($filename)) {
+        if(!$this->canConfigure) {
             return false;
         }
+
+        $this->filename = $filename;
+        $this->configure();
         
-        $text = file_get_contents($filename);
-        $text = str_replace("\r", '', $text);
-        $lines = explode("\n", $text);
-        
-        foreach($lines as $line) {
-            array_push($this->_innerList, $line);
-        }
-    }
-    
-    public function readLine()
-    {
-        $result = each($this->_innerList);
-        if(!$result) reset($this->_innerList);
-        return $result;
+        return true;
     }
 }
