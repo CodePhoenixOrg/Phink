@@ -31,7 +31,7 @@ abstract class TConfiguration extends \Phink\Core\TObject implements IConfigurab
     
     public function loadConfiguration(string $filename) : bool
     {
-        $this->canConfigure = file_exists(APP_DATA . $filename);
+        $this->canConfigure = file_exists($filename);
 
         if(!$this->canConfigure) {
             return false;

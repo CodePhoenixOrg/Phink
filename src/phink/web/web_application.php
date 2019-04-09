@@ -36,7 +36,7 @@ use Phink\Web\TWebRouter;
  *
  * @author David
  */
-class TWebApplication extends \Phink\Core\TApplication implements IHttpTransport, IWebObject
+class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTransport, IWebObject
 {
     use \Phink\Web\TWebObject;
     
@@ -53,7 +53,31 @@ class TWebApplication extends \Phink\Core\TApplication implements IHttpTransport
         $this->setNamespace();
         $this->setNames();
     }
-    
+
+    public function execute()
+    {
+        foreach ($this->parameters as $long => $param) {
+            $short = $param['short'];
+            $callback = $param['callback'];
+            if (isset($_REQUEST[$short])) {
+                $result = $_REQUEST[$short];
+                $isFound = true;
+            } elseif (isset($_REQUEST[$long])) {
+                $result = $_REQUEST[$long];
+                $isFound = true;
+            }
+            if ($isFound) {
+                break;
+            }
+        }
+
+        if ($callback !== null && $isFound && $result === null) {
+            call_user_func($callback);
+        } elseif ($callback !== null && $isFound && $result !== null) {
+            call_user_func($callback, $result);
+        }
+    }
+
     public static function mediaPath()
     {
         return SERVER_ROOT . '/media/';

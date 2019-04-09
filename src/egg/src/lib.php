@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2017 dpjb
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,8 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class EggLib extends Phink\Core\TObject {
+use Phink\Data\ISqlConnection;
+use Phink\Data\Client\PDO\TPdoConnection;
+use Phink\Data\Client\PDO\TPdoConfiguration;
+use Phink\Data\TAnalyzer;
+use Phink\Web\UI\TScriptMaker;
 
+class EggLib extends Phink\Core\TObject
+{
+    protected $connection = null;
     /**
      * Defines the full directory tree of a Phink web application
      */
@@ -57,8 +64,14 @@ class EggLib extends Phink\Core\TObject {
         'web/media/images'
     ];
     
-
     protected $appDir = '' ;
+
+    protected function getConnection() : ISqlConnection
+    {
+        $config = new TPdoConfiguration();
+        $config->loadConfiguration($this->appDir . 'egg_conf.json');
+        return new TPdoConnection($config);
+    }
     /**
      * Constructor
      */
@@ -68,55 +81,49 @@ class EggLib extends Phink\Core\TObject {
         $this->appDir = $parent->getApplicationDirectory();
     }
     
-    public function printFieldDefs() {
-        require_once APP_DATA . 'ladmin_connection.php';
-
+    public function references()
+    {
         $userdb = 'ladmin';
         $usertable = 'members';
         $pa_id = 1;
-        $indexfield = 'mbr_id';
-        $secondfield = 'mbr_name';
         $pa_filename = 'members.php';
 
-        \TAutoLoader::includeClass();
-        $cs = new \SoL\Data\LAdminConnection();
+        $cs = $this->getConnection();
         $cs->open();
 
-        $analyzer = new \Phink\Data\TAnalyzer();
+        $analyzer = new TAnalyzer;
         $references = $analyzer->searchReferences($userdb, $usertable, $cs);
      
         $A_fieldDefs = $references["field_defs"];
-		$sql = "show fields from $usertable;";
+        $sql = "show fields from $usertable;";
 
-		$L_sqlFields = "";
-		$A_sqlFields = [];
-		
-		$stmt = $cs->query($sql);
-		while($rows = $stmt->fetch()) {
-			$L_sqlFields .= $rows[0].",";
-		}
+        $L_sqlFields = "";
+        $A_sqlFields = [];
+        
+        $stmt = $cs->query($sql);
+        while ($rows = $stmt->fetch()) {
+            $L_sqlFields .= $rows[0].",";
+        }
 
-		$L_sqlFields = substr($L_sqlFields, 0, strlen($L_sqlFields)-1);
-		$A_sqlFields = explode(",", $L_sqlFields);
-		$indexfield = $A_sqlFields[0];
+        $L_sqlFields = substr($L_sqlFields, 0, strlen($L_sqlFields)-1);
+        $A_sqlFields = explode(",", $L_sqlFields);
+        $indexfield = $A_sqlFields[0];
         $secondfield = $A_sqlFields[1];
         
-        $scriptMaker = new \Phink\Web\UI\TScriptMaker();
-		$code = $scriptMaker->makeCode($userdb, $usertable, $stmt, $pa_id, $indexfield, $secondfield, $A_fieldDefs, $cs, false);
-		
-		$page = $scriptMaker->makePage($userdb, $usertable, $pa_filename, $pa_id, $indexfield, $secondfield, $A_sqlFields, $cs, false);
+        $scriptMaker = new TScriptMaker;
+        $code = $scriptMaker->makeCode($userdb, $usertable, $stmt, $pa_id, $indexfield, $secondfield, $A_fieldDefs, $cs, false);
+        $page = $scriptMaker->makePage($userdb, $usertable, $pa_filename, $pa_id, $indexfield, $secondfield, $A_sqlFields, $cs, false);
         
         print_r($references);
         print_r($code);
         print_r($page);
-
     }
     
     /**
      * Deletes recursively a tree of directories containing files.
      * It is a workaround for rmdir which doesn't allow the deletion
      * of directories not empty.
-     * 
+     *
      * @param string $path Top directory of the tree
      * @return boolean TRUE if deletion succeeds otherwise FALSE
      */
@@ -126,49 +133,42 @@ class EggLib extends Phink\Core\TObject {
         return is_file($path) ?
                 @unlink($path) :
                 array_map($class_func, glob($path.'/*')) == @rmdir($path);
-    }    
+    }
 
     /**
      * Create the skeleton of the application
      */
-    public function createTree () 
+    public function createTree()
     {
         $this->parent->writeLine("Current directory %s", $currentDir);
         
         sort($this->directories);
-        foreach ($this->directories as $directory){
-            if(!file_exists($directory)) {
+        foreach ($this->directories as $directory) {
+            if (!file_exists($directory)) {
                 $this->parent->writeLine("Creating directory %s", $directory);
                 mkdir($directory, 0755, true);
             } else {
                 $this->parent->writeLine("Directory %s already exist", $directory);
-                
             }
         }
-		
     }
     
     /**
-     * Deletes recursively all known directories of the application 
+     * Deletes recursively all known directories of the application
      */
-    public function deleteTree () 
+    public function deleteTree()
     {
         $this->parent->writeLine("Current directory %s", $this->appDir);
 
         rsort($this->directories);
-        foreach ($this->directories as $directory){
+        foreach ($this->directories as $directory) {
             $dir = $this->appDir . $directory;
-            if(file_exists($dir)) {
+            if (file_exists($dir)) {
                 $this->parent->writeLine("Removing directory %s", $dir);
                 $this->_deltree($dir);
-                        
             } else {
                 $this->parent->writeLine("Cannot find directory %s", $dir);
             }
         }
-		
     }
-    
 }
- 
-

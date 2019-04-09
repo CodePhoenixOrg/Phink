@@ -28,7 +28,7 @@ class Egg extends \Phink\UI\TConsoleApplication implements \Phink\UI\IPhar {
      * @param array $argv List of argunments of the command line
      * @param int $argc Count the number of these arguments
      */
-    public static function main($args_v, $args_c = 0) {
+    public static function main($args_v, $args_c) {
         (new Egg($args_v, $args_c));
     }
 
@@ -39,7 +39,7 @@ class Egg extends \Phink\UI\TConsoleApplication implements \Phink\UI\IPhar {
      * @param array $argv List of argunments of the command line
      * @param int $argc Count the number of these arguments
      */
-    public function __construct($args_v, $args_c = 0)
+    public function __construct($args_v, $args_c)
     {
         $dir = dirname(__FILE__);
         parent::__construct($args_v, $args_c, $dir);
@@ -48,18 +48,31 @@ class Egg extends \Phink\UI\TConsoleApplication implements \Phink\UI\IPhar {
     /**
      * Entrypoint of a TConsoleApplication
      */
-    public function run()
+    protected function ignite()
     {
+        parent::ignite();
+
         try {
             $egg = new EggLib($this);
-            
-            if ($this->getArgument('create')) {
-                $egg->createTree();
-            }
 
-            if ($this->getArgument('delete')) {
-                $egg->deleteTree();
-            }
+            $this->setParameter(
+                'create',
+                '',
+                'Create the application tree.',
+                function () use ($egg) {
+                    $egg->createTree();
+                }
+            );            
+
+            $this->setParameter(
+                'delete',
+                '',
+                'Delete the application tree.',
+                function () use($egg) {
+                    $egg->deleteTree();
+                }
+            ); 
+
 
         } catch(\Throwable $th) {
             self::writeException($th);

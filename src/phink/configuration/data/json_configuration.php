@@ -33,7 +33,7 @@ class TJsonConfiguration extends TConfiguration
 
     public function configure() : void
     {
-        $text = file_get_contents(APP_DATA . $this->filename);
+        $text = file_get_contents($this->filename);
         $this->contents = \json_decode($text, true);
     }
 }
