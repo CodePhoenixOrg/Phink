@@ -67,21 +67,21 @@ class TWebRouter extends \Phink\Core\TRouter
         $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
         $this->className = ucfirst($this->viewName);
         
-        $this->getLogger()->debug('VIEW NAME: ' . $this->viewName);
+        // $this->getLogger()->debug('VIEW NAME: ' . $this->viewName);
         
         $this->setNamespace();
         $this->setNames();
 
-        $this->getLogger()->debug('CACHE: ' . $this->cacheFileName);
-        $this->getLogger()->debug('VIEW: ' . SITE_ROOT . $this->viewFileName);
+        // $this->getLogger()->debug('CACHE: ' . $this->cacheFileName);
+        // $this->getLogger()->debug('VIEW: ' . SITE_ROOT . $this->viewFileName);
         
         
         if(file_exists($this->getCacheFileName())) {
-            $this->getLogger()->debug('FROM CACHE: true');
+            // $this->getLogger()->debug('FROM CACHE: true');
             $this->_isCached = true;
             return true;
         } else {
-            $this->getLogger()->debug('FROM CACHE: false');
+            // $this->getLogger()->debug('FROM CACHE: false');
             return file_exists(SITE_ROOT . $this->viewFileName);
             
         }

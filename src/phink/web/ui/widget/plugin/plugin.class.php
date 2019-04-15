@@ -99,25 +99,20 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
     public static function getGridData($id, \Phink\Data\IDataStatement $stmt, $rowCount = 1)
     {
         $templateFilename = RUNTIME_JS_DIR . $id . '_template.json';
-        //self::$logger->debug('TEMPLATE FILE : ' . $templateFilename);
         $templates = '';
         if (file_exists($templateFilename)) {
             $templates = json_decode(file_get_contents($templateFilename));
         }
         
         $elementsFilename = RUNTIME_JS_DIR . $id . '_elements.json';
-        //self::$logger->debug('TEMPLATE FILE : ' . $elementsFilename);
         $elements = '';
         if (file_exists($elementsFilename)) {
             $elements = json_decode(file_get_contents($elementsFilename));
         }
         
-        // $stmt = $cmd->querySelect();
-        
         $rows = $stmt->fetchAll();
         $fieldCount = $stmt->getFieldCount();
         
-
         $values = array();
         $r = count($rows);
         foreach ($rows as $row) {
@@ -128,7 +123,6 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
             array_push($values, json_encode(array_fill(0, $fieldCount, '&nbsp;')));
         }
 
-        //self::$logger->dump('RECORD STMT', $stmt);
         $result = [
             'cols' => $fieldCount
             , 'rows' => $rowCount
@@ -136,7 +130,6 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
             , 'values' => $values
             , 'templates' => $templates
         ];
-
         
         if (isset($elements)) {
             $result['elements'] = $elements;

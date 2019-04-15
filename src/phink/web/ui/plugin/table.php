@@ -75,10 +75,10 @@ class TTable extends TCustomPlugin
                 $typeId0 = 'id="' . $this->getId() .  $elements[3]->getType() . ($i) . '"';
                 $tbody .= str_replace('%s', $typeId0, $elements[3]->getOpening()) . "\n";
                 
-                $this->getLogger()->debug('** BEGIN **');
-                $this->getLogger()->debug($head);
-                $this->getLogger()->debug($row);
-                $this->getLogger()->debug('** END **');
+                // $this->getLogger()->debug('** BEGIN **');
+                // $this->getLogger()->debug($head);
+                // $this->getLogger()->debug($row);
+                // $this->getLogger()->debug('** END **');
             
                 for($j = 0; $j < $this->columns; $j++) {
                     $k = $i * $this->columns + $j;
@@ -86,7 +86,7 @@ class TTable extends TCustomPlugin
 
                     $noTHead = !empty($this->templates[$j]['content']) && $this->templates[$j]['enabled'] == 1;
                     
-                    $this->getLogger()->debug('NO THEAD: ' . \boolval($noTHead), __FILE__, __LINE__);
+                    // $this->getLogger()->debug('NO THEAD: ' . \boolval($noTHead), __FILE__, __LINE__);
 
                     $html = $row[$dataIndex];
                     if($noTHead) {

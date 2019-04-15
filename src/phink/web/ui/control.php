@@ -42,7 +42,7 @@ class TControl extends TCustomControl
         
         $include = \Phink\TAutoloader::includeModelByName($this->viewName);
         $model = SITE_ROOT . $include['file'];
-        $this->getLogger()->debug(__METHOD__ . '::' . $model, __FILE__, __LINE__);
+        // $this->getLogger()->debug(__METHOD__ . '::' . $model, __FILE__, __LINE__);
         if(file_exists($model)) {
             include $model;
             $modelClass = $include['type'];
@@ -103,18 +103,14 @@ class TControl extends TCustomControl
 
 /*        
         $cachedJsController = RUNTIME_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
-        self::$logger->debug(__METHOD__ . '::1::' . $cachedJsController);
         if(file_exists($cachedJsController)) {
             $jsCode = file_get_contents($cachedJsController);
             $html .= PHP_EOL . "?>" .PHP_EOL . $jsCode . PHP_EOL;
-            self::$logger->debug(__METHOD__ . '::2::' . $cachedJsController);
             
             $this->response->addScript($cachedJsController);
         }
 */        
-        self::$logger->debug(__METHOD__ . '::3::' . $this->getJsControllerFileName());
         if(file_exists(SITE_ROOT . $this->getJsControllerFileName())) {
-            self::$logger->debug(__METHOD__ . '::4::' . $this->getJsControllerFileName());
             $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
             if(!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
                 copy(SITE_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);

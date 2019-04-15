@@ -44,7 +44,6 @@ class TStaticApplication extends TWebApplication
     public function getStaticFileName()
     {
         $filename = CACHE_DIR . ((REQUEST_URI == '/') ? MAIN_PAGE : REQUEST_URI);
-        self::$logger->debug(__METHOD__ . '::' . $filename);
         
         if(strstr(HTTP_ACCEPT, 'json')) {
             $filename = str_replace('.html', '.json', $filename);
@@ -52,7 +51,6 @@ class TStaticApplication extends TWebApplication
         $filename = \Phink\Utils\TFileUtils::filePath($filename);
         $p = strpos($filename, '?');
         $filename = str_replace('?', '_', str_replace('&', '_', str_replace('.', '_', str_replace('=', '_', $filename)))) . HTML_EXTENSION;
-        //self::$logger->debug('STATIC FILENAME : ' . $filename, __FILE__, __LINE__);
         
         return $filename;
     }

@@ -49,7 +49,7 @@ class TRestRouter extends \Phink\Core\TRouter
      
         $this->className = 'app' . DIRECTORY_SEPARATOR . 'rest' . DIRECTORY_SEPARATOR . $className . CLASS_EXTENSION;
         
-        $this->getLogger()->debug('REST CONTROLLER: ' . SITE_ROOT . $this->className);
+        // $this->getLogger()->debug('REST CONTROLLER: ' . SITE_ROOT . $this->className);
         
         return file_exists(SITE_ROOT . $this->className);
     }
@@ -72,12 +72,12 @@ class TRestRouter extends \Phink\Core\TRouter
         
         $request_body = file_get_contents('php://input');
         
-        self::getLogger()->debug($request_body);
+        // self::getLogger()->debug($request_body);
         if(!empty($request_body)) {
             $data = json_decode($request_body, true);
         }
         
-        self::getLogger()->debug($data);
+        // self::getLogger()->debug($data);
         
         if(count($this->getParameters()) === 0) {
             $this->parameters = [];
@@ -101,7 +101,7 @@ class TRestRouter extends \Phink\Core\TRouter
         if(count($this->parameters) > 0) {
             foreach ($this->parameters as $key=>$value) {
                 $instance->$key = $value;
-                self::getLogger()->debug("instance->$key = $value");
+                // self::getLogger()->debug("instance->$key = $value");
             }
         }
 

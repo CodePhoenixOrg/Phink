@@ -27,7 +27,7 @@ class PhinkLibrary {
             'core/object.php',
             'css/css_builder.php',
             'js/js_builder.php',
-            'core/application.php',
+            'core/custom_application.php',
             'ui/phar_interface.php',
             'ui/console_application.php',
             'web/http_transport_interface.php',

@@ -65,11 +65,12 @@ class EggLib extends Phink\Core\TObject
     ];
     
     protected $appDir = '' ;
+    protected $appName = '' ;
 
     protected function getConnection() : ISqlConnection
     {
         $config = new TPdoConfiguration();
-        $config->loadConfiguration($this->appDir . 'egg_conf.json');
+        $config->loadConfiguration($this->appDir . $this->appName . '.json');
         return new TPdoConnection($config);
     }
     /**
@@ -79,17 +80,19 @@ class EggLib extends Phink\Core\TObject
     {
         $this->setParent($parent);
         $this->appDir = $parent->getApplicationDirectory();
+        $this->appName = $parent->getApplicationName();
     }
     
-    public function references()
+    public function makeScripts(string $usertable) : void
     {
-        $userdb = 'ladmin';
-        $usertable = 'members';
         $pa_id = 1;
-        $pa_filename = 'members.php';
+        $pa_filename = $usertable . '.php';
 
         $cs = $this->getConnection();
+        $config = $cs->getConfiguration();
         $cs->open();
+
+        $userdb = $config->getDatabaseName();
 
         $analyzer = new TAnalyzer;
         $references = $analyzer->searchReferences($userdb, $usertable, $cs);

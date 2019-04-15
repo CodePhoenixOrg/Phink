@@ -132,7 +132,7 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
         }
 
         if ($router->translate()) {
-            $this->getLogger()->debug("Ready to dispatch");
+            // $this->getLogger()->debug("Ready to dispatch");
             $router->dispatch();
         } else {
             $this->response->setReturn(403);

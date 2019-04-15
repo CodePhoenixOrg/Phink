@@ -97,18 +97,15 @@ class TRouter extends TObject implements \Phink\Web\IWebObject {
                             
                             $this->path = $baseurl['path'];
                             
-                            $this->getLogger()->debug('PATH');                       
-                            $this->getLogger()->debug($this->path);                      
-                            $this->getLogger()->debug('BASEURL');                       
-                            $this->getLogger()->debug($baseurl);                    
+                            $this->getLogger()->dump('PATH', $this->path);                   
+                            $this->getLogger()->dump('BASEURL', $baseurl);                    
 
                             $this->parameters = [];
                             if(isset($baseurl['query'])) {
                                 parse_str($baseurl['query'], $this->parameters);
                             }
 
-                            $this->getLogger()->debug('PARAMETERS');                            
-                            $this->getLogger()->debug($this->parameters);                            
+                            $this->getLogger()->dump('PARAMETERS', $this->parameters);                            
                             
                             return $result;
                         }

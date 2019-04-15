@@ -19,9 +19,9 @@
         "php": ">=7.0.0",
         "components/jquery": ">=1.9.1",
         "components/jqueryui": ">=1.12.1",
-        "components/font-awesome": ">=4.7.0",
-        "components/bootstrap": ">=3.0.0",
-        "components/bootstrap-default": ">=3.0.0"
+        "components/font-awesome": "=4.7.0",
+        "components/bootstrap": "=3.3.5",
+        "components/bootstrap-default": "=3.3.5"
     },
     "include-path": [
         "src"

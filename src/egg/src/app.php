@@ -73,6 +73,14 @@ class Egg extends \Phink\UI\TConsoleApplication implements \Phink\UI\IPhar {
                 }
             ); 
 
+            $this->setParameter(
+                'make-scripts',
+                '',
+                'Make scripts based on configuration file and table name passed as argument.',
+                function (string $usertable) use($egg) {
+                    $egg->makeScripts($usertable);
+                }
+            ); 
 
         } catch(\Throwable $th) {
             self::writeException($th);
@@ -81,12 +89,12 @@ class Egg extends \Phink\UI\TConsoleApplication implements \Phink\UI\IPhar {
         }
     }
 
-    public function addPharFiles()
-    {
-        $this->addFileToPhar(SITE_ROOT . "app.php", "app.php");
-        $this->addFileToPhar(SITE_ROOT . "lib.php", "lib.php");
+    // public function addPharFiles()
+    // {
+    //     $this->addFileToPhar(SITE_ROOT . "app.php", "app.php");
+    //     $this->addFileToPhar(SITE_ROOT . "lib.php", "lib.php");
      
-    }
+    // }
    
 }
  

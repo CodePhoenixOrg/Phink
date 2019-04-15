@@ -43,18 +43,18 @@ trait TCodeGenerator {
         $count = count($docList);
 
         $code = '';
-        $uses = array();
-        $requires = array();
-        $creations = array();
-        $additions = array();
-        $afterBinding = array();
+        $uses = [];
+        $requires = [];
+        $creations = [];
+        $additions = [];
+        $afterBinding = [];
 
-        $childName = array();
-        $childrenIndex = array();
+        $childName = [];
+        $childrenIndex = [];
         
-        $doc->getLogger()->debug('DOC LIST');
-        $doc->getLogger()->debug($docList);
-//        array_push($creations, array());
+        // $doc->getLogger()->debug('DOC LIST');
+        // $doc->getLogger()->debug($docList);
+//        array_push($creations, []);
         
         $isFirst = true;
         foreach ($docList as $control) {
@@ -72,7 +72,7 @@ trait TCodeGenerator {
             if(isset($control['properties'])) {
 
                 $parentId = $control['parentId'];
-                $parentControl = ($parentId > -1) ? $docList[$parentId] : array();
+                $parentControl = ($parentId > -1) ? $docList[$parentId] : [];
                 if(isset($parentControl['childName'])) {
                     $parentChildName = $parentControl['childName'];
                     $controlName = $control['name'];
@@ -139,9 +139,9 @@ trait TCodeGenerator {
 
                 $thisControl = '$this' . (($notThis) ? '->' . $controlId . $index : '');
                 
-                $creations[$j] = array();
-                $additions[$j] = array();
-                $afterBinding[$j] = array();
+                $creations[$j] = [];
+                $additions[$j] = [];
+                $afterBinding[$j] = [];
                 if($isFirst) {
                     array_push($creations[$j], '$this->setId("' . $this->getViewName() . '"); ');
                     $isFirst = false;

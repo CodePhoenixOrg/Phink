@@ -73,7 +73,7 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
        
     public function parse()
     {
-        $this->getLogger()->debug('CONTROLLER PARSE VIEW TYPE: ' .  $this->view->getType(), __FILE__, __LINE__);
+        // $this->getLogger()->debug('CONTROLLER PARSE VIEW TYPE: ' .  $this->view->getType(), __FILE__, __LINE__);
         $isAlreadyParsed = ($this->view->getType() == 'TView'); //file_exists($this->getCacheFileName());
 
         if(!$isAlreadyParsed) {
@@ -139,13 +139,13 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
                 $actionName = $this->actionName;
 
                 $this->parse();
-                $this->renderCreations();
+                // $this->renderCreations();
             
                 $params = $this->validate($actionName);
                 $this->invoke($actionName, $params);
 
                 $this->beforeBinding();
-                $this->renderDeclarations();
+                // $this->renderDeclarations();
 
                 if($this->request->isPartialView()
                 || ($this->request->isView() && $this->actionName !== 'getViewHtml')) {
@@ -159,10 +159,10 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
         } else {
             $this->load();
             $this->parse();
-            $this->renderCreations();
+            // $this->renderCreations();
             $this->beforeBinding();
-            $this->renderDeclarations();
-            $this->renderView();
+            // $this->renderDeclarations();
+            // $this->renderView();
             $this->unload();
         }        
         

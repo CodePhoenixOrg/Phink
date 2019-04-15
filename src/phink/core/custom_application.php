@@ -50,7 +50,8 @@ abstract class TCustomApplication extends TObject
 
     protected $parameters = [];
     protected $callbacks = [];
-    private $_name = 'program';
+    protected $appName = 'app';
+    protected $scriptName = 'app.php';
     protected $appDirectory = '';
     protected $canStop = false;
     private $_usage = '';
@@ -86,7 +87,7 @@ abstract class TCustomApplication extends TObject
         define('CACHE_DIR', SITE_ROOT . 'cache' . DIRECTORY_SEPARATOR);
     
         array_pop($path);
-        $this->_name = array_pop($path);
+        $this->appName = array_pop($path);
         
         $this->setParameter(
             'help',
@@ -143,7 +144,7 @@ abstract class TCustomApplication extends TObject
 
     public function getApplicationName()
     {
-        return $this->_name;
+        return $this->appName;
     }
 
     public function getApplicationDirectory()
