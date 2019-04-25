@@ -73,7 +73,7 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
                 $this->_state = new \PDO($this->_dsn, $this->_config->getUser(), $this->_config->getPassword(), []);
             }
         } catch (\PDOException $ex) {
-            self::$logger->exception($ex, __FILE__, __LINE__);
+            $this->getlogger()->exception($ex, __FILE__, __LINE__);
         }
 
         return $this->_state;

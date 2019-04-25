@@ -138,11 +138,10 @@ class TPdoDataStatement extends TObject implements IDataStatement
     {
         if(count($this->_colNames) == 0 && $this->_connection !== null) {
 
-            $sql = $this->_statement->queryString;
-            $res = $this->_native_connection->query($sql);
-            $row = $res->fetch(\PDO::FETCH_ASSOC);
-
-            $this->_colNames = array_keys($row);
+            $c = $this->getFieldCount();
+            for($i = 0; $i < $c; $i++) {
+                $this->_colNames[] = $this->getFieldName($i);
+            }
         }
 
         return $this->_colNames;        

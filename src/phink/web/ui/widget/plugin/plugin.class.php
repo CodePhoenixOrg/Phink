@@ -96,7 +96,7 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
     //     $this->addChild($this);
     // }
 
-    public static function getGridData($id, \Phink\Data\IDataStatement $stmt, $rowCount = 1)
+    public static function getGridData($id, \Phink\Data\IDataStatement $stmt, $rowsPerPage = 1)
     {
         $templateFilename = RUNTIME_JS_DIR . $id . '_template.json';
         $templates = '';
@@ -110,23 +110,32 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
             $elements = json_decode(file_get_contents($elementsFilename));
         }
         
-        $rows = $stmt->fetchAll();
-        $fieldCount = $stmt->getFieldCount();
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $names = [];
+        $values = [];
+        $fieldCount = 0;
+
+        $rowCount = count($rows);
+
+        if($rowCount > 0) {
+            $names = array_keys($rows[0]);
+            $fieldCount = count($names);
+        }
         
-        $values = array();
-        $r = count($rows);
+
         foreach ($rows as $row) {
-            //$row = array_values($row);
+            $row = array_values($row);
             array_push($values, json_encode($row));
         }
-        for ($k = $r; $k < $rowCount; $k++) {
+        for ($k = $rowCount; $k < $rowsPerPage; $k++) {
             array_push($values, json_encode(array_fill(0, $fieldCount, '&nbsp;')));
         }
 
         $result = [
             'cols' => $fieldCount
-            , 'rows' => $rowCount
-            , 'names' => $stmt->getFieldNames()
+            , 'rows' => $rowsPerPage
+            , 'names' => $names
             , 'values' => $values
             , 'templates' => $templates
         ];
