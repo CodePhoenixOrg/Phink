@@ -58,37 +58,14 @@ abstract class TCustomApplication extends TObject
 
     private $redis = null;
 
+    protected function execute()
+    {
+    }
+
     protected function ignite()
     {
-        $path = explode(DIRECTORY_SEPARATOR, $this->appDirectory);
-        $scriptDir = $this->appDirectory . '..' . DIRECTORY_SEPARATOR;
-        $siteDir = $scriptDir . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
-        $siteDir = \Phink\Utils\TFileUtils::relativePathToAbsolute($siteDir);
-        $scriptDir = \Phink\Utils\TFileUtils::relativePathToAbsolute($scriptDir);
-        
-        define('SITE_ROOT', $siteDir);
-        define('SCRIPT_ROOT', $scriptDir);
-        
-        array_pop($path);
-        if (APP_IS_PHAR) {
-            array_pop($path);
-            $this->appDirectory = str_replace('phar://', '', $scriptDir);
-        }
-        
-        define('APP_ROOT', SITE_ROOT . 'app' . DIRECTORY_SEPARATOR);
-        define('APP_SCRIPTS', APP_ROOT . 'scripts' . DIRECTORY_SEPARATOR);
-        define('APP_DATA', SITE_ROOT . 'data' . DIRECTORY_SEPARATOR);
-        define('APP_BUSINESS', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
-        define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
-        define('BUSINESS_ROOT', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
-        define('MODEL_ROOT', APP_ROOT . 'models' . DIRECTORY_SEPARATOR);
-        define('REST_ROOT', APP_ROOT . 'rest' . DIRECTORY_SEPARATOR);
-        define('VIEW_ROOT', APP_ROOT . 'views' . DIRECTORY_SEPARATOR);
-        define('CACHE_DIR', SITE_ROOT . 'cache' . DIRECTORY_SEPARATOR);
-    
-        array_pop($path);
-        $this->appName = array_pop($path);
-        
+        $this->loadINI();
+
         $this->setParameter(
             'help',
             'h',
@@ -117,24 +94,33 @@ abstract class TCustomApplication extends TObject
         );
     
         $this->setParameter(
-            'source-path',
+            'constants',
             '',
-            'Display the running application source directory.',
+            'Display the application constants.',
             function () {
-                \Phink\UI\TConsoleApplication::writeLine($this->getApplicationDirectory());
+                $this->displayConstants();
             }
-        );
-
-        $this->setParameter(
-            'script-path',
-            '',
-            'Display the running application root.',
-            function () {
-                \Phink\UI\TConsoleApplication::writeLine(SCRIPT_ROOT);
-            }
-        );
+        );        
     }
     
+    protected function displayConstants() {}
+
+    public function loadINI() : void
+    {
+        try {
+            $ini = null;
+            if (!file_exists(SITE_ROOT . 'config/app.ini')) {
+                return;
+            }
+            $ini = parse_ini_file(SITE_ROOT  . 'config/app.ini');
+            $data = isset($ini['data']) ?? $ini['data'];
+
+            self::getLogger()->dump('INI_DATA:', $ini);
+        } catch (\Throwable $ex) {
+            \Phink\UI\TConsoleApplication::writeException($ex);
+        }
+    }
+
     public function help()
     {
         \Phink\UI\TConsoleApplication::writeLine($this->getApplicationName());

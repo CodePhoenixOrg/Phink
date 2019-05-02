@@ -148,7 +148,7 @@ $appname = '';
 
 if(file_exists($appconf)) {
     $appini = parse_ini_file($appconf);
-    $appname = isset($appini['application']['name']) ? $appini['application']['name'] : '';
+    $appname = isset($appini['application']['name']) ?? $appini['application']['name'];
 } 
 
 if(empty($appname)) {

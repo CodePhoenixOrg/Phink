@@ -39,7 +39,8 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         //        include 'phink/autoloader.php';
         //        \Phink\TAutoLoader::register();
         //    }
-     
+        parent::__construct();
+
         $this->_argv = $argv;
         $this->_argc = $argc;
 
@@ -51,6 +52,37 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
 
         $this->appDirectory = $appDirectory . DIRECTORY_SEPARATOR;
     
+        $path = explode(DIRECTORY_SEPARATOR, $this->appDirectory);
+        $scriptDir = $this->appDirectory . '..' . DIRECTORY_SEPARATOR;
+        $siteDir = $scriptDir . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
+        $siteDir = \Phink\Utils\TFileUtils::relativePathToAbsolute($siteDir);
+        $scriptDir = \Phink\Utils\TFileUtils::relativePathToAbsolute($scriptDir);
+        
+        define('SITE_ROOT', $siteDir);
+        define('SCRIPT_ROOT', $scriptDir);
+
+        define('APP_ROOT', SITE_ROOT . 'app' . DIRECTORY_SEPARATOR);
+        define('APP_SCRIPTS', APP_ROOT . 'scripts' . DIRECTORY_SEPARATOR);
+        define('APP_DATA', SITE_ROOT . 'data' . DIRECTORY_SEPARATOR);
+        define('APP_BUSINESS', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
+        define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
+        define('BUSINESS_ROOT', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
+        define('MODEL_ROOT', APP_ROOT . 'models' . DIRECTORY_SEPARATOR);
+        define('REST_ROOT', APP_ROOT . 'rest' . DIRECTORY_SEPARATOR);
+        define('VIEW_ROOT', APP_ROOT . 'views' . DIRECTORY_SEPARATOR);
+        define('CACHE_DIR', SITE_ROOT . 'cache' . DIRECTORY_SEPARATOR);
+
+        array_pop($path);
+        if (APP_IS_PHAR) {
+            array_pop($path);
+            $this->appDirectory = str_replace('phar://', '', $scriptDir);
+        }
+
+        array_pop($path);
+        $this->appName = array_pop($path);
+
+
+
         $useTransaction = $this->setParameter('useTransactions');
         $execution = $this->setParameter('executionMode');
         $verbose = $this->setParameter('verbose');
@@ -58,11 +90,12 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         self::setExecutionMode($execution);
         self::useTransactions($useTransaction);
         
+
         $this->ignite();
+        $this->execute();
 
         $this->init();
         $this->run();
-        $this->execute();
     }
 
     protected function ignite()
@@ -88,6 +121,23 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             );
         }
         
+        $this->setParameter(
+            'source-path',
+            '',
+            'Display the running application source directory.',
+            function () {
+                \Phink\UI\TConsoleApplication::writeLine($this->getApplicationDirectory());
+            }
+        );
+
+        $this->setParameter(
+            'script-path',
+            '',
+            'Display the running application root.',
+            function () {
+                \Phink\UI\TConsoleApplication::writeLine(SCRIPT_ROOT);
+            }
+        );
         $this->setParameter(
             'display-tree',
             '',
@@ -152,6 +202,34 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             call_user_func($callback);
         } elseif ($callback !== null && $isFound && $result !== null) {
             call_user_func($callback, $result);
+        }
+    }
+
+    protected function displayConstants()
+    {
+        try {
+            $constants = [];
+            $constants['SITE_ROOT'] = SITE_ROOT;
+            $constants['SCRIPT_ROOT'] = SCRIPT_ROOT;
+            $constants['APP_ROOT'] = APP_ROOT;
+            $constants['APP_DATA'] = APP_DATA;
+            $constants['APP_BUSINESS'] = APP_BUSINESS;
+            $constants['APP_SCRIPTS'] = APP_SCRIPTS;
+            $constants['CONTROLLER_ROOT'] = CONTROLLER_ROOT;
+            $constants['MODEL_ROOT'] = MODEL_ROOT;
+            $constants['REST_ROOT'] = REST_ROOT;
+            $constants['VIEW_ROOT'] = VIEW_ROOT;
+            $constants['LOG_PATH'] = LOG_PATH;
+            $constants['DEBUG_LOG'] = DEBUG_LOG;
+            $constants['ERROR_LOG'] = ERROR_LOG;
+            $constants['CACHE_DIR'] = CACHE_DIR;
+        
+            \Phink\UI\TConsoleApplication::writeLine('Application constants are :');
+            foreach($constants as $key => $value) {
+                \Phink\UI\TConsoleApplication::writeLine("\e[41m\033[37m" . $key . "\e[0m\033[0m" . ' => ' . $value);
+            }
+        } catch (\Throwable $ex) {
+            self::writeException($ex);
         }
     }
 
@@ -268,10 +346,8 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             }
 
             rename($buildRoot . $this->_name . '.phar', $execname);
-        } catch (\Exception $ex) {
-            self::writeException($ex);
         } catch (\Throwable $ex) {
-            self::writeThrowable($ex);
+            self::writeException($ex);
         }
     }
     
@@ -288,10 +364,8 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             foreach ($tree as $filename) {
                 $this->addFileToPhar($this->appDirectory . $filename, $filename);
             }
-        } catch (\Exception $ex) {
-            self::writeException($ex);
         } catch (\Throwable $ex) {
-            self::writeThrowable($ex);
+            self::writeException($ex);
         }
     }
 
@@ -334,11 +408,14 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         }
     }
 
-    public static function writeException($ex, $file = null, $line = null)
+    public static function writeException(\Throwable $ex, $file = null, $line = null)
     {
         if (!APP_IS_WEB) {
             $message = '';
 
+            if($ex instanceof \ErrorException) {
+                $message .= 'Error severity: ' . $ex->getSeverity() . PHP_EOL;
+            }
             $message .= 'Error code: ' . $ex->getCode() . PHP_EOL;
             $message .= 'In ' . $ex->getFile() . ', line ' . $ex->getLine() . PHP_EOL;
             $message .= 'With the message: ' . $ex->getMessage() . PHP_EOL;
@@ -350,19 +427,4 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         }
     }
 
-    public static function writeThrowable(\Throwable $th, $file = null, $line = null)
-    {
-        if (!APP_IS_WEB) {
-            $message = '';
-
-            $message .= 'Error code: ' . $th->getCode() . PHP_EOL;
-            $message .= 'In ' . $th->getFile() . ', line ' . $th->getLine() . PHP_EOL;
-//            $message .= $th->getMessage() . PHP_EOL;
-//            $message .= $th->getTraceAsString() . PHP_EOL;
-            
-            print  "\e[41m\033[37m" . $message . "\e[0m\033[0m";
-        } else {
-            self::getLogger()->exception($th, $file, $line);
-        }
-    }
 }

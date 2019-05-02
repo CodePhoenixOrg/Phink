@@ -122,7 +122,6 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
             $names = array_keys($rows[0]);
             $fieldCount = count($names);
         }
-        
 
         foreach ($rows as $row) {
             $row = array_values($row);

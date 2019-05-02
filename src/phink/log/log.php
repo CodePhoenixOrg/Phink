@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (C) 2016 David Blanchard
  *
@@ -15,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 namespace Phink\Log;
 
 //require_once 'constants.php';
@@ -25,36 +26,22 @@ namespace Phink\Log;
  *
  * @author david
  */
-
-
 class TLog
 {
-    //put your code here
-    
     private $_debugLogFile = '';
     private $_errorLogFile = '';
 
-    private function _setDebugLogFile()
+    public function __construct()
     {
-        $this->_debugLogFile = './logs/debug.log';
-        if(APP_IS_WEB) {
-            $this->_debugLogFile = SITE_ROOT . 'logs/debug.log';
+        if (APP_IS_WEB) {
+            define('DEBUG_LOG', SITE_ROOT . 'logs/debug.log');
+            define('ERROR_LOG', SITE_ROOT . 'logs/error.log');
+        } else {
+            define('DEBUG_LOG', LOG_PATH . 'logs/debug.log');
+            define('ERROR_LOG', LOG_PATH . 'logs/error.log');
         }
     }
 
-    private function _setErrorLogFile()
-    {
-        $this->_errorLogFile = './logs/error.log';
-        if(APP_IS_WEB) {
-            $this->_errorLogFile = SITE_ROOT . 'logs/error.log';
-        }
-    }
-
-    public function file($filename, $object)
-    {
-        file_put_contents (DOCUMENT_ROOT . RUNTIME_DIR . $filename . '.log', print_r($object, true) . PHP_EOL);
-    }
-    
     public function dump($message, $object)
     {
         $this->debug($message . '::' . print_r($object, true) . PHP_EOL);
@@ -62,45 +49,34 @@ class TLog
 
     public function debug($message, $filename = null, $line = null)
     {
-        $message = (is_array($message) || is_object($message)) ? print_r($message, true) : $message;
-        $this->_setDebugLogFile();
-        
-        if(!file_exists('logs')) {
-            mkdir('logs', 0755);
-        }
-        $handle = fopen($this->_debugLogFile, 'a');
-
-        if(SITE_ROOT) {
-            $filename = substr($filename, strlen(SITE_ROOT));
-        }
-        $message = date('Y-m-d h:i:s') . ((isset($filename)) ? ":$filename" : '') . ((isset($line)) ? ":$line" : '') . " : $message" . PHP_EOL;
-        fwrite($handle, $message . PHP_EOL);
-        fclose($handle);
+        $this->_log(DEBUG_LOG, $message, $filename, $line);
     }
 
-    public function exception($ex, $filename = null, $line = null)
+    public function error(\Throwable $ex, $filename = null, $line = null)
     {
         $message = '';
 
-        $message .= $ex->getCode() . PHP_EOL;
-        $message .= $ex->getFile() . PHP_EOL;
-        $message .= $ex->getMessage() . PHP_EOL;
-        $message .= $ex->getTraceAsString() . PHP_EOL;
+        if ($ex instanceof \ErrorException) {
+            $message .= 'Error severity: ' . $ex->getSeverity() . PHP_EOL;
+        }
+        $message .= 'Error code: ' . $ex->getCode() . PHP_EOL;
+        $message .= 'In ' . $ex->getFile() . ', line ' . $ex->getLine() . PHP_EOL;
+        $message .= 'With the message: ' . $ex->getMessage() . PHP_EOL;
+        $message .= 'Stack trace: ' . $ex->getTraceAsString() . PHP_EOL;
 
-        $this->debug($message, $filename, $line);
+        $this->_log(ERROR_LOG, $message, $filename, $line);
     }
- 
-    public function error($message, $filename = null, $line = null)
+
+    private function _log($filepath, $message, $filename = null, $line = null)
     {
         $message = (is_array($message) || is_object($message)) ? print_r($message, true) : $message;
-        $this->_setErrorLogFile();
-        
-        if(!file_exists('logs')) {
+
+        if (!file_exists('logs')) {
             mkdir('logs', 0755);
         }
-        $handle = fopen($this->_setErrorLogFile, 'a');
+        $handle = fopen($filepath, 'a');
 
-        if(SITE_ROOT) {
+        if (SITE_ROOT) {
             $filename = substr($filename, strlen(SITE_ROOT));
         }
         $message = date('Y-m-d h:i:s') . ((isset($filename)) ? ":$filename" : '') . ((isset($line)) ? ":$line" : '') . " : $message" . PHP_EOL;
