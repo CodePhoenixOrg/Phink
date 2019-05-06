@@ -34,7 +34,7 @@ class TRestApplication extends TObject
     //put your code here
     use \Phink\Web\THttpTransport;
     
-    public static function create($params = [])
+    public static function create(...$params)
     {
         (new TRestApplication())->run();
     }

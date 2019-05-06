@@ -84,8 +84,6 @@ class Egg extends \Phink\UI\TConsoleApplication implements \Phink\UI\IPhar {
 
         } catch(\Throwable $th) {
             self::writeException($th);
-        } catch (\Exception $ex) {
-            self::writeException($ex);
         }
     }
 

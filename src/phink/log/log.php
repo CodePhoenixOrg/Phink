@@ -31,17 +31,6 @@ class TLog
     private $_debugLogFile = '';
     private $_errorLogFile = '';
 
-    public function __construct()
-    {
-        if (APP_IS_WEB) {
-            define('DEBUG_LOG', SITE_ROOT . 'logs/debug.log');
-            define('ERROR_LOG', SITE_ROOT . 'logs/error.log');
-        } else {
-            define('DEBUG_LOG', LOG_PATH . 'logs/debug.log');
-            define('ERROR_LOG', LOG_PATH . 'logs/error.log');
-        }
-    }
-
     public function dump($message, $object)
     {
         $this->debug($message . '::' . print_r($object, true) . PHP_EOL);

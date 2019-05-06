@@ -28,31 +28,30 @@ $document_root = isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 
 define('APP_IS_WEB', ($document_root != ''));
 define('APP_IS_PHAR', (\Phar::running() != ''));
 
-if($document_root != '') {
-
+if (APP_IS_WEB) {
     define('BR', "<br />");
-    if(PHP_OS == 'WINNT') {
+    if (PHP_OS == 'WINNT') {
         $document_root = str_replace('\\\\', '\\', $document_root) . '\\';
-    } elseif(PHP_OS == 'Linux') {
+    } elseif (PHP_OS == 'Linux') {
         $document_root = $document_root . '/';
     } else {
         $document_root = $document_root . '/';
     }
     $scheme = 'http';
-    if(strstr($_SERVER['SERVER_SOFTWARE'], 'IIS')) {
+    if (strstr($_SERVER['SERVER_SOFTWARE'], 'IIS')) {
         $scheme = ($_SERVER['HTTPS'] == 'off') ? 'http' : 'https';
-    } elseif(strstr($_SERVER['SERVER_SOFTWARE'], 'Apache')) {
+    } elseif (strstr($_SERVER['SERVER_SOFTWARE'], 'Apache')) {
         $scheme = $_SERVER['REQUEST_SCHEME'];
-    } elseif(strstr($_SERVER['SERVER_SOFTWARE'], 'lighttpd')) {
+    } elseif (strstr($_SERVER['SERVER_SOFTWARE'], 'lighttpd')) {
         $scheme = strstr($_SERVER['SERVER_PROTOCOL'], 'HTPPS') ? 'https' : 'http';
-    } elseif(strstr($_SERVER['SERVER_SOFTWARE'], 'nginx')) {
+    } elseif (strstr($_SERVER['SERVER_SOFTWARE'], 'nginx')) {
         $scheme = strstr($_SERVER['SERVER_PROTOCOL'], 'HTPPS') ? 'https' : 'http';
     }
     
     define('DOCUMENT_ROOT', $document_root);
     define('HTTP_PROTOCOL', $scheme);
 
-    if(substr(DOCUMENT_ROOT, -4) === 'web/') {
+    if (substr(DOCUMENT_ROOT, -4) === 'web/') {
         define('SITE_ROOT', substr(DOCUMENT_ROOT, 0, -4));
     } else {
         define('SITE_ROOT', DOCUMENT_ROOT);
@@ -71,7 +70,7 @@ if($document_root != '') {
     define('RUNTIME_JS_DIR', DOCUMENT_ROOT . REL_RUNTIME_JS_DIR);
     define('CACHE_DIR', SITE_ROOT . 'cache' . DIRECTORY_SEPARATOR);
     
-    define('LOG_PATH', APP_ROOT . 'logs/');
+    define('LOG_PATH', SITE_ROOT . 'logs' . DIRECTORY_SEPARATOR);
     
     define('PAGE_NUMBER', 'pagen');
     define('PAGE_COUNT', 'pagec');
@@ -86,7 +85,6 @@ if($document_root != '') {
     define('LOGIN_PAGE', '/' . LOGIN_VIEW . '.html');
     define('MASTER_PAGE', '/' . MASTER_VIEW . '.html');
     define('HOME_PAGE', '/' . HOME_VIEW . '.html');
-    define('LOG_FILE', LOG_PATH . 'debug.log');
     define('APP_DATA', SITE_ROOT . 'data' . DIRECTORY_SEPARATOR);
     define('APP_BUSINESS', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
     define('STARTER_FILE', 'starter.php');
@@ -110,53 +108,53 @@ if($document_root != '') {
     define('DEFAULT_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TController');
     define('DEFAULT_PARTIAL_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TPartialController');
     define('DEFAULT_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TControl');
-    define('CONTROLLER', 'TController');
-    define('PARTIAL_CONTROLLER', 'TPartialController');
-    define('CONTROL', 'TControl');
-    define('CLASS_EXTENSION', '.class.php');
-    define('HTML_EXTENSION', '.html');
-    define('PREHTML_EXTENSION', '.phtml');
-    define('PATTERN_EXTENSION', '.pattern' . PREHTML_EXTENSION);
-    define('JS_EXTENSION', '.js');
-    define('JSON_EXTENSION', '.json');
-    define('CSS_EXTENSION', '.css');
-    define('PHX_TERMINATOR', '<phx:eof />');
-    define('CREATIONS_PLACEHOLDER', '<phx:creationsPlaceHolder />');
-    define('ADDITIONS_PLACEHOLDER', '<phx:additionsPlaceHolder />');
-    define('AFTERBINDING_PLACEHOLDER', '<phx:afterBindingPlaceHolder />');
-    define('HTML_PLACEHOLDER', '<phx:htmlPlaceHolder />');
-    /*
-     * define('CONTROL_ADDITIONS', PHP_EOL . "\tpublic function createObjects() {" . PHP_EOL . CREATIONS_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function declareObjects() {" . PHP_EOL . ADDITIONS_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function afterBindingObjects() {" . PHP_EOL . AFTERBINDING_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function displayHtml() {" . PHP_EOL . "?>" . PHP_EOL . HTML_PLACEHOLDER . PHP_EOL . "<?php" . PHP_EOL . "\t}" . PHP_EOL . '}' . PHP_EOL);
-     */
-    define('CONTROL_ADDITIONS', PHP_EOL . "\tpublic function createObjects() {" . PHP_EOL . CREATIONS_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function declareObjects() {" . PHP_EOL . ADDITIONS_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function displayHtml() {" . PHP_EOL . "?>" . PHP_EOL . HTML_PLACEHOLDER . PHP_EOL . "<?php" . PHP_EOL . "\t}" . PHP_EOL . '}' . PHP_EOL);
-    define('PHX_SQL_LIMIT', '<phx:sql_limit />');
-
-    define('RETURN_CODE', 1);
-    define('INCLUDE_FILE', 2);
-    define('REQUEST_TYPE_WEB', 'web');
-    define('REQUEST_TYPE_REST', 'rest');    
 } else {
     define('DOCUMENT_ROOT', '');
-//    define('SITE_ROOT', DOCUMENT_ROOT);
-//    define('APP_ROOT', './');
-    define('LOG_PATH', './');
+    define('LOG_PATH', './logs/');
 }
+
+define('CONTROLLER', 'TController');
+define('PARTIAL_CONTROLLER', 'TPartialController');
+define('CONTROL', 'TControl');
+define('CLASS_EXTENSION', '.class.php');
+define('HTML_EXTENSION', '.html');
+define('PREHTML_EXTENSION', '.phtml');
+define('PATTERN_EXTENSION', '.pattern' . PREHTML_EXTENSION);
+define('JS_EXTENSION', '.js');
+define('JSON_EXTENSION', '.json');
+define('CSS_EXTENSION', '.css');
+define('PHX_TERMINATOR', '<phx:eof />');
+define('CREATIONS_PLACEHOLDER', '<phx:creationsPlaceHolder />');
+define('ADDITIONS_PLACEHOLDER', '<phx:additionsPlaceHolder />');
+define('AFTERBINDING_PLACEHOLDER', '<phx:afterBindingPlaceHolder />');
+define('HTML_PLACEHOLDER', '<phx:htmlPlaceHolder />');
+/*
+* define('CONTROL_ADDITIONS', PHP_EOL . "\tpublic function createObjects() {" . PHP_EOL . CREATIONS_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function declareObjects() {" . PHP_EOL . ADDITIONS_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function afterBindingObjects() {" . PHP_EOL . AFTERBINDING_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function displayHtml() {" . PHP_EOL . "?>" . PHP_EOL . HTML_PLACEHOLDER . PHP_EOL . "<?php" . PHP_EOL . "\t}" . PHP_EOL . '}' . PHP_EOL);
+*/
+define('CONTROL_ADDITIONS', PHP_EOL . "\tpublic function createObjects() {" . PHP_EOL . CREATIONS_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function declareObjects() {" . PHP_EOL . ADDITIONS_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function displayHtml() {" . PHP_EOL . "?>" . PHP_EOL . HTML_PLACEHOLDER . PHP_EOL . "<?php" . PHP_EOL . "\t}" . PHP_EOL . '}' . PHP_EOL);
+define('PHX_SQL_LIMIT', '<phx:sql_limit />');
+
+define('RETURN_CODE', 1);
+define('INCLUDE_FILE', 2);
+define('REQUEST_TYPE_WEB', 'web');
+define('REQUEST_TYPE_REST', 'rest');
+
+define('DEBUG_LOG', LOG_PATH . 'debug.log');
+define('ERROR_LOG', LOG_PATH . 'error.log');
 
 $appconf = DOCUMENT_ROOT . 'config' . DIRECTORY_SEPARATOR . 'app.ini';
 
 $appname = '';
 
-if(file_exists($appconf)) {
+if (file_exists($appconf)) {
     $appini = parse_ini_file($appconf);
     $appname = isset($appini['application']['name']) ?? $appini['application']['name'];
-} 
+}
 
-if(empty($appname)) {
+if (empty($appname)) {
     $apppath = explode(DIRECTORY_SEPARATOR, DOCUMENT_ROOT);
     $appname = array_pop($apppath);
     $appname = strtolower(array_pop($apppath));
 }
 
 define('APP_NAME', $appname);
-
-

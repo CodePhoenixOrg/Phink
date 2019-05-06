@@ -16,9 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- namespace Phink\MVC;
+namespace Phink\MVC;
 
-abstract class TCustomController extends \Phink\Web\UI\TCustomControl
+use Phink\Web\IWebObject;
+use Phink\Web\UI\TCustomControl;
+
+abstract class TCustomController extends TCustomControl
 {
 
     protected $innerHtml = '';
@@ -31,15 +34,18 @@ abstract class TCustomController extends \Phink\Web\UI\TCustomControl
     protected $view = null;
     private $_type = '';
     
-    public function __construct(\Phink\Core\TObject $parent)
+    public function __construct(IWebObject $parent)
     {
 
         parent::__construct($parent);
         
+        $this->application = $parent->getApplication();
+        $this->commands = $this->application->getCommands();
         $this->authentication = $parent->getAuthentication();
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();        
-        
+        $this->parameters = $parent->getParameters();
+
         $this->setViewName();
         $this->setNamespace();
         $this->setNames();

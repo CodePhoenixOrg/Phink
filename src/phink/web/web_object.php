@@ -18,7 +18,7 @@
  
 namespace Phink\Web;
 
- /**
+/**
  * Description of TObject
  *
  * @author david
@@ -26,8 +26,8 @@ namespace Phink\Web;
  
 use Phink\Core\TRegistry;
 
-trait TWebObject {
-    
+trait TWebObject
+{
     use THttpTransport;
     
     private static $_currentDirectory;
@@ -52,32 +52,34 @@ trait TWebObject {
     protected $className = '';
     protected $namespace = '';
     protected $code = '';
+    protected $parameters = [];
+    protected $commands = [];
+    protected $application;
+
 //    protected $authentication = null;
     
 //    public function __construct(TObject $parent)
 //    {
 //        $this->request = $parent->getRequest();
-//        $this->response = $parent->getResponse();        
+//        $this->response = $parent->getResponse();
 //    }
 //
 
  
     public static function pageNumber($value = null)
     {
-        if(isset($value)) {
+        if (isset($value)) {
             self::$_pageNumber = $value;
-        }
-        else {
+        } else {
             return self::$_pageNumber;
         }
     }
 
     public static function pageCount($value = null)
     {
-        if(isset($value)) {
+        if (isset($value)) {
             self::$_pageCount = $value;
-        }
-        else {
+        } else {
             return self::$_pageCount;
         }
     }
@@ -85,36 +87,35 @@ trait TWebObject {
     public function pageCountByDefault($default)
     {
         self::pageCount($this->request->getQueryArguments(PAGE_COUNT));
-        if(!self::pageCount()) {
+        if (!self::pageCount()) {
             self::pageCount($default);
         }
 
-        if($default < 1) {
+        if ($default < 1) {
             self::pageCount(PAGE_COUNT_ZERO);
         }
 
         return self::pageCount();
     }
 
-    public function setCacheFileName($value = '') {
+    public function setCacheFileName($value = '')
+    {
         $this->cacheFileName = $value;
-        if(empty($value)) {
+        if (empty($value)) {
             $this->cacheFileName = RUNTIME_DIR . strtolower(str_replace(DIRECTORY_SEPARATOR, '_', $this->controllerFileName));
         }
     }
     public function getCacheFileName()
     {
-
         return $this->cacheFileName;
     }
     
     public function getPhpCode()
     {
-
-        if(!$this->code) {
+        if (!$this->code) {
 //        $this->code = $this->redis->mget($this->getCacheFileName());
 //        $this->code = $this->code[0];
-            if(file_exists($this->getCacheFileName())) {
+            if (file_exists($this->getCacheFileName())) {
                 $this->code = file_get_contents($this->getCacheFileName());
             }
         }
@@ -135,7 +136,6 @@ trait TWebObject {
 
     public function getJsonName()
     {
-        
         return RUNTIME_DIR . $this->className . '.json';
     }
 
@@ -170,7 +170,7 @@ trait TWebObject {
 //    {
 //        return $this->request;
 //    }
-//    
+//
 //    public function getResponse()
 //    {
 //        return $this->response;
@@ -209,18 +209,33 @@ trait TWebObject {
     public function getControllerFileName()
     {
         return $this->controllerFileName;
-    }    
+    }
 
     public function getJsControllerFileName()
     {
         return $this->jsControllerFileName;
-    }    
+    }
 
     public function getCssFileName()
     {
         return $this->cssFileName;
-    }    
+    }
 
+    public function getApplication()
+    {
+        return $this->application;
+    }
+
+    public function getParameters()
+    {
+        return $this->parameters;
+    }
+
+    public function getCommands()
+    {
+        return $this->commands;
+    }
+    
     public function getViewName()
     {
         return $this->viewName;
@@ -231,7 +246,7 @@ trait TWebObject {
         $uri = ($viewName === null) ? REQUEST_URI : $viewName;
         $requestUriParts = explode('/', $uri);
         $this->viewName = array_pop($requestUriParts);
-        $viewNameParts = explode('.',$this->viewName);
+        $viewNameParts = explode('.', $this->viewName);
         $this->viewName = array_shift($viewNameParts);
 
         $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
@@ -240,7 +255,6 @@ trait TWebObject {
 //        $this->viewName = strtolower($this->viewName);
 
 //        //self::$logger->debug('VIEW NAME : '  . $this->viewName, __FILE__, __LINE__);
-        
     }
     
     public function getNamespace()
@@ -252,10 +266,9 @@ trait TWebObject {
     {
         $this->namespace = $this->getFileNamespace();
         
-        if(!isset($this->namespace)) {
+        if (!isset($this->namespace)) {
             $this->namespace = \Phink\TAutoloader::getDefaultNamespace();
         }
-
     }
     
     public function setNames()
@@ -267,13 +280,11 @@ trait TWebObject {
         $this->controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
         $this->jsControllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
         
-        if(!file_exists($this->viewFileName)) {
-
+        if (!file_exists($this->viewFileName)) {
             $info = TRegistry::classInfo($this->className);
-            if($info !== null)
-            {
+            if ($info !== null) {
                 $this->viewName = \Phink\TAutoloader::classNameToFilename($this->className);
-                if($info->hasTemplate) {
+                if ($info->hasTemplate) {
                     $this->viewFileName = ROOT_PATH . $info->path . $this->viewName . PREHTML_EXTENSION;
                 } else {
                     $this->viewFileName = '';
@@ -282,10 +293,8 @@ trait TWebObject {
                 $this->jsControllerFileName = ROOT_PATH . $info->path . $this->viewName . JS_EXTENSION;
                 $this->className = $info->namespace . '\\' . $this->className;
             }
-
         }
         $this->setCacheFileName();
-
     }
 
     public function cloneNamesFrom($parent)
@@ -299,7 +308,5 @@ trait TWebObject {
         $this->jsControllerFileName = $parent->getJsControllerFileName();
         
         $this->cacheFileName = $parent->getCacheFileName();
-
     }
-
 }

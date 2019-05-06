@@ -31,7 +31,6 @@ class TRouter extends TObject implements \Phink\Web\IWebObject {
     protected $className = '';
     protected $baseNamespace = '';
     protected $apiFileName = '';
-    protected $parameters = [];
     protected $path = '';
     protected $translation = '';
     protected $routes = [];
@@ -42,6 +41,8 @@ class TRouter extends TObject implements \Phink\Web\IWebObject {
     {
         // parent::__construct($parent);
         $this->parent = $parent;
+        $this->application = $parent;
+        $this->commands = $parent->getCommands();
         $this->authentication = $parent->getAuthentication();
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();        
@@ -53,10 +54,6 @@ class TRouter extends TObject implements \Phink\Web\IWebObject {
     
     public function getRequestType() {
         return $this->requestType;
-    }
-    
-    public function getParameters() {
-        return $this->parameters;
     }
     
     public function getPath() {

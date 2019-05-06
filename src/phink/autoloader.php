@@ -352,8 +352,10 @@ class TAutoloader extends TStaticObject
         }
         //$className = $include['type'];
         $class = new $className($parent);
-
+        
         $class->perform();
+
+        return $class;
     }
 
     public static function walkTree($path, $filter = [])

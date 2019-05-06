@@ -81,15 +81,12 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         array_pop($path);
         $this->appName = array_pop($path);
 
-
-
-        $useTransaction = $this->setParameter('useTransactions');
-        $execution = $this->setParameter('executionMode');
-        $verbose = $this->setParameter('verbose');
+        $useTransaction = $this->setCommand('useTransactions');
+        $execution = $this->setCommand('executionMode');
+        $verbose = $this->setCommand('verbose');
 
         self::setExecutionMode($execution);
         self::useTransactions($useTransaction);
-        
 
         $this->ignite();
         $this->execute();
@@ -103,7 +100,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         parent::ignite();
         
         if (!APP_IS_PHAR) {
-            $this->setParameter(
+            $this->setCommand(
                 'make-phar',
                 '',
                 'Make a phar archive of the current application.',
@@ -111,7 +108,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
                     $this->makePhar();
                 }
             );
-            $this->setParameter(
+            $this->setCommand(
                 'require-master',
                 '',
                 'Download the ZIP file of the master branch of Phink framework.',
@@ -121,7 +118,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             );
         }
         
-        $this->setParameter(
+        $this->setCommand(
             'source-path',
             '',
             'Display the running application source directory.',
@@ -130,7 +127,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             }
         );
 
-        $this->setParameter(
+        $this->setCommand(
             'script-path',
             '',
             'Display the running application root.',
@@ -138,7 +135,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
                 \Phink\UI\TConsoleApplication::writeLine(SCRIPT_ROOT);
             }
         );
-        $this->setParameter(
+        $this->setCommand(
             'display-tree',
             '',
             'Display the tree of the current application.',
@@ -147,7 +144,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             }
         );
 
-        $this->setParameter(
+        $this->setCommand(
             'display-master-tree',
             '',
             'Display the tree of the master branch of Phink framework previously downloaded.',
@@ -168,9 +165,9 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         $isFound = false;
         $result = null;
 
-        foreach ($this->parameters as $long => $param) {
-            $short = $param['short'];
-            $callback = $param['callback'];
+        foreach ($this->commands as $long => $cmd) {
+            $short = $cmd['short'];
+            $callback = $cmd['callback'];
             for ($i = 1; $i < $this->_argc; $i++) {
                 if ($this->_argv[$i] == '--' . $long) {
                     $isFound = true;
@@ -226,7 +223,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         
             \Phink\UI\TConsoleApplication::writeLine('Application constants are :');
             foreach($constants as $key => $value) {
-                \Phink\UI\TConsoleApplication::writeLine("\e[41m\033[37m" . $key . "\e[0m\033[0m" . ' => ' . $value);
+                \Phink\UI\TConsoleApplication::writeLine("\033[0m\033[0;36m" . $key . "\033[0m\033[0;33m" . ' => ' . "\033[0m\033[0;34m" . $value . "\033[0m\033[0m");
             }
         } catch (\Throwable $ex) {
             self::writeException($ex);
@@ -394,6 +391,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         if (!APP_IS_WEB) {
             print $result;
         } else {
+            print $result;
             self::getLogger()->debug($result);
         }
     }
@@ -404,6 +402,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         if (!APP_IS_WEB) {
             print $result . PHP_EOL;
         } else {
+            print $result . PHP_EOL;
             self::getLogger()->debug($result . PHP_EOL);
         }
     }

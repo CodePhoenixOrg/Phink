@@ -55,12 +55,12 @@ class TStaticApplication extends TWebApplication
         return $filename;
     }
 
-    public static function create($params = array())
+    public static function create(...$params)
     {
         (new TStaticApplication())->run($params);
     }
 
-    public function run($params)
+    public function run(...$params)
     {
         if(strstr(HTTP_ACCEPT, 'partialview')) {
             parent::run($params);

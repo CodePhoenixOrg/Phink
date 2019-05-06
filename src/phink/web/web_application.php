@@ -45,7 +45,8 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
 
     public function __construct()
     {
-    //     parent::ignite();
+        parent::__construct();
+        parent::ignite();
 
         $this->authentication = new TAuthentication();
         $this->request = new TRequest();
@@ -58,7 +59,7 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
 
     public function execute()
     {
-        foreach ($this->parameters as $long => $param) {
+        foreach ($this->commands as $long => $param) {
             $short = $param['short'];
             $callback = $param['callback'];
             if (isset($_REQUEST[$short])) {
@@ -95,7 +96,7 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
         return self::mediaPath() . 'images';
     }
     
-    public static function create($params = array())
+    public static function create(...$params)
     {
         session_start();
         
@@ -149,7 +150,7 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
 
     }
 
-    public function run($params)
+    public function run(...$params)
     {
         if (!file_exists('js_builder.lock')) {
             \Phink\JavaScript\JsBuilder::build();
@@ -160,7 +161,6 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
             \Phink\CascadingStyleSheet\CssBuilder::build();
             file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
         }
-
 
         $this->params = $params;
         

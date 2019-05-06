@@ -48,7 +48,7 @@ abstract class TCustomApplication extends TObject
     private static $_verboseMode = false;
     private static $_useTransactions = true;
 
-    protected $parameters = [];
+    protected $commands = [];
     protected $callbacks = [];
     protected $appName = 'app';
     protected $scriptName = 'app.php';
@@ -66,7 +66,7 @@ abstract class TCustomApplication extends TObject
     {
         $this->loadINI();
 
-        $this->setParameter(
+        $this->setCommand(
             'help',
             'h',
             'Display this help',
@@ -75,7 +75,7 @@ abstract class TCustomApplication extends TObject
             }
         );
         
-        $this->setParameter(
+        $this->setCommand(
             'os',
             '',
             'Display the running operating system name.',
@@ -84,7 +84,7 @@ abstract class TCustomApplication extends TObject
             }
         );
         
-        $this->setParameter(
+        $this->setCommand(
             'name',
             '',
             'Display the running application name.',
@@ -93,7 +93,7 @@ abstract class TCustomApplication extends TObject
             }
         );
     
-        $this->setParameter(
+        $this->setCommand(
             'constants',
             '',
             'Display the application constants.',
@@ -124,7 +124,7 @@ abstract class TCustomApplication extends TObject
     public function help()
     {
         \Phink\UI\TConsoleApplication::writeLine($this->getApplicationName());
-        \Phink\UI\TConsoleApplication::writeLine('Expected parameters : ');
+        \Phink\UI\TConsoleApplication::writeLine('Expected commands : ');
         \Phink\UI\TConsoleApplication::writeLine($this->_usage);
     }
 
@@ -138,9 +138,9 @@ abstract class TCustomApplication extends TObject
         return $this->appDirectory;
     }
 
-    public function setParameter(string $long, string $short = '', string $definition = '', $callback = null)
+    public function setCommand(string $long, string $short = '', string $definition = '', $callback = null)
     {
-        $this->parameters[$long] = [
+        $this->commands[$long] = [
             'short' => $short,
             'definition' => $definition,
             'callback' => $callback

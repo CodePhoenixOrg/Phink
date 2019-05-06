@@ -32,6 +32,10 @@ class TControl extends TCustomControl
     {
         
         $this->setParent($parent);
+
+        $this->parameters = $parent->getParameters();
+        $this->application = $parent->getApplication();
+        $this->commands = $this->application->getCommands();
         
         $this->setViewName();
         $this->setNamespace();
@@ -162,9 +166,10 @@ class TControl extends TCustomControl
 
             $this->response->sendData();
         } else {
-            $this->beforeBinding();
-            $this->declareObjects();
             $this->load();
+            $this->beforeBinding();
+
+            $this->declareObjects();
             if($this->viewHtml) {
                 $this->renderView();
             } else {

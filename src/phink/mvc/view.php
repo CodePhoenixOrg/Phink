@@ -39,6 +39,9 @@ class TView extends TCustomView
 
         parent::__construct($parent);
         
+        $this->application = $parent->getApplication();
+        $this->commands = $this->application->getCommands();
+        $this->parameters = $parent->getParameters();
         $this->viewName = $parent->getViewName();
         $this->className = $parent->getClassName();
         $this->namespace = $parent->getNamespace();

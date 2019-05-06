@@ -32,6 +32,7 @@ namespace Phink\Web;
 
  interface IWebObject extends IHttpTransport {
  
+    public function getApplication();
     public function getCacheFileName();
     public function getClassName();
     public function getActionName();
@@ -41,6 +42,7 @@ namespace Phink\Web;
     public function getJsControllerFileName();
     public function getCssFileName();
     public function getViewName();
+    public function getParameters();
     
     
 }

@@ -219,7 +219,7 @@ class TObject extends TStaticObject
         return $reflection->getFileName();
     }
 
-    public static function create($params = array())
+    public static function create(...$params)
     {
         $class = __CLASS__;
         $object = null;

@@ -29,11 +29,11 @@ class TRestRouter extends \Phink\Core\TRouter
 {
     public function __construct($parent)
     {
-        parent::__construct($parent);
-        
+        $this->application = $parent->getApplication();
+        $this->commands = $this->application->getCommands();
         $this->authentication = $parent->getAuthentication();
         $this->request = $parent->getRequest();
-        $this->response = $parent->getResponse();
+        $this->response = $parent->getResponse(); 
         
         $this->translation = $parent->getTranslation();
         $this->parameters = $parent->getParameters();
