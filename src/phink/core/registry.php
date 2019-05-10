@@ -27,7 +27,6 @@ namespace Phink\Core;
 
 class TRegistry extends TStaticObject
 {
-    
     private static $_classRegistry = null;
     private static $_code = [];
     private static $_items = [];
@@ -36,43 +35,52 @@ class TRegistry extends TStaticObject
     
     public static function init()
     {
-        if(self::$_classRegistry) return;
+        if (self::$_classRegistry) {
+            return;
+        }
         
-        self::$_classRegistry = array (
-            'TPager' => array(
-                'alias' => 'pager',
-                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'pager' . DIRECTORY_SEPARATOR, 
-                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Pager', 
-                'hasTemplate' => true, 
+        self::$_classRegistry = array(
+            'TConsoleWindow' => array(
+                'alias' => 'console',
+                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'console' . DIRECTORY_SEPARATOR,
+                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\ConsoleWindow',
+                'hasTemplate' => true,
                 'canRender' => true,
                 'isAutoloaded' => true
             )
-            , 'TPluginRenderer' => array(
-                'alias' => 'pluginrenderer',
-                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR, 
-                'namespace' => ROOT_NAMESPACE . '\Web\UI', 
-                'hasTemplate' => false, 
+            , 'TPager' => array(
+                'alias' => 'pager',
+                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'pager' . DIRECTORY_SEPARATOR,
+                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Pager',
+                'hasTemplate' => true,
                 'canRender' => true,
                 'isAutoloaded' => true
             ) 
+            , 'TPluginRenderer' => array(
+                'alias' => 'pluginrenderer',
+                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR,
+                'namespace' => ROOT_NAMESPACE . '\Web\UI',
+                'hasTemplate' => false,
+                'canRender' => true,
+                'isAutoloaded' => true
+            )
             , 'TPlugin' => array(
                 'alias' => 'plugin',
-                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR, 
-                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Plugin', 
-                'hasTemplate' => true, 
+                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR,
+                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Plugin',
+                'hasTemplate' => true,
                 'canRender' => true,
                 'isAutoloaded' => true
             )
             , 'TPluginChild' => array(
                 'alias' => 'pluginchild',
-                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR, 
-                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Plugin', 
-                'hasTemplate' => false, 
+                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR,
+                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Plugin',
+                'hasTemplate' => false,
                 'canRender' => false,
                 'isAutoloaded' => true
             )
         );
-    
     }
     
     public static function classInfo($className = '')
@@ -80,7 +88,7 @@ class TRegistry extends TStaticObject
         $result = null;
         
         self::init();
-        if(isset(self::$_classRegistry[$className])) {
+        if (isset(self::$_classRegistry[$className])) {
             $result = (object) self::$_classRegistry[$className];
         }
 
@@ -93,19 +101,19 @@ class TRegistry extends TStaticObject
     {
         $classInfo = self::classInfo($className);
         return ($classInfo) ? $classInfo->path : '';
-    }    
+    }
 
     public static function classNamespace($className = '')
     {
         $classInfo = self::classInfo($className);
         return ($classInfo) ? $classInfo->namespace : '';
-    }    
+    }
 
     public static function classHasTemplate($className = '')
     {
         $classInfo = self::classInfo($className);
         return ($classInfo) ? $classInfo->hasTemplate : '';
-    }    
+    }
     
     public static function classCanRender($className = '')
     {
@@ -127,16 +135,33 @@ class TRegistry extends TStaticObject
         //self::$logger->debug('CODE REGISTRY : ' . print_r($keys, true));
     }
     
-    public static function write($item, $key, $value) {
+    public static function write($item, $key, $value)
+    {
+        if (!isset(self::$_items[$item])) {
+            self::$_items[$item] = [];
+        } 
+        
+        self::$_items[$item][$key] = $value;
+        
+    }
 
+    public static function add($item, $key, $value)
+    {
         if (!isset(self::$_items[$item])) {
             self::$_items[$item] = [];
         }
-        self::$_items[$item][$key] = $value;
 
+        if (isset(self::$_items[$item][$key]) && !is_array(self::$_items[$item][$key])) {
+            $value = self::$_items[$item][$key];
+            self::$_items[$item][$key] = [];
+            self::$_items[$item][$key][] = $value;
+        } elseif (isset(self::$_items[$item][$key]) && is_array(self::$_items[$item][$key])) {
+            self::$_items[$item][$key][] = $value;
+        }
     }
-
-    public static function read($item, $key, $defaultValue) {
+    
+    public static function read($item, $key, $defaultValue = null)
+    {
         $result = null;
 
         if (self::$_items[$item] !== null) {
@@ -146,27 +171,32 @@ class TRegistry extends TStaticObject
         return $result;
     }
 
-    public static function remove($item) {
-        if(array_key_exists($item, self::$_items)) {
+    public static function remove($item)
+    {
+        if (array_key_exists($item, self::$_items)) {
             unset(self::$_items[$item]);
         }
     }
     
-    public static function keys($item = null) {
-        if($item === null) {
+    public static function keys($item = null)
+    {
+        if ($item === null) {
             return array_keys(self::$_items);
-        } else if(is_array(self::$_items)) {
+        } elseif (is_array(self::$_items)) {
             return array_keys(self::$_items[$item]);
         } else {
             return [];
         }
-     }
+    }
 
-    public static function item($item, $value = null) {
-        if($item === '' || $item === null) return $item;
+    public static function item($item, $value = null)
+    {
+        if ($item === '' || $item === null) {
+            return $item;
+        }
 
-        if(isset(self::$_items[$item])) {
-            if($value != null) {
+        if (isset(self::$_items[$item])) {
+            if ($value != null) {
                 self::$_items[$item] = $value;
             } else {
                 return self::$_items[$item];
@@ -177,13 +207,13 @@ class TRegistry extends TStaticObject
         }
     }
 
-    public function exists($item, $key = null) {
+    public function exists($item, $key = null)
+    {
         return isset(TRegistry::$_items[$item][$key]);
     }
     
-    public static function clear() {
+    public static function clear()
+    {
         TRegistry::$_items = [];
     }
-    
-    
 }

@@ -58,6 +58,11 @@ abstract class TCustomApplication extends TObject
 
     private $redis = null;
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     protected function execute()
     {
     }
@@ -70,8 +75,12 @@ abstract class TCustomApplication extends TObject
             'help',
             'h',
             'Display this help',
-            function () {
+            function ($callback = null) {
                 $this->help();
+                $data = $this->_usage;
+                if ($callback !== null) {
+                    \call_user_func($callback, $data);
+                }
             }
         );
         
@@ -79,8 +88,12 @@ abstract class TCustomApplication extends TObject
             'os',
             '',
             'Display the running operating system name.',
-            function () {
-                \Phink\UI\TConsoleApplication::writeLine($this->getOS());
+            function ($callback = null) {
+                $data = $this->getOS();
+                $this->writeLine($data);
+                if ($callback !== null) {
+                    \call_user_func($callback, $data);
+                }
             }
         );
         
@@ -88,8 +101,12 @@ abstract class TCustomApplication extends TObject
             'name',
             '',
             'Display the running application name.',
-            function () {
-                \Phink\UI\TConsoleApplication::writeLine($this->getApplicationName());
+            function ($callback = null) {
+                $data = $this->getApplicationName();
+                $this->writeLine($data);
+                if ($callback !== null) {
+                    \call_user_func($callback, $data);
+                }
             }
         );
     
@@ -97,13 +114,18 @@ abstract class TCustomApplication extends TObject
             'constants',
             '',
             'Display the application constants.',
-            function () {
-                $this->displayConstants();
+            function (callable $callback = null) {
+                $data = $this->displayConstants();
+                if ($callback !== null) {
+                    \call_user_func($callback, $data);
+                }
             }
-        );        
+        );
     }
     
-    protected function displayConstants() {}
+    protected function displayConstants() : array
+    {
+    }
 
     public function loadINI() : void
     {
@@ -117,15 +139,27 @@ abstract class TCustomApplication extends TObject
 
             self::getLogger()->dump('INI_DATA:', $ini);
         } catch (\Throwable $ex) {
-            \Phink\UI\TConsoleApplication::writeException($ex);
+            $this->writeException($ex);
         }
+    }
+
+    public static function write($string, ...$params)
+    {
+    }
+        
+    public static function writeLine($string, ...$params)
+    {
+    }
+
+    public static function writeException(\Throwable $ex, $file = null, $line = null)
+    {
     }
 
     public function help()
     {
-        \Phink\UI\TConsoleApplication::writeLine($this->getApplicationName());
-        \Phink\UI\TConsoleApplication::writeLine('Expected commands : ');
-        \Phink\UI\TConsoleApplication::writeLine($this->_usage);
+        $this->writeLine($this->getApplicationName());
+        $this->writeLine('Expected commands : ');
+        $this->writeLine($this->_usage);
     }
 
     public function getApplicationName()
@@ -153,6 +187,22 @@ abstract class TCustomApplication extends TObject
         }
     }
     
+    // public function commandRunner(string $cmd, callable $callback, $arg = null) {
+
+    //     if (isset($this->commands[$cmd])) {
+    //         $cmd = $this->commands[$cmd];
+    //         $statement = $cmd['callback'];
+
+    //         if ($statement !== null && $arg === null) {
+    //             call_user_func($statement, $callback);
+    //         } elseif ($statement !== null && $arg !== null) {
+    //             call_user_func($statement, $callback, $arg);
+    //         }
+
+    //         return TRegistry::read('console', 'buffer');
+    //     }
+    // }
+
     public function canStop()
     {
         return $this->canStop;
@@ -244,5 +294,17 @@ abstract class TCustomApplication extends TObject
         }
         
         return $token;
+    }
+
+    protected static function _write($string, ...$params)
+    {
+        if (is_array($string)) {
+            $string = print_r($string, true);
+        }
+        $result = $string;
+        if (count($params) > 0 && is_array($params[0])) {
+            $result = vsprintf($string, $params[0]);
+        }
+        return $result;
     }
 }

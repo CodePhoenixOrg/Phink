@@ -22,16 +22,13 @@ use \Phink\Core\TObject;
 use \Phink\Web\TWebRouter;
 use \Phink\Rest\TRestRouter;
 
-
-class TRouter extends TObject implements \Phink\Web\IWebObject {
-
+class TRouter extends TObject implements \Phink\Web\IWebObject
+{
     use \Phink\Web\TWebObject;
    
     protected $apiName = '';
-    protected $className = '';
     protected $baseNamespace = '';
     protected $apiFileName = '';
-    protected $path = '';
     protected $translation = '';
     protected $routes = [];
     protected $requestType = REQUEST_TYPE_WEB;
@@ -45,31 +42,30 @@ class TRouter extends TObject implements \Phink\Web\IWebObject {
         $this->commands = $parent->getCommands();
         $this->authentication = $parent->getAuthentication();
         $this->request = $parent->getRequest();
-        $this->response = $parent->getResponse();        
+        $this->response = $parent->getResponse();
     }
     
-    public function getTranslation() {
+    public function getTranslation()
+    {
         return $this->translation;
     }
     
-    public function getRequestType() {
+    public function getRequestType()
+    {
         return $this->requestType;
     }
-    
-    public function getPath() {
-        return $this->path;
-    }
 
-    public function isFound() {
+    public function isFound()
+    {
         return $this->_isFound;
     }
     
-    public function match() {
+    public function match()
+    {
         $result = REQUEST_TYPE_WEB;
         
         if ($this->routes()) {
-
-            foreach($this->routes as $key=>$value) {
+            foreach ($this->routes as $key=>$value) {
                 $result = $key;
                 $this->requestType = $key;
                 
@@ -79,7 +75,7 @@ class TRouter extends TObject implements \Phink\Web\IWebObject {
                 if (isset($methods[$method])) {
                     $routes = $methods[$method];
                     $url = REQUEST_URI;
-                    foreach($routes as $key=>$value) {
+                    foreach ($routes as $key=>$value) {
                         $key = str_replace("/", "\/", $key);
                         $matches = \preg_replace('/' . $key . '/', $value, $url);
                         $this->getLogger()->debug('URL: ' . $url);
@@ -90,25 +86,33 @@ class TRouter extends TObject implements \Phink\Web\IWebObject {
                             $this->_isFound = true;
                             $this->requestType = $key;
                             $this->translation = $matches;
+
+                            $this->viewIsInternal = substr($this->translation, 0, 1) == '@';
                             $baseurl = parse_url($this->translation);
+                            $this->dirName = pathinfo($this->translation, PATHINFO_DIRNAME);
+
+                            if ($this->viewIsInternal) {
+                                $path = substr($baseurl['path'], 2);
+                                $this->path = PHINK_VENDOR . $path;
+                            } else {
+                                $this->path = APP_DIR . $baseurl['path'];
+                            }
                             
-                            $this->path = $baseurl['path'];
-                            
-                            $this->getLogger()->dump('PATH', $this->path);                   
-                            $this->getLogger()->dump('BASEURL', $baseurl);                    
+                            $this->getLogger()->dump('PATH', $this->path);
+                            $this->getLogger()->dump('BASEURL', $baseurl);
+                            $this->getLogger()->dump('IS FOUND', $this->_isFound ? 'TRUE' : 'FALSE');
 
                             $this->parameters = [];
-                            if(isset($baseurl['query'])) {
+                            if (isset($baseurl['query'])) {
                                 parse_str($baseurl['query'], $this->parameters);
                             }
 
-                            $this->getLogger()->dump('PARAMETERS', $this->parameters);                            
+                            $this->getLogger()->dump('PARAMETERS', $this->parameters);
                             
                             return $result;
                         }
                     }
                 }
-
             }
         }
 
@@ -120,7 +124,8 @@ class TRouter extends TObject implements \Phink\Web\IWebObject {
         return $result;
     }
 
-    public function routes() {
+    public function routes()
+    {
         $routesArray = \Phink\Core\TRegistry::item('routes');
 
         if (count($routesArray) === 0 && file_exists(DOCUMENT_ROOT . 'routes.json')) {
@@ -131,9 +136,21 @@ class TRouter extends TObject implements \Phink\Web\IWebObject {
             }
 
             $routesArray = json_decode($routesFile, true);
-            foreach($routesArray as $key=>$value) {
-                \Phink\Core\TRegistry::write('routes', $key, $value);
+
+            if (isset($routesArray['web']['get'])) {
+                $routesArray['web']['get']["/console/([a-z]+)$"] = "@/web/ui/widget/console/console.phtml?console=$1";
+                $routesArray['web']['get']["/console/([a-z]+)/([a-z]+)$"] = "@/web/ui/widget/console/console.phtml?console=$1&arg=$2";
             }
+        } elseif (count($routesArray) === 0 && !file_exists(DOCUMENT_ROOT . 'routes.json')) {
+            $routesArray = [];
+            $routesArray['web'] = [];
+            $routesArray['web']['get'] = [];
+            $routesArray['web']['get']["/console/([a-z]+)$"] = "@/web/ui/widget/console/console.phtml?console=$1";
+            $routesArray['web']['get']["/console/([a-z]+)/([a-z]+)$"] = "@/web/ui/widget/console/console.phtml?console=$1&arg=$2";
+        }
+
+        foreach ($routesArray as $key=>$value) {
+            \Phink\Core\TRegistry::write('routes', $key, $value);
         }
 
         $this->routes = $routesArray;
@@ -141,9 +158,11 @@ class TRouter extends TObject implements \Phink\Web\IWebObject {
         return $routesArray;
     }
 
-    public function translate() {}
+    public function translate()
+    {
+    }
 
-    public function dispatch() {}
+    public function dispatch()
+    {
+    }
 }
-
-

@@ -28,9 +28,6 @@ namespace Phink\Log;
  */
 class TLog
 {
-    private $_debugLogFile = '';
-    private $_errorLogFile = '';
-
     public function dump($message, $object)
     {
         $this->debug($message . '::' . print_r($object, true) . PHP_EOL);

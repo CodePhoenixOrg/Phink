@@ -55,7 +55,7 @@ class Egg extends \Phink\UI\TConsoleApplication implements \Phink\UI\IPhar {
         try {
             $egg = new EggLib($this);
 
-            $this->setParameter(
+            $this->setCommand(
                 'create',
                 '',
                 'Create the application tree.',
@@ -64,7 +64,7 @@ class Egg extends \Phink\UI\TConsoleApplication implements \Phink\UI\IPhar {
                 }
             );            
 
-            $this->setParameter(
+            $this->setCommand(
                 'delete',
                 '',
                 'Delete the application tree.',
@@ -73,7 +73,7 @@ class Egg extends \Phink\UI\TConsoleApplication implements \Phink\UI\IPhar {
                 }
             ); 
 
-            $this->setParameter(
+            $this->setCommand(
                 'make-scripts',
                 '',
                 'Make scripts based on configuration file and table name passed as argument.',

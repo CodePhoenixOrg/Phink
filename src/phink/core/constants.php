@@ -27,6 +27,8 @@ $document_root = isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 
 
 define('APP_IS_WEB', ($document_root != ''));
 define('APP_IS_PHAR', (\Phar::running() != ''));
+define('ROOT_NAMESPACE', 'Phink');
+define('ROOT_PATH', 'phink');
 
 if (APP_IS_WEB) {
     define('BR', "<br />");
@@ -56,8 +58,16 @@ if (APP_IS_WEB) {
     } else {
         define('SITE_ROOT', DOCUMENT_ROOT);
     }
+
+    $appname = pathinfo(SITE_ROOT, PATHINFO_FILENAME);
+    define('APP_NAME', $appname);
+
+    define('PHINK_VENDOR', 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
+    define('PHINK_ROOT', SITE_ROOT . PHINK_VENDOR);
+
+    define('APP_DIR', 'app');
     
-    define('APP_ROOT', SITE_ROOT . 'app' . DIRECTORY_SEPARATOR);
+    define('APP_ROOT', SITE_ROOT . APP_DIR . DIRECTORY_SEPARATOR);
     define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
     define('MODEL_ROOT', APP_ROOT . 'models' . DIRECTORY_SEPARATOR);
     define('REST_ROOT', APP_ROOT . 'rest' . DIRECTORY_SEPARATOR);
@@ -102,12 +112,11 @@ if (APP_IS_WEB) {
     define('BASE_URI', SERVER_NAME . ((HTTP_PORT !== '80') ? ':' . HTTP_PORT : '') . ((REQUEST_URI !== '') ? REQUEST_URI : ''));
     define('FULL_URI', HTTP_PROTOCOL . '://' . BASE_URI);
     define('FULL_SSL_URI', 'https://' . BASE_URI);
-    define('ROOT_NAMESPACE', 'Phink');
-    define('ROOT_PATH', 'phink');
     define('DEFALT_MODEL', ROOT_NAMESPACE . '\\MVC\\TModel');
     define('DEFAULT_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TController');
     define('DEFAULT_PARTIAL_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TPartialController');
     define('DEFAULT_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TControl');
+
 } else {
     define('DOCUMENT_ROOT', '');
     define('LOG_PATH', './logs/');
@@ -146,15 +155,14 @@ $appconf = DOCUMENT_ROOT . 'config' . DIRECTORY_SEPARATOR . 'app.ini';
 
 $appname = '';
 
-if (file_exists($appconf)) {
-    $appini = parse_ini_file($appconf);
-    $appname = isset($appini['application']['name']) ?? $appini['application']['name'];
-}
+// if (file_exists($appconf)) {
+//     $appini = parse_ini_file($appconf);
+//     $appname = isset($appini['application']['name']) ?? $appini['application']['name'];
+// }
 
-if (empty($appname)) {
-    $apppath = explode(DIRECTORY_SEPARATOR, DOCUMENT_ROOT);
-    $appname = array_pop($apppath);
-    $appname = strtolower(array_pop($apppath));
-}
+// if (empty($appname)) {
+//     $apppath = explode(DIRECTORY_SEPARATOR, DOCUMENT_ROOT);
+//     $appname = array_pop($apppath);
+//     $appname = strtolower(array_pop($apppath));
+// }
 
-define('APP_NAME', $appname);

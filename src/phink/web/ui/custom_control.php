@@ -27,25 +27,50 @@ abstract class TCustomControl extends \Phink\Core\TObject implements \Phink\Web\
 {
     use \Phink\Web\TWebObject;
 
-    //put your code here
+    public function __construct($parent)
+    {
+        parent::__construct($parent);
+    }
+
     protected $isRendered = false;
 
-    public function init() {}
+    public function init()
+    {
+    }
    
-    public function load() {}
+    public function load()
+    {
+    }
     
-    public function view($html) {}
+    public function view($html)
+    {
+    }
     
-    public function partialLoad() {}
+    public function partialLoad()
+    {
+    }
     
-    public function beforeBinding() {}
+    public function beforeBinding()
+    {
+    }
 
-    public function parse() {}
+    public function afterBinding()
+    {
+    }
 
-    public function renderHtml() {}
+    public function parse()
+    {
+    }
 
-    public function render() {}
+    public function renderHtml()
+    {
+    }
 
-    public function unload() {}
-    
+    public function render()
+    {
+    }
+
+    public function unload()
+    {
+    }
 }

@@ -34,7 +34,7 @@ abstract class TCustomView extends TCustomControl
     private $_dirty = false;
     
     protected $router = null;
-    protected $viewHtml = NULL;
+    protected $viewHtml = null;
     protected $preHtml = '';
     protected $designs = array();
     protected $design = '';
@@ -45,12 +45,16 @@ abstract class TCustomView extends TCustomControl
     protected $controllerIsIncluded = false;
     protected $pattern = '';
     protected $depth = 0;
-    protected $parentView = NULL;
-    protected $parentType = NULL;
+    protected $parentView = null;
+    protected $parentType = null;
 
     public function __construct(IWebObject $parent)
     {
         $this->setParent($parent);
+        $this->path = $parent->getPath();
+        $this->dirName = $parent->getDirName();
+        // $this->viewIsInternal = $parent->isInternalView();
+
         //$this->redis = new Client($this->context->getRedis());
         // $this->setViewName();
         // $this->setNamespace();
@@ -110,12 +114,19 @@ abstract class TCustomView extends TCustomControl
     {
         self::$logger->debug($this->viewName . ' IS REGISTERED : ' . (TRegistry::exists('code', $this->controllerFileName) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
 
-        self::$logger->debug('PARSE FILE : ' . $this->viewFileName, __FILE__, __LINE__);
 //        $this->viewHtml = $this->redis->mget($templateName);
 //        $this->viewHtml = $this->viewHtml[0];
         if (file_exists(SITE_ROOT . $this->viewFileName)) {
+            self::$logger->debug('PARSE SITE ROOT FILE : ' . $this->viewFileName, __FILE__, __LINE__);
+
             $this->viewHtml = file_get_contents(SITE_ROOT . $this->viewFileName);
+        } elseif (file_exists($this->getPath())) {
+            self::$logger->debug('PARSE PHINK VIEW : ' . $this->getPath(), __FILE__, __LINE__);
+
+            $this->viewHtml = file_get_contents($this->getPath());
         } else {
+            self::$logger->debug('PARSE PHINK PLUGIN : ' . $this->getPath(), __FILE__, __LINE__);
+
             $this->viewHtml = file_get_contents($this->viewFileName, FILE_USE_INCLUDE_PATH);
         }
         
@@ -124,7 +135,7 @@ abstract class TCustomView extends TCustomControl
         $doc = new TXmlDocument($this->viewHtml);
         $doc->matchAll();
 
-        if($doc->getCount() > 0) {
+        if ($doc->getCount() > 0) {
             // Il y a des éléments à traiter
             $this->_dirty = true;
             $declarations = $this->writeDeclarations($doc, $this);
@@ -137,7 +148,7 @@ abstract class TCustomView extends TCustomControl
         }
 
         // if ($info !== null || $this->viewName == 'plugin') {
-        if(!TRegistry::exists('code', $this->controllerFileName)) {
+        if (!TRegistry::exists('code', $this->controllerFileName)) {
             self::$logger->debug('NO NEED TO WRITE CODE: ' . $this->controllerFileName, __FILE__, __LINE__);
             return false;
         }
@@ -151,19 +162,14 @@ abstract class TCustomView extends TCustomControl
         $code = str_replace(DEFAULT_PARTIAL_CONTROLLER, DEFAULT_CONTROL, $code);
         $code = str_replace(CONTROLLER, CONTROL, $code);
         $code = str_replace(PARTIAL_CONTROLLER, CONTROL, $code);
-        if(!empty(trim($code))) {
+        if (!empty(trim($code))) {
             self::$logger->debug('SOMETHING TO CACHE : ' . $this->getCacheFileName(), __FILE__, __LINE__);
             file_put_contents($this->getCacheFileName(), $code);
         }
       
 //        $this->redis->mset($this->preHtmlName, $this->declarations . $this->viewHtml);
         
-        
         // We generate the code, but we don't flag it as parsed because it was not "executed"
         return false;
-        
     }
-    
-
 }
-

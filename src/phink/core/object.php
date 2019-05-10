@@ -42,14 +42,13 @@ class TObject extends TStaticObject
     protected $isSerialized = '';
     protected $children = array();
     protected $fqClassName = '';
-    
+    protected static $instance = null;
 
     public function __construct(TObject $parent = null)
     {
         parent::__construct();
         $this->parent = $parent;
     }
-
 
     public function getId()
     {

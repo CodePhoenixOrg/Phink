@@ -46,6 +46,7 @@ class TPartialController extends TCustomController
         $this->parse();
         $this->beforeBinding();
         $this->renderCreations();
+        $this->afterBinding();
         $this->renderDeclarations();
         $this->renderView();
         if(!$this->isRendered) {

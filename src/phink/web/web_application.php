@@ -28,6 +28,7 @@ namespace Phink\Web;
 use Phink\TAutoloader;
 use Phink\Auth\TAuthentication;
 use Phink\Core\TRouter;
+use Phink\Core\TRegistry;
 use Phink\Rest\TRestRouter;
 use Phink\Web\TWebRouter;
 
@@ -42,6 +43,7 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
     
     protected $rawPhpName = '';
     protected $params = '';
+    protected static $instance = null;
 
     public function __construct()
     {
@@ -52,33 +54,33 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
         $this->request = new TRequest();
         $this->response = new TResponse();
         
-        $this->setViewName();
-        $this->setNamespace();
-        $this->setNames();
+        // $this->setViewName();
+        // $this->setNamespace();
+        // $this->setNames();
     }
 
     public function execute()
     {
-        foreach ($this->commands as $long => $param) {
-            $short = $param['short'];
-            $callback = $param['callback'];
-            if (isset($_REQUEST[$short])) {
-                $result = $_REQUEST[$short];
-                $isFound = true;
-            } elseif (isset($_REQUEST[$long])) {
-                $result = $_REQUEST[$long];
-                $isFound = true;
-            }
-            if ($isFound) {
-                break;
-            }
-        }
+        // foreach ($this->commands as $long => $param) {
+        //     $short = $param['short'];
+        //     $callback = $param['callback'];
+        //     if (isset($_REQUEST[$short])) {
+        //         $result = $_REQUEST[$short];
+        //         $isFound = true;
+        //     } elseif (isset($_REQUEST[$long])) {
+        //         $result = $_REQUEST[$long];
+        //         $isFound = true;
+        //     }
+        //     if ($isFound) {
+        //         break;
+        //     }
+        // }
 
-        if ($callback !== null && $isFound && $result === null) {
-            call_user_func($callback);
-        } elseif ($callback !== null && $isFound && $result !== null) {
-            call_user_func($callback, $result);
-        }
+        // if ($callback !== null && $isFound && $result === null) {
+        //     call_user_func($callback);
+        // } elseif ($callback !== null && $isFound && $result !== null) {
+        //     call_user_func($callback, $result);
+        // }
     }
 
     public static function mediaPath()
@@ -99,16 +101,23 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
     public static function create(...$params)
     {
         session_start();
-        
-        (new TWebApplication())->run($params);
+        self::$instance = new TWebApplication();
+        self::$instance->run($params);
     }
 
-    protected function displayConstants() {
+    public static function getInstance() : TWebApplication
+    {
+        return self::$instance;
+    }
 
+    protected function displayConstants() : array
+    {
         $constants = [];
         $constants['DOCUMENT_ROOT'] = DOCUMENT_ROOT;
         $constants['HTTP_PROTOCOL'] = HTTP_PROTOCOL;
         $constants['SITE_ROOT'] = SITE_ROOT;
+        $constants['PHINK_ROOT'] = PHINK_ROOT;
+        $constants['APP_NAME'] = APP_NAME;
         $constants['APP_ROOT'] = APP_ROOT;
         $constants['CONTROLLER_ROOT'] = CONTROLLER_ROOT;
         $constants['MODEL_ROOT'] = MODEL_ROOT;
@@ -143,11 +152,14 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
         $constants['ROOT_NAMESPACE'] = ROOT_NAMESPACE;
         $constants['ROOT_PATH'] = ROOT_PATH;
 
+        TRegistry::write('console', 'buffer', $constants);
+
         \Phink\UI\TConsoleApplication::writeLine('Application constants are :');
-        foreach($constants as $key => $value) {
+        foreach ($constants as $key => $value) {
             \Phink\UI\TConsoleApplication::writeLine($key . ' => ' . $value);
         }
 
+        return $constants;
     }
 
     public function run(...$params)
@@ -198,7 +210,11 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
 //            $token = '#!';
 //            $token = TCrypto::generateToken('');
 //        }
-        if ((is_string($token) || file_exists(APP_ROOT . $router->getPath()))
+
+        $this->getLogger()->debug("TRANSLATED ROUTE::" . $router->getPath());
+   
+        if ((is_string($token) 
+        || file_exists(SITE_ROOT . $router->getPath()))
             && $router->isFound()
         ) {
             // We renew the token
@@ -216,5 +232,34 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
         }
         
         return $result;
+    }
+
+    public static function write($string, ...$params)
+    {
+        $result = self::_write($string, $params);
+        TRegistry::write('console', 'buffer', $result);
+        self::getLogger()->debug($result);
+    }
+    
+    public static function writeLine($string, ...$params)
+    {
+        $result = self::_write($string, $params);
+        TRegistry::write('console', 'buffer', $result);
+        self::getLogger()->debug($result . PHP_EOL);
+    }
+
+    public static function writeException(\Throwable $ex, $file = null, $line = null)
+    {
+        $message = '';
+
+        if ($ex instanceof \ErrorException) {
+            $message .= 'Error severity: ' . $ex->getSeverity() . PHP_EOL;
+        }
+        $message .= 'Error code: ' . $ex->getCode() . PHP_EOL;
+        $message .= 'In ' . $ex->getFile() . ', line ' . $ex->getLine() . PHP_EOL;
+        $message .= 'With the message: ' . $ex->getMessage() . PHP_EOL;
+        $message .= 'Stack trace: ' . $ex->getTraceAsString() . PHP_EOL;
+            
+        print  "\e[41m\033[37m" . $message . "\e[0m\033[0m";
     }
 }

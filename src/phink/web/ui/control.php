@@ -30,16 +30,20 @@ class TControl extends TCustomControl
 
     public function __construct(TObject $parent)
     {
-        
-        $this->setParent($parent);
+        parent::__construct($parent);
+
+        // $this->setParent($parent);
 
         $this->parameters = $parent->getParameters();
         $this->application = $parent->getApplication();
         $this->commands = $this->application->getCommands();
+        $this->path = $this->getPath();
         
-        $this->setViewName();
-        $this->setNamespace();
-        $this->setNames();
+        $this->cloneNamesFrom($parent);
+
+        // $this->setViewName();
+        // $this->setNamespace();
+        // $this->setNames();
         
         $this->className = $this->getType();
         $this->viewName = lcfirst($this->className);
@@ -131,7 +135,7 @@ class TControl extends TCustomControl
         $this->createObjects();
         $this->beforeBinding();
         $this->declareObjects();
-//        $this->afterBinding();
+        $this->afterBinding();
         $this->isDreclared = true;
         if($this->viewHtml) {
             $this->renderView();
@@ -155,6 +159,7 @@ class TControl extends TCustomControl
 
                 $this->beforeBinding();
                 $this->declareObjects();
+                $this->afterBinding();
 
                 if($this->request->isPartialView()
                 || ($this->request->isView() && $actionName !== 'getViewHtml')) {
@@ -168,8 +173,9 @@ class TControl extends TCustomControl
         } else {
             $this->load();
             $this->beforeBinding();
-
             $this->declareObjects();
+            $this->afterBinding();
+            
             if($this->viewHtml) {
                 $this->renderView();
             } else {

@@ -95,6 +95,7 @@ class PhinkLibrary {
             'data/ui/data_tag.php',
             'data/ui/data_binder.php',
             'data/ui/data_analyser.php',
+            'web/ui/widget/console/console_window.class.php',
             'web/ui/widget/pager/pager.class.php',
             'web/ui/plugin/custom_plugin.php',
             'web/ui/plugin/table.php',

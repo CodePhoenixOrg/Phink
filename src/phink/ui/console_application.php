@@ -55,11 +55,31 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         $path = explode(DIRECTORY_SEPARATOR, $this->appDirectory);
         $scriptDir = $this->appDirectory . '..' . DIRECTORY_SEPARATOR;
         $siteDir = $scriptDir . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
-        $siteDir = \Phink\Utils\TFileUtils::relativePathToAbsolute($siteDir);
-        $scriptDir = \Phink\Utils\TFileUtils::relativePathToAbsolute($scriptDir);
+        // $siteDir = \Phink\Utils\TFileUtils::relativePathToAbsolute($siteDir);
+        $siteDir = realpath($siteDir);
+        // $scriptDir = \Phink\Utils\TFileUtils::relativePathToAbsolute($scriptDir);
+        $scriptDir = realpath($scriptDir);
+
+
+        array_pop($path);
+        if (APP_IS_PHAR) {
+            array_pop($path);
+            $this->appDirectory = str_replace('phar://', '', $scriptDir);
+        }
+
+        array_pop($path);
+        $this->appName = array_pop($path);
+        define('APP_NAME', $this->appName);
         
-        define('SITE_ROOT', $siteDir);
+        define('SITE_ROOT', $siteDir . DIRECTORY_SEPARATOR);
         define('SCRIPT_ROOT', $scriptDir);
+
+        if (APP_NAME == 'egg') {
+            define('PHINK_ROOT', SITE_ROOT . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
+            define('PHINK_ROOT', SITE_ROOT . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
+        } else {
+            define('PHINK_ROOT', SITE_ROOT . 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
+        }
 
         define('APP_ROOT', SITE_ROOT . 'app' . DIRECTORY_SEPARATOR);
         define('APP_SCRIPTS', APP_ROOT . 'scripts' . DIRECTORY_SEPARATOR);
@@ -71,15 +91,6 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         define('REST_ROOT', APP_ROOT . 'rest' . DIRECTORY_SEPARATOR);
         define('VIEW_ROOT', APP_ROOT . 'views' . DIRECTORY_SEPARATOR);
         define('CACHE_DIR', SITE_ROOT . 'cache' . DIRECTORY_SEPARATOR);
-
-        array_pop($path);
-        if (APP_IS_PHAR) {
-            array_pop($path);
-            $this->appDirectory = str_replace('phar://', '', $scriptDir);
-        }
-
-        array_pop($path);
-        $this->appName = array_pop($path);
 
         $useTransaction = $this->setCommand('useTransactions');
         $execution = $this->setCommand('executionMode');
@@ -123,7 +134,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             '',
             'Display the running application source directory.',
             function () {
-                \Phink\UI\TConsoleApplication::writeLine($this->getApplicationDirectory());
+                $this->writeLine($this->getApplicationDirectory());
             }
         );
 
@@ -132,7 +143,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             '',
             'Display the running application root.',
             function () {
-                \Phink\UI\TConsoleApplication::writeLine(SCRIPT_ROOT);
+                $this->writeLine(SCRIPT_ROOT);
             }
         );
         $this->setCommand(
@@ -152,9 +163,9 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
                 try {
                     $this->displayTree('master' . DIRECTORY_SEPARATOR . 'Phink-master' . DIRECTORY_SEPARATOR. 'src' . DIRECTORY_SEPARATOR . 'phink');
                 } catch (\Throwable $ex) {
-                    \Phink\UI\TConsoleApplication::writeException($ex);
+                    $this->writeException($ex);
                 } catch (\Exception $ex) {
-                    \Phink\UI\TConsoleApplication::writeException($ex);
+                    $this->writeException($ex);
                 }
             }
         );
@@ -202,31 +213,41 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         }
     }
 
-    protected function displayConstants()
+    protected function displayConstants() : array
     {
         try {
             $constants = [];
-            $constants['SITE_ROOT'] = SITE_ROOT;
-            $constants['SCRIPT_ROOT'] = SCRIPT_ROOT;
-            $constants['APP_ROOT'] = APP_ROOT;
-            $constants['APP_DATA'] = APP_DATA;
-            $constants['APP_BUSINESS'] = APP_BUSINESS;
-            $constants['APP_SCRIPTS'] = APP_SCRIPTS;
-            $constants['CONTROLLER_ROOT'] = CONTROLLER_ROOT;
-            $constants['MODEL_ROOT'] = MODEL_ROOT;
-            $constants['REST_ROOT'] = REST_ROOT;
-            $constants['VIEW_ROOT'] = VIEW_ROOT;
+            $constants['PHINK_ROOT'] = PHINK_ROOT;
+
+            $constants['APP_NAME'] = APP_NAME;
             $constants['LOG_PATH'] = LOG_PATH;
             $constants['DEBUG_LOG'] = DEBUG_LOG;
             $constants['ERROR_LOG'] = ERROR_LOG;
-            $constants['CACHE_DIR'] = CACHE_DIR;
-        
-            \Phink\UI\TConsoleApplication::writeLine('Application constants are :');
-            foreach($constants as $key => $value) {
-                \Phink\UI\TConsoleApplication::writeLine("\033[0m\033[0;36m" . $key . "\033[0m\033[0;33m" . ' => ' . "\033[0m\033[0;34m" . $value . "\033[0m\033[0m");
+
+            if (APP_NAME !== 'egg') {
+                $constants['SITE_ROOT'] = SITE_ROOT;
+                $constants['APP_ROOT'] = APP_ROOT;
+                $constants['APP_SCRIPTS'] = APP_SCRIPTS;
+                $constants['APP_BUSINESS'] = APP_BUSINESS;
+                $constants['MODEL_ROOT'] = MODEL_ROOT;
+                $constants['VIEW_ROOT'] = VIEW_ROOT;                
+                $constants['CONTROLLER_ROOT'] = CONTROLLER_ROOT;
+                $constants['REST_ROOT'] = REST_ROOT;
+                $constants['APP_DATA'] = APP_DATA;
+                $constants['CACHE_DIR'] = CACHE_DIR;
             }
+
+            $constants['SCRIPT_ROOT'] = SCRIPT_ROOT;
+
+            $this->writeLine('Application constants are :');
+            foreach ($constants as $key => $value) {
+                $this->writeLine("\033[0m\033[0;36m" . $key . "\033[0m\033[0;33m" . ' => ' . "\033[0m\033[0;34m" . $value . "\033[0m\033[0m");
+            }
+
+            return $constants;
         } catch (\Throwable $ex) {
-            self::writeException($ex);
+            $this->writeException($ex);
+            return [];
         }
     }
 
@@ -263,7 +284,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
     
     public function addFileToPhar($file, $name)
     {
-        self::writeLine("Adding %s as %s", $file, $name);
+        $this->writeLine("Adding %s as %s", $file, $name);
         $this->_phar->addFile($file, $name);
     }
     
@@ -306,7 +327,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             // Get the default stub. You can create your own if you have specific needs
             $defaultStub = $this->_phar->createDefaultStub("app.php");
         
-            self::writeLine('APP_DIR::' . $this->appDirectory);
+            $this->writeLine('APP_DIR::' . $this->appDirectory);
             $this->addPharFiles();
 
             $master = self::_requireMaster($libRoot);
@@ -344,14 +365,14 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
 
             rename($buildRoot . $this->_name . '.phar', $execname);
         } catch (\Throwable $ex) {
-            self::writeException($ex);
+            $this->writeException($ex);
         }
     }
     
     public function addPharFiles()
     {
         try {
-            self::writeLine('APP_DIR_2::' . $this->appDirectory . $this->scriptName);
+            $this->writeLine('APP_DIR_2::' . $this->appDirectory . $this->scriptName);
             $tree = \Phink\TAutoloader::walkTree($this->appDirectory, ['php']);
     
             if (isset($tree[$this->appDirectory . $this->scriptName])) {
@@ -362,28 +383,15 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
                 $this->addFileToPhar($this->appDirectory . $filename, $filename);
             }
         } catch (\Throwable $ex) {
-            self::writeException($ex);
+            $this->writeException($ex);
         }
     }
 
     public function displayTree($path)
     {
         $tree = \Phink\TAutoloader::walkTree($path);
-        self::writeLine($tree);
+        $this->writeLine($tree);
     }
-    
-    private static function _write($string, ...$params)
-    {
-        if (is_array($string)) {
-            $string = print_r($string, true);
-        }
-        $result = $string;
-        if (count($params) > 0 && is_array($params[0])) {
-            $result = vsprintf($string, $params[0]);
-        }
-        return $result;
-    }
-
 
     public static function write($string, ...$params)
     {
@@ -391,7 +399,6 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         if (!APP_IS_WEB) {
             print $result;
         } else {
-            print $result;
             self::getLogger()->debug($result);
         }
     }
@@ -402,7 +409,6 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         if (!APP_IS_WEB) {
             print $result . PHP_EOL;
         } else {
-            print $result . PHP_EOL;
             self::getLogger()->debug($result . PHP_EOL);
         }
     }
@@ -412,7 +418,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         if (!APP_IS_WEB) {
             $message = '';
 
-            if($ex instanceof \ErrorException) {
+            if ($ex instanceof \ErrorException) {
                 $message .= 'Error severity: ' . $ex->getSeverity() . PHP_EOL;
             }
             $message .= 'Error code: ' . $ex->getCode() . PHP_EOL;
@@ -425,5 +431,4 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             self::getLogger()->exception($ex, $file, $line);
         }
     }
-
 }

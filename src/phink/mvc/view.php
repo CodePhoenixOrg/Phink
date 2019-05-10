@@ -45,7 +45,11 @@ class TView extends TCustomView
         $this->viewName = $parent->getViewName();
         $this->className = $parent->getClassName();
         $this->namespace = $parent->getNamespace();
-        $this->setNames();
+        $this->dirName = $parent->getDirName();
+        $this->viewIsInternal = $parent->isInternalView();
+        $this->path = $parent->getPath();
+        $this->cloneNamesFrom($parent);
+        // $this->setNames();
 
         $this->authentication = $parent->getAuthentication();
         $this->request = $parent->getRequest();

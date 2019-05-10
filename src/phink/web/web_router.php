@@ -36,7 +36,9 @@ class TWebRouter extends \Phink\Core\TRouter
         $this->commands = $this->application->getCommands();
         $this->authentication = $parent->getAuthentication();
         $this->request = $parent->getRequest();
-        $this->response = $parent->getResponse(); 
+        $this->response = $parent->getResponse();
+        $this->dirName = $parent->getDirName();
+        $this->viewIsInternal = $parent->isInternalView();
                 
         $this->translation = $parent->getTranslation();
         $this->parameters = $parent->getParameters();
@@ -58,15 +60,24 @@ class TWebRouter extends \Phink\Core\TRouter
 //        $this->className = ucfirst($this->apiName);
 //
 //        $this->apiFileName = 'app' . DIRECTORY_SEPARATOR . 'rest' . DIRECTORY_SEPARATOR . $this->apiName . CLASS_EXTENSION;
-        $requestUriParts = explode('/', $this->path);
-        $this->viewName = array_pop($requestUriParts);
-        $viewNameParts = explode('.', $this->viewName);
-        $this->viewName = array_shift($viewNameParts);
+        // $requestUriParts = explode('/', $this->path);
+        $info = (object) \pathinfo($this->path);
+        $this->viewName = $info->filename;
+        $this->dirName = $info->dirname;
+        // $this->viewIsInternal = substr($this->dirName, 0, 1) == '@';
+
+        // $this->viewName = array_pop($requestUriParts);
+        // $viewNameParts = explode('.', $this->viewName);
+        // $this->viewName = array_shift($viewNameParts);
 
         $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
         $this->className = ucfirst($this->viewName);
         
         $this->getLogger()->dump('WEB PARAMETERS: ', $this->parameters);
+        $this->getLogger()->dump('VIEW PATH: ', $this->path);
+        $this->getLogger()->dump('VIEW NAME: ', $this->viewName);
+        $this->getLogger()->dump('DIR NAME: ', $this->dirName);
+        $this->getLogger()->dump('VIEW IS INTERNAL: ', $this->viewIsInternal ? 'TRUE' : 'FALSE');
         
         $this->setNamespace();
         $this->setNames();
@@ -81,7 +92,7 @@ class TWebRouter extends \Phink\Core\TRouter
             return true;
         } else {
             // $this->getLogger()->debug('FROM CACHE: false');
-            return file_exists(SITE_ROOT . $this->viewFileName);
+            return file_exists(SITE_ROOT . $this->getPath());
         }
     }
 
@@ -93,16 +104,10 @@ class TWebRouter extends \Phink\Core\TRouter
             return true;
         }
 
-//        $include = NULL;
 //        $modelClass = ($include = TAutoloader::includeModelByName($this->viewName)) ? $include['type'] : DEFALT_MODEL;
 //        include $include['file'];
 //        $model = new $modelClass();
         $include = $this->includePrimaryController();
-            // $controllerClass = $include['type'];
-            
-        // if (count($this->getParameters()) === 0) {
-        //     $this->parameters = [];
-        // }
 
         $view = new \Phink\MVC\TView($this);
         $view->parse();
@@ -112,70 +117,6 @@ class TWebRouter extends \Phink\Core\TRouter
             return true;
         }
         
-//        $controller = new $controllerClass($view, $model);
-//        if($this->request->isAJAX() && $this->request->isPartialView()) {
-//            $include = $this->includeController();
-//            $partialClass = $include['type'];
-//
-//            $partialController = new $partialClass($controller);
-//
-//            $partialController->perform();
-//
-//        } else {
-//            $controller->perform();
-//        }
-        
-//        $data = [];
-//        $method = REQUEST_METHOD;
-//
-//        $model = str_replace('rest', 'models', $this->apiFileName);
-//        if(file_exists(SITE_ROOT . $model)) {
-//            include SITE_ROOT . $model;
-//        }
-//
-//        $include = \Phink\TAutoloader::includeClass($this->apiFileName, INCLUDE_FILE);
-//        $fqObject = $include['type'];
-//
-//        self::$logger->debug($fqObject);
-//
-//        $instance = new $fqObject($this);
-//
-//        $request_body = file_get_contents('php://input');
-//
-//        self::getLogger()->debug($request_body);
-//        if(!empty($request_body)) {
-//            $data = json_decode($request_body, true);
-//        }
-//
-//        self::getLogger()->debug($data);
-        ////        $params = [];
-        ////        if(count($data) > 0) {
-        ////            $params = array_values($data);
-        ////            if($this->parameter !== null) {
-        ////                array_unshift($params, $this->parameter);
-        ////            }
-        ////        } else {
-        ////            if($this->parameter !== null) {
-        ////                $params = [$this->parameter];
-        ////            }
-        ////        }
-//
-//        if(count($data) > 0) {
-//            foreach ($data as $key=>$value) {
-//                $instance->$key = $value;
-//                self::getLogger()->debug("instance->$key = $value");
-//            }
-//        }
-//
-//
-        ////        if(count($params) > 0) {
-        ////            $ref->invokeArgs($instance, $params);
-        ////        } else {
-        ////            $ref->invoke($instance);
-        ////        }
-//        $instance->$method();
-//
-//        $this->response->sendData();
         return true;
     }
 
@@ -207,6 +148,9 @@ class TWebRouter extends \Phink\Core\TRouter
             } else {
                 $result = TAutoloader::includeDefaultController($this->namespace, $this->className);
             }
+            $this->getLogger()->dump('INLCUDE CONTROLLER: ', $result);
+            $this->getLogger()->dump('THIS CONTROLLER: ', $this->controllerFileName);
+
             \Phink\Core\TRegistry::setCode($this->controllerFileName, $result['code']);
         }
 

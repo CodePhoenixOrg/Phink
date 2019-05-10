@@ -45,10 +45,12 @@ abstract class TCustomController extends TCustomControl
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();        
         $this->parameters = $parent->getParameters();
+        $this->path = $this->getPath();
 
-        $this->setViewName();
-        $this->setNamespace();
-        $this->setNames();
+        $this->cloneNamesFrom($parent);
+        // $this->setViewName();
+        // $this->setNamespace();
+        // $this->setNames();
     }
 
     public function getInnerHtml()
@@ -152,6 +154,7 @@ abstract class TCustomController extends TCustomControl
 
                 $this->beforeBinding();
                 // $this->renderDeclarations();
+                $this->afterBinding();
 
                 if($this->request->isPartialView()
                 || ($this->request->isView() && $this->actionName !== 'getViewHtml')) {
