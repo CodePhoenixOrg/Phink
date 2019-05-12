@@ -1,9 +1,9 @@
- ____  _     _       _
-|  _ \| |__ (_)_ __ | | __  ___  _ __ __ _
-| |_) | '_ \| | '_ \| |/ / / _ \| '__/ _` |
-|  __/| | | | | | | |   < | (_) | | | (_| |
-|_|   |_| |_|_|_| |_|_|\_(_)___/|_|  \__, |
-                                     |___/
+	 ____  _     _       _
+	|  _ \| |__ (_)_ __ | | __  ___  _ __ __ _
+	| |_) | '_ \| | '_ \| |/ / / _ \| '__/ _` |
+	|  __/| | | | | | | |   < | (_) | | | (_| |
+	|_|   |_| |_|_|_| |_|_|\_(_)___/|_|  \__, |
+	                                     |___/
 
 ## What is Phink ?
 Phink Framework is a component oriented PHP framework. It allows you to build sites like ASP.Net webform does with its user controls and master pages all in benefiting of an MVC architecture. It integrates a client-side layer in shape of a JavaScript API that looks very much like the PHP classes. This coupled solution is aiming to easily build Single Page Applications. A simple JavaScript starter statement can launch the entire application. Also, Phink contains different levels of security (Injection safety, CORS, HSTS) and cache (dynamic, pseudo-dynamic, static), etc. 
