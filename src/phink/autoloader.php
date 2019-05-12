@@ -75,6 +75,11 @@ class TAutoloader extends TStaticObject
         return REL_RUNTIME_JS_DIR . strtolower('app_controllers_' . $viewName . JS_EXTENSION);
     }
 
+    public static function cacheCssFilenameFromView($viewName)
+    {
+        return REL_RUNTIME_CSS_DIR . strtolower('app_controllers_' . $viewName . CSS_EXTENSION);
+    }
+
     public static function cachePath($filepath)
     {
         return  str_replace(DIRECTORY_SEPARATOR, '_', $filepath);

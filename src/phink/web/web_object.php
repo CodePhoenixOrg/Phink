@@ -104,8 +104,8 @@ trait TWebObject
     public function setCacheFileName($value = '')
     {
         $this->cacheFileName = $value;
-        if (empty($value)) {
-            $this->cacheFileName = RUNTIME_DIR . strtolower(str_replace(DIRECTORY_SEPARATOR, '_', $this->controllerFileName));
+        if ($this->cacheFileName == '') {
+            $this->cacheFileName = RUNTIME_DIR . strtolower(str_replace(DIRECTORY_SEPARATOR, '_', $this->getControllerFileName()));
         }
     }
     public function getCacheFileName()
@@ -169,16 +169,6 @@ trait TWebObject
         return $this->redis;
     }
     
-//    public function getRequest()
-//    {
-//        return $this->request;
-//    }
-//
-//    public function getResponse()
-//    {
-//        return $this->response;
-//    }
-        
     public function getPath()
     {
         return $this->path;
@@ -265,9 +255,6 @@ trait TWebObject
         $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
         $this->className = ucfirst($this->viewName);
         
-//        $this->viewName = strtolower($this->viewName);
-
-//        //self::$logger->debug('VIEW NAME : '  . $this->viewName, __FILE__, __LINE__);
     }
     
     public function getNamespace()
@@ -291,7 +278,6 @@ trait TWebObject
 
     public function setNames()
     {
-        // $this->viewIsInternal = substr($this->dirName, 0, 1) == '@';
         $this->actionName = (isset($_REQUEST['action'])) ? $_REQUEST['action'] : '';
         $this->modelFileName = 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
         $this->viewFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR  . $this->viewName . PREHTML_EXTENSION;
@@ -299,19 +285,13 @@ trait TWebObject
         $this->controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
         $this->jsControllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
         if ($this->isInternalView()) {
-            // $dirName = PHINK_ROOT . substr($this->dirName, 2);
             $dirName = $this->getDirName();
             $this->viewFileName = $dirName. DIRECTORY_SEPARATOR  . $this->viewName . PREHTML_EXTENSION;
             $this->cssFileName = $dirName . DIRECTORY_SEPARATOR . $this->viewName . CSS_EXTENSION;
             $this->controllerFileName = $dirName . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
             $this->jsControllerFileName = $dirName . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
         }
-        self::getLogger()->dump('OBJECT NAMES::', [
-            $this->viewFileName,
-            $this->controllerFileName,
-            $this->cssFileName,
-            $this->jsControllerFileName
-        ]);
+
         if (!file_exists($this->viewFileName)) {
             $info = TRegistry::classInfo($this->className);
             if ($info !== null) {
@@ -326,6 +306,12 @@ trait TWebObject
                 $this->className = $info->namespace . '\\' . $this->className;
             }
         }
+        self::getLogger()->dump('MVC FILE NAMES::', [
+            $this->viewFileName,
+            $this->controllerFileName,
+            $this->cssFileName,
+            $this->jsControllerFileName
+        ]);
         $this->setCacheFileName();
     }
 
@@ -338,7 +324,7 @@ trait TWebObject
         $this->cssFileName = $parent->getCssFileName();
         $this->controllerFileName = $parent->getControllerFileName();
         $this->jsControllerFileName = $parent->getJsControllerFileName();
+        $this->namespace = $parent->getNamespace();
         
-        $this->cacheFileName = $parent->getCacheFileName();
     }
 }

@@ -39,10 +39,10 @@ class TWebRouter extends \Phink\Core\TRouter
         $this->response = $parent->getResponse();
         $this->dirName = $parent->getDirName();
         $this->viewIsInternal = $parent->isInternalView();
+        $this->path = $parent->getPath();
                 
         $this->translation = $parent->getTranslation();
         $this->parameters = $parent->getParameters();
-        $this->path = $parent->getPath();
         
     }
 

@@ -39,22 +39,20 @@ class TView extends TCustomView
 
         parent::__construct($parent);
         
+        $this->authentication = $parent->getAuthentication();
+        $this->request = $parent->getRequest();
+        $this->response = $parent->getResponse();
         $this->application = $parent->getApplication();
         $this->commands = $this->application->getCommands();
         $this->parameters = $parent->getParameters();
         $this->viewName = $parent->getViewName();
-        $this->className = $parent->getClassName();
-        $this->namespace = $parent->getNamespace();
-        $this->dirName = $parent->getDirName();
         $this->viewIsInternal = $parent->isInternalView();
         $this->path = $parent->getPath();
-        $this->cloneNamesFrom($parent);
-        // $this->setNames();
 
-        $this->authentication = $parent->getAuthentication();
-        $this->request = $parent->getRequest();
-        $this->response = $parent->getResponse();
-        
+        $this->cloneNamesFrom($parent);
+        $this->setCacheFileName();
+        $this->cacheFileName = $parent->getCacheFileName();
+
     }
 
 }

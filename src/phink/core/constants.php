@@ -77,6 +77,7 @@ if (APP_IS_WEB) {
     define('REL_RUNTIME_DIR', 'runtime' . DIRECTORY_SEPARATOR);
     define('RUNTIME_DIR', SITE_ROOT . REL_RUNTIME_DIR);
     define('REL_RUNTIME_JS_DIR', 'js' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);
+    define('REL_RUNTIME_CSS_DIR', 'css' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);
     define('RUNTIME_JS_DIR', DOCUMENT_ROOT . REL_RUNTIME_JS_DIR);
     define('CACHE_DIR', SITE_ROOT . 'cache' . DIRECTORY_SEPARATOR);
     
@@ -137,6 +138,8 @@ define('CREATIONS_PLACEHOLDER', '<phx:creationsPlaceHolder />');
 define('ADDITIONS_PLACEHOLDER', '<phx:additionsPlaceHolder />');
 define('AFTERBINDING_PLACEHOLDER', '<phx:afterBindingPlaceHolder />');
 define('HTML_PLACEHOLDER', '<phx:htmlPlaceHolder />');
+define('JS_PLACEHOLDER', '<phx:jsPlaceHolder />');
+define('CSS_PLACEHOLDER', '<phx:cssPlaceHolder />');
 /*
 * define('CONTROL_ADDITIONS', PHP_EOL . "\tpublic function createObjects() {" . PHP_EOL . CREATIONS_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function declareObjects() {" . PHP_EOL . ADDITIONS_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function afterBindingObjects() {" . PHP_EOL . AFTERBINDING_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function displayHtml() {" . PHP_EOL . "?>" . PHP_EOL . HTML_PLACEHOLDER . PHP_EOL . "<?php" . PHP_EOL . "\t}" . PHP_EOL . '}' . PHP_EOL);
 */

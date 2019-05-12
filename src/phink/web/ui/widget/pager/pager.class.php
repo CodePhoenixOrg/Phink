@@ -67,7 +67,7 @@ class TPager extends \Phink\MVC\TPartialController
     }
 
     public function getCacheFilename() {
-        return SITE_ROOT . REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . $this->for . 'pager' . CLASS_EXTENSION);
+        return SITE_ROOT . REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $this->path . $this->for . 'pager' . CLASS_EXTENSION);
     }
 
     public function init()
@@ -78,16 +78,15 @@ class TPager extends \Phink\MVC\TPartialController
         
         $this->pageCount = ($forControl) ? $forControl->getRowCount(): $this->pageNum;
     
-        $path = ROOT_PATH . \Phink\Core\TRegistry::classPath('TPager');
-        $this->pagerJS = file_get_contents($path . 'pager.jhtml', FILE_USE_INCLUDE_PATH);
+        $this->path = ROOT_PATH . \Phink\Core\TRegistry::classPath('TPager');
+        $this->pagerJS = file_get_contents($this->path . 'pager.jhtml', FILE_USE_INCLUDE_PATH);
         $this->pagerJS = str_replace('<% for %>', $this->for, $this->pagerJS);
         $this->pagerJS = str_replace('<% pageCount %>', $this->pageCount, $this->pagerJS);
         $this->pagerJS = str_replace('<% pageNum %>', $this->pageNum, $this->pagerJS);
         $this->pagerJS = str_replace('<% id %>', $this->id, $this->pagerJS);
         $this->pagerJS = str_replace('<% onclick %>', $this->onclick, $this->pagerJS);
         
-
-        $this->script = REL_RUNTIME_JS_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . $this->for . 'pager.js');
+        $this->script = REL_RUNTIME_JS_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $this->path . $this->for . 'pager.js');
 
         file_put_contents($this->script, $this->pagerJS);
         $this->response->addScript($this->script);

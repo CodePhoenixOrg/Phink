@@ -238,17 +238,39 @@ trait TCodeGenerator {
     
     function writeHTML(TXmlDocument $doc, TCustomView $view)
     {
-//        if(file_exists($this->jsControllerFileName) && !strstr($this->jsControllerFileName, 'main.js')) {
-//            $pageCode = "<script data-getscript='itsme' src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . \Phink\Utils\TFileUtils::webPath($this->jsControllerFileName) . "'></script>" . PHP_EOL . $pageCode;        
-//        }
-        
-        $pageCode = $view->getViewHtml();
-               
-        if(file_exists($this->cssFileName)) {
-//            $pageCode = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . "/" . $this->cssFileName . "' />" . PHP_EOL . $pageCode;
-            $pageCode = "<script>Phink.Web.Object.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . \Phink\Utils\TFileUtils::webPath($this->cssFileName) . "');</script>" . PHP_EOL . $pageCode;        
+        $viewHtml = $view->getViewHtml();
+        $scripts = '';
+        $head = '';
+
+        if(file_exists(SITE_ROOT . $view->getJsControllerFileName()) && !strstr($view->getJsControllerFileName(), 'main.js') && $view->getType() == 'TView') {
+            $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($view->getViewName());
+            if(!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
+                copy(SITE_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
+            }
+            // \Phink\Utils\TFileUtils::webPath($view->getCssFileName())
+            $scripts = "<script src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheJsFilename . "'></script>" . PHP_EOL;        
         }
         
+        if(file_exists(SITE_ROOT . $view->getCssFileName()) && $view->getType() == 'TView') {
+            $cacheCssFilename = \Phink\TAutoloader::cacheCssFilenameFromView($view->getViewName());
+            if(!file_exists(DOCUMENT_ROOT . $cacheCssFilename)) {
+                copy(SITE_ROOT . $view->getCssFileName(), DOCUMENT_ROOT . $cacheCssFilename);
+            }
+            //\Phink\Utils\TFileUtils::webPath($view->getCssFileName()
+            // $scripts .= "<script>Phink.Web.Object.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "');</script>" . PHP_EOL;
+            $head = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "' />" . PHP_EOL;
+        }
+        
+        if($scripts !== '') {
+            $scripts .= '</body>' . PHP_EOL;
+            $viewHtml = str_replace('</body>', $scripts, $viewHtml);
+        }
+
+        if($head !== '') {
+            $head .= '</head>' . PHP_EOL;
+            $viewHtml = str_replace('</head>', $head, $viewHtml);
+        }
+
         $count = $doc->getCount();
         $matchesSort = $doc->getMatchesByDepth();
         $docList = $doc->getList();
@@ -303,9 +325,9 @@ trait TCodeGenerator {
                 }
             }            
 
-            $pageCode = TXmlDocument::replaceThisMatch($match, $pageCode, $declare);
+            $viewHtml = TXmlDocument::replaceThisMatch($match, $viewHtml, $declare);
 
         }
-        return $pageCode;
+        return $viewHtml;
     }
 }

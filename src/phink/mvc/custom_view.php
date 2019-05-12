@@ -52,13 +52,9 @@ abstract class TCustomView extends TCustomControl
     {
         $this->setParent($parent);
         $this->path = $parent->getPath();
-        $this->dirName = $parent->getDirName();
-        // $this->viewIsInternal = $parent->isInternalView();
-
+        
         //$this->redis = new Client($this->context->getRedis());
-        // $this->setViewName();
-        // $this->setNamespace();
-        // $this->setNames();
+
     }
 
     public function isDirty()
@@ -115,7 +111,6 @@ abstract class TCustomView extends TCustomControl
         self::$logger->debug($this->viewName . ' IS REGISTERED : ' . (TRegistry::exists('code', $this->controllerFileName) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
 
 //        $this->viewHtml = $this->redis->mget($templateName);
-//        $this->viewHtml = $this->viewHtml[0];
         if (file_exists(SITE_ROOT . $this->viewFileName)) {
             self::$logger->debug('PARSE SITE ROOT FILE : ' . $this->viewFileName, __FILE__, __LINE__);
 
@@ -144,10 +139,8 @@ abstract class TCustomView extends TCustomControl
             $this->afterBinding = $declarations->afterBinding;
             $this->viewHtml = $this->writeHTML($doc, $this);
 
-            //self::$logger->debug('CACHE FILE : ' . $this->cacheFileName, __FILE__, __LINE__);
         }
 
-        // if ($info !== null || $this->viewName == 'plugin') {
         if (!TRegistry::exists('code', $this->controllerFileName)) {
             self::$logger->debug('NO NEED TO WRITE CODE: ' . $this->controllerFileName, __FILE__, __LINE__);
             return false;

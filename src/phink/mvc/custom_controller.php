@@ -48,9 +48,9 @@ abstract class TCustomController extends TCustomControl
         $this->path = $this->getPath();
 
         $this->cloneNamesFrom($parent);
-        // $this->setViewName();
-        // $this->setNamespace();
-        // $this->setNames();
+
+        // $this->setCacheFileName();
+
     }
 
     public function getInnerHtml()
@@ -73,21 +73,20 @@ abstract class TCustomController extends TCustomControl
         return $this->model;
     }
     
-    public function view($html)
-    {
-        $this->viewHtml = $html;
-        include "data://text/plain;base64," . base64_encode($this->viewHtml);        
-    }
+    // public function view($html)
+    // {
+    //     $this->viewHtml = $html;
+    //     include "data://text/plain;base64," . base64_encode($this->viewHtml);        
+    // }
        
     public function parse()
     {
-        // $this->getLogger()->debug('CONTROLLER PARSE VIEW TYPE: ' .  $this->view->getType(), __FILE__, __LINE__);
-        $isAlreadyParsed = ($this->view->getType() == 'TView'); //file_exists($this->getCacheFileName());
+        $this->cacheFileName = $this->view->getCacheFileName();
+
+        $isAlreadyParsed = file_exists($this->getCacheFileName());
 
         if(!$isAlreadyParsed) {
             $this->_type = $this->view->parse();
-//            $this->innerPhp = $this->view->getPreHtml();
-//        } else {
             $this->creations = $this->view->getCreations();
             $this->declarations = $this->view->getAdditions();
             $this->viewHtml = $this->view->getViewHtml();

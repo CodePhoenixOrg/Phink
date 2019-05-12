@@ -40,10 +40,8 @@ class TControl extends TCustomControl
         $this->path = $this->getPath();
         
         $this->cloneNamesFrom($parent);
-
-        // $this->setViewName();
-        // $this->setNamespace();
-        // $this->setNames();
+        $this->setCacheFileName();
+        $this->cacheFileName = $parent->getCacheFileName();
         
         $this->className = $this->getType();
         $this->viewName = lcfirst($this->className);
