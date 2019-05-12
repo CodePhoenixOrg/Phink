@@ -17,22 +17,32 @@ class TConsoleWindow extends TPartialController {
 
 ////put your code here
     protected $text = "Console Window";
-    protected $anchor = '';
-
-    public function setAnchor($value)
-    {
-        $this->anchor = $value;
-    }
+    protected $args = '';
  
     public function afterBinding()
     {
         $cmd = $this->parameters['console'];
         $arg = isset($this->parameters['arg']) ? $this->parameters['arg'] : null;
 
+        $this->setArgs($this->parameters);
+
         $this->commandRunner($cmd, function ($data) {
             $this->setText($data);
 
         }, $arg);
+    }
+
+    public function setArgs($value)
+    {
+        $this->args = $value;
+        if(is_array($value)) {
+            $this->args = print_r($value, true);
+        }
+    }
+
+    public function getArgs()
+    {
+        return $this->args;
     }
     
     public function setText($value)

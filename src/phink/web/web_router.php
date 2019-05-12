@@ -48,50 +48,19 @@ class TWebRouter extends \Phink\Core\TRouter
 
     public function translate()
     {
-//        $nsParts = explode('\\', __NAMESPACE__);
-//        $this->baseNamespace = array_shift($nsParts);
-//
-//        $qstring = str_replace('/api/', '', REQUEST_URI);
-//        $qParts = explode('/', $qstring);
-//        $this->apiName = array_shift($qParts);
-//        $this->parameter = array_shift($qParts);
-//
-        ////        $this->apiName = preg_replace('/[^a-z0-9_]+/i','', array_shift($qParts));
-//        $this->className = ucfirst($this->apiName);
-//
-//        $this->apiFileName = 'app' . DIRECTORY_SEPARATOR . 'rest' . DIRECTORY_SEPARATOR . $this->apiName . CLASS_EXTENSION;
-        // $requestUriParts = explode('/', $this->path);
         $info = (object) \pathinfo($this->path);
         $this->viewName = $info->filename;
         $this->dirName = $info->dirname;
-        // $this->viewIsInternal = substr($this->dirName, 0, 1) == '@';
-
-        // $this->viewName = array_pop($requestUriParts);
-        // $viewNameParts = explode('.', $this->viewName);
-        // $this->viewName = array_shift($viewNameParts);
-
         $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
         $this->className = ucfirst($this->viewName);
-        
-        $this->getLogger()->dump('WEB PARAMETERS: ', $this->parameters);
-        $this->getLogger()->dump('VIEW PATH: ', $this->path);
-        $this->getLogger()->dump('VIEW NAME: ', $this->viewName);
-        $this->getLogger()->dump('DIR NAME: ', $this->dirName);
-        $this->getLogger()->dump('VIEW IS INTERNAL: ', $this->viewIsInternal ? 'TRUE' : 'FALSE');
         
         $this->setNamespace();
         $this->setNames();
 
-        // $this->getLogger()->debug('CACHE: ' . $this->cacheFileName);
-        // $this->getLogger()->debug('VIEW: ' . SITE_ROOT . $this->viewFileName);
-        
-        
         if (file_exists($this->getCacheFileName())) {
-            // $this->getLogger()->debug('FROM CACHE: true');
             $this->_isCached = true;
-            return true;
+            return $this->_isCached;
         } else {
-            // $this->getLogger()->debug('FROM CACHE: false');
             return file_exists(SITE_ROOT . $this->getPath());
         }
     }
@@ -120,8 +89,6 @@ class TWebRouter extends \Phink\Core\TRouter
         return true;
     }
 
-
-    
     public function setNamespace()
     {
         if (strstr(SERVER_NAME, 'localhost')) {
@@ -148,8 +115,6 @@ class TWebRouter extends \Phink\Core\TRouter
             } else {
                 $result = TAutoloader::includeDefaultController($this->namespace, $this->className);
             }
-            $this->getLogger()->dump('INLCUDE CONTROLLER: ', $result);
-            $this->getLogger()->dump('THIS CONTROLLER: ', $this->controllerFileName);
 
             \Phink\Core\TRegistry::setCode($this->controllerFileName, $result['code']);
         }

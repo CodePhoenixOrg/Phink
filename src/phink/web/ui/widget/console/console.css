@@ -1,3 +1,8 @@
-.console {
-    float: left;
+body {
+    font-family: 'PT Mono', monospace;
+    /* font-size: 13pt;
+    font-weight: 400; */
+}
+pre {
+    font-family: 'PT Mono', monospace;
 }

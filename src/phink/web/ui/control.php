@@ -32,8 +32,6 @@ class TControl extends TCustomControl
     {
         parent::__construct($parent);
 
-        // $this->setParent($parent);
-
         $this->parameters = $parent->getParameters();
         $this->application = $parent->getApplication();
         $this->commands = $this->application->getCommands();
@@ -48,7 +46,6 @@ class TControl extends TCustomControl
         
         $include = \Phink\TAutoloader::includeModelByName($this->viewName);
         $model = SITE_ROOT . $include['file'];
-        // $this->getLogger()->debug(__METHOD__ . '::' . $model, __FILE__, __LINE__);
         if(file_exists($model)) {
             include $model;
             $modelClass = $include['type'];
@@ -56,7 +53,6 @@ class TControl extends TCustomControl
             $this->model = new $modelClass();        
         }
         
-
         $this->authentication = $parent->getAuthentication();
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();        
@@ -93,10 +89,9 @@ class TControl extends TCustomControl
     
     public function getViewHtml()
     {
-        if(isset($_REQUEST['PHPSESSID'])) {
-            self::$logger->debug(__METHOD__ . '::PHPSESSID::' . $_REQUEST['PHPSESSID']);
-            
-        }
+        // if(isset($_REQUEST['PHPSESSID'])) {
+        //     self::$logger->debug(__METHOD__ . '::PHPSESSID::' . $_REQUEST['PHPSESSID']);
+        // }
         ob_start();
         if(!$this->isDreclared) {
             //$this->createObjects();

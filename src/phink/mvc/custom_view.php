@@ -31,8 +31,6 @@ abstract class TCustomView extends TCustomControl
         writeHTML as private;
     }
 
-    private $_dirty = false;
-    
     protected $router = null;
     protected $viewHtml = null;
     protected $preHtml = '';
@@ -54,7 +52,6 @@ abstract class TCustomView extends TCustomControl
         $this->path = $parent->getPath();
         
         //$this->redis = new Client($this->context->getRedis());
-
     }
 
     public function isDirty()
@@ -71,21 +68,6 @@ abstract class TCustomView extends TCustomControl
         $this->depth = $value;
     }
 
-//    public function getPattern()
-//    {
-//        return $this->pattern;
-//    }
-//
-//    public function setPattern($value)
-//    {
-//        $this->pattern = $value;
-//    }
-//
-//    public function preHtmlExists()
-//    {
-//        return file_exists($this->getPreHtmlName());
-//    }
-    
     public function getCreations()
     {
         return $this->creations;
@@ -110,7 +92,8 @@ abstract class TCustomView extends TCustomControl
     {
         self::$logger->debug($this->viewName . ' IS REGISTERED : ' . (TRegistry::exists('code', $this->controllerFileName) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
 
-//        $this->viewHtml = $this->redis->mget($templateName);
+        // $this->viewHtml = $this->redis->mget($templateName);
+        // $this->viewHtml = $this->viewHtml[0];
         if (file_exists(SITE_ROOT . $this->viewFileName)) {
             self::$logger->debug('PARSE SITE ROOT FILE : ' . $this->viewFileName, __FILE__, __LINE__);
 
@@ -125,20 +108,17 @@ abstract class TCustomView extends TCustomControl
             $this->viewHtml = file_get_contents($this->viewFileName, FILE_USE_INCLUDE_PATH);
         }
         
-//        $this->redis->mset($templateName, $this->viewHtml);
+        // $this->redis->mset($templateName, $this->viewHtml);
         //self::$logger->debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');
         $doc = new TXmlDocument($this->viewHtml);
         $doc->matchAll();
 
         if ($doc->getCount() > 0) {
-            // Il y a des éléments à traiter
-            $this->_dirty = true;
             $declarations = $this->writeDeclarations($doc, $this);
             $this->creations = $declarations->creations;
             $this->additions = $declarations->additions;
             $this->afterBinding = $declarations->afterBinding;
             $this->viewHtml = $this->writeHTML($doc, $this);
-
         }
 
         if (!TRegistry::exists('code', $this->controllerFileName)) {

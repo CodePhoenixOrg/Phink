@@ -76,8 +76,8 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
                     $routes = $methods[$method];
                     $url = REQUEST_URI;
                     foreach ($routes as $key=>$value) {
-                        $key = str_replace("/", "\/", $key);
-                        $matches = \preg_replace('/' . $key . '/', $value, $url);
+                        // $key = str_replace("/", "\/", $key);
+                        $matches = \preg_replace('@' . $key . '@', $value, $url);
                         $this->getLogger()->debug('URL: ' . $url);
                         $this->getLogger()->debug('MATCHES: ' . $matches);
                         $this->getLogger()->debug('KEY: ' . $key);
@@ -137,17 +137,16 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
 
             $routesArray = json_decode($routesFile, true);
 
-            if (isset($routesArray['web']['get'])) {
-                $routesArray['web']['get']["/console/([a-z]+)$"] = "@/web/ui/widget/console/console.phtml?console=$1";
-                $routesArray['web']['get']["/console/([a-z]+)/([a-z]+)$"] = "@/web/ui/widget/console/console.phtml?console=$1&arg=$2";
-            }
         } elseif (count($routesArray) === 0 && !file_exists(DOCUMENT_ROOT . 'routes.json')) {
             $routesArray = [];
             $routesArray['web'] = [];
             $routesArray['web']['get'] = [];
-            $routesArray['web']['get']["/console/([a-z]+)$"] = "@/web/ui/widget/console/console.phtml?console=$1";
-            $routesArray['web']['get']["/console/([a-z]+)/([a-z]+)$"] = "@/web/ui/widget/console/console.phtml?console=$1&arg=$2";
         }
+        
+        $routesArray['web']['get']["^/console$"] = "@/web/ui/widget/console/console.phtml";
+        $routesArray['web']['get']["^/console/$"] = "@/web/ui/widget/console/console.phtml?console=help";
+        $routesArray['web']['get']["^/console/([a-z]+)$"] = "@/web/ui/widget/console/console.phtml?console=$1";
+        $routesArray['web']['get']["^/console/([a-z]+)/([a-z]+)$"] = "@/web/ui/widget/console/console.phtml?console=$1&arg=$2";
 
         foreach ($routesArray as $key=>$value) {
             \Phink\Core\TRegistry::write('routes', $key, $value);
