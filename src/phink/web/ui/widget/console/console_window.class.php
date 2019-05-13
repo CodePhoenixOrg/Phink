@@ -21,7 +21,7 @@ class TConsoleWindow extends TPartialController {
  
     public function afterBinding()
     {
-        $cmd = $this->parameters['console'];
+        $cmd = isset($this->parameters['console']) ? $this->parameters['console'] : '';
         $arg = isset($this->parameters['arg']) ? $this->parameters['arg'] : null;
 
         $this->setArgs($this->parameters);

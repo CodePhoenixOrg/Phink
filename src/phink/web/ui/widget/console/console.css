@@ -1,8 +1,10 @@
-body {
+html {
     font-family: 'PT Mono', monospace;
     /* font-size: 13pt;
     font-weight: 400; */
+    background-color: black;
+    color: greenyellow;
 }
-pre {
+/* pre {
     font-family: 'PT Mono', monospace;
-}
+} */

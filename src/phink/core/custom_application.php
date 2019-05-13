@@ -121,10 +121,44 @@ abstract class TCustomApplication extends TObject
                 }
             }
         );
+
+        $this->setCommand(
+            'debug',
+            '',
+            'Display the debug log.',
+            function (callable $callback = null) {
+                $data = $this->getDebugLog();
+                if ($callback !== null) {
+                    \call_user_func($callback, $data);
+                }
+            }
+        );
+
+        $this->setCommand(
+            'php-error',
+            '',
+            'Display the php error log.',
+            function (callable $callback = null) {
+                $data = $this->getPhpErrorLog();
+                if ($callback !== null) {
+                    \call_user_func($callback, $data);
+                }
+            }
+        );        
     }
     
     protected function displayConstants() : array
     {
+    }
+
+    protected function getDebugLog() : string
+    {
+        return self::getLogger()->getDebugLog();
+    }
+
+    protected function getPhpErrorLog() : string
+    {
+        return self::getLogger()->getPhpErrorLog();
     }
 
     public function loadINI() : void

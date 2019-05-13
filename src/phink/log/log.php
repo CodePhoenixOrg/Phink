@@ -69,4 +69,20 @@ class TLog
         fwrite($handle, $message . PHP_EOL);
         fclose($handle);
     }
+
+    public function getDebugLog() : string 
+    {
+        if(!\file_exists(DEBUG_LOG)) {
+            return '';
+        }
+        return \file_get_contents(DEBUG_LOG);
+    }
+
+    public function getPhpErrorLog() : string 
+    {
+        if(!\file_exists(DOCUMENT_ROOT . 'php_error_log')) {
+            return '';
+        }
+        return \file_get_contents(DOCUMENT_ROOT . 'php_error_log');
+    }
 }
