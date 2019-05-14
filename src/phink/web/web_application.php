@@ -164,6 +164,8 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
 
     public function run(...$params) : bool
     {
+        $result = true;
+
         if (!file_exists('js_builder.lock')) {
             \Phink\JavaScript\JsBuilder::build();
             file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
@@ -198,6 +200,8 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
         } else {
             $this->response->setReturn(403);
         }
+
+        return $result;
     }
 
     public function validateToken(TRouter $router): bool
