@@ -59,7 +59,7 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
         // $this->setNames();
     }
 
-    public function execute()
+    public function execute() : void
     {
         // foreach ($this->commands as $long => $param) {
         //     $short = $param['short'];
@@ -83,22 +83,22 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
         // }
     }
 
-    public static function mediaPath()
+    public static function mediaPath() : string
     {
         return SERVER_ROOT . '/media/';
     }
 
-    public static function themePath()
+    public static function themePath() : string
     {
         return SERVER_ROOT . '/themes/';
     }
 
-    public static function imagePath()
+    public static function imagePath() : string
     {
         return self::mediaPath() . 'images';
     }
     
-    public static function create(...$params)
+    public static function create(...$params) : void
     {
         session_start();
         self::$instance = new TWebApplication();
@@ -162,7 +162,7 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
         return $constants;
     }
 
-    public function run(...$params)
+    public function run(...$params) : bool
     {
         if (!file_exists('js_builder.lock')) {
             \Phink\JavaScript\JsBuilder::build();
@@ -200,7 +200,7 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
         }
     }
 
-    public function validateToken(TRouter $router)
+    public function validateToken(TRouter $router): bool
     {
         $result = false;
         // We get the current token ...
@@ -234,21 +234,21 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
         return $result;
     }
 
-    public static function write($string, ...$params)
+    public static function write($string, ...$params) : void
     {
         $result = self::_write($string, $params);
         TRegistry::write('console', 'buffer', $result);
         self::getLogger()->debug($result);
     }
     
-    public static function writeLine($string, ...$params)
+    public static function writeLine($string, ...$params) : void
     {
         $result = self::_write($string, $params);
         TRegistry::write('console', 'buffer', $result);
         self::getLogger()->debug($result . PHP_EOL);
     }
 
-    public static function writeException(\Throwable $ex, $file = null, $line = null)
+    public static function writeException(\Throwable $ex, $file = null, $line = null) : void
     {
         $message = '';
 

@@ -45,22 +45,22 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
         $this->response = $parent->getResponse();
     }
     
-    public function getTranslation()
+    public function getTranslation() : string
     {
         return $this->translation;
     }
     
-    public function getRequestType()
+    public function getRequestType(): string
     {
         return $this->requestType;
     }
 
-    public function isFound()
+    public function isFound() : bool
     {
         return $this->_isFound;
     }
     
-    public function match()
+    public function match() : string
     {
         $result = REQUEST_TYPE_WEB;
         
@@ -124,7 +124,7 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
         return $result;
     }
 
-    public function routes()
+    public function routes() : array
     {
         $routesArray = \Phink\Core\TRegistry::item('routes');
 

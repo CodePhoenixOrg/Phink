@@ -25,6 +25,7 @@ namespace Phink\Web;
  */
  
 use Phink\Core\TRegistry;
+use Phink\Core\TCustomApplication;
 
 trait TWebObject
 {
@@ -113,7 +114,7 @@ trait TWebObject
         return $this->cacheFileName;
     }
     
-    public function getPhpCode()
+    public function getPhpCode() : string
     {
         if (!$this->code) {
 //        $this->code = $this->redis->mget($this->getCacheFileName());
@@ -159,92 +160,92 @@ trait TWebObject
         return $this->authentication;
     }
 
-    public function setRedis(array $params)
+    public function setRedis(array $params) : void
     {
         $this->redis = $params;
     }
 
-    public function getRedis()
+    public function getRedis() : \object
     {
         return $this->redis;
     }
     
-    public function getPath()
+    public function getPath() : string
     {
         return $this->path;
     }
 
-    public function getDirName()
+    public function getDirName() : string
     {
         return $this->dirName;
     }
 
-    public function getClassName()
+    public function getClassName() : string
     {
         return $this->className;
     }
     
-    public function getActionName()
+    public function getActionName() : string
     {
         return $this->actionName;
     }
     
-    public function getFileNamespace()
+    public function getFileNamespace() : string
     {
         return $this->namespace;
     }
     
-    public function getRawPhpName()
+    public function getRawPhpName() : string
     {
         return $this->cacheFileName;
     }
     
-    public function getModelFileName()
+    public function getModelFileName() : string
     {
         return $this->modelFileName;
     }
 
-    public function getViewFileName()
+    public function getViewFileName() : string
     {
         return $this->viewFileName;
     }
 
-    public function getControllerFileName()
+    public function getControllerFileName() : string
     {
         return $this->controllerFileName;
     }
 
-    public function getJsControllerFileName()
+    public function getJsControllerFileName() : string
     {
         return $this->jsControllerFileName;
     }
 
-    public function getCssFileName()
+    public function getCssFileName() : string
     {
         return $this->cssFileName;
     }
 
-    public function getApplication()
+    public function getApplication() : TCustomApplication
     {
         return $this->application;
     }
 
-    public function getParameters()
+    public function getParameters() : array
     {
         return $this->parameters;
     }
 
-    public function getCommands()
+    public function getCommands() : array
     {
         return $this->commands;
     }
     
-    public function getViewName()
+    public function getViewName() : string
     {
         return $this->viewName;
     }
     
-    public function setViewName($viewName = null)
+    public function setViewName($viewName = null) : void
     {
         $uri = ($viewName === null) ? REQUEST_URI : $viewName;
         $requestUriParts = explode('/', $uri);
@@ -257,12 +258,12 @@ trait TWebObject
         
     }
     
-    public function getNamespace()
+    public function getNamespace() : string
     {
         return $this->namespace;
     }
 
-    public function setNamespace()
+    public function setNamespace() : void
     {
         $this->namespace = $this->getFileNamespace();
         
@@ -271,12 +272,12 @@ trait TWebObject
         }
     }
     
-    public function isInternalView()
+    public function isInternalView() : bool
     {
         return $this->viewIsInternal;
     }
 
-    public function setNames()
+    public function setNames() : void
     {
         $this->actionName = (isset($_REQUEST['action'])) ? $_REQUEST['action'] : '';
         $this->modelFileName = 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
@@ -315,7 +316,7 @@ trait TWebObject
         $this->setCacheFileName();
     }
 
-    public function cloneNamesFrom($parent)
+    public function cloneNamesFrom($parent) : void
     {
         $this->className = $parent->getClassName();
         $this->actionName = $parent->getActionName();

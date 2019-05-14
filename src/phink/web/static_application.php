@@ -29,7 +29,7 @@ namespace Phink\Web;
 class TStaticApplication extends TWebApplication
 {
 
-    public static function implicitLink()
+    public static function implicitLink() :  string
     {
         return SERVER_ROOT . REQUEST_URI;
     }
@@ -41,7 +41,7 @@ class TStaticApplication extends TWebApplication
         file_put_contents($filename, $content);
     } 
 
-    public function getStaticFileName()
+    public function getStaticFileName() : string
     {
         $filename = CACHE_DIR . ((REQUEST_URI == '/') ? MAIN_PAGE : REQUEST_URI);
         
@@ -55,12 +55,12 @@ class TStaticApplication extends TWebApplication
         return $filename;
     }
 
-    public static function create(...$params)
+    public static function create(...$params) : void
     {
         (new TStaticApplication())->run($params);
     }
 
-    public function run(...$params)
+    public function run(...$params) : bool
     {
         if(strstr(HTTP_ACCEPT, 'partialview')) {
             parent::run($params);
@@ -81,5 +81,7 @@ class TStaticApplication extends TWebApplication
                 }
             }
         }
+
+        return true;
     }
 }

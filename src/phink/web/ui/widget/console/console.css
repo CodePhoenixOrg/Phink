@@ -1,10 +1,23 @@
-html {
+.ibm-pc * {
     font-family: 'PT Mono', monospace;
-    /* font-size: 13pt;
-    font-weight: 400; */
-    background-color: black;
+    font-size: 10pt;
+    font-weight: 400;
     color: greenyellow;
+    background-color: black;
 }
-/* pre {
+
+.amstrad-cpc * {
     font-family: 'PT Mono', monospace;
-} */
+    font-size: 10pt;
+    font-weight: 400;
+    color: yellow;
+    background-color: blue;
+}
+
+.solaris * {
+    font-family: 'PT Mono', monospace;
+    font-size: 10pt;
+    font-weight: 400;
+    color: darkblue;
+    background-color: antiquewhite;
+}

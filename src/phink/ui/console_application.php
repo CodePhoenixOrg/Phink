@@ -25,11 +25,11 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
     protected $_argc;
     private $_phar = null;
 
-    public function init()
+    public function init() : void
     {
     }
 
-    public function run()
+    public function run() : bool
     {
     }
 
@@ -106,7 +106,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         $this->run();
     }
 
-    protected function ignite()
+    protected function ignite() : void
     {
         parent::ignite();
         
@@ -171,7 +171,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         );
     }
     
-    protected function execute()
+    protected function execute() : void
     {
         $isFound = false;
         $result = null;
@@ -251,7 +251,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         }
     }
 
-    private static function _requireMaster(string $path = '')
+    private static function _requireMaster(string $path = '') : \object
     {
         $result = [];
         $master = $path . 'master';
@@ -282,13 +282,13 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         return (object)$result;
     }
     
-    public function addFileToPhar($file, $name)
+    public function addFileToPhar($file, $name) : void
     {
         $this->writeLine("Adding %s as %s", $file, $name);
         $this->_phar->addFile($file, $name);
     }
-    
-    public function makePhar()
+
+    public function makePhar() : void
     {
         try {
 
@@ -369,7 +369,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         }
     }
     
-    public function addPharFiles()
+    public function addPharFiles() : void
     {
         try {
             $this->writeLine('APP_DIR_2::' . $this->appDirectory . $this->scriptName);
@@ -387,13 +387,13 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         }
     }
 
-    public function displayTree($path)
+    public function displayTree($path) : void
     {
         $tree = \Phink\TAutoloader::walkTree($path);
         $this->writeLine($tree);
     }
 
-    public static function write($string, ...$params)
+    public static function write($string, ...$params) : void
     {
         $result = self::_write($string, $params);
         if (!APP_IS_WEB) {
@@ -403,7 +403,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         }
     }
     
-    public static function writeLine($string, ...$params)
+    public static function writeLine($string, ...$params) : void
     {
         $result = self::_write($string, $params);
         if (!APP_IS_WEB) {
@@ -413,7 +413,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         }
     }
 
-    public static function writeException(\Throwable $ex, $file = null, $line = null)
+    public static function writeException(\Throwable $ex, $file = null, $line = null) :void 
     {
         if (!APP_IS_WEB) {
             $message = '';

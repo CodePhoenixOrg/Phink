@@ -89,7 +89,7 @@ class TWebRouter extends \Phink\Core\TRouter
         return true;
     }
 
-    public function setNamespace()
+    public function setNamespace() : void
     {
         if (strstr(SERVER_NAME, 'localhost')) {
             $this->namespace = CUSTOM_NAMESPACE;

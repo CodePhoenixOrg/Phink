@@ -63,11 +63,11 @@ abstract class TCustomApplication extends TObject
         parent::__construct();
     }
 
-    protected function execute()
+    protected function execute() : void
     {
     }
 
-    protected function ignite()
+    protected function ignite() : void
     {
         $this->loadINI();
 
@@ -88,7 +88,7 @@ abstract class TCustomApplication extends TObject
             'os',
             '',
             'Display the running operating system name.',
-            function ($callback = null) {
+            function (callable $callback = null) {
                 $data = $this->getOS();
                 $this->writeLine($data);
                 if ($callback !== null) {
@@ -101,7 +101,7 @@ abstract class TCustomApplication extends TObject
             'name',
             '',
             'Display the running application name.',
-            function ($callback = null) {
+            function (callable $callback = null) {
                 $data = $this->getApplicationName();
                 $this->writeLine($data);
                 if ($callback !== null) {
@@ -135,7 +135,7 @@ abstract class TCustomApplication extends TObject
         );
 
         $this->setCommand(
-            'php-error',
+            'error',
             '',
             'Display the php error log.',
             function (callable $callback = null) {
@@ -144,7 +144,7 @@ abstract class TCustomApplication extends TObject
                     \call_user_func($callback, $data);
                 }
             }
-        );        
+        );
     }
     
     protected function displayConstants() : array
@@ -177,36 +177,36 @@ abstract class TCustomApplication extends TObject
         }
     }
 
-    public static function write($string, ...$params)
+    public static function write($string, ...$params) : void
     {
     }
         
-    public static function writeLine($string, ...$params)
+    public static function writeLine($string, ...$params) : void
     {
     }
 
-    public static function writeException(\Throwable $ex, $file = null, $line = null)
+    public static function writeException(\Throwable $ex, $file = null, $line = null) : void
     {
     }
 
-    public function help()
+    public function help() : void
     {
         $this->writeLine($this->getApplicationName());
         $this->writeLine('Expected commands : ');
         $this->writeLine($this->_usage);
     }
 
-    public function getApplicationName()
+    public function getApplicationName() : string
     {
         return $this->appName;
     }
 
-    public function getApplicationDirectory()
+    public function getApplicationDirectory() :  string
     {
         return $this->appDirectory;
     }
 
-    public function setCommand(string $long, string $short = '', string $definition = '', $callback = null)
+    public function setCommand(string $long, string $short = '', string $definition = '', $callback = null) : void
     {
         $this->commands[$long] = [
             'short' => $short,
@@ -242,17 +242,17 @@ abstract class TCustomApplication extends TObject
         return $this->canStop;
     }
 
-    public static function getExecutionMode()
+    public static function getExecutionMode() : string
     {
         return self::$_executionMode;
     }
     
-    public function getOS()
+    public function getOS() : string
     {
         return PHP_OS;
     }
 
-    public static function setExecutionMode($myExecutionMode)
+    public static function setExecutionMode($myExecutionMode) : void
     {
         if (!$myExecutionMode) {
             $myExecutionMode = (APP_IS_WEB) ?  'debug' : 'prod';
@@ -273,17 +273,17 @@ abstract class TCustomApplication extends TObject
         }
     }
     
-    public function setRedis(array $params)
+    public function setRedis(array $params) : void
     {
         $this->redis = $params;
     }
 
-    public function getRedis()
+    public function getRedis() : \object
     {
         return $this->redis;
     }
 
-    public static function getVerboseMode()
+    public static function getVerboseMode() : string
     {
         return self::$_verboseMode;
     }
@@ -293,27 +293,27 @@ abstract class TCustomApplication extends TObject
         self::$_verboseMode = $set;
     }
     
-    public static function getTransactionUse()
+    public static function getTransactionUse() : bool
     {
         return self::$_useTransactions;
     }
 
-    public static function useTransactions($set = true)
+    public static function useTransactions($set = true) : void
     {
         self::$_useTransactions = $set;
     }
     
-    public static function isProd()
+    public static function isProd() : bool
     {
         return self::$_executionMode == self::PROD_MODE;
     }
 
-    public static function isTest()
+    public static function isTest() :  bool
     {
         return self::$_executionMode == self::TEST_MODE;
     }
 
-    public static function isDebug()
+    public static function isDebug() : bool
     {
         return self::$_executionMode == self::DEBUG_MODE;
     }
@@ -330,7 +330,7 @@ abstract class TCustomApplication extends TObject
         return $token;
     }
 
-    protected static function _write($string, ...$params)
+    protected static function _write($string, ...$params) : string
     {
         if (is_array($string)) {
             $string = print_r($string, true);
