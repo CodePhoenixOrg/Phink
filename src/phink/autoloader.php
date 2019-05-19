@@ -65,6 +65,23 @@ class TAutoloader extends TStaticObject
         return $translated;
     }
 
+    public static function classNameToFilenameEx($className)
+    {
+        $translated = '';
+        $l = strlen($className);
+        for ($i = 0; $i < $l; $i++) {
+            if (ctype_upper($className[$i])) {
+                $translated .= '_' . strtolower($className[$i]);
+            } else {
+                $translated .= $className[$i];
+            }
+        }
+
+        $translated = substr($translated, 1);
+
+        return $translated;
+    }
+
     public static function cacheFilenameFromView($viewName)
     {
         return REL_RUNTIME_DIR . strtolower('app_controllers_' . $viewName . CLASS_EXTENSION);
@@ -109,7 +126,8 @@ class TAutoloader extends TStaticObject
     private static function _includeInnerClass($viewName, $info, $withCode = true)
     {
         $className = ucfirst($viewName);
-        $filename = ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;
+        $filename = $info->path . \Phink\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;
+        $filename = \str_replace("@/", PHINK_ROOT, $filename);
         //self::getLogger()->debug('INCLUDE INNER PARTIAL CONTROLLER : ' . $filename, __FILE__, __LINE__);
 
         $code = file_get_contents($filename, FILE_USE_INCLUDE_PATH);
@@ -281,7 +299,14 @@ class TAutoloader extends TStaticObject
         if ($info !== null) {
             //$classFilename = ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;
             /* $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName)) . CLASS_EXTENSION; */
-            $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', ROOT_PATH . $info->path . $ctrl->getId()) . CLASS_EXTENSION;
+            if($info->path[0] == '@') {
+                $path = str_replace("@" . DIRECTORY_SEPARATOR, PHINK_ROOT, $info->path);
+            } else {
+                $path = PHINK_ROOT . $info->path; 
+            }
+            // $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . $ctrl->getId()) . CLASS_EXTENSION;
+            $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . \Phink\TAutoloader::classNameToFilename($viewName)) . CLASS_EXTENSION;
+
         } else {
             //$classFilename = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
             $cacheFilename = \Phink\TAutoloader::cacheFilenameFromView($viewName);
@@ -336,6 +361,9 @@ class TAutoloader extends TStaticObject
 
     public static function loadCachedFile(Web\IWebObject $parent)
     {
+        self::getLogger()->dump('PARENT OBJECT', $parent->getType());
+        self::getLogger()->dump('PARENT OBJECT', $parent->getClassName());
+
         $parent->setCacheFilename();
         $cacheFilename = $parent->getCacheFilename();
         

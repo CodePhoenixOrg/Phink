@@ -50,6 +50,7 @@ abstract class TCustomView extends TCustomControl
     {
         $this->setParent($parent);
         $this->path = $parent->getPath();
+        $this->application = $parent->getApplication();
         
         //$this->redis = new Client($this->context->getRedis());
     }
@@ -99,7 +100,8 @@ abstract class TCustomView extends TCustomControl
 
             $this->viewHtml = file_get_contents(SITE_ROOT . $this->viewFileName);
         } elseif (file_exists($this->getPath())) {
-            self::$logger->debug('PARSE PHINK VIEW : ' . $this->getPath(), __FILE__, __LINE__);
+            $path = str_replace("@/", PHINK_VENDOR, $this->getPath());
+            self::$logger->debug('PARSE PHINK VIEW : ' . $path, __FILE__, __LINE__);
 
             $this->viewHtml = file_get_contents($this->getPath());
         } else {

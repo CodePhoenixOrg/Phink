@@ -85,4 +85,15 @@ class TLog
         }
         return \file_get_contents(DOCUMENT_ROOT . 'php_error_log');
     }
+
+    public function clearAll() : void
+    {
+        if (file_exists(DEBUG_LOG)) {
+            unlink(DEBUG_LOG);
+        }
+        if (file_exists(DOCUMENT_ROOT . 'php_error_log')) {
+            unlink(DOCUMENT_ROOT . 'php_error_log');
+        }
+
+    }
 }

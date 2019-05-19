@@ -254,16 +254,6 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
 
     public static function writeException(\Throwable $ex, $file = null, $line = null) : void
     {
-        $message = '';
-
-        if ($ex instanceof \ErrorException) {
-            $message .= 'Error severity: ' . $ex->getSeverity() . PHP_EOL;
-        }
-        $message .= 'Error code: ' . $ex->getCode() . PHP_EOL;
-        $message .= 'In ' . $ex->getFile() . ', line ' . $ex->getLine() . PHP_EOL;
-        $message .= 'With the message: ' . $ex->getMessage() . PHP_EOL;
-        $message .= 'Stack trace: ' . $ex->getTraceAsString() . PHP_EOL;
-            
-        print  "\e[41m\033[37m" . $message . "\e[0m\033[0m";
+        self::getLogger()->error($ex, $file, $line);
     }
 }

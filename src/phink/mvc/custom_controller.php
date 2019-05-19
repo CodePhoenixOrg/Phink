@@ -82,8 +82,10 @@ abstract class TCustomController extends TCustomControl
     public function parse()
     {
         $this->cacheFileName = $this->view->getCacheFileName();
+        self::$logger->debug('CACHE FILE NAME IF EXISTS : ' . $this->cacheFileName, __FILE__, __LINE__);
 
         $isAlreadyParsed = file_exists($this->getCacheFileName());
+        self::$logger->debug('CACHED FILE EXISTS : ' . $isAlreadyParsed ? 'TRUE' : 'FALSE', __FILE__, __LINE__);
 
         if(!$isAlreadyParsed) {
             $this->_type = $this->view->parse();

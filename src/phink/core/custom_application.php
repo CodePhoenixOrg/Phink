@@ -145,10 +145,36 @@ abstract class TCustomApplication extends TObject
                 }
             }
         );
+
+        $this->setCommand(
+            'rlog',
+            '',
+            'All logs and temporary files cleared',
+            function (callable $callback = null) {
+                $data = $this->clearLogs();
+                if ($callback !== null) {
+                    \call_user_func($callback, $data);
+                }
+            }
+        );
     }
     
     protected function displayConstants() : array
     {
+    }
+
+    protected function clearLogs() : string
+    {
+        $result = '';
+        try {
+            self::getLogger()->clearAll();
+            $result = 'All logs and temporary files cleared';
+        } catch (\Throwable $ex) {
+            self::writeException($ex);
+
+            $result = 'Impossible to clear logs';
+        }
+        return $result;
     }
 
     protected function getDebugLog() : string
