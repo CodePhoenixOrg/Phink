@@ -32,9 +32,9 @@ class TAutoloader extends TStaticObject
      */
     public function __construct($baseDirectory = __DIR__)
     {
-        $this->directory = $baseDirectory;
-        $this->prefix = __NAMESPACE__ . '\\';
-        $this->prefixLength = strlen($this->prefix);
+        // $this->directory = $baseDirectory;
+        // $this->prefix = __NAMESPACE__ . '\\';
+        // $this->prefixLength = strlen($this->prefix);
     }
 
     /**
@@ -44,7 +44,7 @@ class TAutoloader extends TStaticObject
      */
     public static function register($prepend = false)
     {
-        spl_autoload_register(array(new self, 'autoload'), true, $prepend);
+        // spl_autoload_register(array(new self, 'autoload'), true, $prepend);
     }
 
     public static function classNameToFilename($className)
@@ -109,18 +109,18 @@ class TAutoloader extends TStaticObject
      */
     public function autoload($className)
     {
-        if (0 === strpos($className, $this->prefix)) {
-            $parts = explode('\\', substr($className, $this->prefixLength));
-            $className = array_pop($parts);
+        // if (0 === strpos($className, $this->prefix)) {
+        //     $parts = explode('\\', substr($className, $this->prefixLength));
+        //     $className = array_pop($parts);
             
-            $translated = self::classNameToFilename($className);
+        //     $translated = self::classNameToFilename($className);
             
-            $filepath = $this->directory . DIRECTORY_SEPARATOR . strtolower(implode(DIRECTORY_SEPARATOR, $parts) . DIRECTORY_SEPARATOR . $translated);
-            $filepath .= (file_exists($filepath . PREHTML_EXTENSION)) ? CLASS_EXTENSION : '.php';
+        //     $filepath = $this->directory . DIRECTORY_SEPARATOR . strtolower(implode(DIRECTORY_SEPARATOR, $parts) . DIRECTORY_SEPARATOR . $translated);
+        //     $filepath .= (file_exists($filepath . PREHTML_EXTENSION)) ? CLASS_EXTENSION : '.php';
             
-            //file_put_contents(STARTER_FILE, "include '$filepath';"  . "\n", FILE_APPEND);
-            include $filepath;
-        }
+        //     //file_put_contents(STARTER_FILE, "include '$filepath';"  . "\n", FILE_APPEND);
+        //     include $filepath;
+        // }
     }
     
     private static function _includeInnerClass($viewName, $info, $withCode = true)
@@ -152,12 +152,12 @@ class TAutoloader extends TStaticObject
      */
     public static function includeClass($filename, $params = 0)
     {
-        if (!file_exists(SITE_ROOT . $filename)) {
+        if (!file_exists(SRC_ROOT . $filename)) {
             //self::getLogger()->debug('INCLUDE CLASS : FILE ' . $filename . ' DOES NOT EXIST');
             return false;
         }
         
-        $classText = file_get_contents(SITE_ROOT . $filename, FILE_USE_INCLUDE_PATH);
+        $classText = file_get_contents(SRC_ROOT . $filename, FILE_USE_INCLUDE_PATH);
         
         $code = $classText;
         
@@ -198,7 +198,7 @@ class TAutoloader extends TStaticObject
             if (\Phar::running() != '') {
                 include pathinfo($filename, PATHINFO_BASENAME);
             } else {
-                // include SITE_ROOT . $filename;
+                // include SRC_ROOT . $filename;
             }
         }
         
@@ -299,30 +299,30 @@ class TAutoloader extends TStaticObject
         if ($info !== null) {
             //$classFilename = ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;
             /* $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName)) . CLASS_EXTENSION; */
-            if($info->path[0] == '@') {
-                $path = str_replace("@" . DIRECTORY_SEPARATOR, PHINK_ROOT, $info->path);
+            if ($info->path[0] == '@') {
+                $path = str_replace("@" . DIRECTORY_SEPARATOR, PHINK_VENDOR, $info->path);
             } else {
-                $path = PHINK_ROOT . $info->path; 
+                $path = PHINK_VENDOR . $info->path;
             }
             // $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . $ctrl->getId()) . CLASS_EXTENSION;
             $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . \Phink\TAutoloader::classNameToFilename($viewName)) . CLASS_EXTENSION;
-
         } else {
             //$classFilename = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
             $cacheFilename = \Phink\TAutoloader::cacheFilenameFromView($viewName);
-            $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
             self::getLogger()->debug('CACHED JS FILENAME: ' . $cacheJsFilename, __FILE__, __LINE__);
         }
+        $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
+        $cacheCssFilename = \Phink\TAutoloader::cacheCssFilenameFromView($viewName);
         
-        if (file_exists(SITE_ROOT . $cacheFilename)) {
+        if (file_exists(SRC_ROOT . $cacheFilename)) {
             if (file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
                 self::getLogger()->debug('INCLUDE CACHED JS CONTROL: ' . DOCUMENT_ROOT . $cacheJsFilename, __FILE__, __LINE__);
                 $ctrl->getResponse()->addScript($cacheJsFilename);
             }
-            self::getLogger()->debug('INCLUDE CACHED CONTROL: ' . SITE_ROOT . $cacheFilename, __FILE__, __LINE__);
+            self::getLogger()->debug('INCLUDE CACHED CONTROL: ' . SRC_ROOT . $cacheFilename, __FILE__, __LINE__);
             self::includeClass($cacheFilename, RETURN_CODE);
 
-            include SITE_ROOT . $cacheFilename;
+            include SRC_ROOT . $cacheFilename;
 
             return true;
         }
@@ -330,7 +330,7 @@ class TAutoloader extends TStaticObject
         $viewName = lcfirst($viewName);
         $include = null;
 //            $modelClass = ($include = TAutoloader::includeModelByName($viewName)) ? $include['type'] : DEFALT_MODEL;
-//            include SITE_ROOT . $include['file'];
+//            include SRC_ROOT . $include['file'];
 //            $model = new $modelClass();
 
           
@@ -342,7 +342,7 @@ class TAutoloader extends TStaticObject
         $view->setNames();
         if ($info !== null) {
             $include = self::_includeInnerClass($viewName, $info);
-            $view->setCacheFilename(SITE_ROOT . $cacheFilename);
+            $view->setCacheFilename(SRC_ROOT . $cacheFilename);
         } else {
             $include = self::includeClass($view->getControllerFileName(), RETURN_CODE);
         }
@@ -352,9 +352,9 @@ class TAutoloader extends TStaticObject
         $view->parse();
 
         self::getLogger()->debug('CACHE FILE NAME OF THE PARSED VIEW: ' . $view->getCacheFileName());
-        self::getLogger()->debug('ROOT CACHE FILE NAME OF THE PARSED VIEW: ' . SITE_ROOT . $cacheFilename);
+        self::getLogger()->debug('ROOT CACHE FILE NAME OF THE PARSED VIEW: ' . SRC_ROOT . $cacheFilename);
 
-        include SITE_ROOT . $cacheFilename;
+        include SRC_ROOT . $cacheFilename;
 
         return true;
     }
@@ -373,7 +373,7 @@ class TAutoloader extends TStaticObject
         include $cacheFilename;
 
         $classText = str_replace("\r", '', $classText);
-        $classText = str_replace("\n", '', $classText);
+        // $classText = str_replace("\n", '', $classText);
 
         $start = strpos($classText, 'namespace');
         $namespace = '';
@@ -381,10 +381,20 @@ class TAutoloader extends TStaticObject
             $start += 10;
             $end = strpos($classText, ';', $start);
             $namespace = substr($classText, $start, $end - $start);
-            $className = $namespace . '\\' . $parent->getClassName();
+            // $className = $namespace . '\\' . $parent->getClassName();
         }
+
+        $start = strpos($classText, 'class');
+        $className = '';
+        if ($start > 0) {
+            $start += 6;
+            $end = strpos($classText, ' ', $start);
+            $className = substr($classText, $start, $end - $start);
+        }
+        $fqClassName = $namespace . '\\' . $className;
+
         //$className = $include['type'];
-        $class = new $className($parent);
+        $class = new $fqClassName($parent);
         
         $class->perform();
 

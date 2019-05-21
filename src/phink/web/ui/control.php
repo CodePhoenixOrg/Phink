@@ -45,7 +45,7 @@ class TControl extends TCustomControl
         $this->viewName = lcfirst($this->className);
         
         $include = \Phink\TAutoloader::includeModelByName($this->viewName);
-        $model = SITE_ROOT . $include['file'];
+        $model = SRC_ROOT . $include['file'];
         if(file_exists($model)) {
             include $model;
             $modelClass = $include['type'];
@@ -111,10 +111,10 @@ class TControl extends TCustomControl
             $this->response->addScript($cachedJsController);
         }
 */        
-        if(file_exists(SITE_ROOT . $this->getJsControllerFileName())) {
+        if(file_exists(SRC_ROOT . $this->getJsControllerFileName())) {
             $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
             if(!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
-                copy(SITE_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
+                copy(SRC_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
             }
             $this->response->addScript($cacheJsFilename);
         }

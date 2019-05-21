@@ -163,7 +163,7 @@ abstract class TCustomApplication extends TObject
     {
     }
 
-    protected function clearLogs() : string
+    public function clearLogs() : string
     {
         $result = '';
         try {
@@ -191,10 +191,10 @@ abstract class TCustomApplication extends TObject
     {
         try {
             $ini = null;
-            if (!file_exists(SITE_ROOT . 'config/app.ini')) {
+            if (!file_exists(SRC_ROOT . 'config/app.ini')) {
                 return;
             }
-            $ini = parse_ini_file(SITE_ROOT  . 'config/app.ini');
+            $ini = parse_ini_file(SRC_ROOT  . 'config/app.ini');
             $data = isset($ini['data']) ?? $ini['data'];
 
             self::getLogger()->dump('INI_DATA:', $ini);

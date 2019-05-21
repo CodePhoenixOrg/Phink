@@ -198,10 +198,10 @@ abstract class TCustomController extends TCustomControl
         }
 */        
         self::$logger->debug(__METHOD__ . '::1::' . $this->getJsControllerFileName());
-        if(file_exists(SITE_ROOT . $this->getJsControllerFileName())) {
+        if(file_exists(SRC_ROOT . $this->getJsControllerFileName())) {
             self::$logger->debug(__METHOD__ . '::2::' . $this->getJsControllerFileName());
             $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
-            copy(SITE_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
+            copy(SRC_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
             $this->response->addScript($cacheJsFilename);
         }        
     }

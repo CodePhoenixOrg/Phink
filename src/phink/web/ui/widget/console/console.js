@@ -20,8 +20,12 @@ Phink.DOM.ready(function () {
                 this.getJSON('rlog', {
                     "action": 'clearLogs'
                 } , function (data) {
-                    document.querySelector("#result").innerHtml = data;
+                    document.querySelector("#result").innerHTML = data.result;
                 });
+                // this.getPartialView('rlog', 'clearLogs', "#result", {} , function (data) {
+                //     document.querySelector("#result").innerHTML = data.result;
+                //     // console.log(data);
+                // });
             }
         })
         .onload(function () {

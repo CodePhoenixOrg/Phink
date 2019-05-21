@@ -62,8 +62,8 @@ class TLog
         }
         $handle = fopen($filepath, 'a');
 
-        if (SITE_ROOT) {
-            $filename = substr($filename, strlen(SITE_ROOT));
+        if (SRC_ROOT) {
+            $filename = substr($filename, strlen(SRC_ROOT));
         }
         $message = date('Y-m-d h:i:s') . ((isset($filename)) ? ":$filename" : '') . ((isset($line)) ? ":$line" : '') . " : $message" . PHP_EOL;
         fwrite($handle, $message . PHP_EOL);

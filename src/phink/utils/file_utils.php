@@ -79,7 +79,7 @@ class TFileUtils
         debug($filename);
         $filename = self::filePath($filename);
         if(strpos($filename, DIRECTORY_SEPARATOR) == 0) {
-            $filename = SITE_ROOT . $filename;
+            $filename = SRC_ROOT . $filename;
             $filename = self::filePath($filename);
         }
         debug($filename);

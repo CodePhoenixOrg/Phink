@@ -49,9 +49,9 @@ class TRestRouter extends \Phink\Core\TRouter
      
         $this->className = 'app' . DIRECTORY_SEPARATOR . 'rest' . DIRECTORY_SEPARATOR . $className . CLASS_EXTENSION;
         
-        // $this->getLogger()->debug('REST CONTROLLER: ' . SITE_ROOT . $this->className);
+        // $this->getLogger()->debug('REST CONTROLLER: ' . SRC_ROOT . $this->className);
         
-        return file_exists(SITE_ROOT . $this->className);
+        return file_exists(SRC_ROOT . $this->className);
     }
 
     public function dispatch()
@@ -60,12 +60,12 @@ class TRestRouter extends \Phink\Core\TRouter
         $method = REQUEST_METHOD;
 
         $model = str_replace('rest', 'models', $this->className);
-        if(file_exists(SITE_ROOT . $model)) {
-            include SITE_ROOT . $model;
+        if(file_exists(SRC_ROOT . $model)) {
+            include SRC_ROOT . $model;
         }
         
         $include = \Phink\TAutoloader::includeClass($this->className, INCLUDE_FILE);
-        include SITE_ROOT . $include['file'];
+        include SRC_ROOT . $include['file'];
         $fqObject = $include['type'];
         
         $instance = new $fqObject($this);

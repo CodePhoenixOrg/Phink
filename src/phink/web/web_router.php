@@ -48,6 +48,8 @@ class TWebRouter extends \Phink\Core\TRouter
 
     public function translate()
     {
+        $isTranslated = false;
+
         $info = (object) \pathinfo($this->path);
         $this->viewName = $info->filename;
         $this->dirName = $info->dirname;
@@ -57,17 +59,26 @@ class TWebRouter extends \Phink\Core\TRouter
         $this->setNamespace();
         $this->setNames();
 
-        if (file_exists($this->getCacheFileName())) {
-            $this->_isCached = true;
-            return $this->_isCached;
-        } else {
-            return file_exists(SITE_ROOT . $this->getPath());
+        if(file_exists(SRC_ROOT . $this->getPath())) {
+            // $this->path = SRC_ROOT . $this->getPath();
+            $isTranslated = true;
         }
+
+        if(file_exists(SITE_ROOT . $this->getPath())) {
+            // $this->path = SITE_ROOT . $this->getPath();
+            $isTranslated = true;
+        }
+
+        $this->_isCached = file_exists($this->getCacheFileName());
+
+        return $this->_isCached || $isTranslated;
     }
 
     public function dispatch()
     {
         if ($this->_isCached) {
+            // $view = new \Phink\MVC\TView($this);
+            // $view->parse();
             TAutoloader::loadCachedFile($this);
 
             return true;
@@ -107,6 +118,7 @@ class TWebRouter extends \Phink\Core\TRouter
     public function includeController()
     {
         $result = false;
+            $this->getLogger()->debug("Ready to dispatch 2");
         
         $result = TAutoloader::includeClass($this->controllerFileName, RETURN_CODE);
         if (!$result) {
@@ -125,6 +137,8 @@ class TWebRouter extends \Phink\Core\TRouter
     public function includePrimaryController()
     {
         if ($this->getRequest()->isAJAX() && $this->request->isPartialView()) {
+            $this->getLogger()->debug("Ready to dispatch");
+
             $result = TAutoloader::includeDefaultController($this->namespace, $this->className);
             \Phink\Core\TRegistry::setCode($this->controllerFileName, $result['code']);
         } else {

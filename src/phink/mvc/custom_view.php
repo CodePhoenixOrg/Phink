@@ -95,20 +95,32 @@ abstract class TCustomView extends TCustomControl
 
         // $this->viewHtml = $this->redis->mget($templateName);
         // $this->viewHtml = $this->viewHtml[0];
-        if (file_exists(SITE_ROOT . $this->viewFileName)) {
-            self::$logger->debug('PARSE SITE ROOT FILE : ' . $this->viewFileName, __FILE__, __LINE__);
+        if (file_exists(SRC_ROOT . $this->viewFileName) && !empty($this->viewFileName)) {
+            self::$logger->debug('PARSE SRC ROOT FILE : ' . $this->viewFileName, __FILE__, __LINE__);
 
+            $this->viewHtml = file_get_contents(SRC_ROOT . $this->viewFileName);
+        }
+        if (file_exists(SITE_ROOT . $this->viewFileName) && !empty($this->viewFileName)) {
+            self::$logger->debug('PARSE SITE ROOT FILE : ' . $this->viewFileName, __FILE__, __LINE__);
+    
             $this->viewHtml = file_get_contents(SITE_ROOT . $this->viewFileName);
-        } elseif (file_exists($this->getPath())) {
-            $path = str_replace("@/", PHINK_VENDOR, $this->getPath());
+        }
+        if (file_exists(SITE_ROOT . $this->getPath()) && !empty($this->getPath())) {
+            $path = $this->getPath();
+            if ($path[0] == '@') {
+                $path = str_replace("@" . DIRECTORY_SEPARATOR, SITE_ROOT, $this->getPath());
+            } else {
+                $path = SITE_ROOT . $this->getPath();
+            }
             self::$logger->debug('PARSE PHINK VIEW : ' . $path, __FILE__, __LINE__);
 
-            $this->viewHtml = file_get_contents($this->getPath());
-        } else {
-            self::$logger->debug('PARSE PHINK PLUGIN : ' . $this->getPath(), __FILE__, __LINE__);
+            $this->viewHtml = file_get_contents($path);
+        } 
+        // else {
+        //     self::$logger->debug('PARSE PHINK PLUGIN : ' . $this->getPath(), __FILE__, __LINE__);
 
-            $this->viewHtml = file_get_contents($this->viewFileName, FILE_USE_INCLUDE_PATH);
-        }
+        //     $this->viewHtml = file_get_contents(SITE_ROOT . $this->viewFileName, FILE_USE_INCLUDE_PATH);
+        // }
         
         // $this->redis->mset($templateName, $this->viewHtml);
         //self::$logger->debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');

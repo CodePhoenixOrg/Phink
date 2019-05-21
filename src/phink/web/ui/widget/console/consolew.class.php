@@ -75,6 +75,6 @@ class TConsolew extends TPartialController
         // self::getLogger()->clearLogs();
 
         $data = $this->getApplication()->clearLogs();
-        $this->getResponse()->setData($data);
+        $this->getResponse()->setData('result', $data);
     }
 }
