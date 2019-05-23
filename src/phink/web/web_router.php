@@ -118,7 +118,6 @@ class TWebRouter extends \Phink\Core\TRouter
     public function includeController()
     {
         $result = false;
-            $this->getLogger()->debug("Ready to dispatch 2");
         
         $result = TAutoloader::includeClass($this->controllerFileName, RETURN_CODE);
         if (!$result) {
@@ -137,8 +136,6 @@ class TWebRouter extends \Phink\Core\TRouter
     public function includePrimaryController()
     {
         if ($this->getRequest()->isAJAX() && $this->request->isPartialView()) {
-            $this->getLogger()->debug("Ready to dispatch");
-
             $result = TAutoloader::includeDefaultController($this->namespace, $this->className);
             \Phink\Core\TRegistry::setCode($this->controllerFileName, $result['code']);
         } else {

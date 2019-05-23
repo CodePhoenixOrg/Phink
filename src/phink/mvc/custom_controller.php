@@ -20,6 +20,7 @@ namespace Phink\MVC;
 
 use Phink\Web\IWebObject;
 use Phink\Web\UI\TCustomControl;
+use TActionInfo;
 
 abstract class TCustomController extends TCustomControl
 {
@@ -151,7 +152,10 @@ abstract class TCustomController extends TCustomControl
                 // $this->renderCreations();
             
                 $params = $this->validate($actionName);
-                $this->invoke($actionName, $params);
+                $actionInfo = $this->invoke($actionName, $params);
+                if($actionInfo instanceof TActionInfo) {
+                    $this->response->setData($actionInfo->getData());
+                }
 
                 $this->beforeBinding();
                 // $this->renderDeclarations();

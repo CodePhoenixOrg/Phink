@@ -11,16 +11,19 @@
         }
     ],
     "autoload": {
-        "exclude-from-files": [
-            "src/phink/web/ui/widget/pager/pager.class.php",            
-            "src/phink/web/ui/widget/console/consolew.class.php"
-        ],
         "classmap": [
             "src/phink/"
+        ],
+        "exclude-from-classmap":
+        [
+            "src/phink/phink_library.php",            
+            "src/phink/web/ui/widget/pager/pager.class.php",            
+            "src/phink/web/ui/widget/console/consolew.class.php"
         ]
     },    
     "require": {
         "php": ">=7.0.0",
+	"twig/twig": "^2.0",
         "mcaskill/composer-exclude-files": "^1.1.0",
         "components/jquery": ">=1.9.1",
         "components/jqueryui": ">=1.12.1",

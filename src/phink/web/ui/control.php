@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- namespace Phink\Web\UI;
+namespace Phink\Web\UI;
 
 use Phink\Core\TObject;
+use Phink\MVC\TActionInfo;
 
 class TControl extends TCustomControl
 {
@@ -148,7 +149,10 @@ class TControl extends TCustomControl
                 $actionName = $this->actionName;
 
                 $params = $this->validate($actionName);
-                $this->invoke($actionName, $params);
+                $actionInfo = $this->invoke($actionName, $params);
+                if($actionInfo instanceof TActionInfo) {
+                    $this->response->setData($actionInfo->getData());
+                }
 
                 $this->beforeBinding();
                 $this->declareObjects();

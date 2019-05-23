@@ -59,6 +59,7 @@ class PhinkLibrary {
             'utils/file_utils.php',
             'crypto/crypto.php',
             'auth/authentication.php',
+            'mvc/action_info.php',
             'data/data_access.php',
             'data/server_type.php',
             'configuration/configurable.php',

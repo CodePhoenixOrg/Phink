@@ -5,6 +5,7 @@ namespace Phink\Web\UI\Widget\Consolew;
 //require_once 'phink/mvc/partial_controller.php';
 
 use Phink\MVC\TPartialController;
+use Phink\MVC\TActionInfo;
 
 /**
  * Description of dummy
@@ -70,11 +71,10 @@ class TConsolew extends TPartialController
         }
     }
 
-    public function clearLogs() : void
+    public function clearLogs() : TActionInfo
     {
-        // self::getLogger()->clearLogs();
-
         $data = $this->getApplication()->clearLogs();
-        $this->getResponse()->setData('result', $data);
+
+        return TActionInfo::set($this, 'result', $data);
     }
 }
