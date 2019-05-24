@@ -67,7 +67,7 @@ class TPager extends \Phink\MVC\TPartialController
     }
 
     public function getCacheFilename() {
-        return SITE_ROOT . REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $this->path . $this->for . 'pager' . CLASS_EXTENSION);
+        return SRC_ROOT . REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $this->path . $this->for . 'pager' . CLASS_EXTENSION);
     }
 
     public function init()

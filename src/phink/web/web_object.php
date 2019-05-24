@@ -296,14 +296,22 @@ trait TWebObject
         if (!file_exists($this->viewFileName)) {
             $info = TRegistry::classInfo($this->className);
             if ($info !== null) {
+                // $this->viewName = \Phink\TAutoloader::classNameToFilename($this->className);
                 $this->viewName = \Phink\TAutoloader::classNameToFilename($this->className);
+                if($info->path[0] == '@') {
+                    $path = str_replace("@" . DIRECTORY_SEPARATOR, PHINK_VENDOR, $info->path);
+                } else {
+                    $path = PHINK_VENDOR . $info->path; 
+                }
+                // $path = $info->path;
                 if ($info->hasTemplate) {
-                    $this->viewFileName = ROOT_PATH . $info->path . $this->viewName . PREHTML_EXTENSION;
+                    $this->viewFileName = $path . $this->viewName . PREHTML_EXTENSION;
                 } else {
                     $this->viewFileName = '';
                 }
-                $this->controllerFileName = ROOT_PATH . $info->path . $this->viewName . CLASS_EXTENSION;
-                $this->jsControllerFileName = ROOT_PATH . $info->path . $this->viewName . JS_EXTENSION;
+                $this->controllerFileName = $path . $this->viewName . CLASS_EXTENSION;
+                $this->jsControllerFileName = $path . $this->viewName . JS_EXTENSION;
+                $this->cssFileName = $path . $this->viewName . CSS_EXTENSION;
                 $this->className = $info->namespace . '\\' . $this->className;
             }
         }

@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- namespace Phink\Web\UI;
+namespace Phink\Web\UI;
 
 use Phink\Core\TObject;
+use Phink\MVC\TActionInfo;
 
 class TControl extends TCustomControl
 {
@@ -45,7 +46,7 @@ class TControl extends TCustomControl
         $this->viewName = lcfirst($this->className);
         
         $include = \Phink\TAutoloader::includeModelByName($this->viewName);
-        $model = SITE_ROOT . $include['file'];
+        $model = SRC_ROOT . $include['file'];
         if(file_exists($model)) {
             include $model;
             $modelClass = $include['type'];
@@ -111,10 +112,10 @@ class TControl extends TCustomControl
             $this->response->addScript($cachedJsController);
         }
 */        
-        if(file_exists(SITE_ROOT . $this->getJsControllerFileName())) {
+        if(file_exists(SRC_ROOT . $this->getJsControllerFileName())) {
             $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
             if(!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
-                copy(SITE_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
+                copy(SRC_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
             }
             $this->response->addScript($cacheJsFilename);
         }
@@ -148,7 +149,10 @@ class TControl extends TCustomControl
                 $actionName = $this->actionName;
 
                 $params = $this->validate($actionName);
-                $this->invoke($actionName, $params);
+                $actionInfo = $this->invoke($actionName, $params);
+                if($actionInfo instanceof TActionInfo) {
+                    $this->response->setData($actionInfo->getData());
+                }
 
                 $this->beforeBinding();
                 $this->declareObjects();

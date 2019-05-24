@@ -115,7 +115,7 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
         $constants = [];
         $constants['DOCUMENT_ROOT'] = DOCUMENT_ROOT;
         $constants['HTTP_PROTOCOL'] = HTTP_PROTOCOL;
-        $constants['SITE_ROOT'] = SITE_ROOT;
+        $constants['SRC_ROOT'] = SRC_ROOT;
         $constants['PHINK_ROOT'] = PHINK_ROOT;
         $constants['APP_NAME'] = APP_NAME;
         $constants['APP_ROOT'] = APP_ROOT;
@@ -216,9 +216,11 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
 //        }
 
         $this->getLogger()->debug("TRANSLATED ROUTE::" . $router->getPath());
+        $this->getLogger()->debug("TRANSLATED SRC ROUTE::" . SRC_ROOT . $router->getPath());
+        $this->getLogger()->debug("TRANSLATED PHINK ROUTE::" . SITE_ROOT . $router->getPath());
    
         if ((is_string($token) 
-        || file_exists(SITE_ROOT . $router->getPath()))
+        || (file_exists(SRC_ROOT . $router->getPath()) || file_exists(SITE_ROOT . $router->getPath())))
             && $router->isFound()
         ) {
             // We renew the token
@@ -254,16 +256,6 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
 
     public static function writeException(\Throwable $ex, $file = null, $line = null) : void
     {
-        $message = '';
-
-        if ($ex instanceof \ErrorException) {
-            $message .= 'Error severity: ' . $ex->getSeverity() . PHP_EOL;
-        }
-        $message .= 'Error code: ' . $ex->getCode() . PHP_EOL;
-        $message .= 'In ' . $ex->getFile() . ', line ' . $ex->getLine() . PHP_EOL;
-        $message .= 'With the message: ' . $ex->getMessage() . PHP_EOL;
-        $message .= 'Stack trace: ' . $ex->getTraceAsString() . PHP_EOL;
-            
-        print  "\e[41m\033[37m" . $message . "\e[0m\033[0m";
+        self::getLogger()->error($ex, $file, $line);
     }
 }

@@ -129,6 +129,7 @@ class TObject extends TStaticObject
 
     public function invoke($method, $params = array())
     {
+        $result = null;
         $values = array_values($params);
         
         if(count($values) > 0) {
@@ -136,12 +137,14 @@ class TObject extends TStaticObject
             self::$logger->debug(__METHOD__ . '::INVOKE_ACTION::' . $method  . '(' . $args . ')');
 //            include 'data://text/plain;base64,' . base64_encode('<?php $this->' . $method  . '(' . $args . ')');
             $ref = new \ReflectionMethod($this->getFQClassName(), $method);
-            $ref->invokeArgs($this, $values);
+            $result = $ref->invokeArgs($this, $values);
         } else {
             self::$logger->debug(__METHOD__ . '::INVOKE_ACTION::' . $method  . '()');
 //            $ref->invoke($this);
-            $this->$method();
-        }        
+            $result = $this->$method();
+        }
+
+        return $result;
     }
     
     public function getParent()

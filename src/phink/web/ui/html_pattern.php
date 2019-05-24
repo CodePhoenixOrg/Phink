@@ -51,7 +51,7 @@ trait THtmlPattern {
     
     public function getPatternName()
     {
-        return strtolower(ROOT_NAMESPACE) . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'html' . PATTERN_EXTENSION;
+        return 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'html' . PATTERN_EXTENSION;
     }
 
     private function _getElements()
@@ -69,7 +69,7 @@ trait THtmlPattern {
         $patternName = $this->getPatternName();
         
         //self::$logger->dump('PATTERN NAME', $patternName);
-        $contents = file_get_contents($patternName, FILE_USE_INCLUDE_PATH);
+        $contents = file_get_contents(PHINK_ROOT . $patternName, FILE_USE_INCLUDE_PATH);
         
         $doc = new \Phink\Xml\TXmlDocument($contents);
         $doc->matchAll();

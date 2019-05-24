@@ -62,8 +62,8 @@ class TLog
         }
         $handle = fopen($filepath, 'a');
 
-        if (SITE_ROOT) {
-            $filename = substr($filename, strlen(SITE_ROOT));
+        if (SRC_ROOT) {
+            $filename = substr($filename, strlen(SRC_ROOT));
         }
         $message = date('Y-m-d h:i:s') . ((isset($filename)) ? ":$filename" : '') . ((isset($line)) ? ":$line" : '') . " : $message" . PHP_EOL;
         fwrite($handle, $message . PHP_EOL);
@@ -84,5 +84,16 @@ class TLog
             return '';
         }
         return \file_get_contents(DOCUMENT_ROOT . 'php_error_log');
+    }
+
+    public function clearAll() : void
+    {
+        if (file_exists(DEBUG_LOG)) {
+            unlink(DEBUG_LOG);
+        }
+        if (file_exists(DOCUMENT_ROOT . 'php_error_log')) {
+            unlink(DOCUMENT_ROOT . 'php_error_log');
+        }
+
     }
 }

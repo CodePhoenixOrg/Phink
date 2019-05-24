@@ -71,26 +71,26 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         $this->appName = array_pop($path);
         define('APP_NAME', $this->appName);
         
-        define('SITE_ROOT', $siteDir . DIRECTORY_SEPARATOR);
+        define('SRC_ROOT', $siteDir . DIRECTORY_SEPARATOR);
         define('SCRIPT_ROOT', $scriptDir);
 
         if (APP_NAME == 'egg') {
-            define('PHINK_ROOT', SITE_ROOT . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
-            define('PHINK_ROOT', SITE_ROOT . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
+            define('PHINK_ROOT', SRC_ROOT . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
+            define('PHINK_ROOT', SRC_ROOT . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
         } else {
-            define('PHINK_ROOT', SITE_ROOT . 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
+            define('PHINK_ROOT', SRC_ROOT . 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
         }
 
-        define('APP_ROOT', SITE_ROOT . 'app' . DIRECTORY_SEPARATOR);
+        define('APP_ROOT', SRC_ROOT . 'app' . DIRECTORY_SEPARATOR);
         define('APP_SCRIPTS', APP_ROOT . 'scripts' . DIRECTORY_SEPARATOR);
-        define('APP_DATA', SITE_ROOT . 'data' . DIRECTORY_SEPARATOR);
+        define('APP_DATA', SRC_ROOT . 'data' . DIRECTORY_SEPARATOR);
         define('APP_BUSINESS', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
         define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
         define('BUSINESS_ROOT', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
         define('MODEL_ROOT', APP_ROOT . 'models' . DIRECTORY_SEPARATOR);
         define('REST_ROOT', APP_ROOT . 'rest' . DIRECTORY_SEPARATOR);
         define('VIEW_ROOT', APP_ROOT . 'views' . DIRECTORY_SEPARATOR);
-        define('CACHE_DIR', SITE_ROOT . 'cache' . DIRECTORY_SEPARATOR);
+        define('CACHE_DIR', SRC_ROOT . 'cache' . DIRECTORY_SEPARATOR);
 
         $useTransaction = $this->setCommand('useTransactions');
         $execution = $this->setCommand('executionMode');
@@ -225,7 +225,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             $constants['ERROR_LOG'] = ERROR_LOG;
 
             if (APP_NAME !== 'egg') {
-                $constants['SITE_ROOT'] = SITE_ROOT;
+                $constants['SRC_ROOT'] = SRC_ROOT;
                 $constants['APP_ROOT'] = APP_ROOT;
                 $constants['APP_SCRIPTS'] = APP_SCRIPTS;
                 $constants['APP_BUSINESS'] = APP_BUSINESS;

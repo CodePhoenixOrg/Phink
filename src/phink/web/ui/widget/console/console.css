@@ -21,3 +21,17 @@
     color: darkblue;
     background-color: antiquewhite;
 }
+
+#basics {
+    float: left;
+    position: relative;
+}
+
+#themes {
+    float: right;
+    position: relative;
+}
+
+#logo {
+    clear: both;
+}

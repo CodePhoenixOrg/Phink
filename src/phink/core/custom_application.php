@@ -145,10 +145,36 @@ abstract class TCustomApplication extends TObject
                 }
             }
         );
+
+        $this->setCommand(
+            'rlog',
+            '',
+            'All logs and temporary files cleared',
+            function (callable $callback = null) {
+                $data = $this->clearLogs();
+                if ($callback !== null) {
+                    \call_user_func($callback, $data);
+                }
+            }
+        );
     }
     
     protected function displayConstants() : array
     {
+    }
+
+    public function clearLogs() : string
+    {
+        $result = '';
+        try {
+            self::getLogger()->clearAll();
+            $result = 'All logs and temporary files cleared';
+        } catch (\Throwable $ex) {
+            self::writeException($ex);
+
+            $result = 'Impossible to clear logs';
+        }
+        return $result;
     }
 
     protected function getDebugLog() : string
@@ -165,10 +191,10 @@ abstract class TCustomApplication extends TObject
     {
         try {
             $ini = null;
-            if (!file_exists(SITE_ROOT . 'config/app.ini')) {
+            if (!file_exists(SRC_ROOT . 'config/app.ini')) {
                 return;
             }
-            $ini = parse_ini_file(SITE_ROOT  . 'config/app.ini');
+            $ini = parse_ini_file(SRC_ROOT  . 'config/app.ini');
             $data = isset($ini['data']) ?? $ini['data'];
 
             self::getLogger()->dump('INI_DATA:', $ini);

@@ -48,6 +48,14 @@ class TRegistry extends TStaticObject
                 'canRender' => true,
                 'isAutoloaded' => true
             )
+            , 'TConsolew' => array(
+                'alias' => 'console',
+                'path' => '@' . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'console' . DIRECTORY_SEPARATOR,
+                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Consolew',
+                'hasTemplate' => true,
+                'canRender' => true,
+                'isAutoloaded' => false
+            )
             , 'TPager' => array(
                 'alias' => 'pager',
                 'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'pager' . DIRECTORY_SEPARATOR,

@@ -54,12 +54,13 @@ if (APP_IS_WEB) {
     define('HTTP_PROTOCOL', $scheme);
 
     if (substr(DOCUMENT_ROOT, -4) === 'web/') {
-        define('SITE_ROOT', substr(DOCUMENT_ROOT, 0, -4));
+        define('SRC_ROOT', substr(DOCUMENT_ROOT, 0, -4));
     } else {
-        define('SITE_ROOT', DOCUMENT_ROOT);
+        define('SRC_ROOT', DOCUMENT_ROOT);
     }
+    define('SITE_ROOT', substr(SRC_ROOT, 0, -4));
 
-    $appname = pathinfo(SITE_ROOT, PATHINFO_FILENAME);
+    $appname = pathinfo(SRC_ROOT, PATHINFO_FILENAME);
     define('APP_NAME', $appname);
 
     define('PHINK_VENDOR', 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
@@ -67,7 +68,7 @@ if (APP_IS_WEB) {
 
     define('APP_DIR', 'app');
     
-    define('APP_ROOT', SITE_ROOT . APP_DIR . DIRECTORY_SEPARATOR);
+    define('APP_ROOT', SRC_ROOT . APP_DIR . DIRECTORY_SEPARATOR);
     define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
     define('MODEL_ROOT', APP_ROOT . 'models' . DIRECTORY_SEPARATOR);
     define('REST_ROOT', APP_ROOT . 'rest' . DIRECTORY_SEPARATOR);
@@ -75,13 +76,14 @@ if (APP_IS_WEB) {
     define('BUSINESS_ROOT', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
 
     define('REL_RUNTIME_DIR', 'runtime' . DIRECTORY_SEPARATOR);
-    define('RUNTIME_DIR', SITE_ROOT . REL_RUNTIME_DIR);
+    define('RUNTIME_DIR', SRC_ROOT . REL_RUNTIME_DIR);
     define('REL_RUNTIME_JS_DIR', 'js' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);
     define('REL_RUNTIME_CSS_DIR', 'css' . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR);
     define('RUNTIME_JS_DIR', DOCUMENT_ROOT . REL_RUNTIME_JS_DIR);
-    define('CACHE_DIR', SITE_ROOT . 'cache' . DIRECTORY_SEPARATOR);
+    define('RUNTIME_CSS_DIR', DOCUMENT_ROOT . REL_RUNTIME_CSS_DIR);
+    define('CACHE_DIR', SRC_ROOT . 'cache' . DIRECTORY_SEPARATOR);
     
-    define('LOG_PATH', SITE_ROOT . 'logs' . DIRECTORY_SEPARATOR);
+    define('LOG_PATH', SRC_ROOT . 'logs' . DIRECTORY_SEPARATOR);
     
     define('PAGE_NUMBER', 'pagen');
     define('PAGE_COUNT', 'pagec');
@@ -96,7 +98,7 @@ if (APP_IS_WEB) {
     define('LOGIN_PAGE', '/' . LOGIN_VIEW . '.html');
     define('MASTER_PAGE', '/' . MASTER_VIEW . '.html');
     define('HOME_PAGE', '/' . HOME_VIEW . '.html');
-    define('APP_DATA', SITE_ROOT . 'data' . DIRECTORY_SEPARATOR);
+    define('APP_DATA', SRC_ROOT . 'data' . DIRECTORY_SEPARATOR);
     define('APP_BUSINESS', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
     define('STARTER_FILE', 'starter.php');
     define('HTTP_USER_AGENT', $_SERVER['HTTP_USER_AGENT']);

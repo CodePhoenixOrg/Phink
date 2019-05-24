@@ -20,6 +20,7 @@ namespace Phink\MVC;
 
 use Phink\Web\IWebObject;
 use Phink\Web\UI\TCustomControl;
+use TActionInfo;
 
 abstract class TCustomController extends TCustomControl
 {
@@ -82,8 +83,10 @@ abstract class TCustomController extends TCustomControl
     public function parse()
     {
         $this->cacheFileName = $this->view->getCacheFileName();
+        self::$logger->debug('CACHE FILE NAME IF EXISTS : ' . $this->cacheFileName, __FILE__, __LINE__);
 
         $isAlreadyParsed = file_exists($this->getCacheFileName());
+        self::$logger->debug('CACHED FILE EXISTS : ' . $isAlreadyParsed ? 'TRUE' : 'FALSE', __FILE__, __LINE__);
 
         if(!$isAlreadyParsed) {
             $this->_type = $this->view->parse();
@@ -149,7 +152,10 @@ abstract class TCustomController extends TCustomControl
                 // $this->renderCreations();
             
                 $params = $this->validate($actionName);
-                $this->invoke($actionName, $params);
+                $actionInfo = $this->invoke($actionName, $params);
+                if($actionInfo instanceof TActionInfo) {
+                    $this->response->setData($actionInfo->getData());
+                }
 
                 $this->beforeBinding();
                 // $this->renderDeclarations();
@@ -196,10 +202,10 @@ abstract class TCustomController extends TCustomControl
         }
 */        
         self::$logger->debug(__METHOD__ . '::1::' . $this->getJsControllerFileName());
-        if(file_exists(SITE_ROOT . $this->getJsControllerFileName())) {
+        if(file_exists(SRC_ROOT . $this->getJsControllerFileName())) {
             self::$logger->debug(__METHOD__ . '::2::' . $this->getJsControllerFileName());
             $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
-            copy(SITE_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
+            copy(SRC_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
             $this->response->addScript($cacheJsFilename);
         }        
     }
