@@ -158,8 +158,20 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
                     $this->displayTree('master' . DIRECTORY_SEPARATOR . 'Phink-master' . DIRECTORY_SEPARATOR. 'src' . DIRECTORY_SEPARATOR . 'phink');
                 } catch (\Throwable $ex) {
                     $this->writeException($ex);
-                } catch (\Exception $ex) {
-                    $this->writeException($ex);
+                }
+            }
+        );
+
+        $this->setCommand(
+            'show-arguments',
+            '',
+            'Show the application arguments.',
+            function (callable $callback = null) {
+                $data = ['argv' => $this->_argv, 'argc' => $this->_argc];
+                $this->writeLine($data);
+
+                if ($callback !== null) {
+                    \call_user_func($callback, $data);
                 }
             }
         );

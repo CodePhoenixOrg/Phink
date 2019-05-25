@@ -75,7 +75,7 @@ abstract class TCustomApplication extends TObject
             'help',
             'h',
             'Display this help',
-            function ($callback = null) {
+            function (callable $callback = null) {
                 $this->help();
                 $data = $this->_usage;
                 if ($callback !== null) {
