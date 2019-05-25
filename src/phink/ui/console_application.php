@@ -31,6 +31,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
 
     public function run() : bool
     {
+        return true;
     }
 
     public function __construct(array $argv = [], int $argc = 0, string $appDirectory = '.')
