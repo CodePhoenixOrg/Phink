@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include (\Phar::running() == '') ? __DIR__ . '/../../phink/phink_library.php' : 'phink/phink_library.php';
+include (\Phar::running() == '') ? dirname(__FILE__) . '/../../phink/phink_library.php' : '../../phink/phink_library.php';
 include 'lib.php';
 
 class Egg extends \Phink\UI\TConsoleApplication implements \Phink\UI\IPhar {
@@ -48,7 +48,7 @@ class Egg extends \Phink\UI\TConsoleApplication implements \Phink\UI\IPhar {
     /**
      * Entrypoint of a TConsoleApplication
      */
-    protected function ignite()
+    protected function ignite() : void
     {
         parent::ignite();
 
