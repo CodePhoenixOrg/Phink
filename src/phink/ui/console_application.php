@@ -75,7 +75,6 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         define('SCRIPT_ROOT', $scriptDir);
 
         if (APP_NAME == 'egg') {
-            define('PHINK_ROOT', SRC_ROOT . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
             define('PHINK_ROOT', SRC_ROOT . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
         } else {
             define('PHINK_ROOT', SRC_ROOT . 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
@@ -251,7 +250,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         }
     }
 
-    private static function _requireMaster(string $path = '') : \object
+    private static function _requireMaster(string $path = '') : \stdClass
     {
         $result = [];
         $master = $path . 'master';
@@ -426,7 +425,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             $message .= 'With the message: ' . $ex->getMessage() . PHP_EOL;
             $message .= 'Stack trace: ' . $ex->getTraceAsString() . PHP_EOL;
             
-            print  "\e[41m\033[37m" . $message . "\e[0m\033[0m";
+            print  "\033[41m\033[1;37m" . $message . "\033[0m\033[0m";
         } else {
             self::getLogger()->exception($ex, $file, $line);
         }
