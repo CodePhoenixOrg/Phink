@@ -36,10 +36,6 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
 
     public function __construct(array $argv = [], int $argc = 0, string $appDirectory = '.')
     {
-        //    if(!class_exists('\Phink\TAutoloader')) {
-        //        include 'phink/autoloader.php';
-        //        \Phink\TAutoLoader::register();
-        //    }
         parent::__construct();
 
         $this->_argv = $argv;
@@ -56,9 +52,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         $path = explode(DIRECTORY_SEPARATOR, $this->appDirectory);
         $scriptDir = $this->appDirectory . '..' . DIRECTORY_SEPARATOR;
         $siteDir = $scriptDir . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
-        // $siteDir = \Phink\Utils\TFileUtils::relativePathToAbsolute($siteDir);
         $siteDir = realpath($siteDir);
-        // $scriptDir = \Phink\Utils\TFileUtils::relativePathToAbsolute($scriptDir);
         $scriptDir = realpath($scriptDir);
 
 
@@ -358,12 +352,12 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             $this->_phar->stopBuffering();
 
             $buildRoot = $this->appDirectory . '..' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
-            $execname = $buildRoot . $this->_name;
+            $execname = $buildRoot . $this->appName;
             if (PHP_OS == 'WINNT') {
                 $execname .= '.bat';
             }
 
-            rename($buildRoot . $this->_name . '.phar', $execname);
+            rename($buildRoot . $this->appName . '.phar', $execname);
         } catch (\Throwable $ex) {
             $this->writeException($ex);
         }
