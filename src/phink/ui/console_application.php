@@ -41,10 +41,6 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         $this->_argv = $argv;
         $this->_argc = $argc;
 
-        if (\Phar::running() !== '') {
-            $this->appName = $argv[0];
-        }
-
         $this->scriptName = $argv[0];
 
         $this->appDirectory = $appDirectory . DIRECTORY_SEPARATOR;
@@ -55,15 +51,15 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         $siteDir = realpath($siteDir);
         $scriptDir = realpath($scriptDir);
 
-
         array_pop($path);
+        array_pop($path);
+        $this->appName = array_pop($path);
+
         if (APP_IS_PHAR) {
-            array_pop($path);
+            $this->appName = $argv[0];
             $this->appDirectory = str_replace('phar://', '', $scriptDir);
         }
 
-        array_pop($path);
-        $this->appName = array_pop($path);
         define('APP_NAME', $this->appName);
         
         define('SRC_ROOT', $siteDir . DIRECTORY_SEPARATOR);
@@ -236,7 +232,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
                 $constants['APP_SCRIPTS'] = APP_SCRIPTS;
                 $constants['APP_BUSINESS'] = APP_BUSINESS;
                 $constants['MODEL_ROOT'] = MODEL_ROOT;
-                $constants['VIEW_ROOT'] = VIEW_ROOT;                
+                $constants['VIEW_ROOT'] = VIEW_ROOT;
                 $constants['CONTROLLER_ROOT'] = CONTROLLER_ROOT;
                 $constants['REST_ROOT'] = REST_ROOT;
                 $constants['APP_DATA'] = APP_DATA;
@@ -419,7 +415,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         }
     }
 
-    public static function writeException(\Throwable $ex, $file = null, $line = null) :void 
+    public static function writeException(\Throwable $ex, $file = null, $line = null) :void
     {
         if (!APP_IS_WEB) {
             $message = '';
