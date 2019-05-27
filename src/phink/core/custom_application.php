@@ -56,8 +56,6 @@ abstract class TCustomApplication extends TObject
     protected $canStop = false;
     private $_usage = '';
 
-    private $redis = null;
-
     public function __construct()
     {
         parent::__construct();
@@ -159,10 +157,8 @@ abstract class TCustomApplication extends TObject
         );
     }
     
-    protected function displayConstants() : array
-    {
-    }
-
+    abstract protected function displayConstants() : array;
+    
     public function clearLogs() : string
     {
         $result = '';
@@ -299,17 +295,7 @@ abstract class TCustomApplication extends TObject
         }
     }
     
-    public function setRedis(array $params) : void
-    {
-        $this->redis = $params;
-    }
-
-    public function getRedis() : \object
-    {
-        return $this->redis;
-    }
-
-    public static function getVerboseMode() : string
+    public static function getVerboseMode() : bool
     {
         return self::$_verboseMode;
     }
