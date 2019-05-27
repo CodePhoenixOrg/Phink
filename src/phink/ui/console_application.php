@@ -48,15 +48,15 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         $path = explode(DIRECTORY_SEPARATOR, $this->appDirectory);
         $scriptDir = $this->appDirectory . '..' . DIRECTORY_SEPARATOR;
         $siteDir = $scriptDir . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
-        $siteDir = realpath($siteDir);
-        $scriptDir = realpath($scriptDir);
+        $siteDir = realpath($siteDir) . DIRECTORY_SEPARATOR;
+        $scriptDir = realpath($scriptDir) . DIRECTORY_SEPARATOR;
 
         array_pop($path);
         array_pop($path);
         $this->appName = array_pop($path);
 
-        if (APP_IS_PHAR) {
-            $this->appName = $argv[0];
+        if (\Phar::running() !== '') {
+            $this->appName = pathinfo($argv[0])['filename'];
             $this->appDirectory = str_replace('phar://', '', $scriptDir);
         }
 
@@ -66,7 +66,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         define('SCRIPT_ROOT', $scriptDir);
 
         if (APP_NAME == 'egg') {
-            define('PHINK_ROOT', SRC_ROOT . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
+            define('PHINK_ROOT', @realpath(SCRIPT_ROOT . '..' . DIRECTORY_SEPARATOR . 'phink') . DIRECTORY_SEPARATOR);
         } else {
             define('PHINK_ROOT', SRC_ROOT . 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
         }
@@ -102,11 +102,19 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         
         if (!APP_IS_PHAR) {
             $this->setCommand(
+                'make-master-phar',
+                '',
+                'Make a phar archive of the current application with files from the master repository.',
+                function () {
+                    $this->makeMasterPhar();
+                }
+            );
+            $this->setCommand(
                 'make-phar',
                 '',
-                'Make a phar archive of the current application.',
+                'Make a phar archive of the current application with files in vendor directory.',
                 function () {
-                    $this->makePhar();
+                    $this->makeVendorPhar();
                 }
             );
             $this->setCommand(
@@ -118,7 +126,15 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
                 }
             );
         }
-        
+        $this->setCommand(
+            'running',
+            '',
+            'Show Phar::running() output',
+            function () {
+                self::writeLine('Phar::running():' . \Phar::running());
+            }
+        );
+    
         $this->setCommand(
             'source-path',
             '',
@@ -136,12 +152,22 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
                 $this->writeLine(SCRIPT_ROOT);
             }
         );
+        
         $this->setCommand(
             'display-tree',
             '',
             'Display the tree of the current application.',
             function () {
                 $this->displayTree($this->appDirectory);
+            }
+        );
+        
+        $this->setCommand(
+            'display-phink-tree',
+            '',
+            'Display the tree of the Phink framework.',
+            function () {
+                $this->displayPhinkTree();
             }
         );
 
@@ -253,12 +279,20 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         }
     }
 
-    private static function _requireMaster(string $path = '') : \stdClass
+    private function _requireMaster() : \stdClass
     {
         $result = [];
-        $master = $path . 'master';
+
+        $libRoot = $this->appDirectory . '..' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR;
+
+        if (!file_exists($libRoot)) {
+            mkdir($libRoot);
+        }
+
+        $master = $libRoot . 'master';
         $filename = $master . '.zip';
-        $phinkDir = $master . DIRECTORY_SEPARATOR . 'Phink-master' . DIRECTORY_SEPARATOR. 'src' . DIRECTORY_SEPARATOR . 'phink';
+        $phinkDir = $master . DIRECTORY_SEPARATOR . 'Phink-master' . DIRECTORY_SEPARATOR. 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR;
+
         $tree = [];
 
         if (!file_exists($filename)) {
@@ -275,7 +309,6 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         }
         
         if (file_exists($master)) {
-            //$phinkDir = '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'phink';
             $tree = \Phink\TAutoloader::walkTree($phinkDir, ['php']);
         }
         
@@ -284,13 +317,36 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         return (object)$result;
     }
     
+    private function _requireVendor(string $path = '') : \stdClass
+    {
+        $result = [];
+
+        $tree = \Phink\TAutoloader::walkTree(PHINK_ROOT, ['php']);
+
+        $result = ['path' => PHINK_ROOT, 'tree' => $tree];
+        
+        return (object)$result;
+    }
+
     public function addFileToPhar($file, $name) : void
     {
         $this->writeLine("Adding %s as %s", $file, $name);
         $this->_phar->addFile($file, $name);
     }
 
-    public function makePhar() : void
+    public function makeMasterPhar() : void
+    {
+        $phinkTree = $this->_requireMaster();
+        $this->_makePhar($phinkTree);
+    }
+
+    public function makeVendorPhar() : void
+    {
+        $phinkTree = $this->_requireVendor();
+        $this->_makePhar($phinkTree);        
+    }
+
+    private function _makePhar(\stdClass $phinkTree) : void
     {
         try {
 
@@ -300,10 +356,8 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             ini_set('phar.readonly', 0);
         
             // the current directory must be src
-            $srcRoot = $this->appDirectory;
-            $buildRoot = $srcRoot . '..' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
-            $libRoot = $srcRoot . '..' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR;
             $pharName = $this->appName . ".phar";
+            $buildRoot = $this->appDirectory . '..' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
         
             if (file_exists($buildRoot . $pharName)) {
                 unlink($buildRoot . $pharName);
@@ -311,10 +365,6 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
 
             if (!file_exists($buildRoot)) {
                 mkdir($buildRoot);
-            }
-
-            if (!file_exists($libRoot)) {
-                mkdir($libRoot);
             }
 
             $this->_phar = new \Phar(
@@ -332,16 +382,15 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             $this->writeLine('APP_DIR::' . $this->appDirectory);
             $this->addPharFiles();
 
-            $master = self::_requireMaster($libRoot);
-            $phinkDir = $libRoot .'master' . DIRECTORY_SEPARATOR . 'Phink-master' . DIRECTORY_SEPARATOR. 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR;
+            $phinkDir = $phinkTree->path;
             $phink_builder = $phinkDir . 'phink_library.php';
 
             $phink_builder = \Phink\Utils\TFileUtils::relativePathToAbsolute($phink_builder);
             $this->addFileToPhar($phink_builder, "phink_library.php");
         
-            foreach ($master->tree as $file) {
-                $filename = $master->path . $file;
-                $filename = \Phink\Utils\TFileUtils::relativePathToAbsolute($filename);
+            foreach ($phinkTree->tree as $file) {
+                $filename = $phinkTree->path . $file;
+                $filename = realpath($filename);
                 $info = pathinfo($file, PATHINFO_BASENAME);
             
                 $this->addFileToPhar($filename, $info);
@@ -374,7 +423,6 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
     public function addPharFiles() : void
     {
         try {
-            $this->writeLine('APP_DIR_2::' . $this->appDirectory . $this->scriptName);
             $tree = \Phink\TAutoloader::walkTree($this->appDirectory, ['php']);
     
             if (isset($tree[$this->appDirectory . $this->scriptName])) {
@@ -389,6 +437,15 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         }
     }
 
+    public function displayPhinkTree() : void
+    {
+        // $tree = [];
+        // \Phink\Utils\TFileUtils::walkTree(PHINK_ROOT, $tree);
+        $tree = \Phink\TAutoloader::walkTree(PHINK_ROOT);
+
+        $this->writeLine($tree);
+    }
+    
     public function displayTree($path) : void
     {
         $tree = \Phink\TAutoloader::walkTree($path);
