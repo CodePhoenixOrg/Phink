@@ -408,7 +408,7 @@ class TAutoloader extends TStaticObject
         $l = strlen($path);
         
         $dir_iterator = new \RecursiveDirectoryIterator($path);
-        $iterator = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::SELF_FIRST);
+        $iterator = new \RecursiveIteratorIterator($dir_iterator, \RecursiveIteratorIterator::CHILD_FIRST);
         // could use CHILD_FIRST if you so wish
 
         foreach ($iterator as $file) {

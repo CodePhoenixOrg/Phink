@@ -25,8 +25,8 @@ $PWD = '';
 
 $document_root = isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '';
 
-define('APP_IS_WEB', ($document_root != ''));
-define('APP_IS_PHAR', (\Phar::running() != ''));
+define('APP_IS_WEB', ($document_root !== ''));
+define('APP_IS_PHAR', (\Phar::running() !== ''));
 define('ROOT_NAMESPACE', 'Phink');
 define('ROOT_PATH', 'phink');
 

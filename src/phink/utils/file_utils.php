@@ -147,4 +147,12 @@ class TFileUtils
         
         return $result;
     }
+
+    public static function walkTree(string $path, ?array &$tree)
+    {
+        $class_func = array(__CLASS__, __FUNCTION__);
+        return is_file($path) ?
+                @array_push($tree, $path) :
+                array_map($class_func, glob($path.'/*'), $tree);
+    }
 }
