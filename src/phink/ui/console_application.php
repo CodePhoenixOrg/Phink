@@ -309,7 +309,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         }
         
         if (file_exists($master)) {
-            $tree = \Phink\TAutoloader::walkTree($phinkDir, ['php']);
+            $tree = \Phink\Utils\TFileUtils::walkTree($phinkDir, ['php']);
         }
         
         $result = ['path' => $phinkDir, 'tree' => $tree];
@@ -321,7 +321,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
     {
         $result = [];
 
-        $tree = \Phink\TAutoloader::walkTree(PHINK_ROOT, ['php']);
+        $tree = \Phink\Utils\TFileUtils::walkTree(PHINK_ROOT, ['php']);
 
         $result = ['path' => PHINK_ROOT, 'tree' => $tree];
         
@@ -407,6 +407,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             $this->_phar->setStub($stub);
 
             $this->_phar->stopBuffering();
+            $this->_phar->chmod(0755);
 
             $buildRoot = $this->appDirectory . '..' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
             $execname = $buildRoot . $this->appName;
@@ -423,7 +424,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
     public function addPharFiles() : void
     {
         try {
-            $tree = \Phink\TAutoloader::walkTree($this->appDirectory, ['php']);
+            $tree = \Phink\Utils\TFileUtils::walkTree($this->appDirectory, ['php']);
     
             if (isset($tree[$this->appDirectory . $this->scriptName])) {
                 unset($tree[$this->appDirectory . $this->scriptName]);
@@ -441,14 +442,14 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
     {
         // $tree = [];
         // \Phink\Utils\TFileUtils::walkTree(PHINK_ROOT, $tree);
-        $tree = \Phink\TAutoloader::walkTree(PHINK_ROOT);
+        $tree = \Phink\Utils\TFileUtils::walkTree(PHINK_ROOT);
 
         $this->writeLine($tree);
     }
     
     public function displayTree($path) : void
     {
-        $tree = \Phink\TAutoloader::walkTree($path);
+        $tree = \Phink\Utils\TFileUtils::walkTree($path);
         $this->writeLine($tree);
     }
 
