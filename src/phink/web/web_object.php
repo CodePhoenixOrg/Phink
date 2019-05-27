@@ -165,7 +165,7 @@ trait TWebObject
         $this->redis = $params;
     }
 
-    public function getRedis() : \object
+    public function getRedis() : ?object
     {
         return $this->redis;
     }
