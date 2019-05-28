@@ -372,7 +372,6 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
                 \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::KEY_AS_FILENAME,
                 $pharName
             );
-        
             // start buffering. Mandatory to modify stub.
             $this->_phar->startBuffering();
         
@@ -407,7 +406,6 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             $this->_phar->setStub($stub);
 
             $this->_phar->stopBuffering();
-            $this->_phar->chmod(0755);
 
             $buildRoot = $this->appDirectory . '..' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
             $execname = $buildRoot . $this->appName;
@@ -416,6 +414,8 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             }
 
             rename($buildRoot . $this->appName . '.phar', $execname);
+            chmod($execname, 0755);
+
         } catch (\Throwable $ex) {
             $this->writeException($ex);
         }
