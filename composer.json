@@ -1,13 +1,15 @@
 {
-    "license": "GPL-3.0+",
     "name": "phink/phink",
-    "description": "Think PHP different",
+    "type": "library",
+    "description": "Think ${PHP} Different",
+    "homepage": "https://phink.org",
+    "license": "GPL-3.0+",
     "authors": [
         {
             "name": "David Blanchard",
             "email": "dblanchard1@bbox.fr",
-            "homepage": "https://phink.org",
-            "role": "Project owner"
+            "homepage": "https://code-phoenix.org",
+            "role": "Developer"
         }
     ],
     "autoload": {
@@ -17,14 +19,13 @@
         "exclude-from-classmap":
         [
             "src/phink/phink_library.php",            
-            "src/phink/web/ui/widget/pager/pager.class.php",            
             "src/phink/web/ui/widget/console/consolew.class.php"
         ]
     },    
     "require": {
         "php": ">=7.0.0",
-	"twig/twig": "^2.0",
-        "mcaskill/composer-exclude-files": "^1.1.0",
+        "twig/twig": "^2.0",
+	    "phink/phinkjs": ">=0.2.2",
         "components/jquery": ">=1.9.1",
         "components/jqueryui": ">=1.12.1",
         "components/font-awesome": "=4.7.0",
@@ -35,11 +36,6 @@
         "phpunit/phpunit": "4.3.*",
         "php-coveralls/php-coveralls": "^1.0",
         "squizlabs/php_codesniffer": "^3.2",
-        "components/jquery": ">=1.9.1",
-        "components/jqueryui": ">=1.12.1",
-        "components/font-awesome": "=4.7.0",
-        "components/bootstrap": "=3.3.5",
-        "components/bootstrap-default": "=3.3.5"
     },
     "include-path": [
         "src"
