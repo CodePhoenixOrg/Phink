@@ -23,20 +23,22 @@ use Phink\MVC\TActionInfo;
 
 class TControl extends TCustomControl
 {
-
-    protected $model = NULL;
+    protected $model = null;
     protected $innerHtml = '';
     protected $viewHtml = '';
-    protected $isDreclared = false;
+    protected $isDeclared = false;
 
     public function __construct(TObject $parent)
     {
         parent::__construct($parent);
 
+        $this->view = $parent;
+
         $this->parameters = $parent->getParameters();
         $this->application = $parent->getApplication();
         $this->commands = $this->application->getCommands();
         $this->path = $this->getPath();
+        $this->twigEnvironment = $parent->getTwigEnvironment();
         
         $this->cloneNamesFrom($parent);
         $this->setCacheFileName();
@@ -47,18 +49,23 @@ class TControl extends TCustomControl
         
         $include = \Phink\TAutoloader::includeModelByName($this->viewName);
         $model = SRC_ROOT . $include['file'];
-        if(file_exists($model)) {
+        if (file_exists($model)) {
             include $model;
             $modelClass = $include['type'];
 
-            $this->model = new $modelClass();        
+            $this->model = new $modelClass();
         }
         
         $this->authentication = $parent->getAuthentication();
         $this->request = $parent->getRequest();
-        $this->response = $parent->getResponse();        
+        $this->response = $parent->getResponse();
     }
 
+    public function getView()
+    {
+        return $this->view;
+    }
+    
     public function getModel()
     {
         return $this->model;
@@ -69,24 +76,27 @@ class TControl extends TCustomControl
         return $this->innerHtml;
     }
     
-    public function view($html)
-    {
-        $this->viewHtml = $html;
-        //include "data://text/plain;base64," . base64_encode($this->viewHtml);        
-    }
-
     public function renderView()
     {
-        include "data://text/plain;base64," . base64_encode($this->viewHtml);
+        // include "data://text/plain;base64," . base64_encode($this->viewHtml);
+        eval('?>' . $this->viewHtml . '<?php ');
     }
     
-    public function createObjects() {}
+    public function createObjects()
+    {
+    }
     
-    public function declareObjects() {}
+    public function declareObjects()
+    {
+    }
 
-    public function afterBinding() {}
+    public function afterBinding()
+    {
+    }
     
-    public function displayHtml() {}
+    public function displayHtml()
+    {
+    }
     
     public function getViewHtml()
     {
@@ -94,7 +104,7 @@ class TControl extends TCustomControl
         //     self::$logger->debug(__METHOD__ . '::PHPSESSID::' . $_REQUEST['PHPSESSID']);
         // }
         ob_start();
-        if(!$this->isDreclared) {
+        if (!$this->isDeclared) {
             //$this->createObjects();
             $this->declareObjects();
 //            $this->partialLoad();
@@ -103,25 +113,24 @@ class TControl extends TCustomControl
         $html = ob_get_clean();
         $this->unload();
 
-/*        
-        $cachedJsController = RUNTIME_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
-        if(file_exists($cachedJsController)) {
-            $jsCode = file_get_contents($cachedJsController);
-            $html .= PHP_EOL . "?>" .PHP_EOL . $jsCode . PHP_EOL;
-            
-            $this->response->addScript($cachedJsController);
-        }
-*/        
-        if(file_exists(SRC_ROOT . $this->getJsControllerFileName())) {
+        /*
+                $cachedJsController = RUNTIME_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
+                if(file_exists($cachedJsController)) {
+                    $jsCode = file_get_contents($cachedJsController);
+                    $html .= PHP_EOL . "?>" .PHP_EOL . $jsCode . PHP_EOL;
+
+                    $this->response->addScript($cachedJsController);
+                }
+        */
+        if (file_exists(SRC_ROOT . $this->getJsControllerFileName())) {
             $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
-            if(!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
+            if (!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
                 copy(SRC_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
             }
             $this->response->addScript($cacheJsFilename);
         }
         $this->response->setData('view', $html);
-
-    }   
+    }
     
     public function render()
     {
@@ -130,12 +139,10 @@ class TControl extends TCustomControl
         $this->beforeBinding();
         $this->declareObjects();
         $this->afterBinding();
-        $this->isDreclared = true;
-        if($this->viewHtml) {
-            $this->renderView();
-        } else {
-            $this->displayHtml();
-        }
+        $this->isDeclared = true;
+
+        $this->displayHtml();
+
         $this->renderHtml();
         $this->unload();
     }
@@ -144,13 +151,13 @@ class TControl extends TCustomControl
     {
         $this->init();
         $this->createObjects();
-        if($this->getRequest()->isAJAX()) {
+        if ($this->getRequest()->isAJAX()) {
             try {
                 $actionName = $this->actionName;
 
                 $params = $this->validate($actionName);
                 $actionInfo = $this->invoke($actionName, $params);
-                if($actionInfo instanceof TActionInfo) {
+                if ($actionInfo instanceof TActionInfo) {
                     $this->response->setData($actionInfo->getData());
                 }
 
@@ -158,7 +165,7 @@ class TControl extends TCustomControl
                 $this->declareObjects();
                 $this->afterBinding();
 
-                if($this->request->isPartialView()
+                if ($this->request->isPartialView()
                 || ($this->request->isView() && $actionName !== 'getViewHtml')) {
                     $this->getViewHtml();
                 }
@@ -173,18 +180,20 @@ class TControl extends TCustomControl
             $this->declareObjects();
             $this->afterBinding();
             
-            if($this->viewHtml) {
-                $this->renderView();
+            $twig = $this->view->getTwigHtml();
+
+            if (!empty($twig)) {
+                echo $twig;
             } else {
                 $this->displayHtml();
             }
+
             $this->unload();
-        }        
+        }
     }
     
     public function __destruct()
     {
         unset($this->model);
     }
-
 }

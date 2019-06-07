@@ -40,6 +40,7 @@ class TWebRouter extends \Phink\Core\TRouter
         $this->dirName = $parent->getDirName();
         $this->viewIsInternal = $parent->isInternalView();
         $this->path = $parent->getPath();
+        $this->twigEnvironment = $parent->getTwigEnvironment();
                 
         $this->translation = $parent->getTranslation();
         $this->parameters = $parent->getParameters();
@@ -77,9 +78,8 @@ class TWebRouter extends \Phink\Core\TRouter
     public function dispatch()
     {
         if ($this->_isCached) {
-            // $view = new \Phink\MVC\TView($this);
-            // $view->parse();
-            TAutoloader::loadCachedFile($this);
+            $view = new \Phink\MVC\TView($this);
+            TAutoloader::loadCachedFile($view);
 
             return true;
         }

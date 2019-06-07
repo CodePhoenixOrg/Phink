@@ -164,7 +164,8 @@ abstract class TCustomApplication extends TObject
         $result = '';
         try {
             self::getLogger()->clearAll();
-            $result = 'All logs and temporary files cleared';
+
+            $result = 'All logs2 and temporary files cleared';
         } catch (\Throwable $ex) {
             self::writeException($ex);
 

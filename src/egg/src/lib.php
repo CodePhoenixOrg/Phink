@@ -143,7 +143,7 @@ class EggLib extends Phink\Core\TObject
      */
     public function createTree()
     {
-        $this->parent->writeLine("Current directory %s", $currentDir);
+        $this->parent->writeLine("Current directory %s", __DIR__);
         
         sort($this->directories);
         foreach ($this->directories as $directory) {

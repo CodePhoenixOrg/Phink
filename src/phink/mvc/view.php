@@ -48,6 +48,7 @@ class TView extends TCustomView
         $this->viewName = $parent->getViewName();
         $this->viewIsInternal = $parent->isInternalView();
         $this->path = $parent->getPath();
+        $this->twigEnvironment = $parent->getTwigEnvironment();
 
         $this->cloneNamesFrom($parent);
         $this->setCacheFileName();

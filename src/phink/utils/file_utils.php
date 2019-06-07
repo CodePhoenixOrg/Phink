@@ -171,4 +171,12 @@ class TFileUtils
                 @array_push($tree, $path) :
                 array_map($class_func, glob($path.'/*'), $tree);
     }
+
+    public function delTree(string $path) : bool
+    {
+        $class_func = array(__CLASS__, __FUNCTION__);
+        return is_file($path) ?
+                @unlink($path) :
+                array_map($class_func, glob($path.'/*')) == @rmdir($path);
+    }
 }
