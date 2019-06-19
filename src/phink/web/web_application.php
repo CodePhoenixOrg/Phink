@@ -57,6 +57,13 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
         // $this->setViewName();
         // $this->setNamespace();
         // $this->setNames();
+
+        if(class_exists('Twig\Environment')) {
+            $loader = new \Twig\Loader\FilesystemLoader(VIEW_ROOT);
+            $this->twigEnvironment = new \Twig\Environment($loader, [
+                'cache' => CACHE_DIR,
+            ]);
+        }
     }
 
     public function execute() : void

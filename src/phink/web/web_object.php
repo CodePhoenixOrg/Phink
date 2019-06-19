@@ -59,6 +59,7 @@ trait TWebObject
     protected $application = null;
     protected $viewIsInternal = false;
     protected $path = '';
+    protected $twigEnvironment = null;
 
 //    protected $authentication = null;
     
@@ -257,7 +258,34 @@ trait TWebObject
         $this->className = ucfirst($this->viewName);
         
     }
-    
+
+    public function getTwigEnvironment()
+    {
+        return $this->twigEnvironment;
+    }
+
+    public function renderTwig(array $dictionary = []): string
+    {
+        $result = '';
+
+        if($this->getTwigEnvironment() !== null) {
+            $result = $this->getTwigEnvironment()->render($this->getViewName() . PREHTML_EXTENSION, $dictionary);
+        }
+
+        return $result;
+    }
+
+    public function renderTwigByName(string $viewName, array $dictionary = []) : string
+    {
+        $result = '';
+
+        if($this->getTwigEnvironment() !== null) {
+            $result = $this->getTwigEnvironment()->render($viewName, $dictionary);
+        }
+
+        return $result;
+    }
+
     public function getNamespace() : string
     {
         return $this->namespace;

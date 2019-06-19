@@ -17,6 +17,7 @@
  */
  
  namespace Phink\Web\UI;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -32,11 +33,11 @@ use Phink\MVC\TCustomView;
  *
  * @author David
  */
-trait TCodeGenerator {
+trait TCodeGenerator
+{
     //put your code here
-    function writeDeclarations(TXmlDocument $doc, TCustomView $view)
+    public function writeDeclarations(TXmlDocument $doc, TCustomView $view)
     {
-
         $result = '';
         $matches = $doc->getMatchesByDepth();
         $docList = $doc->getList();
@@ -58,8 +59,7 @@ trait TCodeGenerator {
         
         $isFirst = true;
         foreach ($docList as $control) {
-            
-            if(in_array($control['name'], ['page', 'echo', 'exec', 'type']) || $control['method'] == 'render') {
+            if (in_array($control['name'], ['page', 'echo', 'exec', 'type']) || $control['method'] == 'render') {
                 continue;
             }
 
@@ -69,23 +69,23 @@ trait TCodeGenerator {
             $templatePath = '';
             $j = $control['id'];
 
-            if(isset($control['properties'])) {
-
+            if (isset($control['properties'])) {
                 $parentId = $control['parentId'];
                 $parentControl = ($parentId > -1) ? $docList[$parentId] : [];
-                if(isset($parentControl['childName'])) {
+                if (isset($parentControl['childName'])) {
                     $parentChildName = $parentControl['childName'];
                     $controlName = $control['name'];
 
-                    if($parentChildName == $controlName) {
-                        if(!isset($childrenIndex["$parentId"])) {
+                    if ($parentChildName == $controlName) {
+                        if (!isset($childrenIndex["$parentId"])) {
                             $childrenIndex[$parentId] = 0;
-                        }
-                        else {
+                        } else {
                             $childrenIndex[$parentId] = $childrenIndex[$parentId] + 1;
                         }
                     }
                 }
+
+                self::$logger->debug(print_r($control['properties'], true) . PHP_EOL);
 
                 $properties = $control['properties'];
                 $controlId = $properties['id'];
@@ -96,7 +96,7 @@ trait TCodeGenerator {
                 $info = TRegistry::classInfo($className);
                 //self::$logger->dump('REGISTRY INFO ' . $className, $info);
                 if ($info) {
-                    if(!$info->isAutoloaded) {
+                    if (!$info->isAutoloaded) {
                         array_push($requires, '\\Phink\\TAutoloader::import($this, "' . $className . '");');
 //                        array_push($requires, '$this->import("' . $className . '");');
                     }
@@ -108,7 +108,7 @@ trait TCodeGenerator {
                     $fullJsCachePath = \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
                     array_push($requires, '\\Phink\\TAutoloader::import($this, "' . $className . '");');
 
-                    self::$logger->dump('FULL_CLASS_PATH', $fullClassPath);            
+                    self::$logger->dump('FULL_CLASS_PATH', $fullClassPath);
 
                     $class = \Phink\TAutoloader::includeClass($fullClassPath, RETURN_CODE);
                     $fqcn = $class['type'];
@@ -118,9 +118,9 @@ trait TCodeGenerator {
                     
                     
                     $jsCode = '';
-                    if(file_exists(DOCUMENT_ROOT . $fullJsCachePath)) {
+                    if (file_exists(DOCUMENT_ROOT . $fullJsCachePath)) {
                         $view->getResponse()->addScript($fullJsCachePath);
-                    } else if(file_exists(SRC_ROOT . $fullJsClassPath)) {
+                    } elseif (file_exists(SRC_ROOT . $fullJsClassPath)) {
                         $jsCtrlCode = file_get_contents(SRC_ROOT . $fullJsClassPath) . PHP_EOL;
                         file_put_contents(DOCUMENT_ROOT . $fullJsCachePath, $jsCtrlCode);
                         $view->getResponse()->addScript($fullJsCachePath);
@@ -133,7 +133,7 @@ trait TCodeGenerator {
                 $serialize = $canRender && $notThis;
                 $serialize = false;
                 $index = '';
-                if(isset($childrenIndex[$parentId])) {
+                if (isset($childrenIndex[$parentId])) {
                     $index = '[' . $childrenIndex[$parentId] . ']';
                 }
 
@@ -142,54 +142,61 @@ trait TCodeGenerator {
                 $creations[$j] = [];
                 $additions[$j] = [];
                 $afterBinding[$j] = [];
-                if($isFirst) {
+                if ($isFirst) {
                     array_push($creations[$j], '$this->setId("' . $this->getViewName() . '"); ');
                     $isFirst = false;
                 }
         
-                foreach($properties as $key=>$value) {
-                    if($key == 'id' ) {
-                        if($serialize) array_push($creations[$j], 'if(!' . $thisControl . ' = \Phink\Core\TObject::wakeUp("' . $value . '")) {');
+                foreach ($properties as $key=>$value) {
+                    self::$logger->debug(print_r([$key, $value], true) . PHP_EOL);
+                    if ($key == 'id') {
+                        if ($serialize) {
+                            array_push($creations[$j], 'if(!' . $thisControl . ' = \Phink\Core\TObject::wakeUp("' . $value . '")) {');
+                        }
                         if ($notThis) {
                             array_push($creations[$j], $thisControl . ' = new \\' . $fqcn . '($this); ');
                         }
 
                         array_push($creations[$j], $thisControl . '->set' . ucfirst($key) . '("' . $value . '"); ');
                         
-                        if($serialize) {
+                        if ($serialize) {
                             array_push($creations[$j], '}');
                             array_push($additions[$j], 'if(' . $thisControl . ' && !' . $thisControl . '->isAwake()) {');
                         }
                         continue;
                     }
-                    if(is_numeric($value)) {
+                    if (is_numeric($value)) {
                         array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '(' . $value . '); ');
+                        continue;
                     }
-                    else {
+                    if (strpos($value, ':') > -1) {
                         $sa = explode(':', $value);
-                        $member = '';
-                        if(count($sa) > 1) {
-                            $member = $sa[1];
-                            if($sa[0] == 'var') {
-                                //if($key == 'for') {
+                        $member = $sa[1];
+                        if ($sa[0] == 'var') {
+                            //if($key == 'for') {
 //                                    array_push($afterBinding[$j], $thisControl . '->set' . ucfirst($key) . '($this->' . $member . '); ');
 //                                } else {
-                                    array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '($this->' . $member . '); ');
+                            array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '($this->' . $member . '); ');
 //                                }
-                            } elseif ($sa[0] == 'prop') {
-                                array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '($this->get' . ucfirst($member) . '()); ');
-                            }
+                        } elseif ($sa[0] == 'prop') {
+                            array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '($this->get' . ucfirst($member) . '()); ');
                         }
-                        else {
-                            //if($key == 'command') {
-//                                array_push($afterBinding[$j], $thisControl . '->set' . ucfirst($key) . '("' . $value . '"); ');
-//                            } else {
-                                array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '("' . $value . '"); ');
-//                            }
-                        }
+                        continue;
                     }
+                    if(!empty(strstr($value, '!#base64#'))) {
+                        $plaintext = substr($value, 9);
+                        $plaintext = \base64_decode($plaintext);
+                        array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '(<<<PLAIN_TEXT' . PHP_EOL . $plaintext . PHP_EOL . 'PLAIN_TEXT' . PHP_EOL . '); ');
+                        unset($value);
+                        continue;
+                    }
+                    // if ($key == 'command') {
+                    //     array_push($afterBinding[$j], $thisControl . '->set' . ucfirst($key) . '("' . $value . '"); ');
+                    // } else {
+                    array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '("' . $value . '"); ');
+                    // }
                 }
-                if($serialize) {
+                if ($serialize) {
                     array_push($additions[$j], $thisControl . '->sleep(); ');
                     array_push($additions[$j], '} ');
                 }
@@ -202,8 +209,7 @@ trait TCodeGenerator {
 
             
             $method = $docList[$j]['method'];
-            if((TRegistry::classInfo($method)  && TRegistry::classCanRender($method)) || !TRegistry::classInfo($method))
-            {
+            if ((TRegistry::classInfo($method)  && TRegistry::classCanRender($method)) || !TRegistry::classInfo($method)) {
                 $doc->fieldValue($j, 'method', 'render');
             }
         }
@@ -216,61 +222,67 @@ trait TCodeGenerator {
         $objectCreation = PHP_EOL;
         $objectCreation .= $requires . PHP_EOL;
         $objectCreation .= $uses . PHP_EOL;
-        foreach($matches as $matchIndex) {
-            if(!isset($creations[$matchIndex])) continue;
+        foreach ($matches as $matchIndex) {
+            if (!isset($creations[$matchIndex])) {
+                continue;
+            }
             $objectCreation .= $creations[$matchIndex] . PHP_EOL;
         }
         
         $objectAdditions = PHP_EOL;
-        foreach($matches as $matchIndex) {
-            if(!isset($additions[$matchIndex])) continue;
+        foreach ($matches as $matchIndex) {
+            if (!isset($additions[$matchIndex])) {
+                continue;
+            }
             $objectAdditions .= $additions[$matchIndex] . PHP_EOL;
         }
 
         $objectAfterBiding = PHP_EOL;
-        foreach($matches as $matchIndex) {
-            if(!isset($afterBinding[$matchIndex])) continue;
+        foreach ($matches as $matchIndex) {
+            if (!isset($afterBinding[$matchIndex])) {
+                continue;
+            }
             $objectAfterBiding .= $afterBinding[$matchIndex] . PHP_EOL;
         }
         
         return (object)['creations' => $objectCreation, 'additions' => $objectAdditions, 'afterBinding' => $objectAfterBiding];
     }
     
-    function writeHTML(TXmlDocument $doc, TCustomView $view)
+    public function writeHTML(TXmlDocument $doc, TCustomView $view)
     {
         $viewHtml = $view->getViewHtml();
         $scripts = '';
         $head = '';
 
-        if(file_exists(SRC_ROOT . $view->getJsControllerFileName()) && !strstr($view->getJsControllerFileName(), 'main.js') && $view->getType() == 'TView') {
+        if (file_exists(SRC_ROOT . $view->getJsControllerFileName()) && !strstr($view->getJsControllerFileName(), 'main.js') && $view->getType() == 'TView') {
             $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($view->getViewName());
-            if(!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
+            if (!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
                 copy(SRC_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
             }
             // \Phink\Utils\TFileUtils::webPath($view->getCssFileName())
-            $scripts = "<script src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheJsFilename . "'></script>" . PHP_EOL;        
+            $scripts = "<script src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheJsFilename . "'></script>" . PHP_EOL;
         }
-        if(file_exists(SITE_ROOT . $view->getJsControllerFileName()) && !strstr($view->getJsControllerFileName(), 'main.js') && $view->getType() == 'TView') {
+        if (file_exists(SITE_ROOT . $view->getJsControllerFileName()) && !strstr($view->getJsControllerFileName(), 'main.js') && $view->getType() == 'TView') {
             $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($view->getViewName());
-            if(!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
+            if (!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
                 copy(SITE_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
             }
             // \Phink\Utils\TFileUtils::webPath($view->getCssFileName())
-            $scripts = "<script src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheJsFilename . "'></script>" . PHP_EOL;        
+            $scripts = "<script src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheJsFilename . "'></script>" . PHP_EOL;
         }
 
-        if(file_exists(SRC_ROOT . $view->getCssFileName()) && $view->getType() == 'TView') {
+        if (file_exists(SRC_ROOT . $view->getCssFileName()) && $view->getType() == 'TView') {
             $cacheCssFilename = \Phink\TAutoloader::cacheCssFilenameFromView($view->getViewName());
-            if(!file_exists(DOCUMENT_ROOT . $cacheCssFilename)) {
+            if (!file_exists(DOCUMENT_ROOT . $cacheCssFilename)) {
                 copy(SRC_ROOT . $view->getCssFileName(), DOCUMENT_ROOT . $cacheCssFilename);
             }
             //\Phink\Utils\TFileUtils::webPath($view->getCssFileName()
             // $scripts .= "<script>Phink.Web.Object.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "');</script>" . PHP_EOL;
             $head = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "' />" . PHP_EOL;
         }
-        if(file_exists(SITE_ROOT . $view->getCssFileName()) && $view->getType() == 'TView') {
+        if (file_exists(SITE_ROOT . $view->getCssFileName()) && $view->getType() == 'TView') {
             $cacheCssFilename = \Phink\TAutoloader::cacheCssFilenameFromView($view->getViewName());
-            if(!file_exists(DOCUMENT_ROOT . $cacheCssFilename)) {
+            if (!file_exists(DOCUMENT_ROOT . $cacheCssFilename)) {
                 copy(SITE_ROOT . $view->getCssFileName(), DOCUMENT_ROOT . $cacheCssFilename);
             }
             //\Phink\Utils\TFileUtils::webPath($view->getCssFileName()
@@ -278,12 +290,12 @@ trait TCodeGenerator {
             $head = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "' />" . PHP_EOL;
         }
 
-        if($scripts !== '') {
+        if ($scripts !== '') {
             $scripts .= '</body>' . PHP_EOL;
             $viewHtml = str_replace('</body>', $scripts, $viewHtml);
         }
 
-        if($head !== '') {
+        if ($head !== '') {
             $head .= '</head>' . PHP_EOL;
             $viewHtml = str_replace('</head>', $head, $viewHtml);
         }
@@ -291,15 +303,14 @@ trait TCodeGenerator {
         $count = $doc->getCount();
         $matchesSort = $doc->getMatchesByDepth();
         $docList = $doc->getList();
-        for($i = $count - 1; $i > -1; $i--)
-        {
+        for ($i = $count - 1; $i > -1; $i--) {
             $j = $matchesSort[$i];
             $match = new TXmlMatch($docList[$j]);
 
             $tag = $match->getMethod();
             $name = $match->getName();
             
-            if($tag != 'echo' && $tag != 'exec' && $tag != 'render') {
+            if ($tag != 'echo' && $tag != 'exec' && $tag != 'render') {
                 continue;
             }
 
@@ -312,38 +323,32 @@ trait TCodeGenerator {
             $stmt = $match->properties('stmt');
             $params = $match->properties('params');
 
-            if(!$type || $type == 'this') {
+            if (!$type || $type == 'this') {
                 $type = '$this->';
-            }
-            elseif($type == 'none') {
+            } elseif ($type == 'none') {
                 $type = '';
-            }
-            else {
+            } else {
                 $type = $type . '::' . (($tag == 'exec') ? '' : '$');
             }
 
-            if($tag == 'echo' && $var) {
+            if ($tag == 'echo' && $var) {
                 $declare = '<?php echo ' . $type . $var . '; ?>';
-            }
-            elseif($tag == 'echo' && $prop) {
+            } elseif ($tag == 'echo' && $prop) {
                 $declare = '<?php echo ' . $type . 'get' . ucfirst($prop) . '(); ?>';
-            }
-            elseif($tag == 'exec') {
+            } elseif ($tag == 'exec') {
                 $declare = '<?php echo ' . $type . $stmt . '(); ?>';
-                if($params != NULL) {
+                if ($params != null) {
                     $declare = '<?php echo ' . $type . $stmt . '(' . $params . '); ?>';
                 }
-            }
-            elseif($tag == 'render') {
-                if($name == 'this') {
+            } elseif ($tag == 'render') {
+                if ($name == 'this') {
                     $declare = '<?php $this->renderHtml(); $this->renderedHtml(); ?>';
                 } else {
                     $declare = '<?php ' . $type . $id . '->render(); ?>';
                 }
-            }            
+            }
 
             $viewHtml = TXmlDocument::replaceThisMatch($match, $viewHtml, $declare);
-
         }
         return $viewHtml;
     }

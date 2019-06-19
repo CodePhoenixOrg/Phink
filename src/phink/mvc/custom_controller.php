@@ -33,11 +33,9 @@ abstract class TCustomController extends TCustomControl
     protected $viewHtml = '';
     protected $model = null;
     protected $view = null;
-    private $_type = '';
     
     public function __construct(IWebObject $parent)
     {
-
         parent::__construct($parent);
         
         $this->application = $parent->getApplication();
@@ -47,11 +45,9 @@ abstract class TCustomController extends TCustomControl
         $this->response = $parent->getResponse();        
         $this->parameters = $parent->getParameters();
         $this->path = $this->getPath();
+        $this->twigEnvironment = $this->getTwigEnvironment();
 
         $this->cloneNamesFrom($parent);
-
-        // $this->setCacheFileName();
-
     }
 
     public function getInnerHtml()
@@ -74,12 +70,6 @@ abstract class TCustomController extends TCustomControl
         return $this->model;
     }
     
-    // public function view($html)
-    // {
-    //     $this->viewHtml = $html;
-    //     include "data://text/plain;base64," . base64_encode($this->viewHtml);        
-    // }
-       
     public function parse()
     {
         $this->cacheFileName = $this->view->getCacheFileName();
@@ -89,11 +79,10 @@ abstract class TCustomController extends TCustomControl
         self::$logger->debug('CACHED FILE EXISTS : ' . $isAlreadyParsed ? 'TRUE' : 'FALSE', __FILE__, __LINE__);
 
         if(!$isAlreadyParsed) {
-            $this->_type = $this->view->parse();
+            $isAlreadyParsed = $this->view->parse();
             $this->creations = $this->view->getCreations();
             $this->declarations = $this->view->getAdditions();
             $this->viewHtml = $this->view->getViewHtml();
- 
         }
         
         return $isAlreadyParsed;
@@ -112,7 +101,7 @@ abstract class TCustomController extends TCustomControl
     public function renderDeclarations()
     {
         if(!empty($this->declarations)) {
-             /* 
+            /* 
              * include "data://text/plain;base64," . base64_encode('<?php' . $this->declarations . '?>');
              */
             eval($this->declarations);
@@ -141,76 +130,4 @@ abstract class TCustomController extends TCustomControl
         eval('?>' . $this->innerHtml . '<?php ');
     }
 
-    public function perform()
-    {
-        $this->init();
-        if($this->request->isAJAX()) {
-            try {
-                $actionName = $this->actionName;
-
-                $this->parse();
-                // $this->renderCreations();
-            
-                $params = $this->validate($actionName);
-                $actionInfo = $this->invoke($actionName, $params);
-                if($actionInfo instanceof TActionInfo) {
-                    $this->response->setData($actionInfo->getData());
-                }
-
-                $this->beforeBinding();
-                // $this->renderDeclarations();
-                $this->afterBinding();
-
-                if($this->request->isPartialView()
-                || ($this->request->isView() && $this->actionName !== 'getViewHtml')) {
-                    $this->getViewHtml();
-                }
-                $this->unload();
-            } catch (\BadMethodCallException $ex) {
-                $this->response->setException($ex);
-            }
-            $this->response->sendData();
-        } else {
-            $this->load();
-            $this->parse();
-            // $this->renderCreations();
-            $this->beforeBinding();
-            // $this->renderDeclarations();
-            // $this->renderView();
-            $this->unload();
-        }        
-        
-    }
-    
-    public function getViewHtml()
-    {
-        ob_start();
-        $this->renderView();
-        $html = ob_get_clean();
-
-        $this->response->setData('view', $html);
-        
-/*        
-        $cachedJsController = RUNTIME_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
-        self::$logger->debug(__METHOD__ . '::1::' . $cachedJsController);
-        if(file_exists($cachedJsController)) {
-            $jsCode = file_get_contents($cachedJsController);
-            $html .= PHP_EOL . "?>" .PHP_EOL . $jsCode . PHP_EOL;
-            self::$logger->debug(__METHOD__ . '::2::' . $cachedJsController);
-            
-            $this->response->addScript($cachedJsController);
-        }
-*/        
-        self::$logger->debug(__METHOD__ . '::1::' . $this->getJsControllerFileName());
-        if(file_exists(SRC_ROOT . $this->getJsControllerFileName())) {
-            self::$logger->debug(__METHOD__ . '::2::' . $this->getJsControllerFileName());
-            $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
-            copy(SRC_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
-            $this->response->addScript($cacheJsFilename);
-        }        
-    }
-    
-    
-
-    
 }

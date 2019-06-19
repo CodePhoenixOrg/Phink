@@ -83,6 +83,7 @@ class TList extends TCustomPlugin
                 
                 $dataIndex = array_keys($names, $this->templates[$j]['name'])[0];
                 $noTHead = !empty($this->templates[$j]['content']) && $this->templates[$j]['enabled'] == 1;
+                // self::$logger->debug('HTML TEMPLATE CONTENT : <pre>[' . PHP_EOL . htmlentities($this->templates[$j]['content']) . PHP_EOL . '...]</pre>');
 
                 $html = $row[$dataIndex];
                 if($noTHead) {

@@ -66,6 +66,14 @@ abstract class TCustomControl extends \Phink\Core\TObject implements \Phink\Web\
     {
     }
 
+    public function displayHtml()
+    {
+    }
+
+    public function renderTwig()
+    {
+    }
+
     public function render()
     {
     }

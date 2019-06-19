@@ -38,10 +38,16 @@ class TActionInfo extends TObject implements IHttpTransport
         $this->authentication = $parent->getAuthentication();
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();
+        $this->twigEnvironment = $parent->getTwigEnvironment();
         // $this->parameters = $parent->getParameters();
-    // $this->path = $this->getPath();
+    }
 
-    // $this->cloneNamesFrom($parent);
+    public static function twig(IHttpTransport $parent, string $view, array $dictionary) : TActionInfo
+    {
+        $action = new TActionInfo($parent);
+        $action->setTwig($view, $dictionary);
+
+        return $action;
     }
 
     public static function set(IHttpTransport $parent, string $key, $value) : TActionInfo
@@ -50,6 +56,18 @@ class TActionInfo extends TObject implements IHttpTransport
         $action->setData($key, $value);
 
         return $action;
+    }
+
+    public function setTwig(array $dictionary): void
+    {
+        $viewName = $this->getParent()->getViewName() . PREHTML_EXTENSION;
+        $this->setTwigByName($viewName, $dictionary);
+    }
+
+    public function setTwigByName(string $viewName, array $dictionary): void
+    {
+        $html = $this->renderTwigByName($viewName, $dictionary);
+        $this->data['twig'] = $html;
     }
 
     public function setData(string $key, $value): void

@@ -28,29 +28,19 @@ namespace Phink\Web;
  */
 class TStaticApplication extends TWebApplication
 {
-
     public static function implicitLink() :  string
     {
         return SERVER_ROOT . REQUEST_URI;
     }
 
-    public static function cache($filename, $content)
-    {
-        $filename = CACHE_DIR . DIRECTORY_SEPARATOR . $filename;
-        $filename = \Phink\Utils\TFileUtils::filePath($filename);
-        file_put_contents($filename, $content);
-    } 
-
     public function getStaticFileName() : string
     {
+        $extension = HTML_EXTENSION;
         $filename = CACHE_DIR . ((REQUEST_URI == '/') ? MAIN_PAGE : REQUEST_URI);
         
-        if(strstr(HTTP_ACCEPT, 'json')) {
-            $filename = str_replace('.html', '.json', $filename);
-        }
         $filename = \Phink\Utils\TFileUtils::filePath($filename);
         $p = strpos($filename, '?');
-        $filename = str_replace('?', '_', str_replace('&', '_', str_replace('.', '_', str_replace('=', '_', $filename)))) . HTML_EXTENSION;
+        $filename = str_replace('?', '_', str_replace('&', '_', str_replace('.', '_', str_replace('=', '_', $filename)))) . $extension;
         
         return $filename;
     }
@@ -62,24 +52,36 @@ class TStaticApplication extends TWebApplication
 
     public function run(...$params) : bool
     {
-        if(strstr(HTTP_ACCEPT, 'partialview')) {
-            parent::run($params);
-        } else {
-            if($this->validateToken()) {
-                $filename = $this->getStaticFileName();
-                //self::$logger->debug('HTTP_ACCEPT : ' . HTTP_ACCEPT, __FILE__, __LINE__);
-                if (!file_exists($filename)) {
-                    ob_start();
-                    parent::create();
-                    $contents = ob_get_clean();
-                    if(!strstr($filename, '.json')) {
-                        file_put_contents($filename, $contents);
-                    }
-                    echo $contents;
-                } else {
-                    include $filename;
+        $filename = $this->getStaticFileName();
+        $pinfo = (object) pathinfo($filename);
+        // $extension = '.' . $pinfo->extension;
+
+        // if (strstr(HTTP_ACCEPT, 'partialview')
+        // || strstr(HTTP_ACCEPT, 'application/javascript')
+        // || strstr(HTTP_ACCEPT, '*/*')
+        // || $extension == JSON_EXTENSION 
+        // || $extension == JS_EXTENSION) {
+        // }
+
+        // if (strstr(HTTP_ACCEPT, 'text/html,application/xhtml+xml,aplication/xml')) {
+        if (strstr(HTTP_ACCEPT, 'text/html')) {
+            //self::$logger->debug('HTTP_ACCEPT : ' . HTTP_ACCEPT, __FILE__, __LINE__);
+            if (!file_exists($filename)) {
+                ob_start();
+                parent::run($params);
+                $contents = ob_get_clean();
+
+                if (strstr($pinfo->dirname, '/') && !file_exists($pinfo->dirname)) {
+                    mkdir($pinfo->dirname, 0755, true);
                 }
+                file_put_contents($filename, $contents);
+            // } else {
+
             }
+            include $filename;
+        } else {
+            parent::run($params);
+
         }
 
         return true;

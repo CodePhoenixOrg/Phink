@@ -1,5 +1,5 @@
 <?php
-namespace Sol\Controllers;
+namespace  Phink\Web\UI\Widget\Console;
 
 use Phink\MVC\TController;
 

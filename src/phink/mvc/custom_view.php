@@ -32,7 +32,8 @@ abstract class TCustomView extends TCustomControl
     }
 
     protected $router = null;
-    protected $viewHtml = null;
+    protected $viewHtml = '';
+    protected $twigHtml = '';
     protected $preHtml = '';
     protected $designs = array();
     protected $design = '';
@@ -83,56 +84,105 @@ abstract class TCustomView extends TCustomControl
     {
         return $this->afterBinding;
     }
+
+    // public function setViewHtml($html)
+    // {
+    //     $this->viewHtml = $html;
+    // }
     
     public function getViewHtml()
     {
         return $this->viewHtml;
     }
+
+    public function setTwigHtml($html)
+    {
+        $this->twigHtml = $html;
+    }
     
+    public function getTwigHtml()
+    {
+        return $this->twigHtml;
+    }
+    
+    public function setTwig(array $dictionary): void
+    {
+        $viewName = $this->getViewName() . PREHTML_EXTENSION;
+        $this->setTwigByName($viewName, $dictionary);
+    }
+
+    public function setTwigByName(string $viewName, array $dictionary): void
+    {
+        $html = $this->renderTwigByName($viewName, $dictionary);
+        $this->twigHtml = $html;
+    }
+    
+    protected function loadView($filename): string
+    {
+        $lines = file($filename);
+        $text = '';
+        foreach($lines as $line) {
+            // $text .= trim($line) . PHP_EOL;
+            $text .= $line;
+        }
+
+        return $text;
+    }
+
     public function parse()
     {
         self::$logger->debug($this->viewName . ' IS REGISTERED : ' . (TRegistry::exists('code', $this->controllerFileName) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
 
         // $this->viewHtml = $this->redis->mget($templateName);
         // $this->viewHtml = $this->viewHtml[0];
-        if (file_exists(SRC_ROOT . $this->viewFileName) && !empty($this->viewFileName)) {
-            self::$logger->debug('PARSE SRC ROOT FILE : ' . $this->viewFileName, __FILE__, __LINE__);
 
-            $this->viewHtml = file_get_contents(SRC_ROOT . $this->viewFileName);
-        }
-        if (file_exists(SITE_ROOT . $this->viewFileName) && !empty($this->viewFileName)) {
-            self::$logger->debug('PARSE SITE ROOT FILE : ' . $this->viewFileName, __FILE__, __LINE__);
-    
-            $this->viewHtml = file_get_contents(SITE_ROOT . $this->viewFileName);
-        }
-        if (file_exists(SITE_ROOT . $this->getPath()) && !empty($this->getPath())) {
-            $path = $this->getPath();
-            if ($path[0] == '@') {
-                $path = str_replace("@" . DIRECTORY_SEPARATOR, SITE_ROOT, $this->getPath());
-            } else {
-                $path = SITE_ROOT . $this->getPath();
+        if (empty($this->getViewHtml())) {
+            if (file_exists(SRC_ROOT . $this->viewFileName) && !empty($this->viewFileName)) {
+                self::$logger->debug('PARSE SRC ROOT FILE : ' . $this->viewFileName, __FILE__, __LINE__);
+
+                $this->viewHtml = $this->loadView(SRC_ROOT . $this->viewFileName);
             }
-            self::$logger->debug('PARSE PHINK VIEW : ' . $path, __FILE__, __LINE__);
+            if (file_exists(SITE_ROOT . $this->viewFileName) && !empty($this->viewFileName)) {
+                self::$logger->debug('PARSE SITE ROOT FILE : ' . $this->viewFileName, __FILE__, __LINE__);
+    
+                $this->viewHtml = $this->loadView(SITE_ROOT . $this->viewFileName);
+            }
+            if (file_exists(SITE_ROOT . $this->getPath()) && !empty($this->getPath())) {
+                $path = $this->getPath();
+                if ($path[0] == '@') {
+                    $path = str_replace("@" . DIRECTORY_SEPARATOR, SITE_ROOT, $this->getPath());
+                } else {
+                    $path = SITE_ROOT . $this->getPath();
+                }
+                self::$logger->debug('PARSE PHINK VIEW : ' . $path, __FILE__, __LINE__);
 
-            $this->viewHtml = file_get_contents($path);
-        } 
-        // else {
-        //     self::$logger->debug('PARSE PHINK PLUGIN : ' . $this->getPath(), __FILE__, __LINE__);
+                $this->viewHtml = $this->loadView($path);
+            }
+            // else {
+            //     self::$logger->debug('PARSE PHINK PLUGIN : ' . $this->getPath(), __FILE__, __LINE__);
 
-        //     $this->viewHtml = file_get_contents(SITE_ROOT . $this->viewFileName, FILE_USE_INCLUDE_PATH);
-        // }
+            //     $this->viewHtml = file_get_contents(SITE_ROOT . $this->viewFileName, FILE_USE_INCLUDE_PATH);
+            // }
         
-        // $this->redis->mset($templateName, $this->viewHtml);
-        //self::$logger->debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');
-        $doc = new TXmlDocument($this->viewHtml);
-        $doc->matchAll();
+            // $this->redis->mset($templateName, $this->viewHtml);
+            // self::$logger->debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');
+            // self::$logger->debug('HTML VIEW : <pre>[' . PHP_EOL . htmlentities($this->viewHtml) . PHP_EOL . '...]</pre>');
+            $doc = new TXmlDocument($this->viewHtml);
+            $doc->matchAll();
 
-        if ($doc->getCount() > 0) {
-            $declarations = $this->writeDeclarations($doc, $this);
-            $this->creations = $declarations->creations;
-            $this->additions = $declarations->additions;
-            $this->afterBinding = $declarations->afterBinding;
-            $this->viewHtml = $this->writeHTML($doc, $this);
+            // $matches = $doc->getList();
+
+            // foreach($matches as $match) {
+            //     self::$logger->debug(print_r($match, true) . PHP_EOL);
+            // } 
+
+            if ($doc->getCount() > 0) {
+                $declarations = $this->writeDeclarations($doc, $this);
+                $this->creations = $declarations->creations;
+                $this->additions = $declarations->additions;
+                $this->afterBinding = $declarations->afterBinding;
+                $this->viewHtml = $this->writeHTML($doc, $this);
+            }
         }
 
         if (!TRegistry::exists('code', $this->controllerFileName)) {
@@ -159,4 +209,6 @@ abstract class TCustomView extends TCustomControl
         // We generate the code, but we don't flag it as parsed because it was not "executed"
         return false;
     }
+
+
 }
