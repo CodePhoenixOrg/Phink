@@ -42,7 +42,7 @@ class TRegistry extends TStaticObject
         self::$_classRegistry = array(
             'TConsoleWindow' => array(
                 'alias' => 'console',
-                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'console' . DIRECTORY_SEPARATOR,
+                'path' => 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'console' . DIRECTORY_SEPARATOR,
                 'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\ConsoleWindow',
                 'hasTemplate' => true,
                 'canRender' => true,
@@ -58,7 +58,7 @@ class TRegistry extends TStaticObject
             )
             , 'TPager' => array(
                 'alias' => 'pager',
-                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'pager' . DIRECTORY_SEPARATOR,
+                'path' => 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'pager' . DIRECTORY_SEPARATOR,
                 'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Pager',
                 'hasTemplate' => true,
                 'canRender' => true,
@@ -66,7 +66,7 @@ class TRegistry extends TStaticObject
             ) 
             , 'TPluginRenderer' => array(
                 'alias' => 'pluginrenderer',
-                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR,
+                'path' => 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR,
                 'namespace' => ROOT_NAMESPACE . '\Web\UI',
                 'hasTemplate' => false,
                 'canRender' => true,
@@ -74,7 +74,7 @@ class TRegistry extends TStaticObject
             )
             , 'TPlugin' => array(
                 'alias' => 'plugin',
-                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR,
+                'path' => 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR,
                 'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Plugin',
                 'hasTemplate' => true,
                 'canRender' => true,
@@ -82,7 +82,7 @@ class TRegistry extends TStaticObject
             )
             , 'TPluginChild' => array(
                 'alias' => 'pluginchild',
-                'path' => DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR,
+                'path' => 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR,
                 'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Plugin',
                 'hasTemplate' => false,
                 'canRender' => false,
@@ -100,7 +100,7 @@ class TRegistry extends TStaticObject
             $result = (object) self::$_classRegistry[$className];
         }
 
-        self::$logger->debug('CLASS INFO : ' . print_r($result, true));
+        // self::$logger->debug('CLASS INFO : ' . print_r($result, true));
         
         return $result;
     }

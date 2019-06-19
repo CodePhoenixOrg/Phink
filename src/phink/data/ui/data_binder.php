@@ -80,11 +80,12 @@ trait TDataBinder
     
     public static function applyTemplate($templates, $names, $values, $templateIndex) 
     {
-        self::$logger->debug('TEMPLATE : ' . print_r($templates[$templateIndex], true));
+        // self::$logger->debug('TEMPLATE : ' . print_r($templates[$templateIndex], true));
 
         $cols = count($values);
 
         $html = $templates[$templateIndex]['content'];
+
         $event = $templates[$templateIndex]['event'];
         $e = explode('#', $event);
         if (count($e) > 1) {

@@ -33,11 +33,9 @@ abstract class TCustomController extends TCustomControl
     protected $viewHtml = '';
     protected $model = null;
     protected $view = null;
-    private $_type = '';
     
     public function __construct(IWebObject $parent)
     {
-
         parent::__construct($parent);
         
         $this->application = $parent->getApplication();
@@ -50,9 +48,6 @@ abstract class TCustomController extends TCustomControl
         $this->twigEnvironment = $this->getTwigEnvironment();
 
         $this->cloneNamesFrom($parent);
-
-        // $this->setCacheFileName();
-
     }
 
     public function getInnerHtml()
@@ -75,12 +70,6 @@ abstract class TCustomController extends TCustomControl
         return $this->model;
     }
     
-    // public function view($html)
-    // {
-    //     $this->viewHtml = $html;
-    //     include "data://text/plain;base64," . base64_encode($this->viewHtml);        
-    // }
-       
     public function parse()
     {
         $this->cacheFileName = $this->view->getCacheFileName();
@@ -90,12 +79,10 @@ abstract class TCustomController extends TCustomControl
         self::$logger->debug('CACHED FILE EXISTS : ' . $isAlreadyParsed ? 'TRUE' : 'FALSE', __FILE__, __LINE__);
 
         if(!$isAlreadyParsed) {
-
-            $this->_type = $this->view->parse();
+            $isAlreadyParsed = $this->view->parse();
             $this->creations = $this->view->getCreations();
             $this->declarations = $this->view->getAdditions();
             $this->viewHtml = $this->view->getViewHtml();
- 
         }
         
         return $isAlreadyParsed;
@@ -114,7 +101,7 @@ abstract class TCustomController extends TCustomControl
     public function renderDeclarations()
     {
         if(!empty($this->declarations)) {
-             /* 
+            /* 
              * include "data://text/plain;base64," . base64_encode('<?php' . $this->declarations . '?>');
              */
             eval($this->declarations);

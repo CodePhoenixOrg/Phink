@@ -294,7 +294,7 @@ class TAutoloader extends TStaticObject
         $cacheJsFilename = '';
 
         $info = Core\TRegistry::classInfo($viewName);
-        self::getLogger()->dump('CLASS INFO: ', $info, __FILE__, __LINE__);
+        // self::getLogger()->dump('CLASS INFO: ', $info, __FILE__, __LINE__);
         
         if ($info !== null) {
             //$classFilename = ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;

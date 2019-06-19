@@ -117,6 +117,18 @@ abstract class TCustomView extends TCustomControl
         $this->twigHtml = $html;
     }
     
+    protected function loadView($filename): string
+    {
+        $lines = file($filename);
+        $text = '';
+        foreach($lines as $line) {
+            // $text .= trim($line) . PHP_EOL;
+            $text .= $line;
+        }
+
+        return $text;
+    }
+
     public function parse()
     {
         self::$logger->debug($this->viewName . ' IS REGISTERED : ' . (TRegistry::exists('code', $this->controllerFileName) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
@@ -128,12 +140,12 @@ abstract class TCustomView extends TCustomControl
             if (file_exists(SRC_ROOT . $this->viewFileName) && !empty($this->viewFileName)) {
                 self::$logger->debug('PARSE SRC ROOT FILE : ' . $this->viewFileName, __FILE__, __LINE__);
 
-                $this->viewHtml = file_get_contents(SRC_ROOT . $this->viewFileName);
+                $this->viewHtml = $this->loadView(SRC_ROOT . $this->viewFileName);
             }
             if (file_exists(SITE_ROOT . $this->viewFileName) && !empty($this->viewFileName)) {
                 self::$logger->debug('PARSE SITE ROOT FILE : ' . $this->viewFileName, __FILE__, __LINE__);
     
-                $this->viewHtml = file_get_contents(SITE_ROOT . $this->viewFileName);
+                $this->viewHtml = $this->loadView(SITE_ROOT . $this->viewFileName);
             }
             if (file_exists(SITE_ROOT . $this->getPath()) && !empty($this->getPath())) {
                 $path = $this->getPath();
@@ -144,7 +156,7 @@ abstract class TCustomView extends TCustomControl
                 }
                 self::$logger->debug('PARSE PHINK VIEW : ' . $path, __FILE__, __LINE__);
 
-                $this->viewHtml = file_get_contents($path);
+                $this->viewHtml = $this->loadView($path);
             }
             // else {
             //     self::$logger->debug('PARSE PHINK PLUGIN : ' . $this->getPath(), __FILE__, __LINE__);
@@ -153,9 +165,16 @@ abstract class TCustomView extends TCustomControl
             // }
         
             // $this->redis->mset($templateName, $this->viewHtml);
-            //self::$logger->debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');
+            // self::$logger->debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');
+            // self::$logger->debug('HTML VIEW : <pre>[' . PHP_EOL . htmlentities($this->viewHtml) . PHP_EOL . '...]</pre>');
             $doc = new TXmlDocument($this->viewHtml);
             $doc->matchAll();
+
+            // $matches = $doc->getList();
+
+            // foreach($matches as $match) {
+            //     self::$logger->debug(print_r($match, true) . PHP_EOL);
+            // } 
 
             if ($doc->getCount() > 0) {
                 $declarations = $this->writeDeclarations($doc, $this);

@@ -25,6 +25,7 @@ class PhinkLibrary {
             'core/static_object.php',
             'autoloader.php',
             'core/object.php',
+            'cache/cache.php',
             'css/css_builder.php',
             'js/js_builder.php',
             'core/custom_application.php',
