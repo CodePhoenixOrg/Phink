@@ -36,9 +36,9 @@ class TCache
             TFileUtils::delTree(RUNTIME_DIR);
             TFileUtils::delTree(RUNTIME_JS_DIR);
             TFileUtils::delTree(RUNTIME_CSS_DIR);
-            mkdir(RUNTIME_DIR, 0777);
-            mkdir(RUNTIME_JS_DIR, 0777);
-            mkdir(RUNTIME_CSS_DIR, 0777);
+            mkdir(RUNTIME_DIR, 0660);
+            mkdir(RUNTIME_JS_DIR, 0660);
+            mkdir(RUNTIME_CSS_DIR, 0660);
             $result = true;
         } catch (\Throwable $ex) {
             self::writeException($ex);

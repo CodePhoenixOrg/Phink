@@ -97,11 +97,6 @@ trait THtmlControl
                 $this->content = $contents;
             }
         }
-        if (!empty($this->content) && strpos($this->content, '!#e64#') > -1) {
-            // $this->content = TRegistry::read('xml_content', $this->content);
-            $this->content = substr($this->content, 6);
-            $this->content = \base64_decode($this->content);
-        }
     }
     
     public function getDragHelper()

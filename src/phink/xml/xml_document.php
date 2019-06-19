@@ -195,11 +195,9 @@ class TXmlDocument extends TObject
         return $this->_text;
     }
 
-    public static function replaceThisMatch(TXmlMatch $match, $text, $replace)
+    public function replaceThisMatch(TXmlMatch $match, $text, $replace)
     {
         
-        
-        //debug(var_export($match, true));
         if ($match->hasChildren()) {
             $start = $match->getStart();
             $closer = $match->getCloser();

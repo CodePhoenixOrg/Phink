@@ -85,7 +85,7 @@ trait TCodeGenerator
                     }
                 }
 
-                self::$logger->debug(print_r($control['properties'], true) . PHP_EOL);
+                // self::$logger->debug(print_r($control['properties'], true) . PHP_EOL);
 
                 $properties = $control['properties'];
                 $controlId = $properties['id'];
@@ -148,7 +148,7 @@ trait TCodeGenerator
                 }
         
                 foreach ($properties as $key=>$value) {
-                    self::$logger->debug(print_r([$key, $value], true) . PHP_EOL);
+                    // self::$logger->debug(print_r([$key, $value], true) . PHP_EOL);
                     if ($key == 'id') {
                         if ($serialize) {
                             array_push($creations[$j], 'if(!' . $thisControl . ' = \Phink\Core\TObject::wakeUp("' . $value . '")) {');
@@ -348,7 +348,7 @@ trait TCodeGenerator
                 }
             }
 
-            $viewHtml = TXmlDocument::replaceThisMatch($match, $viewHtml, $declare);
+            $viewHtml = $doc->replaceThisMatch($match, $viewHtml, $declare);
         }
         return $viewHtml;
     }
