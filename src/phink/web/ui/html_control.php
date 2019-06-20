@@ -86,7 +86,7 @@ trait THtmlControl
     {
         $this->content = $value;
         
-        self::$logger->debug(__CLASS__ . '::' . __METHOD__ .'::HTML TEMPLATE CONTENT : <pre>[' . PHP_EOL . htmlentities($this->content) . PHP_EOL . '...]</pre>');
+        // self::$logger->debug(__CLASS__ . '::' . __METHOD__ .'::HTML TEMPLATE CONTENT : <pre>[' . PHP_EOL . htmlentities($this->content) . PHP_EOL . '...]</pre>');
 
         if(isset($this->content[0]) && $this->content[0] === '@') {
             $templateName = str_replace(PREHTML_EXTENSION, '', substr($this->content,1));
