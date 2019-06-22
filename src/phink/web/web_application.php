@@ -173,6 +173,10 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
     {
         $result = true;
 
+        if (!file_exists('phink_builder.lock')) {
+            \Phink\JavaScript\PhinkBuilder::build();
+            // file_put_contents('phink_builder.lock', date('Y-m-d h:i:s'));
+        }
         if (!file_exists('js_builder.lock')) {
             \Phink\JavaScript\JsBuilder::build();
             file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));

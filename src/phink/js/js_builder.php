@@ -33,13 +33,13 @@ class JsBuilder {
         }
         $vendor = implode(DIRECTORY_SEPARATOR, $path) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR;
         
-        $srcdir = SRC_ROOT . 'vendor' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR;
+        $srcdir = SITE_ROOT . 'vendor' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR;
         
         $js_content = '';
 
         $filenames = [
                 'jquery/jquery.js'
-            ,   'jquery/jquery-ui.js'
+            ,   'jqueryui/jquery-ui.js'
             ,   'bootstrap/js/bootstrap.js'
         ];
 
@@ -61,36 +61,6 @@ class JsBuilder {
             $js_content .= file_get_contents($srcdir . $filename, FILE_USE_INCLUDE_PATH);
         }
         
-        file_put_contents($js_filename, $js_content);
-
-        // $srcdir = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'bower_components' . DIRECTORY_SEPARATOR . 'phinkjs' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR;
-        $srcdir = SRC_ROOT . 'web' . DIRECTORY_SEPARATOR . 'bower_components' . DIRECTORY_SEPARATOR . 'phinkjs' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR;
-
-        $js_filename = DOCUMENT_ROOT . 'phink.js';
-
-        $filenames = [
-                'main.js'
-            ,   'utils/text.js'
-            ,   'core/registry.js'
-            ,   'core/object.js'
-            ,   'core/url.js'
-            ,   'web/rest.js'
-            ,   'web/web_object.js'
-            ,   'web/web_application.js'
-            ,   'mvc/view.js'
-            ,   'mvc/controller.js'
-            ,   'web/ui/plugin.js'
-            ,   'web/ui/plugin/accordion.js'
-            ,   'web/ui/plugin/list.js'
-            ,   'web/ui/plugin/table.js'
-        ];
-
-        $js_content = '';
-
-        foreach ($filenames as $filename) {
-            $js_content .= file_get_contents($srcdir . $filename);
-        }
-
         file_put_contents($js_filename, $js_content);
 
 //        $filenames = [

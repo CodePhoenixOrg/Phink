@@ -64,7 +64,9 @@ if (APP_IS_WEB) {
     define('APP_NAME', $appname);
 
     define('PHINK_VENDOR', 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
+    define('PHINKJS_VENDOR', 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phinkjs' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR);
     define('PHINK_ROOT', SITE_ROOT . PHINK_VENDOR);
+    define('PHINKJS_ROOT', SITE_ROOT . PHINKJS_VENDOR);
 
     define('APP_DIR', 'app');
     
