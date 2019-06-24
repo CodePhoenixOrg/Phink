@@ -54,6 +54,8 @@ class TView extends TCustomView
         $this->setCacheFileName();
         $this->cacheFileName = $parent->getCacheFileName();
 
+        $this->setMotherView($this);
+
     }
 
 }

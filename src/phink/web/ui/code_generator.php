@@ -148,7 +148,6 @@ trait TCodeGenerator
                 }
         
                 foreach ($properties as $key=>$value) {
-                    // self::$logger->debug(print_r([$key, $value], true) . PHP_EOL);
                     if ($key == 'id') {
                         if ($serialize) {
                             array_push($creations[$j], 'if(!' . $thisControl . ' = \Phink\Core\TObject::wakeUp("' . $value . '")) {');

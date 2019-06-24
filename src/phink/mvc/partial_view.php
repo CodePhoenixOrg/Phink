@@ -25,7 +25,7 @@ class TPartialView extends TCustomView
 {
     public function __construct(\Phink\Core\TObject $father, \Phink\Core\TObject $parent)
     {
-        $this->parentView = $father;
+        $this->setMotherView($father);
         $this->className = $parent->getType();
         parent::__construct($parent);
 

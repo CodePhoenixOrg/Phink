@@ -26,6 +26,7 @@ namespace Phink\Web;
  
 use Phink\Core\TRegistry;
 use Phink\Core\TCustomApplication;
+use Phink\Web\UI\TCustomControl;
 
 trait TWebObject
 {
@@ -60,6 +61,9 @@ trait TWebObject
     protected $viewIsInternal = false;
     protected $path = '';
     protected $twigEnvironment = null;
+    protected $parentView = null;
+    protected $parentType = null;
+    protected $motherView = null;
 
 //    protected $authentication = null;
     
@@ -68,8 +72,6 @@ trait TWebObject
 //        $this->request = $parent->getRequest();
 //        $this->response = $parent->getResponse();
 //    }
-//
-
  
     public static function pageNumber($value = null)
     {
@@ -156,6 +158,23 @@ trait TWebObject
         return DOCUMENT_ROOT . 'tmp' . DIRECTORY_SEPARATOR . $parts['filename'] . '.xml';
     }
 
+    public function setMotherView(?TCustomControl $value) : void
+    {
+        if($value !== null && $value->getType() == 'TView' && $this->motherView === null) {
+            $this->motherView = $value;
+        }
+    }
+    
+    public function getMotherView() : ?TCustomControl
+    {
+        return $this->motherView;
+    }
+    
+    public function getParentType()
+    {
+        return $this->parentType;
+    }
+    
     public function getAuthentication()
     {
         return $this->authentication;

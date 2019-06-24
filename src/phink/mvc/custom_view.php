@@ -44,8 +44,6 @@ abstract class TCustomView extends TCustomControl
     protected $controllerIsIncluded = false;
     protected $pattern = '';
     protected $depth = 0;
-    protected $parentView = null;
-    protected $parentType = null;
 
     public function __construct(IWebObject $parent)
     {

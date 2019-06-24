@@ -30,14 +30,11 @@ class TPartialController extends TCustomController
         
         $this->className = $this->getType();
         $this->viewName = lcfirst($this->className);
-         //self::$logger->debug('PARTIAL CONTROLLER TYPE : ' . print_r($this->className, true));
        
         $include = \Phink\TAutoloader::includeModelByName($this->viewName);
         $modelClass = $include['type'];
-//        //self::$logger->debug('MODEL OBJECT : ' . print_r($modelClass, true));
         $this->model = new $modelClass();        
         $this->view = new TPartialView($parent, $this); 
-                
     }   
     
     public function render()

@@ -93,7 +93,7 @@ trait THtmlControl
             $templateName = SRC_ROOT . 'app' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $templateName . PREHTML_EXTENSION;
 
             if(file_exists($templateName)) {
-                $contents = file_get_contents($templateName, FILE_USE_INCLUDE_PATH);
+                $contents = file_get_contents($templateName);
                 $this->content = $contents;
             }
         }
@@ -108,10 +108,10 @@ trait THtmlControl
         $this->dragHelper = $value;
         if($this->dragHelper[0] == '@') {
             $templateName = str_replace(PREHTML_EXTENSION, '', substr($this->dragHelper,1));
-            $templateName = 'app' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $templateName . PREHTML_EXTENSION;
+            $templateName = SRC_ROOT . 'app' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $templateName . PREHTML_EXTENSION;
 
             if(file_exists($templateName)) {
-                $contents = file_get_contents($templateName, FILE_USE_INCLUDE_PATH);
+                $contents = file_get_contents($templateName);
                 $this->dragHelper = $contents;
             }
         }
