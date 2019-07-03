@@ -43,15 +43,7 @@ class TRegistry extends TStaticObject
             'TConsoleWindow' => array(
                 'alias' => 'console',
                 'path' => 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'console' . DIRECTORY_SEPARATOR,
-                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\ConsoleWindow',
-                'hasTemplate' => true,
-                'canRender' => true,
-                'isAutoloaded' => true
-            )
-            , 'TConsolew' => array(
-                'alias' => 'console',
-                'path' => '@' . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'console' . DIRECTORY_SEPARATOR,
-                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Consolew',
+                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Console',
                 'hasTemplate' => true,
                 'canRender' => true,
                 'isAutoloaded' => false

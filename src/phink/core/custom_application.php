@@ -34,7 +34,7 @@ include 'constants.php';
  */
 
 use Phink\Core\TObject;
-use Phink\MVC\TView;
+use Phink\Cache\TCache;
 use Phink\Auth\TAuthentication;
 
 abstract class TCustomApplication extends TObject
@@ -178,6 +178,7 @@ abstract class TCustomApplication extends TObject
     {
         $result = '';
         try {
+            TCache::clearRuntime();
             self::getLogger()->clearAll();
 
             $result = 'All logs2 and temporary files cleared';

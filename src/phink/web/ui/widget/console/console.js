@@ -22,10 +22,6 @@ Phink.DOM.ready(function () {
                 } , function (data) {
                     document.querySelector("#result").innerHTML = data.result;
                 });
-                // this.getPartialView('rlog', 'clearLogs', "#result", {} , function (data) {
-                //     document.querySelector("#result").innerHTML = data.result;
-                //     // console.log(data);
-                // });
             }
         })
         .onload(function () {

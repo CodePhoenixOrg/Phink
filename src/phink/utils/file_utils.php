@@ -172,7 +172,7 @@ class TFileUtils
                 array_map($class_func, glob($path.'/*'), $tree);
     }
 
-    public function delTree(string $path) : bool
+    public static function delTree(string $path) : bool
     {
         $class_func = array(__CLASS__, __FUNCTION__);
         return is_file($path) ?
