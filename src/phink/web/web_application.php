@@ -31,6 +31,7 @@ use Phink\Core\TRouter;
 use Phink\Core\TRegistry;
 use Phink\Rest\TRestRouter;
 use Phink\Web\TWebRouter;
+use Phink\Cache\TCache;
 
 /**
  * Description of router
@@ -49,6 +50,8 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
     {
         parent::__construct();
         parent::ignite();
+
+        TCache::createRuntimeDirs();
 
         $this->authentication = new TAuthentication();
         $this->request = new TRequest();
@@ -206,7 +209,7 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
         }
 
         if ($router->translate()) {
-            // $this->getLogger()->debug("Ready to dispatch");
+            // self::getLogger()->debug("Ready to dispatch");
             $router->dispatch();
         } else {
             $this->response->setReturn(403);
@@ -226,9 +229,9 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
 //            $token = TCrypto::generateToken('');
 //        }
 
-        $this->getLogger()->debug("TRANSLATED ROUTE::" . $router->getPath());
-        $this->getLogger()->debug("TRANSLATED SRC ROUTE::" . SRC_ROOT . $router->getPath());
-        $this->getLogger()->debug("TRANSLATED PHINK ROUTE::" . SITE_ROOT . $router->getPath());
+        self::getLogger()->debug("TRANSLATED ROUTE::" . $router->getPath());
+        self::getLogger()->debug("TRANSLATED SRC ROUTE::" . SRC_ROOT . $router->getPath());
+        self::getLogger()->debug("TRANSLATED PHINK ROUTE::" . SITE_ROOT . $router->getPath());
    
         if ((is_string($token) 
         || (file_exists(SRC_ROOT . $router->getPath()) || file_exists(SITE_ROOT . $router->getPath())))

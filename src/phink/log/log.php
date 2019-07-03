@@ -57,8 +57,8 @@ class TLog
     {
         $message = (is_array($message) || is_object($message)) ? print_r($message, true) : $message;
 
-        if (!file_exists('logs')) {
-            mkdir('logs', 0755);
+        if (!file_exists(dirname(DEBUG_LOG))) {
+            mkdir(dirname(DEBUG_LOG), 0755);
         }
         $handle = fopen($filepath, 'a');
 

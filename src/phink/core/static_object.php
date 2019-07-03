@@ -38,4 +38,18 @@ class TStaticObject
     {
         return self::$logger;
     }
+
+    public static function create(...$params)
+    {
+        $class = __CLASS__;
+        $object = null;
+        
+        if(count($params) > 0) {
+            $object = new $class();
+        } else {
+            $object = new $class($params);
+        }
+        
+        return $object;
+    }
 }

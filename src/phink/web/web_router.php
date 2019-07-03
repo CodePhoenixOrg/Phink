@@ -47,7 +47,7 @@ class TWebRouter extends \Phink\Core\TRouter
         
     }
 
-    public function translate()
+    public function translate(): bool
     {
         $isTranslated = false;
 
@@ -75,7 +75,7 @@ class TWebRouter extends \Phink\Core\TRouter
         return $this->_isCached || $isTranslated;
     }
 
-    public function dispatch()
+    public function dispatch(): bool
     {
         if ($this->_isCached) {
             $view = new \Phink\MVC\TView($this);
@@ -87,7 +87,7 @@ class TWebRouter extends \Phink\Core\TRouter
 //        $modelClass = ($include = TAutoloader::includeModelByName($this->viewName)) ? $include['type'] : DEFALT_MODEL;
 //        include $include['file'];
 //        $model = new $modelClass();
-        $include = $this->includePrimaryController();
+        $include = $this->includeController();
 
         $view = new \Phink\MVC\TView($this);
         $view->parse();
@@ -133,15 +133,4 @@ class TWebRouter extends \Phink\Core\TRouter
         return $result;
     }
     
-    public function includePrimaryController()
-    {
-        if ($this->getRequest()->isAJAX() && $this->request->isPartialView()) {
-            $result = TAutoloader::includeDefaultController($this->namespace, $this->className);
-            \Phink\Core\TRegistry::setCode($this->controllerFileName, $result['code']);
-        } else {
-            $result = $this->includeController();
-        }
-        
-        return $result;
-    }
 }

@@ -39,7 +39,7 @@ class TUlli extends TCustomPlugin
         $tbody = str_replace('%s', $css, $elements[0]->getOpening()) . "\n";
         $body = $this->data['values'];
         $names = $this->data['names'];
-        $oldValue = array_fill(0, count($this->rows), '&nbsp;');
+        $oldValue = array_fill(0, $this->rows, '&nbsp;');
         for ($i = 0; $i < $this->rows; $i++) {
             $css = '';
 

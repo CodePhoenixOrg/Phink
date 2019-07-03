@@ -121,6 +121,7 @@ if (APP_IS_WEB) {
     define('DEFAULT_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TController');
     define('DEFAULT_PARTIAL_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TPartialController');
     define('DEFAULT_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TControl');
+    define('DEFAULT_PARTIAL_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TPartialControl');
 
 } else {
     define('DOCUMENT_ROOT', '');
@@ -130,6 +131,7 @@ if (APP_IS_WEB) {
 define('CONTROLLER', 'TController');
 define('PARTIAL_CONTROLLER', 'TPartialController');
 define('CONTROL', 'TControl');
+define('PARTIAL_CONTROL', 'TPartialControl');
 define('CLASS_EXTENSION', '.class.php');
 define('HTML_EXTENSION', '.html');
 define('PREHTML_EXTENSION', '.phtml');

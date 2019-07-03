@@ -2,10 +2,10 @@ var con = null;
 var conHost = window.location.hostname;
 Phink.DOM.ready(function () {
 
-    con = Phink.Web.Application.create(conHost);
-    con.main = con.createView('main');
+    con = Phink.Web.Application.create(conHost, 'console');
+    con.createView('main');
 
-    var conMain = con.createController(con.main, 'con.main')
+    var conMain = con.createController('main', 'main')
         .actions({
             themeIbmPc: function () {
                 document.querySelector('html').setAttribute('class', 'ibm-pc');
