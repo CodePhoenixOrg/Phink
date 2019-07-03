@@ -21,7 +21,6 @@
 use Phink\Core\TObject;
 use Phink\Xml\TXmlDocument;
 use Phink\Core\TRegistry;
-use Phink\Web\IWebObject;
 use Phink\Web\UI\TCustomControl;
 
 abstract class TCustomView extends TCustomControl
@@ -44,10 +43,8 @@ abstract class TCustomView extends TCustomControl
     protected $controllerIsIncluded = false;
     protected $pattern = '';
     protected $depth = 0;
-    protected $parentView = null;
-    protected $parentType = null;
 
-    public function __construct(IWebObject $parent)
+    public function __construct(TObject $parent)
     {
         $this->setParent($parent);
         $this->path = $parent->getPath();
@@ -196,9 +193,9 @@ abstract class TCustomView extends TCustomControl
         $code = str_replace(ADDITIONS_PLACEHOLDER, $this->additions, $code);
         $code = str_replace(HTML_PLACEHOLDER, $this->viewHtml, $code);
         $code = str_replace(DEFAULT_CONTROLLER, DEFAULT_CONTROL, $code);
-        $code = str_replace(DEFAULT_PARTIAL_CONTROLLER, DEFAULT_CONTROL, $code);
+        $code = str_replace(DEFAULT_PARTIAL_CONTROLLER, DEFAULT_PARTIAL_CONTROL, $code);
         $code = str_replace(CONTROLLER, CONTROL, $code);
-        $code = str_replace(PARTIAL_CONTROLLER, CONTROL, $code);
+        $code = str_replace(PARTIAL_CONTROLLER, PARTIAL_CONTROL, $code);
         if (!empty(trim($code))) {
             self::$logger->debug('SOMETHING TO CACHE : ' . $this->getCacheFileName(), __FILE__, __LINE__);
             file_put_contents($this->getCacheFileName(), $code);

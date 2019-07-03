@@ -86,21 +86,16 @@ trait THtmlControl
     {
         $this->content = $value;
         
-        self::$logger->debug(__CLASS__ . '::' . __METHOD__ .'::HTML TEMPLATE CONTENT : <pre>[' . PHP_EOL . htmlentities($this->content) . PHP_EOL . '...]</pre>');
+        // self::$logger->debug(__CLASS__ . '::' . __METHOD__ .'::HTML TEMPLATE CONTENT : <pre>[' . PHP_EOL . htmlentities($this->content) . PHP_EOL . '...]</pre>');
 
         if(isset($this->content[0]) && $this->content[0] === '@') {
             $templateName = str_replace(PREHTML_EXTENSION, '', substr($this->content,1));
             $templateName = SRC_ROOT . 'app' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $templateName . PREHTML_EXTENSION;
 
             if(file_exists($templateName)) {
-                $contents = file_get_contents($templateName, FILE_USE_INCLUDE_PATH);
+                $contents = file_get_contents($templateName);
                 $this->content = $contents;
             }
-        }
-        if (!empty($this->content) && strpos($this->content, '!#e64#') > -1) {
-            // $this->content = TRegistry::read('xml_content', $this->content);
-            $this->content = substr($this->content, 6);
-            $this->content = \base64_decode($this->content);
         }
     }
     
@@ -113,10 +108,10 @@ trait THtmlControl
         $this->dragHelper = $value;
         if($this->dragHelper[0] == '@') {
             $templateName = str_replace(PREHTML_EXTENSION, '', substr($this->dragHelper,1));
-            $templateName = 'app' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $templateName . PREHTML_EXTENSION;
+            $templateName = SRC_ROOT . 'app' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $templateName . PREHTML_EXTENSION;
 
             if(file_exists($templateName)) {
-                $contents = file_get_contents($templateName, FILE_USE_INCLUDE_PATH);
+                $contents = file_get_contents($templateName);
                 $this->dragHelper = $contents;
             }
         }

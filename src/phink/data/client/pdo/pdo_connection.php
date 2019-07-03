@@ -28,6 +28,15 @@ use Phink\Data\ISqlConnection;
 use Phink\Data\TServerType;
 use Phink\Data\Client\PDO\TPdoConfiguration;
 use Phink\Data\Client\PDO\TPdoDataStatement;
+use Phink\Data\TCrudQueries;
+
+class TPdoConnectionException extends \Exception
+{
+    public function __construct(string $message = "" , int $code = 0, Throwable $previous = NULL)
+    {
+        parent::__construct($message, $code, $previous);
+    }
+}
 
 use PDO;
 /**
@@ -43,10 +52,27 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
     private $_params = null;
     private $_statement = null;
 
+    use TCrudQueries;
+
     public function __construct(TPdoConfiguration $config)
     {
         $this->_config = $config;
         $this->configure();
+    }
+
+    public static function builder($filename) : TPdoConnection
+    {
+        $result = null;
+        try {
+            $config = new TPdoConfiguration();
+            $config->loadConfiguration(APP_DATA . $filename . JSON_EXTENSION);
+            $result = new TPdoConnection($config);
+    
+        } catch (\Exception \PDOException $e) {
+            throw new TPdoConnectionException('Something went wrong while building the connection.', 1, $e);
+        } finally {
+            return $result;
+        }
     }
 
     public function getDriver()
@@ -64,6 +90,38 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
         return $this->_config;
     }
 
+
+    public function querySelect()
+    {
+        return $this->query($this->getSelectQuery());
+    }
+    
+    public function queryInsert()
+    {
+        return $this->exec($this->getInsertQuery());
+    }
+
+    public function queryUpdate()
+    {
+        return $this->exec($this->getUpdateQuery());
+    }
+
+    public function queryDelete()
+    {
+        return $this->exec($this->getDeleteQuery());
+    }
+
+    public function addSelectLimit($start, $count)
+    {
+//        $driver = strtolower($this->_activeConnection->getDriver());
+//        if(strstr($driver, 'mysql')) {
+            $start = (!$start) ? 1 : $start;
+            $sql = $this->getSelectQuery() . CR_LF . ' LIMIT ' . (($start - 1) * $count). ', ' . $count . CR_LF;
+
+            $this->setSelectQuery($sql);
+//        }
+    }
+
     public function open()
     {
         try {
@@ -73,7 +131,7 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
                 $this->_state = new \PDO($this->_dsn, $this->_config->getUser(), $this->_config->getPassword(), []);
             }
         } catch (\PDOException $ex) {
-            $this->getlogger()->exception($ex, __FILE__, __LINE__);
+            $this->getlogger()->error($ex, __FILE__, __LINE__);
         }
 
         return $this->_state;

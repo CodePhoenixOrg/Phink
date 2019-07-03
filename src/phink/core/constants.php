@@ -64,7 +64,9 @@ if (APP_IS_WEB) {
     define('APP_NAME', $appname);
 
     define('PHINK_VENDOR', 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
+    define('PHINKJS_VENDOR', 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phinkjs' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR);
     define('PHINK_ROOT', SITE_ROOT . PHINK_VENDOR);
+    define('PHINKJS_ROOT', SITE_ROOT . PHINKJS_VENDOR);
 
     define('APP_DIR', 'app');
     
@@ -119,6 +121,7 @@ if (APP_IS_WEB) {
     define('DEFAULT_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TController');
     define('DEFAULT_PARTIAL_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TPartialController');
     define('DEFAULT_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TControl');
+    define('DEFAULT_PARTIAL_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TPartialControl');
 
 } else {
     define('DOCUMENT_ROOT', '');
@@ -128,6 +131,7 @@ if (APP_IS_WEB) {
 define('CONTROLLER', 'TController');
 define('PARTIAL_CONTROLLER', 'TPartialController');
 define('CONTROL', 'TControl');
+define('PARTIAL_CONTROL', 'TPartialControl');
 define('CLASS_EXTENSION', '.class.php');
 define('HTML_EXTENSION', '.html');
 define('PREHTML_EXTENSION', '.phtml');

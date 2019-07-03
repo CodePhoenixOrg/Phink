@@ -220,20 +220,6 @@ class TObject extends TStaticObject
         $reflection = $this->getReflection();
         return $reflection->getFileName();
     }
-
-    public static function create(...$params)
-    {
-        $class = __CLASS__;
-        $object = null;
-        
-        if(count($params) > 0) {
-            $object = new $class();
-        } else {
-            $object = new $class($params);
-        }
-        
-        return $object;
-    }
     
     public function serialize()
     {

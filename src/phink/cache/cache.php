@@ -20,31 +20,110 @@
 namespace Phink\Cache;
 
 use \Phink\Utils\TFileUtils;
+use Phink\Core\TStaticObject;
 
-class TCache
+class TCache extends TStaticObject
 {
-    public static function cacheFile($filename, $content)
+    public static function cacheFile($filename, $content): void
     {
         $filename = CACHE_DIR . $filename;
         file_put_contents($filename, $content);
     }
-    
-    public static function clearRuntime() : bool
+
+    public static function createRuntimeDirs(): bool
+    {
+        $result = false;
+        $error_dir = [];
+        $isCreated = false;
+
+        try {
+            $runtime_dir = dirname(RUNTIME_DIR . '_');
+            if (!file_exists($runtime_dir)) {
+                $isCreated = mkdir($runtime_dir, 0755, true);
+                $result = $result || $isCreated;
+            }
+            if (!file_exists($runtime_dir)) {
+                $error_dir[] = RUNTIME_DIR;
+            }
+
+            $runtime_js_dir = dirname(RUNTIME_JS_DIR . '_');
+            if (!file_exists($runtime_js_dir)) {
+                $isCreated = mkdir($runtime_js_dir, 0755, true);
+                $result = $result || $isCreated;
+            }
+            if (!file_exists($runtime_js_dir)) {
+                $error_dir[] = RUNTIME_JS_DIR;
+            }
+
+            $runtime_css_dir = dirname(RUNTIME_CSS_DIR . '_');
+            if (!file_exists($runtime_css_dir)) {
+                $isCreated = mkdir($runtime_css_dir, 0755, true);
+                $result = $result || $isCreated;
+            }
+            if (!file_exists($runtime_css_dir)) {
+                $error_dir[] = RUNTIME_CSS_DIR;
+            }
+
+            if(count($error_dir) > 0) {
+                $result = false;
+                
+                $message = 'An error occured while creating ' . implode(', ', $error_dir);
+                throw new \Exception($message, 0);
+            }
+        } catch (\Throwable $ex) {
+            self::getLogger()->error($ex);
+        }
+
+        return $result;
+    }
+
+    public static function deleteRuntimeDirs(): bool
+    {
+        $result = false;
+        $error_dir = [];
+
+        try {
+            
+            if (file_exists(RUNTIME_DIR)) {
+                $result = TFileUtils::delTree(RUNTIME_DIR);
+            } else {
+                $error_dir[] = RUNTIME_DIR;
+            }
+
+            if (file_exists(RUNTIME_JS_DIR)) {
+                $result = $result && TFileUtils::delTree(RUNTIME_JS_DIR);
+            } else {
+                $error_dir[] = RUNTIME_JS_DIR;
+            }
+
+            if (file_exists(RUNTIME_CSS_DIR)) {
+                $result = $result && TFileUtils::delTree(RUNTIME_CSS_DIR);
+            } else {
+                $error_dir[] = RUNTIME_CSS_DIR;
+            }
+        } catch (\Exception $ex) {
+            self::getLogger()->error($ex);
+
+            if (!$result) {
+                $message = 'Permission denied on deleting ' . implode(', ', $error_dir);
+                throw new FileNotFoundException($message, 0, $ex);
+            }
+        }
+
+        return $result;
+    }
+
+    public static function clearRuntime(): bool
     {
         $result = false;
         try {
-            TFileUtils::delTree(RUNTIME_DIR);
-            TFileUtils::delTree(RUNTIME_JS_DIR);
-            TFileUtils::delTree(RUNTIME_CSS_DIR);
-            mkdir(RUNTIME_DIR, 0777);
-            mkdir(RUNTIME_JS_DIR, 0777);
-            mkdir(RUNTIME_CSS_DIR, 0777);
-            $result = true;
+            $result = $result && self::deleteRuntimeDirs();
+            $result = $result && self::createRuntimeDirs();
         } catch (\Throwable $ex) {
             self::writeException($ex);
 
             $result = false;
         }
         return $result;
-    }        
+    }
 }

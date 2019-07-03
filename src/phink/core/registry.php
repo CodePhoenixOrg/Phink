@@ -215,9 +215,9 @@ class TRegistry extends TStaticObject
         }
     }
 
-    public function exists($item, $key = null)
+    public static function exists($item, $key = null)
     {
-        return isset(TRegistry::$_items[$item][$key]);
+        return isset(self::$_items[$item][$key]);
     }
     
     public static function clear()

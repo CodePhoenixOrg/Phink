@@ -1,11 +1,4 @@
-var <% for %>Pager = Phink.MVC.Controller.create()
-.oninit(function (){
-    this.index = '<% pageNum %>';
-    this.count = '<% pageCount %>';
-    this.index = (parseInt(this.index)) ? parseInt(this.index) : 1;
-    this.count = (parseInt(this.count)) ? parseInt(this.count) : 20;
-            
-})
+var <% forThis %>Pager = <% forApp %>.createController('<% forView %>', '<% forCtrl %>')
 .actions({
     fastLeft : function() {
         this.index--;
@@ -25,5 +18,11 @@ var <% for %>Pager = Phink.MVC.Controller.create()
         this.index = 999;
         <% onclick %>(this.count, this.index, '#<% id %>pageNum');        
     }
+}).oninit(function (){
+    this.index = '<% pageNum %>';
+    this.count = '<% pageCount %>';
+    this.index = (parseInt(this.index)) ? parseInt(this.index) : 1;
+    this.count = (parseInt(this.count)) ? parseInt(this.count) : 20;
+            
 });
 

@@ -55,6 +55,7 @@ abstract class TCustomApplication extends TObject
     protected $appDirectory = '';
     protected $canStop = false;
     private $_usage = '';
+    private $_appini = [];
 
     public function __construct()
     {
@@ -82,6 +83,20 @@ abstract class TCustomApplication extends TObject
             }
         );
         
+        $this->setCommand(
+            'ini',
+            '',
+            'Display the ini file if exists',
+            function (callable $callback = null) {
+                $this->loadINI();
+                $data = $this->_appini;
+                $this->writeLine($data);
+                if ($callback !== null) {
+                    \call_user_func($callback, $data);
+                }
+            }
+        );
+
         $this->setCommand(
             'os',
             '',
@@ -192,9 +207,9 @@ abstract class TCustomApplication extends TObject
                 return;
             }
             $ini = parse_ini_file(SRC_ROOT  . 'config/app.ini');
-            $data = isset($ini['data']) ?? $ini['data'];
+            $this->appName = isset($ini['name']) ? $ini['name'] : $this->appName;
 
-            self::getLogger()->dump('INI_DATA:', $ini);
+            $this->_appini = $ini;
         } catch (\Throwable $ex) {
             $this->writeException($ex);
         }

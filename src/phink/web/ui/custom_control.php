@@ -30,6 +30,8 @@ abstract class TCustomControl extends \Phink\Core\TObject implements \Phink\Web\
     public function __construct($parent)
     {
         parent::__construct($parent);
+        
+        $this->setMotherView($parent->getMotherView());
     }
 
     protected $isRendered = false;

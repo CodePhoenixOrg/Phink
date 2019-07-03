@@ -16,15 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- namespace Phink\Xml;
-
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-//require_once 'phink/collections/arraylist.php';
-//require_once 'phink/utils/string_utils.php';
-//require_once 'xmlmatch.php';
+    Possible regex to replace the strpos based method stuff
+    $re = '/(<phx:element.[^>]+?[^\/]>)(.*?)(<\/phx:element>)|(<phx:.+?>)|(<\/phx:\w+>)/is';
+    preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+
+*/
+
+ namespace Phink\Xml;
 
 use Phink\Core\TObject;
 use Phink\Core\TRegistry;
@@ -49,7 +48,6 @@ define('STR_EMPTY', '');
 define('STR_SPACE', ' ');
 define('TAG_PATTERN_ANY', "phx:");
 
-
 class TXmlElementPos
 {
     const None = 0;
@@ -73,14 +71,6 @@ class TXmlDocument extends TObject
     public function __construct($text)
     {
         $this->_text = $text . OPEN_TAG . TAG_PATTERN_ANY . 'eof' . STR_SPACE . TERMINATOR . CLOSE_TAG;
-//        if(strpos($text, CR_MARK . LF_MARK) > -1) {
-//            $this->_text = str_replace("\r\n", '', $subject);
-//        } elseif (strpos($text, LF_MARK) > -1) {
-//            $this->_text = str_replace("\n", '', $subject);
-//        } elseif (strpos($text, CR_MARK) > -1) {
-//            $this->_text = str_replace("\r", '', $subject);
-//        }
-//
         
         $this->_endPos = strlen($this->_text);
     }
@@ -195,11 +185,9 @@ class TXmlDocument extends TObject
         return $this->_text;
     }
 
-    public static function replaceThisMatch(TXmlMatch $match, $text, $replace)
+    public function replaceThisMatch(TXmlMatch $match, $text, $replace)
     {
         
-        
-        //debug(var_export($match, true));
         if ($match->hasChildren()) {
             $start = $match->getStart();
             $closer = $match->getCloser();
@@ -322,8 +310,6 @@ class TXmlDocument extends TObject
                     if ($this->_list[$pId]['depth'] > 0 && (empty($this->_list[$pId]['properties']['content']))) {
                         $contents = substr($text, $this->_list[$pId]['endsAt'] + 1, $this->_list[$i]['startsAt'] - $this->_list[$pId]['endsAt'] - 1);
                         $this->_list[$pId]['properties']['content'] = '!#base64#' . base64_encode($contents); // uniqid();
-                        
-                        // TRegistry::write('xml_content', $this->_list[$pId]['properties']['content'], base64_encode($contents));
                     }
                     
                     $this->_list[$pId]['closer'] = $this->_list[$i];
@@ -341,10 +327,6 @@ class TXmlDocument extends TObject
                     $this->_depths[$depth] = 1;
                     unset($parentId[$depth]);
 
-                    // if(!isset($sa[1])) {
-                    //     $ex = [__CLASS__, __METHOD__, $this->_list[$i], $secondName, $i];
-                    //     $this->getLogger()->dump('Unable to match ending tag', $ex);
-                    // }
                 }
             }
 

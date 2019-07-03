@@ -15,13 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 namespace Phink\Web\UI;
 
 use Phink\Core\TObject;
 use Phink\MVC\TActionInfo;
 
-class TControl extends TCustomCachedControl
+class TPartialControl extends TCustomCachedControl
 {
-    
 }

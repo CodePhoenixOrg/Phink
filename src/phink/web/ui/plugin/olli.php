@@ -45,7 +45,8 @@ class TOlli extends TCustomPlugin
         $oldValue = array();
         for($i = 0; $i < $this->rows; $i++) {
 
-            $row = (isset($body[$i])) ? json_decode($body[$i]) : array_fill(0, $this->columns, '&nbsp;');
+            // $row = (isset($body[$i])) ? json_decode($body[$i]) : array_fill(0, $this->columns, '&nbsp;');
+            $row = (isset($body[$i])) ? $body[$i] : array_fill(0, $this->columns, '&nbsp;');
             $typeId0 = 'id="' . $this->getId() .  $elements[1]->getType() . ($i) . '"';
             $tbody .= str_replace('%s', $typeId0, $elements[1]->getOpening()) . "\n";
             for($j = 0; $j < $this->columns; $j++) {

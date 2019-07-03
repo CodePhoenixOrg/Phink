@@ -1,5 +1,5 @@
 <?php
-namespace  Phink\Web\UI\Widget\Console;
+namespace Phink\Web\UI\Widget\Console;
 
 use Phink\MVC\TController;
 

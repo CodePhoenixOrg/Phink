@@ -22,8 +22,8 @@ trait TDataBinder
 {
     protected $columns = 0;
     protected $rows = 0;
-    protected $data = array();
-    protected $templates = array();
+    protected $data = [];
+    protected $templates = [];
     protected $pivot = false;
     protected $tileBy = false;
 
@@ -46,20 +46,20 @@ trait TDataBinder
         $this->templates = $value;
     }
 
-    public function getCols()
+    public function getCols(): int
     {
         return $this->columns;
     }
-    public function setCols($value)
+    public function setCols($value): void
     {
         $this->columns = $value;
     }
 
-    public function getRows()
+    public function getRows(): int
     {
         return $this->rows;
     }
-    public function setRows($value)
+    public function setRows($value): void
     {
         $this->rows = $value;
     }
@@ -69,11 +69,11 @@ trait TDataBinder
         $this->data = $value;
     }
     
-    public function getPivot()
+    public function getPivot(): bool
     {
         return $this->pivot;
     }
-    public function setPivot($value)
+    public function setPivot($value): void
     {
         $this->pivot = filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }

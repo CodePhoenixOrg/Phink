@@ -27,13 +27,6 @@ namespace Phink\CascadingStyleSheet;
 
 class CssBuilder {
 
-    public static function deltree($path) {
-        $class_func = array(__CLASS__, __FUNCTION__);
-        return is_file($path) ?
-                @unlink($path) :
-                array_map($class_func, glob($path.'/*')) == @rmdir($path);
-    }
-
     public static function build () {
         $theme = 'base';
 
@@ -77,7 +70,7 @@ class CssBuilder {
 //        $vendor = implode(DIRECTORY_SEPARATOR, $path) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR;
         
 
-        $srcdir = SRC_ROOT . 'vendor' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR;
+        $srcdir = SITE_ROOT . 'vendor' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR;
 
 
         //$srcdir =  dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..'  . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'thirdparty' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR;

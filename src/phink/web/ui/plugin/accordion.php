@@ -65,7 +65,7 @@ class TAccordion extends TCustomPlugin
         //self::$logger->debug("\r\n" . "\r\n" . "\r\n" . 'LAST BINDABLE INDEX::' . $lastBindableIndex . "\r\n" . "\r\n" . "\r\n");
                         
         for($i = 0; $i < $this->rows; $i++) {
-            $row = (isset($body[$i])) ? json_decode($body[$i]) : array_fill(0, $this->columns, '&nbsp;');
+            $row = (isset($body[$i])) ? $body[$i] : array_fill(0, $this->columns, '&nbsp;');
             for($j = 0; $j < $templateNum; $j++) {
                  if($j == 0) {
                     $level = 0;

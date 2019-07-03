@@ -39,11 +39,12 @@ class TUlli extends TCustomPlugin
         $tbody = str_replace('%s', $css, $elements[0]->getOpening()) . "\n";
         $body = $this->data['values'];
         $names = $this->data['names'];
-        $oldValue = array_fill(0, count($this->rows), '&nbsp;');
+        $oldValue = array_fill(0, $this->rows, '&nbsp;');
         for ($i = 0; $i < $this->rows; $i++) {
             $css = '';
 
-            $row = (isset($body[$i])) ? json_decode($body[$i]) : array_fill(0, $this->columns, '&nbsp;');
+            // $row = (isset($body[$i])) ? json_decode($body[$i]) : array_fill(0, $this->columns, '&nbsp;');
+            $row = (isset($body[$i])) ? $body[$i] : array_fill(0, $this->columns, '&nbsp;');
             $typeId0 = 'id="' . $this->getId() .  $elements[1]->getType() . ($i) . '"';
             $tbody .= str_replace('%s', $typeId0 . $css, $elements[1]->getOpening()) . "\n";
             for ($j = 0; $j < $this->columns; $j++) {

@@ -152,12 +152,15 @@ class TAutoloader extends TStaticObject
      */
     public static function includeClass($filename, $params = 0)
     {
-        if (!file_exists(SRC_ROOT . $filename)) {
-            //self::getLogger()->debug('INCLUDE CLASS : FILE ' . $filename . ' DOES NOT EXIST');
+        $classFilename = SRC_ROOT . $filename;
+        if(!file_exists($classFilename)) {
+            $classFilename = SITE_ROOT . $filename;
+        }
+        if(!file_exists($classFilename)) {
             return false;
         }
-        
-        $classText = file_get_contents(SRC_ROOT . $filename, FILE_USE_INCLUDE_PATH);
+
+        $classText = file_get_contents($classFilename, FILE_USE_INCLUDE_PATH);
         
         $code = $classText;
         
@@ -391,7 +394,7 @@ class TAutoloader extends TStaticObject
             $end = strpos($classText, ' ', $start);
             $className = substr($classText, $start, $end - $start);
         }
-        $fqClassName = $namespace . '\\' . $className;
+        $fqClassName = trim($namespace) . "\\" . trim($className);
 
         //$className = $include['type'];
         $class = new $fqClassName($parent);

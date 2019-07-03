@@ -125,10 +125,12 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
 
         foreach ($rows as $row) {
             $row = array_values($row);
-            array_push($values, json_encode($row));
+            // array_push($values, json_encode($row));
+            array_push($values, $row);
         }
         for ($k = $rowCount; $k < $rowsPerPage; $k++) {
-            array_push($values, json_encode(array_fill(0, $fieldCount, '&nbsp;')));
+            // array_push($values, json_encode(array_fill(0, $fieldCount, '&nbsp;')));
+            array_push($values, array_fill(0, $fieldCount, '&nbsp;'));
         }
 
         $result = [
@@ -160,6 +162,7 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
         $scriptFilename = $id . '_data.js';
         $json = json_encode($this->data);
         file_put_contents(RUNTIME_JS_DIR . $scriptFilename, 'var ' . $id . 'Data = ' . $json . ';');
+        file_put_contents(RUNTIME_JS_DIR . $id . '_data.json', $json);
         
         $this->response->addScript(REL_RUNTIME_JS_DIR . $scriptFilename);
 
