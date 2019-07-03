@@ -19,6 +19,7 @@
 namespace Phink\Web\UI;
 
 use Phink\Core\TObject;
+use Phink\MVC\TActionInfo;
 
 /**
  * Description of custom_control

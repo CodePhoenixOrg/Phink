@@ -19,7 +19,7 @@
 
 namespace Phink\Cache;
 
-use \Phink\Utils\TFileUtils;
+use Phink\Utils\TFileUtils;
 use Phink\Core\TStaticObject;
 
 class TCache extends TStaticObject
@@ -85,19 +85,19 @@ class TCache extends TStaticObject
         try {
             
             if (file_exists(RUNTIME_DIR)) {
-                $result = TFileUtils::delTree(RUNTIME_DIR);
+                $result = $result || TFileUtils::delTree(RUNTIME_DIR);
             } else {
                 $error_dir[] = RUNTIME_DIR;
             }
 
             if (file_exists(RUNTIME_JS_DIR)) {
-                $result = $result && TFileUtils::delTree(RUNTIME_JS_DIR);
+                $result = $result || TFileUtils::delTree(RUNTIME_JS_DIR);
             } else {
                 $error_dir[] = RUNTIME_JS_DIR;
             }
 
             if (file_exists(RUNTIME_CSS_DIR)) {
-                $result = $result && TFileUtils::delTree(RUNTIME_CSS_DIR);
+                $result = $result || TFileUtils::delTree(RUNTIME_CSS_DIR);
             } else {
                 $error_dir[] = RUNTIME_CSS_DIR;
             }
@@ -117,8 +117,8 @@ class TCache extends TStaticObject
     {
         $result = false;
         try {
-            $result = $result && self::deleteRuntimeDirs();
-            $result = $result && self::createRuntimeDirs();
+            $result = $result || self::deleteRuntimeDirs();
+            $result = $result || self::createRuntimeDirs();
         } catch (\Throwable $ex) {
             self::writeException($ex);
 

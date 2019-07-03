@@ -1,17 +1,14 @@
 <?php
-
-namespace Phink\Web\UI\Widget\ConsoleWindow;
-
-//require_once 'phink/mvc/partial_controller.php';
+namespace Phink\Web\UI\Widget\Console;
 
 use Phink\MVC\TPartialController;
+use Phink\MVC\TActionInfo;
 
 /**
  * Description of dummy
  *
  * @author david
  */
-
 
 class TConsoleWindow extends TPartialController
 {
@@ -68,5 +65,12 @@ class TConsoleWindow extends TPartialController
                 call_user_func($statement, $callback, $args);
             }
         }
+    }
+
+    public function clearLogs() : TActionInfo
+    {
+        $data = $this->getApplication()->clearLogs();
+
+        return TActionInfo::set($this, 'result', $data);
     }
 }
