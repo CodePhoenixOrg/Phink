@@ -28,6 +28,21 @@ namespace Phink\Log;
  */
 class TLog
 {
+    private static $_logger = null;
+
+    private function __construct()
+    {
+        
+    }
+
+    public static function create()
+    {
+        if(self::$_logger === null) {
+            self::$_logger = new TLog();
+        }
+        return self::$_logger;
+    }
+
     public function dump($message, $object)
     {
         $this->debug($message . '::' . print_r($object, true) . PHP_EOL);

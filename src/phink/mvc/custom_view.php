@@ -137,12 +137,12 @@ abstract class TCustomView extends TCustomControl
             if (file_exists(SRC_ROOT . $this->viewFileName) && !empty($this->viewFileName)) {
                 self::$logger->debug('PARSE SRC ROOT FILE : ' . $this->viewFileName, __FILE__, __LINE__);
 
-                $this->viewHtml = $this->loadView(SRC_ROOT . $this->viewFileName);
+                $this->viewHtml = file_get_contents(SRC_ROOT . $this->viewFileName);
             }
             if (file_exists(SITE_ROOT . $this->viewFileName) && !empty($this->viewFileName)) {
                 self::$logger->debug('PARSE SITE ROOT FILE : ' . $this->viewFileName, __FILE__, __LINE__);
     
-                $this->viewHtml = $this->loadView(SITE_ROOT . $this->viewFileName);
+                $this->viewHtml = file_get_contents(SITE_ROOT . $this->viewFileName);
             }
             if (file_exists(SITE_ROOT . $this->getPath()) && !empty($this->getPath())) {
                 $path = $this->getPath();
@@ -153,7 +153,7 @@ abstract class TCustomView extends TCustomControl
                 }
                 self::$logger->debug('PARSE PHINK VIEW : ' . $path, __FILE__, __LINE__);
 
-                $this->viewHtml = $this->loadView($path);
+                $this->viewHtml = file_get_contents($path);
             }
             // else {
             //     self::$logger->debug('PARSE PHINK PLUGIN : ' . $this->getPath(), __FILE__, __LINE__);

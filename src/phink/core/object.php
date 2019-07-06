@@ -46,7 +46,6 @@ class TObject extends TStaticObject
 
     public function __construct(TObject $parent = null)
     {
-        parent::__construct();
         $this->parent = $parent;
     }
 

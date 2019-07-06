@@ -27,15 +27,18 @@ use Phink\Log\TLog;
 
 class TStaticObject
 {
-    protected static $logger;
+    protected static $logger = null;
     
-    public function __construct()
+    private function __construct()
     {
-        self::$logger = new TLog();
+       
     }
     
     public static function getLogger()
     {
+        if(self::$logger === null) {
+            self::$logger = TLog::create();
+        }
         return self::$logger;
     }
 

@@ -20,7 +20,8 @@ class PhinkLibrary {
 
     public static function mount() {
 
-        $filenames = [ 
+        $filenames = [
+            'core/constants.php',
             'log/log.php',
             'core/static_object.php',
             'autoloader.php',

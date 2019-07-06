@@ -95,7 +95,7 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
 
                             if ($this->viewIsInternal) {
                                 $path = substr($baseurl['path'], 2);
-                                $this->path = PHINK_VENDOR . $path;
+                                $this->path = PHINK_VENDOR_APPS . $path;
                             } else {
                                 $this->path = APP_DIR . $baseurl['path'];
                             }
@@ -144,15 +144,15 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
             $routesArray['web'] = [];
             $routesArray['web']['get'] = [];
             $routesArray['web']['post'] = [];
-            $routesArray['web']['get']["^/$"] = "@/web/ui/widget/welcome/home.phtml";
+            $routesArray['web']['get']["^/$"] = "@/welcome/home.phtml";
         }
 
-        $routesArray['web']['get']["^/console$"] = "@/web/ui/widget/console/console.phtml";
-        $routesArray['web']['get']["^/console/$"] = "@/web/ui/widget/console/console.phtml?console=help";
-        $routesArray['web']['get']["^/console/([a-z-]+)$"] = "@/web/ui/widget/console/console.phtml?console=$1";
-        $routesArray['web']['get']["^/console/([a-z-]+)/([a-z-]+)$"] = "@/web/ui/widget/console/console.phtml?console=$1&arg=$2";
-        $routesArray['web']['post']["^/rlog$"] = "@/web/ui/widget/console/consolew.phtml";
-        $routesArray['web']['get']["^/tuto/$"] = "@/web/ui/widget/tuto/index.phtml";
+        $routesArray['web']['get']["^/console$"] = "@/console/console.phtml";
+        $routesArray['web']['get']["^/console/$"] = "@/console/console.phtml?console=help";
+        $routesArray['web']['get']["^/console/([a-z-]+)$"] = "@/console/console.phtml?console=$1";
+        $routesArray['web']['get']["^/console/([a-z-]+)/([a-z-]+)$"] = "@/console/console.phtml?console=$1&arg=$2";
+        $routesArray['web']['post']["^/rlog$"] = "@/console/console_window.phtml";
+        $routesArray['web']['get']["^/tuto/$"] = "@/tuto/index.phtml";
 
 
         foreach ($routesArray as $key=>$value) {

@@ -66,7 +66,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         define('SCRIPT_ROOT', $scriptDir);
 
         if (APP_NAME == 'egg') {
-            define('PHINK_ROOT', @realpath(SCRIPT_ROOT . '..' . DIRECTORY_SEPARATOR . 'phink') . DIRECTORY_SEPARATOR);
+            define('PHINK_ROOT', @realpath(SCRIPT_ROOT . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'phink') . DIRECTORY_SEPARATOR);
         } else {
             define('PHINK_ROOT', SRC_ROOT . 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR);
         }
