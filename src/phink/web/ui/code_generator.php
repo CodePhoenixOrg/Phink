@@ -23,7 +23,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-use Phink\Core\TRegistry;
+use Phink\Registry\TRegistry;
 use Phink\Xml\TXmlDocument;
 use Phink\Xml\TXmlMatch;
 use Phink\MVC\TCustomView;

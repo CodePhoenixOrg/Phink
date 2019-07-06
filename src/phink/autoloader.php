@@ -18,8 +18,9 @@
  
 namespace Phink;
 
-use Phink\Core\TRegistry;
 use Phink\Core\TStaticObject;
+use Phink\Registry\TRegistry;
+use Phink\JavaScript\PhinkBuilder;
 
 class TAutoloader extends TStaticObject
 {
@@ -127,7 +128,7 @@ class TAutoloader extends TStaticObject
     {
         $className = ucfirst($viewName);
         $filename = $info->path . \Phink\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;
-        $filename = \str_replace("@/", PHINK_ROOT, $filename);
+        $filename = \str_replace("@/", PHINK_APPS_ROOT, $filename);
         //self::getLogger()->debug('INCLUDE INNER PARTIAL CONTROLLER : ' . $filename, __FILE__, __LINE__);
 
         $code = file_get_contents($filename, FILE_USE_INCLUDE_PATH);
@@ -255,7 +256,7 @@ class TAutoloader extends TStaticObject
         if (file_exists($controllerFileName)) {
             //self::getLogger()->debug('INCLUDE CUSTOM PARTIAL CONTROLLER : ' . $controllerFileName, __FILE__, __LINE__);
             $result = self::includeClass($controllerFileName, RETURN_CODE);
-        } elseif ($info = Core\TRegistry::classInfo($viewName)) {
+        } elseif ($info = TRegistry::classInfo($viewName)) {
             $result = self::_includeInnerClass($viewName, $info, true);
         } else {
             //self::getLogger()->debug('INCLUDE DEFAULT PARTIAL CONTROLLER : ' . $controllerFileName, __FILE__, __LINE__);
@@ -296,12 +297,10 @@ class TAutoloader extends TStaticObject
         //$classFilename = '';
         $cacheJsFilename = '';
 
-        $info = Core\TRegistry::classInfo($viewName);
-        // self::getLogger()->dump('CLASS INFO: ', $info, __FILE__, __LINE__);
+        $info = TRegistry::classInfo($viewName);
+        self::getLogger()->dump('CLASS INFO::' . $viewName, $info, __FILE__, __LINE__);
         
         if ($info !== null) {
-            //$classFilename = ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;
-            /* $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', ROOT_PATH . $info->path . \Phink\TAutoloader::classNameToFilename($viewName)) . CLASS_EXTENSION; */
             if ($info->path[0] == '@') {
                 $path = str_replace("@" . DIRECTORY_SEPARATOR, PHINK_VENDOR_APPS, $info->path);
             } else {

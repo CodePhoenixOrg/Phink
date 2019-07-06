@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
- 
-namespace Phink\Core;
+
+
+namespace Phink\Registry;
+
+use Phink\Core\TStaticObject;
 
 /**
  * Description of registry
@@ -30,103 +32,145 @@ class TRegistry extends TStaticObject
     private static $_classRegistry = null;
     private static $_code = [];
     private static $_items = [];
-    
-    
-    
-    public static function init()
+
+    public static function init(): bool
     {
-        if (self::$_classRegistry) {
-            return;
+        if (isset(self::$_items['classes'])) {
+            return true;
         }
-        
-        self::$_classRegistry = array(
-            'TConsoleWindow' => array(
-                'alias' => 'consolew',
-                'path' => '@' . DIRECTORY_SEPARATOR . 'console' . DIRECTORY_SEPARATOR,
-                'namespace' => ROOT_NAMESPACE . '\Apps\Console',
-                'hasTemplate' => true,
-                'canRender' => true,
-                'isAutoloaded' => true
-            )
-            , 'TPager' => array(
+
+        self::write(
+            'classes',
+            'TPager',
+            [
                 'alias' => 'pager',
                 'path' => 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'pager' . DIRECTORY_SEPARATOR,
                 'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Pager',
                 'hasTemplate' => true,
                 'canRender' => true,
                 'isAutoloaded' => true
-            ) 
-            , 'TPluginRenderer' => array(
+            ]
+        );
+        self::write(
+            'classes',
+            'TPluginRenderer',
+            [
                 'alias' => 'pluginrenderer',
                 'path' => 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR,
                 'namespace' => ROOT_NAMESPACE . '\Web\UI',
                 'hasTemplate' => false,
                 'canRender' => true,
                 'isAutoloaded' => true
-            )
-            , 'TPlugin' => array(
+            ]
+        );
+        self::write(
+            'classes',
+            'TPlugin',
+            [
                 'alias' => 'plugin',
                 'path' => 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR,
                 'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Plugin',
                 'hasTemplate' => true,
                 'canRender' => true,
                 'isAutoloaded' => true
-            )
-            , 'TPluginChild' => array(
+            ]
+        );
+        self::write(
+            'classes',
+            'TPluginChild',
+            [
                 'alias' => 'pluginchild',
                 'path' => 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR,
                 'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Plugin',
                 'hasTemplate' => false,
                 'canRender' => false,
                 'isAutoloaded' => true
-            )
+            ]
         );
+
+        return true;
     }
-    
+
+    public static function importClasses(string $viewFileName): void
+    {
+        $localRegistryFilename = dirname(SITE_ROOT . $viewFileName) . '/registry.json';
+
+        if (!file_exists($localRegistryFilename)) {
+            return;
+        }
+
+        // self::getLogger()->debug('LOCAL REGISTRY::' . $localRegistryFilename);
+
+        $localRegistryContents = \file_get_contents($localRegistryFilename);
+        // self::getLogger()->dump('LOCAL REGISTRY CONTENTS', $localRegistryContents);
+
+        $registry = (!empty($localRegistryContents)) ? json_decode($localRegistryContents, true) : [];
+        // self::getLogger()->dump('LOCAL REGISTRY ARRAY', $registry);
+
+        if($registry === null) {
+            return;
+        }
+
+        foreach($registry['classes'] as $class) {
+            $info = new TClassInfo($class);
+            if($info->isValid()) {
+                self::registerClass($info);
+            }
+        }
+    }
+
+    public static function registerClass(TClassInfo $info) {
+        self::write('classes', $info->getType(), [
+            'alias' => $info->getAlias(),
+            'path' => $info->getPath(),
+            'namespace' => $info->getNamespace(),
+            'hasTemplate' => $info->hasTemplate(),
+            'canRender' => $info->canRender(),
+            'isAutoloaded' => $info->isAutoloaded()
+        ]);
+    }
+
     public static function classInfo($className = '')
     {
         $result = null;
-        
-        self::init();
-        if (isset(self::$_classRegistry[$className])) {
-            $result = (object) self::$_classRegistry[$className];
+
+        if (self::init() && isset(self::$_items['classes'][$className])) {
+            $result = (object) self::$_items['classes'][$className];
         }
 
-        // self::$logger->debug('CLASS INFO : ' . print_r($result, true));
-        
         return $result;
     }
-    
-    public static function classPath($className = '')
+
+    public static function classPath($className = ''): string
     {
         $classInfo = self::classInfo($className);
         return ($classInfo) ? $classInfo->path : '';
     }
 
-    public static function classNamespace($className = '')
+    public static function classNamespace($className = ''): bool
     {
         $classInfo = self::classInfo($className);
         return ($classInfo) ? $classInfo->namespace : '';
     }
 
-    public static function classHasTemplate($className = '')
+    public static function classHasTemplate($className = ''): bool
     {
         $classInfo = self::classInfo($className);
-        return ($classInfo) ? $classInfo->hasTemplate : '';
+        return ($classInfo) ? $classInfo->hasTemplate : false;
     }
-    
-    public static function classCanRender($className = '')
+
+    public static function classCanRender($className = ''): bool
     {
         $classInfo = self::classInfo($className);
         return ($classInfo) ? $classInfo->canRender : '';
     }
-    
-    public static function getCode($id)
+
+    public static function getCode($id): string
     {
         return self::$_items['code'][$id];
     }
-    
-    public static function setCode($id, $value)
+
+    public static function setCode($id, $value): void
     {
         self::write('code', $id, $value);
         //$id = str_replace(DIRECTORY_SEPARATOR, '_', $id);
@@ -134,33 +178,34 @@ class TRegistry extends TStaticObject
         //$keys = array_keys(self::$_code);
         //self::$logger->debug('CODE REGISTRY : ' . print_r($keys, true));
     }
-    
-    public static function write($item, $key, $value)
+
+    public static function write($item, $key, $value): void
     {
         if (!isset(self::$_items[$item])) {
             self::$_items[$item] = [];
-        } 
-        
+        }
+
         self::$_items[$item][$key] = $value;
-        
     }
 
-    public static function add($item, $key, $value)
+    public static function add($item, $key, $value): void
     {
         if (!isset(self::$_items[$item])) {
             self::$_items[$item] = [];
         }
 
         if (isset(self::$_items[$item][$key]) && !is_array(self::$_items[$item][$key])) {
-            $value = self::$_items[$item][$key];
+            $tmp = self::$_items[$item][$key];
             self::$_items[$item][$key] = [];
+            self::$_items[$item][$key][] = $tmp;
             self::$_items[$item][$key][] = $value;
-        } elseif (isset(self::$_items[$item][$key]) && is_array(self::$_items[$item][$key])) {
+        }
+        if (isset(self::$_items[$item][$key]) && is_array(self::$_items[$item][$key])) {
             self::$_items[$item][$key][] = $value;
         }
     }
-    
-    public static function read($item, $key, $defaultValue = null)
+
+    public static function read($item, $key, $defaultValue = null): mixed
     {
         $result = null;
 
@@ -171,14 +216,14 @@ class TRegistry extends TStaticObject
         return $result;
     }
 
-    public static function remove($item)
+    public static function remove($item): void
     {
         if (array_key_exists($item, self::$_items)) {
             unset(self::$_items[$item]);
         }
     }
-    
-    public static function keys($item = null)
+
+    public static function keys($item = null): array
     {
         if ($item === null) {
             return array_keys(self::$_items);
@@ -189,7 +234,7 @@ class TRegistry extends TStaticObject
         }
     }
 
-    public static function item($item, $value = null)
+    public static function item($item, $value = null): ?array
     {
         if ($item === '' || $item === null) {
             return $item;
@@ -207,12 +252,12 @@ class TRegistry extends TStaticObject
         }
     }
 
-    public static function exists($item, $key = null)
+    public static function exists($item, $key = null): bool
     {
         return isset(self::$_items[$item][$key]);
     }
-    
-    public static function clear()
+
+    public static function clear(): void
     {
         TRegistry::$_items = [];
     }

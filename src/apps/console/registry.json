@@ -7,7 +7,7 @@
                 "namespace": "Phink\\Apps\\Console",
                 "hasTemplate": true,
                 "canRender": true,
-                "isAutoloaded": true
+                "isAutoloaded": false
             }
         }
     ]

@@ -19,7 +19,6 @@
  namespace Phink\MVC;
 
 use Phink\MVC\TCustomView;
-use Phink\Core\TRegistry;
 
 class TPartialView extends TCustomView
 {

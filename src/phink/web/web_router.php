@@ -127,7 +127,7 @@ class TWebRouter extends \Phink\Core\TRouter
                 $result = TAutoloader::includeDefaultController($this->namespace, $this->className);
             }
 
-            \Phink\Core\TRegistry::setCode($this->controllerFileName, $result['code']);
+            \Phink\Registry\TRegistry::setCode($this->controllerFileName, $result['code']);
         }
 
         return $result;

@@ -26,9 +26,6 @@
  namespace Phink\Xml;
 
 use Phink\Core\TObject;
-use Phink\Core\TRegistry;
-use Phink\Collections\TArrayList;
-use Phink\Utils\TStringUtils;
 
 /**
  * Description of axmldocument

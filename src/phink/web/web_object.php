@@ -24,7 +24,7 @@ namespace Phink\Web;
  * @author david
  */
  
-use Phink\Core\TRegistry;
+use Phink\Registry\TRegistry;
 use Phink\Core\TCustomApplication;
 use Phink\Web\UI\TCustomControl;
 
