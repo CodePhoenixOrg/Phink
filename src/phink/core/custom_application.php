@@ -25,8 +25,6 @@ namespace Phink\Core;
 //    'database' => 15
 //);
 
-include 'constants.php';
-
 /**
  * Description of Application
  *
@@ -347,7 +345,7 @@ abstract class TCustomApplication extends TObject
         return self::$_executionMode == self::DEBUG_MODE;
     }
 
-    public static function authenticateByToken($token)
+    public static function authenticateByToken($token) : string 
     {
         
         // On prend le token en cours

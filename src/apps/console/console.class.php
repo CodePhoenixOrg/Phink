@@ -1,5 +1,7 @@
 <?php
-namespace Phink\Web\UI\Widget\Console;
+namespace Phink\Apps\Console;
+
+include PHINK_APPS_ROOT . 'console/bootstrap.php';
 
 use Phink\MVC\TController;
 

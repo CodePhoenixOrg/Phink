@@ -38,14 +38,14 @@ class TPdoConfiguration extends TJsonConfiguration
     private $_password = '';
     private $_port = '';
 
-    public function __construct(string $driver = '', string $databaseName = '', string $host = '', string $user = '', string $password = '', string $port = '')
+    public function __construct(?string $driver = '', ?string $databaseName = '', ?string $host = '', ?string $user = '', ?string $password = '', ?string $port = '')
     {
-        $this->_driver = $driver ?? $driver;
-        $this->_databaseName = $databaseName ?? $databaseName;
-        $this->_host = $host ?? $host;
-        $this->_user = $user ?? $user;
-        $this->_password = $password ?? $password;
-        $this->_port = $port ?? $port;
+        $this->_driver = $driver;
+        $this->_databaseName = $databaseName;
+        $this->_host = $host;
+        $this->_user = $user;
+        $this->_password = $password;
+        $this->_port = $port;
 
         $this->canConfigure = false;
     }

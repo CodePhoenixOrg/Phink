@@ -25,8 +25,14 @@ use Phink\Core\TStaticObject;
 class TAuthentication extends TStaticObject
 {
 
+
     protected $userId = null;
     protected $userName = null;
+
+    public function __construct()
+    {
+        
+    }
 
     public function getUserId()
     {

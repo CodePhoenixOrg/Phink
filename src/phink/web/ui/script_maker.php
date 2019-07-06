@@ -102,11 +102,11 @@ class TScriptMaker extends TObject
             // }
             $prepargs[] = "':$fieldname' => \$$fieldname";
         }
-        $prepare = '[' . implode($prepargs, ', ') . ']';
+        $prepare = '[' . implode(', ', $prepargs) . ']';
 
         // $script .= implode($replaces, ";\n") . ";\n";
         $script .= "\t\t\t\$sql = <<<SQL\n\t\t\tinsert into \$tablename (\n";
-        $script .= implode($insertFields, ", \n") . "";
+        $script .= implode(", \n", $insertFields) . "";
         $script .= "\n\t\t\t) values (\n";
         $insertValues = [];
         for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
@@ -118,7 +118,7 @@ class TScriptMaker extends TObject
             // }
             $insertValues[$i] = "\t\t\t\t:$fieldname";
         }
-        $script .= implode($insertValues, ", \n") . "\n";
+        $script .= implode(", \n", $insertValues) . "\n";
         $script .= "\t\t\t)\n";
         $script .= "SQL;\n";
         $script .= "\t\t\t\$stmt = \$cs->prepare(\$sql);\n";
@@ -144,11 +144,11 @@ class TScriptMaker extends TObject
             $update[$i]="\t\t\t\t$fieldname = :$fieldname";
             $prepargs[] = "':$fieldname' => \$$fieldname";
         }
-        $prepare = '[' . implode($prepargs, ', ') . ']';
+        $prepare = '[' . implode(', ', $prepargs) . ']';
 
         // $script .= implode($replaces, ";\n") . ";\n";
         $script .= "\t\t\t\$sql=<<<SQL\n\t\t\tupdate \$tablename set \n";
-        $script .= implode($update, ", \n") . "\n";
+        $script .= implode(", \n", $update) . "\n";
         $script .= "\t\t\twhere $indexfield = '\$$indexfield';\n";
         $script .= "SQL;\n";
         $script .= "\t\t\t\$stmt = \$cs->prepare(\$sql);\n";
@@ -160,7 +160,7 @@ class TScriptMaker extends TObject
         $script .= "\t\tbreak;\n";
         $script .= "\t\t}\n";
         if ($with_frames) {
-            $script.="\t\techo \"<script language='JavaScript'>window.location.href='<?php echo \$lg?>/$page_id_page?id=$page_id&lg=fr'</script>\";\n";
+            $script.="\t\techo \"<script language='JavaScript'>window.location.href='<?php echo \$lg?>/$page_id?id=$page_id&lg=fr'</script>\";\n";
         } elseif (!$with_frames) {
             $script.="\t\t\$query=\"SELECT\";\n";
         }

@@ -1,5 +1,5 @@
 <?php
-namespace Phink\Web\UI\Widget\Console;
+namespace Phink\Apps\Console;
 
 use Phink\MVC\TPartialController;
 use Phink\MVC\TActionInfo;

@@ -41,12 +41,12 @@ class TRegistry extends TStaticObject
         
         self::$_classRegistry = array(
             'TConsoleWindow' => array(
-                'alias' => 'console',
-                'path' => 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'console' . DIRECTORY_SEPARATOR,
-                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Console',
+                'alias' => 'consolew',
+                'path' => '@' . DIRECTORY_SEPARATOR . 'console' . DIRECTORY_SEPARATOR,
+                'namespace' => ROOT_NAMESPACE . '\Apps\Console',
                 'hasTemplate' => true,
                 'canRender' => true,
-                'isAutoloaded' => false
+                'isAutoloaded' => true
             )
             , 'TPager' => array(
                 'alias' => 'pager',

@@ -346,9 +346,9 @@ trait TWebObject
                 // $this->viewName = \Phink\TAutoloader::classNameToFilename($this->className);
                 $this->viewName = \Phink\TAutoloader::classNameToFilename($this->className);
                 if($info->path[0] == '@') {
-                    $path = str_replace("@" . DIRECTORY_SEPARATOR, PHINK_VENDOR, $info->path);
+                    $path = str_replace("@" . DIRECTORY_SEPARATOR, PHINK_VENDOR_APPS, $info->path);
                 } else {
-                    $path = PHINK_VENDOR . $info->path; 
+                    $path = PHINK_VENDOR_LIB . $info->path; 
                 }
                 // $path = $info->path;
                 if ($info->hasTemplate) {
