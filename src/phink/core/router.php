@@ -19,7 +19,7 @@
 namespace Phink\Core;
 
 use \Phink\Core\TObject;
-use \Phink\Web\TWebRouter;
+use \Phink\Registry\TRegistry;
 use \Phink\Rest\TRestRouter;
 
 class TRouter extends TObject implements \Phink\Web\IWebObject
@@ -128,7 +128,7 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
 
     public function routes() : array
     {
-        $routesArray = \Phink\Core\TRegistry::item('routes');
+        $routesArray = TRegistry::item('routes');
 
         if (count($routesArray) === 0 && file_exists(DOCUMENT_ROOT . 'routes.json')) {
             $routesFile = file_get_contents(DOCUMENT_ROOT . 'routes.json');
@@ -156,7 +156,7 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
 
 
         foreach ($routesArray as $key=>$value) {
-            \Phink\Core\TRegistry::write('routes', $key, $value);
+            TRegistry::write('routes', $key, $value);
         }
 
         $this->routes = $routesArray;

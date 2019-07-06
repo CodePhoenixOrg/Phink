@@ -87,7 +87,7 @@ class TPager extends \Phink\MVC\TPartialController
         
         $this->pageCount = ($forControl) ? $forControl->getRowCount(): $this->pageNum;
     
-        $this->path = PHINK_ROOT . \Phink\Core\TRegistry::classPath('TPager');
+        $this->path = PHINK_ROOT . \Phink\Registry\TRegistry::classPath('TPager');
         $this->pagerJS = file_get_contents($this->path . 'pager.jhtml', FILE_USE_INCLUDE_PATH);
         $this->pagerJS = str_replace('<% forApp %>', $this->forApp, $this->pagerJS);
         $this->pagerJS = str_replace('<% forThis %>', $this->forThis, $this->pagerJS);

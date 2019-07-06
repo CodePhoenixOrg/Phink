@@ -24,8 +24,6 @@
  */
 namespace Phink\Web\UI;
 
-use Phink\Core\TRegistry;
-
 /**
  * Description of html_control
  *

@@ -34,7 +34,7 @@ class TStaticObject
        
     }
     
-    public static function getLogger()
+    public static function getLogger() : TLog
     {
         if(self::$logger === null) {
             self::$logger = TLog::create();

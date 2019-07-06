@@ -20,7 +20,7 @@
 
 use Phink\Core\TObject;
 use Phink\Xml\TXmlDocument;
-use Phink\Core\TRegistry;
+use Phink\Registry\TRegistry;
 use Phink\Web\UI\TCustomControl;
 
 abstract class TCustomView extends TCustomControl

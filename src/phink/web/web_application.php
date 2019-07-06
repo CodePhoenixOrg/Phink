@@ -28,7 +28,7 @@ namespace Phink\Web;
 use Phink\TAutoloader;
 use Phink\Auth\TAuthentication;
 use Phink\Core\TRouter;
-use Phink\Core\TRegistry;
+use Phink\Registry\TRegistry;
 use Phink\Rest\TRestRouter;
 use Phink\Web\TWebRouter;
 use Phink\Cache\TCache;

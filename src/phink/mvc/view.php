@@ -24,6 +24,7 @@
 namespace Phink\MVC;
 
 use \Phink\Core\TRouter;
+use Phink\Registry\TRegistry;
 
 /**
  * Description of view
@@ -55,6 +56,8 @@ class TView extends TCustomView
         $this->cacheFileName = $parent->getCacheFileName();
 
         $this->setMotherView($this);
+
+        TRegistry::importClasses($this->viewFileName);
 
     }
 

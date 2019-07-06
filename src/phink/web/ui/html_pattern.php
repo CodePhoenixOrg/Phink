@@ -57,7 +57,7 @@ trait THtmlPattern {
     private function _getElements()
     {
         $type = $this->getType();
-        $path = ROOT_PATH . \Phink\Core\TRegistry::classPath($type);
+        $path = ROOT_PATH . \Phink\Registry\TRegistry::classPath($type);
         
         $jsonName = RUNTIME_JS_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . strtolower($type) . '.json');
         if(file_exists($jsonName)) {
