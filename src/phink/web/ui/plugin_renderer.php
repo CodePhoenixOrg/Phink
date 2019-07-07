@@ -31,7 +31,7 @@ abstract class TPluginRenderer extends \Phink\MVC\TPartialController
     
     protected static $templateFilename;
 
-    public function renderHtml()
+    public function renderHtml() :  void
     {
 //        if($this->data !== null) {
 //            $this->columns = $this->data['cols'];

@@ -18,69 +18,64 @@
 
 namespace Phink\Web\UI;
 
+use Phink\Core\IObject;
+use Phink\Core\TObject;
+use Phink\Web\IHttpTransport;
+use Phink\Web\IWebObject;
+
 /**
  * Description of custom_control
  *
  * @author David
  */
-abstract class TCustomControl extends \Phink\Core\TObject implements \Phink\Web\IHttpTransport, \Phink\Web\IWebObject
+abstract class TCustomControl extends TObject implements IHttpTransport, IWebObject
 {
     use \Phink\Web\TWebObject;
 
-    public function __construct($parent)
+    public function __construct(IObject $parent)
     {
         parent::__construct($parent);
-        
+
         $this->setMotherView($parent->getMotherView());
     }
 
     protected $isRendered = false;
 
-    public function init()
-    {
-    }
-   
-    public function load()
-    {
-    }
-    
+    public function init(): void
+    { }
+
+    public function load(): void
+    { }
+
     public function view($html)
+    { }
+
+    public function partialLoad(): void
+    { }
+
+    public function beforeBinding(): void
+    { }
+
+    public function afterBinding(): void
+    { }
+
+    public function parse(): bool
     {
-    }
-    
-    public function partialLoad()
-    {
-    }
-    
-    public function beforeBinding()
-    {
+        return false;
     }
 
-    public function afterBinding()
-    {
-    }
+    public function renderHtml(): void
+    { }
 
-    public function parse()
-    {
-    }
+    public function displayHtml(): void
+    { }
 
-    public function renderHtml()
-    {
-    }
+    public function renderTwig(): void
+    { }
 
-    public function displayHtml()
-    {
-    }
+    public function render(): void
+    { }
 
-    public function renderTwig()
-    {
-    }
-
-    public function render()
-    {
-    }
-
-    public function unload()
-    {
-    }
+    public function unload(): void
+    { }
 }

@@ -31,7 +31,7 @@ use Phink\Core\TObject;
 class TXmlMatch extends TObject
 {
     //put your code here
-    private $_id = 0;
+  
     private $_parentId = 0;
     private $_name = '';
     private $_text = '';
@@ -48,7 +48,7 @@ class TXmlMatch extends TObject
     //$text, $groups, $position, $start, $end, $childName, $closer
     public function __construct($array)
     {
-        $this->_id = $array['id'];
+        $this->id = $array['id'];
         $this->_parentId = $array['parentId'];
         $this->_text = $array['element'];
         $this->_tmpText = $this->_text;
@@ -68,10 +68,7 @@ class TXmlMatch extends TObject
         
     }
 
-    public function getId()
-    {
-        return $this->_id;
-    }
+
 
     public function getParentId()
     {

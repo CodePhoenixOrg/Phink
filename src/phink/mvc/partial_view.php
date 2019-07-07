@@ -18,11 +18,13 @@
  
  namespace Phink\MVC;
 
-use Phink\MVC\TCustomView;
+ use Phink\Core\IObject;
+ use Phink\Web\IWebObject;
+ use Phink\MVC\TCustomView;
 
 class TPartialView extends TCustomView
 {
-    public function __construct(\Phink\Core\TObject $father, \Phink\Core\TObject $parent)
+    public function __construct(IWebObject $father, IWebObject $parent)
     {
         $this->setMotherView($father);
         $this->className = $parent->getType();

@@ -40,47 +40,47 @@ trait THtmlControl
     protected $enabled = true;
     protected $event = '';
 
-    public function getEnabled()
+    public function getEnabled() : bool
     {
         return $this->enabled;
     }
-    public function setEnabled($value)
+    public function setEnabled($value) : void
     {
         $this->enabled = filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
     }
-    public function setName($value)
+    public function setName($value) : void
     {
         $this->name = $value;
     }
 
-    public function getImage()
+    public function getImage() : string
     {
         return $this->image;
     }
-    public function setImage($value)
+    public function setImage($value) : void
     {
         $this->image = $value;
     }
 
-    public function getCss()
+    public function getCss() : string
     {
         return $this->css;
     }
-    public function setCss($value)
+    public function setCss($value) : void
     {
         $this->css = $value;
     }
 
-    public function getContent()
+    public function getContent() : string
     {
         return $this->content;
     }
-    public function setContent($value)
+    public function setContent($value) : void
     {
         $this->content = $value;
         
@@ -97,11 +97,11 @@ trait THtmlControl
         }
     }
     
-    public function getDragHelper()
+    public function getDragHelper() : string
     {
         return $this->dragHelper;
     }
-    public function setDragHelper($value)
+    public function setDragHelper($value): void
     {
         $this->dragHelper = $value;
         if($this->dragHelper[0] == '@') {
@@ -115,16 +115,16 @@ trait THtmlControl
         }
     }
     
-    public function getEvent()
+    public function getEvent() : string
     {
         return $this->event;
     }
-    public function setEvent($value)
+    public function setEvent($value) : void
     {
         $this->event = $value;
     }
 
-    public function getProperties()
+    public function getProperties() : array
     {
         return [
             'image' => $this->image
@@ -142,7 +142,7 @@ trait THtmlControl
         return (object) $this->getProperties();
     }
     
-    public function sleep()
+    public function sleep() : void
     {
         $object = serialize($this->getControl());
     }

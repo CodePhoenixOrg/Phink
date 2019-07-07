@@ -25,13 +25,19 @@ namespace Phink\Core;
 
 use \ReflectionClass;
 
+interface IObject {
+    function getId() : string;
+    function getParent() : IObject;
+    function setParent(IObject $parent) : void;
+    function getType() : string;
+}
 /**
  * Description of TObject
  *
  * @author david
  */
 
-class TObject extends TStaticObject
+class TObject extends TStaticObject implements IObject
 {
     //put your code here
     
@@ -44,28 +50,28 @@ class TObject extends TStaticObject
     protected $fqClassName = '';
     protected static $instance = null;
 
-    public function __construct(TObject $parent = null)
+    public function __construct(IObject $parent = null)
     {
         $this->parent = $parent;
     }
 
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    public function setId($value)
+    public function setId($value): void
     {
         //self::$logger->dump(__CLASS__ . ':' . __METHOD__, $value);
         $this->id = $value;
     }
 
-    public function isAwake()
+    public function isAwake(): bool
     {
         return $this->isSerialized;
     }
 
-    public function getReflection()
+    public function getReflection(): ?ReflectionClass
     {
         if($this->_reflection == NULL) {
             $this->_reflection = new ReflectionClass(get_class($this));
@@ -73,7 +79,7 @@ class TObject extends TStaticObject
         return $this->_reflection;
     }
 
-    public function getMethodParameters($method)
+    public function getMethodParameters($method): ?array
     {
         $ref = $this->getReflection();
         $met = $ref->getMethod($method);
@@ -86,7 +92,8 @@ class TObject extends TStaticObject
         return $params;
     }
     
-    public function validate($method) {
+    public function validate($method)
+    {
         if ($method == '') return false;
         
         $result = [];
@@ -146,27 +153,27 @@ class TObject extends TStaticObject
         return $result;
     }
     
-    public function getParent()
+    public function getParent(): IObject
     {
         return $this->parent;
     }
 
-    public function setParent(TObject $parent)
+    public function setParent(IObject $parent): void
     {
         $this->parent = $parent;
     }
     
-    public function addChild(TObject $child)
+    public function addChild(IObject $child)
     {
         $this->children[$child->getId()] = $child;
     }
     
-    public function removeChild(TObject $child)
+    public function removeChild(IObject $child): void
     {
         unset($this->children[$child->getId()]);
     }
 
-    public function getChildById($id)
+    public function getChildById($id): ?object
     {
         $result = null;
             
@@ -177,24 +184,24 @@ class TObject extends TStaticObject
         return $result;
     }
     
-    public function getChildrenIds()
+    public function getChildrenIds(): ?array
     {
         return array_keys($this->children);
     }
 
-    public function getFullType()
+    public function getFullType(): string
     {
         return get_class($this);
     }
 
-    public function getNamespace()
+    public function getNamespace(): string
     {
         $typeParts = explode('\\', $this->getFQClassName());
         array_pop($typeParts);
         return (count($typeParts) > 0) ? implode('\\', $typeParts) : '';
     }
 
-    public function getFQClassName() 
+    public function getFQClassName() : string
     {
         if($this->fqClassName == '') {
             $this->fqClassName = get_class($this);
@@ -202,25 +209,25 @@ class TObject extends TStaticObject
         return $this->fqClassName;
     }
     
-    public function getType()
+    public function getType(): string
     {
         $typeParts = explode('\\', $this->getFQClassName());
         return array_pop($typeParts);
         
     }
 
-    public function getBaseType()
+    public function getBaseType(): string
     {
         return get_parent_class($this);
     }
 
-    public function getFileName()
+    public function getFileName(): string
     {
         $reflection = $this->getReflection();
         return $reflection->getFileName();
     }
     
-    public function serialize()
+    public function serialize(): string
     {
         //return serialize($this);
         $this->_reflection = $this->getReflection();
@@ -237,7 +244,7 @@ class TObject extends TStaticObject
         //return (object)unserialize($serialized);
     }
 
-    public function sleep()
+    public function sleep(): void
     {
         $this->serialFilename = RUNTIME_DIR . $this->id . JSON_EXTENSION;
         $this->isSerialized = true;
@@ -249,7 +256,7 @@ class TObject extends TStaticObject
         file_put_contents($this->serialFilename, $this->serialize());
     }
     
-    public function wake()
+    public function wake() 
     {
         $serialFilename = RUNTIME_DIR . $this->id . JSON_EXTENSION;
         $result = file_exists($serialFilename);
@@ -269,7 +276,7 @@ class TObject extends TStaticObject
         return ($serialized) ? unserialize($serialized) : $result;
     }
     
-    public static function arraysToObjects(array $value)
+    public static function arraysToObjects(array $value): array
     {
         $result = array();
         
