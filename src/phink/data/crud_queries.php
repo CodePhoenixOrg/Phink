@@ -41,12 +41,12 @@ trait TCrudQueries  {
      * @param string $value SQL query
      * @param mixed array $params Set of values for the parametered query
      */
-    public function setSelectQuery($value, $params = [])
+    public function setSelectQuery(string $value, array $params = []) : void
     {
         $this->_parameters = $params;
         $this->_select = $value;
     }
-    public function getSelectQuery()
+    public function getSelectQuery() : object
     {
         return (object)['sql' => $this->_select, 'params' => $this->_parameters];
     }
@@ -57,12 +57,12 @@ trait TCrudQueries  {
      * @param string $value SQL query
      * @param mixed array $params Set of values for the parametered query
      */
-    public function setInsertQuery($value, $params = [])
+    public function setInsertQuery(string $value, array $params = []) : void
     {
         $this->_parameters = $params;
         $this->_insert = $value;
     }
-    public function getInsertQuery()
+    public function getInsertQuery() : object
     {
         return (object)['sql' => $this->_insert, 'params' => $this->_parameters];
     }
@@ -73,12 +73,12 @@ trait TCrudQueries  {
      * @param string $value SQL query
      * @param mixed array $params Set of values for the parametered query
      */
-    public function setUpdateQuery($value, $params = [])
+    public function setUpdateQuery(string $value, array $params = []) : void
     {
         $this->_parameters = $params;
         $this->_update = $value;
     }
-    public function getUpdateQuery()
+    public function getUpdateQuery() : object
     {
         return (object)['sql' => $this->_update, 'params' => $this->_parameters];
     }
@@ -89,12 +89,12 @@ trait TCrudQueries  {
      * @param string $value SQL query
      * @param mixed array $params Set of values for the parametered query
      */
-    public function setDeleteQuery($value, $params = [])
+    public function setDeleteQuery(string $value, array $params = []) : void
     {
         $this->_parameters = $params;
         $this->_delete = $value;
     }
-    public function getDeleteQuery()
+    public function getDeleteQuery() : object
     {
         return (object)['sql' => $this->_delete, 'params' => $this->_parameters];
     }

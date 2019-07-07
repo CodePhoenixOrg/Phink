@@ -205,7 +205,7 @@ class TRegistry extends TStaticObject
         }
     }
 
-    public static function read($item, $key, $defaultValue = null): mixed
+    public static function read($item, $key, $defaultValue = null): \mixed
     {
         $result = null;
 

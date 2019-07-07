@@ -15,12 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 namespace Phink;
 
 use Phink\Core\TStaticObject;
 use Phink\Registry\TRegistry;
 use Phink\JavaScript\PhinkBuilder;
+use Phink\Core\IObject;
 
 class TAutoloader extends TStaticObject
 {
@@ -113,18 +114,18 @@ class TAutoloader extends TStaticObject
         // if (0 === strpos($className, $this->prefix)) {
         //     $parts = explode('\\', substr($className, $this->prefixLength));
         //     $className = array_pop($parts);
-            
+
         //     $translated = self::classNameToFilename($className);
-            
+
         //     $filepath = $this->directory . DIRECTORY_SEPARATOR . strtolower(implode(DIRECTORY_SEPARATOR, $parts) . DIRECTORY_SEPARATOR . $translated);
         //     $filepath .= (file_exists($filepath . PREHTML_EXTENSION)) ? CLASS_EXTENSION : '.php';
-            
+
         //     //file_put_contents(STARTER_FILE, "include '$filepath';"  . "\n", FILE_APPEND);
         //     include $filepath;
         // }
     }
-    
-    private static function _includeInnerClass($viewName, $info, $withCode = true)
+
+    private static function _includeInnerClass(string $viewName, object $info, bool $withCode = true): array
     {
         $className = ucfirst($viewName);
         $filename = $info->path . \Phink\TAutoloader::classNameToFilename($viewName) . CLASS_EXTENSION;
@@ -132,15 +133,15 @@ class TAutoloader extends TStaticObject
         //self::getLogger()->debug('INCLUDE INNER PARTIAL CONTROLLER : ' . $filename, __FILE__, __LINE__);
 
         $code = file_get_contents($filename, FILE_USE_INCLUDE_PATH);
-        
+
         if ($withCode) {
             $code = substr(trim($code), 0, -2) . PHP_EOL . CONTROL_ADDITIONS;
             TRegistry::setCode($filename, $code);
         }
-        
+
         return ['file' => $filename, 'type' => $info->namespace . '\\' . $className, 'code' => $code];
     }
-    
+
     /**
      * Load the controller file, parse it in search of namespace and classname.
      * Alternatively execute the code if the class is not already declared
@@ -151,23 +152,23 @@ class TAutoloader extends TStaticObject
      *                    RETURN_CODE : ...
      * @return boolean
      */
-    public static function includeClass($filename, $params = 0)
+    public static function includeClass(string $filename, $params = 0): ?array
     {
         $classFilename = SRC_ROOT . $filename;
-        if(!file_exists($classFilename)) {
+        if (!file_exists($classFilename)) {
             $classFilename = SITE_ROOT . $filename;
         }
-        if(!file_exists($classFilename)) {
-            return false;
+        if (!file_exists($classFilename)) {
+            return null;
         }
 
         $classText = file_get_contents($classFilename, FILE_USE_INCLUDE_PATH);
-        
+
         $code = $classText;
-        
+
         $classText = str_replace("\r", '', $classText);
         $classText = str_replace("\n", '', $classText);
-        
+
         $start = strpos($classText, 'namespace');
         $namespace = '';
         if ($start > 0) {
@@ -175,7 +176,7 @@ class TAutoloader extends TStaticObject
             $end = strpos($classText, ';', $start);
             $namespace = substr($classText, $start, $end - $start);
         }
-        
+
         $start = strpos($classText, 'class');
         $className = '';
         if ($start > 0) {
@@ -186,18 +187,18 @@ class TAutoloader extends TStaticObject
             $sa = explode(' ', $className);
             $className = $sa[0];
         }
-        
+
         $fqcn = $namespace . '\\' . $className;
         $file = str_replace('\\', '_', $fqcn) . '.php';
-        
+
         $file = $filename;
         if (isset($params) && ($params && RETURN_CODE === RETURN_CODE)) {
             $code = substr(trim($code), 0, -2) . PHP_EOL . CONTROL_ADDITIONS;
             TRegistry::setCode($filename, $code);
         }
-        
+
         self::getLogger()->debug(__METHOD__ . '::' . $file, __FILE__, __LINE__);
-        
+
         if ((isset($params) && ($params && INCLUDE_FILE === INCLUDE_FILE)) && !class_exists('\\' . $fqcn)) {
             if (\Phar::running() != '') {
                 include pathinfo($filename, PATHINFO_BASENAME);
@@ -205,34 +206,34 @@ class TAutoloader extends TStaticObject
                 // include SRC_ROOT . $filename;
             }
         }
-        
+
         return ['file' => $file, 'type' => $fqcn, 'code' => $code];
     }
 
-    public static function includeModelByName($modelName)
+    public static function includeModelByName(string $modelName): ?array
     {
-        $result = false;
-        
+        $result = null;
+
         //self::getLogger()->debug('MODEL NAME : ' . $modelName, __FILE__, __LINE__);
-        
+
         $modelFileName = 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $modelName . CLASS_EXTENSION;
-        
+
         $result = self::includeClass($modelFileName, INCLUDE_FILE);
-        if (!$result) {
+        if ($result === null) {
             $result['type'] = DEFALT_MODEL;
         }
         $result['file'] = $modelFileName;
-        
+
         return $result;
     }
-    
-    public static function includeControllerByName($viewName)
+
+    public static function includeControllerByName(string $viewName): ?array
     {
-        $result = false;
+        $result = null;
         $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
-        
+
         $result = self::includeClass($controllerFileName, RETURN_CODE);
-        if (!$result) {
+        if ($result === null) {
             $sa = explode('.', SERVER_NAME);
             array_pop($sa);
             if (count($sa) == 2) {
@@ -241,7 +242,7 @@ class TAutoloader extends TStaticObject
             $namespace = ucfirst($sa[0]);
             $namespace .= '\\Controllers';
             $className = ucfirst($viewName);
-            
+
             $result = self::includeDefaultController($namespace, $className);
             TRegistry::setCode('app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION, $result['code']);
         }
@@ -249,9 +250,9 @@ class TAutoloader extends TStaticObject
         return $result;
     }
 
-    public static function includePartialControllerByName($viewName)
+    public static function includePartialControllerByName(string $viewName): ?array
     {
-        $result = false;
+        $result = null;
         $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
         if (file_exists($controllerFileName)) {
             //self::getLogger()->debug('INCLUDE CUSTOM PARTIAL CONTROLLER : ' . $controllerFileName, __FILE__, __LINE__);
@@ -268,8 +269,8 @@ class TAutoloader extends TStaticObject
 
         return $result;
     }
-    
-    public static function includeDefaultController($namespace, $className)
+
+    public static function includeDefaultController(string $namespace, string $className): array
     {
         $result['type'] = DEFAULT_CONTROLLER;
         $result['code'] = self::controllerTemplate($namespace, $className);
@@ -278,7 +279,7 @@ class TAutoloader extends TStaticObject
         return $result;
     }
 
-    public static function includeDefaultPartialController($namespace, $className)
+    public static function includeDefaultPartialController(string $namespace, string $className): array
     {
         $result['type'] = DEFAULT_PARTIAL_CONTROLLER;
         $result['code'] = self::partialControllerTemplate($namespace, $className);
@@ -287,7 +288,7 @@ class TAutoloader extends TStaticObject
         return $result;
     }
 
-    public static function import(Web\UI\TCustomControl $ctrl, $viewName): bool
+    public static function import(Web\UI\TCustomControl $ctrl, string $viewName): bool
     {
         if (!isset($viewName)) {
             $viewName = $ctrl->getViewName();
@@ -299,7 +300,7 @@ class TAutoloader extends TStaticObject
 
         $info = TRegistry::classInfo($viewName);
         self::getLogger()->dump('CLASS INFO::' . $viewName, $info, __FILE__, __LINE__);
-        
+
         if ($info !== null) {
             if ($info->path[0] == '@') {
                 $path = str_replace("@" . DIRECTORY_SEPARATOR, PHINK_VENDOR_APPS, $info->path);
@@ -315,7 +316,7 @@ class TAutoloader extends TStaticObject
         }
         $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
         $cacheCssFilename = \Phink\TAutoloader::cacheCssFilenameFromView($viewName);
-        
+
         if (file_exists(SRC_ROOT . $cacheFilename)) {
             if (file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
                 self::getLogger()->debug('INCLUDE CACHED JS CONTROL: ' . DOCUMENT_ROOT . $cacheJsFilename, __FILE__, __LINE__);
@@ -331,11 +332,11 @@ class TAutoloader extends TStaticObject
 
         $viewName = lcfirst($viewName);
         $include = null;
-//            $modelClass = ($include = TAutoloader::includeModelByName($viewName)) ? $include['type'] : DEFALT_MODEL;
-//            include SRC_ROOT . $include['file'];
-//            $model = new $modelClass();
+        //            $modelClass = ($include = TAutoloader::includeModelByName($viewName)) ? $include['type'] : DEFALT_MODEL;
+        //            include SRC_ROOT . $include['file'];
+        //            $model = new $modelClass();
 
-          
+
         self::getLogger()->debug('PARSING ' . $viewName . '!!!');
         $view = new \Phink\MVC\TView($ctrl);
 
@@ -361,16 +362,16 @@ class TAutoloader extends TStaticObject
         return true;
     }
 
-    public static function loadCachedFile(Web\IWebObject $parent)
+    public static function loadCachedFile(Web\IWebObject $parent): IObject
     {
         self::getLogger()->dump('PARENT OBJECT', $parent->getType());
         self::getLogger()->dump('PARENT OBJECT', $parent->getClassName());
 
         $parent->setCacheFilename();
         $cacheFilename = $parent->getCacheFilename();
-        
+
         self::getLogger()->debug('CACHE FILE NAME TO INCLUDE: ' . $cacheFilename);
-        
+
         $classText = file_get_contents($cacheFilename);
         include $cacheFilename;
 
@@ -397,13 +398,13 @@ class TAutoloader extends TStaticObject
 
         //$className = $include['type'];
         $class = new $fqClassName($parent);
-        
+
         $class->perform();
 
         return $class;
     }
 
-    public static function getDefaultNamespace()
+    public static function getDefaultNamespace(): string
     {
         $sa = explode('.', SERVER_NAME);
         array_pop($sa);
@@ -413,8 +414,8 @@ class TAutoloader extends TStaticObject
 
         return ucfirst(str_replace('-', '_', $sa[0])) . '\\Controllers';
     }
-    
-    public static function controllerTemplate($namespace, $className)
+
+    public static function controllerTemplate(string $namespace, string $className): string
     {
         $result = <<<CONTROLLER
 <?php
@@ -428,11 +429,11 @@ class $className extends TController
        
 }
 CONTROLLER;
-        
+
         return $result;
     }
 
-    public static function partialControllerTemplate($namespace, $className)
+    public static function partialControllerTemplate(string $namespace, string $className): string
     {
         $result = <<<CONTROLLER
 <?php
@@ -446,7 +447,7 @@ class $className extends TPartialController
        
 }
 CONTROLLER;
-        
+
         return $result;
     }
 }

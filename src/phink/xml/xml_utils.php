@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
- 
+
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -32,33 +32,34 @@ namespace Phink\Xml;
  */
 class TXmlUtils
 {
-    //put your code here
-    public static function convertArray($array, $node_block='nodes', $node_name='node') {
-            $xml = '<?xml version="1.0" encoding="UTF-8" ?>' . "\n";
+        //put your code here
+        public static function convertArray(array $array, string $node_block = 'nodes', string $node_name = 'node'): string
+        {
+                $xml = '<?xml version="1.0" encoding="UTF-8" ?>' . "\n";
 
-            $xml .= '<' . $node_block . '>' . "\n";
-            $xml .= self::convertArrayEx($array, $node_name);
-            $xml .= '</' . $node_block . '>' . "\n";
+                $xml .= '<' . $node_block . '>' . "\n";
+                $xml .= self::convertArrayEx($array, $node_name);
+                $xml .= '</' . $node_block . '>' . "\n";
 
-            return $xml;
-    }
-    
-    private static function convertArrayEx($array, $node_name) {
-            $xml = '';
+                return $xml;
+        }
 
-            if (is_array($array) || is_object($array)) {
-                    foreach ($array as $key=>$value) {
-                            if (is_numeric($key)) {
-                                    $key = $node_name;
-                            }
+        private static function convertArrayEx(array $array, string $node_name): string
+        {
+                $xml = '';
 
-                            $xml .= '<' . $key . '>' . "\n" . self::convertArrayEx($value, $node_name) . '</' . $key . '>' . "\n";
-                    }
-            } else {
-                    $xml = htmlspecialchars($array, ENT_QUOTES) . "\n";
-            }
+                if (is_array($array) || is_object($array)) {
+                        foreach ($array as $key => $value) {
+                                if (is_numeric($key)) {
+                                        $key = $node_name;
+                                }
 
-            return $xml;
-    }
+                                $xml .= '<' . $key . '>' . "\n" . self::convertArrayEx($value, $node_name) . '</' . $key . '>' . "\n";
+                        }
+                } else {
+                        $xml = htmlspecialchars($array, ENT_QUOTES) . "\n";
+                }
 
+                return $xml;
+        }
 }

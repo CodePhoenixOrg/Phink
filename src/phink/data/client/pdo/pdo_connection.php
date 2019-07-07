@@ -75,38 +75,39 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
         }
     }
 
-    public function getDriver()
+    public function getDriver() : string
     {
         return $this->_config->getDriver();
     }
     
-    public function getState()
+    public function getState() : \PDO
     {
         return $this->_state;
     }
     
-    public function getConfiguration()
+    public function getConfiguration() : TPdoConfiguration
     {
         return $this->_config;
     }
 
 
-    public function querySelect()
+    public function querySelect() : ?TPdoDataStatement
     {
-        return $this->query($this->getSelectQuery());
+        list($sql, $params) = $this->getSelectQuery();
+        return $this->query($sql, $params);
     }
     
-    public function queryInsert()
+    public function queryInsert() : int
     {
         return $this->exec($this->getInsertQuery());
     }
 
-    public function queryUpdate()
+    public function queryUpdate() : int
     {
         return $this->exec($this->getUpdateQuery());
     }
 
-    public function queryDelete()
+    public function queryDelete() : int
     {
         return $this->exec($this->getDeleteQuery());
     }
@@ -122,7 +123,7 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
 //        }
     }
 
-    public function open()
+    public function open() : \PDO
     {
         try {
             if($this->_params != null) {
@@ -153,7 +154,7 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
 
     }
     
-    public function query(string $sql = '', array $params = null)
+    public function query(string $sql = '', ?array $params = null)
     {
         $statement = null;
         $result = false;
@@ -177,62 +178,62 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
         return $result;
     }
 
-    public function exec($sql = '')
+    public function exec(string $sql) : ?int
     {
         return $this->_state->exec($sql);
     }
 
-    public function prepare($sql)
+    public function prepare(string $sql) : bool
     {
         return $this->_state->prepare($sql);
     }
 
-    public function beginTransaction()
+    public function beginTransaction() : void
     {
         $this->_state->beginTransaction();
     }
     
-    public function commit()
+    public function commit() : void
     {
         $this->_state->commit();
     }
     
-    public function rollback()
+    public function rollback() : void
     {
         $this->_state->rollBack();
     }
     
-    public function inTransaction()
+    public function inTransaction() : void
     {
         $this->_state->inTransaction();
     }
     
-    public function lastInsertId()
+    public function lastInsertId() : int
     {
         return $this->_state->lastInsertId();
     }
     
-    public function setAttribute($key, $value)
+    public function setAttribute(string $key, $value) : void
     {
         $this->_state->setAttribute($key, $value);
     }
     
-    public function getAttribute($key)
+    public function getAttribute(string $key)
     {
         return $this->_state->getAttribute($key);
     }
     
-    public function getLastInsertId()
+    public function getLastInsertId() : int
     {
         return $this->_state->lastInsertId();
     }
     
-    public function quote($value)
+    public function quote(string $value) : string
     {
         return $this->_state->quote($value);
     }
 
-    public function close()
+    public function close() : bool
     {
         unset($this->_state);
         return true;
