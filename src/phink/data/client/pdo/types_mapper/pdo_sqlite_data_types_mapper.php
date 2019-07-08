@@ -6,7 +6,7 @@ use Phink\Data\CLient\PDO\Mapper\TPdoCustomDataTypesMapper;
 
 class TPdoSQLiteDataTypesMapper extends TPdoCustomDataTypesMapper
 {
-    public function setTypes()
+    public function setTypes() : void
     {
         $this->native_types = (array) null;
         $this->native2php_assoc = (array) null;

@@ -28,7 +28,7 @@ class TCrypto
 {
 	//put your code here
 
-    public static function generateToken($key = '')
+    public static function generateToken(string $key = '') : string
     {
         if($key != '') {
             $token = uniqid($key, true);

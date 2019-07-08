@@ -28,7 +28,7 @@ use Phink\Data\TServerType;
 class TDataAccess
 {
 
-    public static function getCryptoDB()
+    public static function getCryptoDB() : ?TPdoConnection
     {
 
         $databaseName = \Phink\Utils\TFileUtils::filePath(SRC_ROOT . 'data/crypto.db');

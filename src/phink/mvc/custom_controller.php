@@ -50,27 +50,27 @@ abstract class TCustomController extends TCustomControl
         $this->cloneNamesFrom($parent);
     }
 
-    public function getInnerHtml()
+    public function getInnerHtml() : string
     {
         return $this->innerHtml;
     }
     
-    public function clearInnerHtml()
+    public function clearInnerHtml() : void
     {
         $this->innerHtml = '';
     }
 
-    public function getView()
+    public function getView() : ?TCustomView
     {
         return $this->view;
     }
     
-    public function getModel()
+    public function getModel() : ?TModel
     {
         return $this->model;
     }
     
-    public function parse()
+    public function parse() : bool
     {
         $this->cacheFileName = $this->view->getCacheFileName();
         self::$logger->debug('CACHE FILE NAME IF EXISTS : ' . $this->cacheFileName, __FILE__, __LINE__);
@@ -88,7 +88,7 @@ abstract class TCustomController extends TCustomControl
         return $isAlreadyParsed;
     }
 
-    public function renderCreations()
+    public function renderCreations() : void
     {
         if(!empty($this->creations)) {
             /*
@@ -98,7 +98,7 @@ abstract class TCustomController extends TCustomControl
         }
     }
 
-    public function renderDeclarations()
+    public function renderDeclarations() : void
     {
         if(!empty($this->declarations)) {
             /* 
@@ -117,13 +117,13 @@ abstract class TCustomController extends TCustomControl
     }
     */
 
-    public function renderView()
+    public function renderView() : void
     {
 //        include "data://text/plain;base64," . base64_encode($this->viewHtml);
         eval('?>' . $this->viewHtml . '<?php ');
     }
 
-    public function renderedHtml()
+    public function renderedHtml() : void
     {
 //        include "data://text/plain;base64," . base64_encode($this->innerHtml);
 //        echo $this->innerHtml;

@@ -32,21 +32,21 @@ abstract class TPdoCustomDataTypesMapper implements IPdoDataTypesMapper
         $this->setTypes();
     }
 
-    public function setTypes() {}
+    public function setTypes() : void {}
 
-    public function getInfo($index) {}
+    public function getInfo(int $index) : ?object {}
 
-    public function typeNumToName($type)
+    public function typeNumToName(int $type) : string
     {
         return $this->native_types[$type];
     }
 
-    public function typeNameToPhp($type)
+    public function typeNameToPhp(string $type) : string
     {
         return $this->native2php_assoc[$type];
     }
 
-    public function typeNumToPhp($type)
+    public function typeNumToPhp(int $type) : string
     {
         return $this->native2php_num[$type];
     }

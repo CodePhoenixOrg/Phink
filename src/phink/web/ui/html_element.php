@@ -26,7 +26,6 @@
 class THtmlElement extends \Phink\Core\TObject
 {
 
-    private $_id = '';
     private $_rule = '';
     private $_pattern = '';
     private $_opening = '';
@@ -35,7 +34,7 @@ class THtmlElement extends \Phink\Core\TObject
 
     public function  __construct($id, $pattern, $rule)
     {
-        $this->_id = $id;
+        $this->id = $id;
         $this->_pattern = $pattern;
         $this->_rule = $rule;
 
@@ -49,11 +48,6 @@ class THtmlElement extends \Phink\Core\TObject
         }
 
         $this->_type = \Phink\Utils\TStringUtils::elementType($this->_opening);
-    }
-
-    public function getId()
-    {
-        return $this->_id;
     }
 
     public function getPattern()
@@ -76,7 +70,7 @@ class THtmlElement extends \Phink\Core\TObject
         return $this->_closing;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return $this->_type;
     }

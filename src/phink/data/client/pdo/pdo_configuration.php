@@ -62,12 +62,12 @@ class TPdoConfiguration extends TJsonConfiguration
         $this->_port = $this->contents['port'];
     }
 
-    public function getDriver()
+    public function getDriver() : string
     {
         return $this->_driver;
     }
     
-    public function getDatabaseName()
+    public function getDatabaseName() : string
     {
         return $this->_databaseName;
     }
@@ -75,22 +75,22 @@ class TPdoConfiguration extends TJsonConfiguration
     /*
      * Following properties are default null string in constructor because they may not be used (eg: SQLite)
      */
-    public function getHost()
+    public function getHost() : string
     {
         return $this->_host;
     }
 
-    public function getUser()
+    public function getUser() : string
     {
         return $this->_user;
     }
 
-    public function getPassword()
+    public function getPassword() : string
     {
         return $this->_password;
     }
 
-    public function getPort()
+    public function getPort() : string
     {
         return $this->_port;
     }

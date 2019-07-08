@@ -25,58 +25,57 @@ use Phink\Data\TAnalyzer;
 class TScriptMaker extends TObject
 {
     public function __construct()
-    {
-    }
-        
+    { }
+
     public function makeCode(
         $database,
-        $table="",
+        $table = "",
         $stmt,
-        $page_id=0,
-        $indexfield=0,
-        $secondfield="",
+        $page_id = 0,
+        $indexfield = 0,
+        $secondfield = "",
         $A_sqlFields,
         $cs,
         $with_frames
-    ) {
-        $script="\n";
+    ): string {
+        $script = "\n";
         //$script.="<script language=\"JavaScript\" src=\"js/pz_form_events.js\"></script>\n";
-        $script="<?php   \n";
-        $script.="\t\$cs = connection(CONNECT,\$database);\n";
-        $script.="\t\$query = getArgument(\"query\", \"SELECT\");\n";
-        $script.="\t\$event = getArgument(\"event\", \"onLoad\");\n";
-        $script.="\t\$action = getArgument(\"action\", \"Ajouter\");\n";
-        $script.="\t\$id = getArgument(\"id\");\n";
-        $script.="\t\$di = getArgument(\"di\");\n";
-        $script.="\t\$tablename = \"$table\";\n";
-        $defs=explode(',', $A_sqlFields[0]);
-        $fieldname=$defs[0];
-        $script.="\t$$fieldname = getArgument(\"$fieldname\");\n";
-        $script.="\tif(\$event === \"onLoad\" && \$query === \"ACTION\") {\n";
-        $script.="\t\tswitch (\$action) {\n";
-        $script.="\t\tcase \"Ajouter\":\n\n";
+        $script = "<?php   \n";
+        $script .= "\t\$cs = connection(CONNECT,\$database);\n";
+        $script .= "\t\$query = getArgument(\"query\", \"SELECT\");\n";
+        $script .= "\t\$event = getArgument(\"event\", \"onLoad\");\n";
+        $script .= "\t\$action = getArgument(\"action\", \"Ajouter\");\n";
+        $script .= "\t\$id = getArgument(\"id\");\n";
+        $script .= "\t\$di = getArgument(\"di\");\n";
+        $script .= "\t\$tablename = \"$table\";\n";
+        $defs = explode(',', $A_sqlFields[0]);
+        $fieldname = $defs[0];
+        $script .= "\t$$fieldname = getArgument(\"$fieldname\");\n";
+        $script .= "\tif(\$event === \"onLoad\" && \$query === \"ACTION\") {\n";
+        $script .= "\t\tswitch (\$action) {\n";
+        $script .= "\t\tcase \"Ajouter\":\n\n";
         //echo "$L_formFields<br>";
         for ($i = 0; $i < sizeof($A_sqlFields); $i++) {
-            $defs=explode(',', $A_sqlFields[$i]);
-            $fieldname=$defs[0];
+            $defs = explode(',', $A_sqlFields[$i]);
+            $fieldname = $defs[0];
             if ($i === 0) {
-                $indexfield=$fieldname;
+                $indexfield = $fieldname;
             } else {
-                $script.="\t\t\t\$$fieldname=\"\";\n";
+                $script .= "\t\t\t\$$fieldname=\"\";\n";
             }
         }
-        $script.="\t\tbreak;\n";
-        $script.="\t\tcase \"Modifier\":\n";
+        $script .= "\t\tbreak;\n";
+        $script .= "\t\tcase \"Modifier\":\n";
         for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
-            $defs=explode(',', $A_sqlFields[$i]);
-            $fieldname=$defs[0];
+            $defs = explode(',', $A_sqlFields[$i]);
+            $fieldname = $defs[0];
             if ($i === 1) {
-                $script.="\t\t\t\$sql=\"select * from \$tablename where $indexfield='$$indexfield';\";\n";
-                $script.="\t\t\t\$stmt = \$cs->query(\$sql);\n";
-                $script.="\t\t\t\$rows = \$stmt->fetch(PDO::FETCH_ASSOC);\n";
-                $script.="\t\t\t\$$fieldname = \$rows[\"$fieldname\"];\n";
+                $script .= "\t\t\t\$sql=\"select * from \$tablename where $indexfield='$$indexfield';\";\n";
+                $script .= "\t\t\t\$stmt = \$cs->query(\$sql);\n";
+                $script .= "\t\t\t\$rows = \$stmt->fetch(PDO::FETCH_ASSOC);\n";
+                $script .= "\t\t\t\$$fieldname = \$rows[\"$fieldname\"];\n";
             } else {
-                $script.="\t\t\t\$$fieldname = \$rows[\"$fieldname\"];\n";
+                $script .= "\t\t\t\$$fieldname = \$rows[\"$fieldname\"];\n";
             }
         }
         $script .= "\t\tbreak;\n";
@@ -89,8 +88,8 @@ class TScriptMaker extends TObject
             $fieldname = $defs[0];
             $script .= "\t\t\t\$$fieldname = filterPOST(\"$fieldname\");\n";
         }
-        $replaces=[];
-        $insertFields=[];
+        $replaces = [];
+        $insertFields = [];
         $prepargs = [];
         for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
             $defs = explode(',', $A_sqlFields[$i]);
@@ -128,20 +127,20 @@ class TScriptMaker extends TObject
         for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
             $defs = explode(',', $A_sqlFields[$i]);
             $fieldname = $defs[0];
-            $script.="\t\t\t\$$fieldname = filterPOST(\"$fieldname\");\n";
+            $script .= "\t\t\t\$$fieldname = filterPOST(\"$fieldname\");\n";
         }
         $replaces = [];
         $update = [];
         $prepare = [];
         for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
-            $defs=explode(',', $A_sqlFields[$i]);
+            $defs = explode(',', $A_sqlFields[$i]);
             $fieldname = $defs[0];
             $fieldtype = $stmt->typeNameToPhp($defs[2]);
-        
+
             // if ($fieldtype=='string') {
             //     $replaces[]="\t\t\t\$$fieldname = \$$fieldname";
             // }
-            $update[$i]="\t\t\t\t$fieldname = :$fieldname";
+            $update[$i] = "\t\t\t\t$fieldname = :$fieldname";
             $prepargs[] = "':$fieldname' => \$$fieldname";
         }
         $prepare = '[' . implode(', ', $prepargs) . ']';
@@ -160,11 +159,11 @@ class TScriptMaker extends TObject
         $script .= "\t\tbreak;\n";
         $script .= "\t\t}\n";
         if ($with_frames) {
-            $script.="\t\techo \"<script language='JavaScript'>window.location.href='<?php echo \$lg?>/$page_id?id=$page_id&lg=fr'</script>\";\n";
+            $script .= "\t\techo \"<script language='JavaScript'>window.location.href='<?php echo \$lg?>/$page_id?id=$page_id&lg=fr'</script>\";\n";
         } elseif (!$with_frames) {
-            $script.="\t\t\$query=\"SELECT\";\n";
+            $script .= "\t\t\$query=\"SELECT\";\n";
         }
-        
+
         //$script.="\t\techo \"<script language='JavaScript'>window.location.href='page.php?id=$page_id&lg=fr'</script>\";\n";
         // $script.="\t} else if(\$event==\"onUnload\" && \$query==\"ACTION\") {\n";
         // $script.="\t\t\$cs=connection(DISCONNECT,\$database);\n";
@@ -177,84 +176,84 @@ class TScriptMaker extends TObject
 
     public function makePage(
         $database,
-        $table="",
-        $pa_filename="",
-        $page_id=0,
-        $indexfield=0,
-        $secondfield="",
+        $table = "",
+        $pa_filename = "",
+        $page_id = 0,
+        $indexfield = 0,
+        $secondfield = "",
         $A_sqlFields,
         $cs,
         $with_frames
-    ) {
-        $formname=$table."Form";
-    
+    ): string {
+        $formname = $table . "Form";
+
         $analyzer = new TAnalyzer();
         $references = $analyzer->searchReferences($database, $table, $cs);
         $A_formFields = $references["form_fields"];
 
-        $script="\n";
-        $script="<center>\n";
-        $script.="<?php   \n";
-        $script.="\tinclude(\"".$pa_filename."_code.php\");\n";
-        $script.="\tuse \\Puzzle\\Data\\Controls as DataControls;\n";
-        $script.="\t\$datacontrols = new DataControls(\$lg, \$db_prefix);\n";
-        $script.="\t\$pc = getArgument(\"pc\");\n";
-        $script.="\t\$sr = getArgument(\"sr\");\n";
-        $script.="\t\$curl_pager = \"\";\n";
-        $script.="\t\$dialog = \"\";\n";
+        $script = "\n";
+        $script = "<center>\n";
+        $script .= "<?php   \n";
+        $script .= "\tinclude(\"" . $pa_filename . "_code.php\");\n";
+        $script .= "\tuse \\Puzzle\\Data\\Controls as DataControls;\n";
+        $script .= "\t\$datacontrols = new DataControls(\$lg, \$db_prefix);\n";
+        $script .= "\t\$pc = getArgument(\"pc\");\n";
+        $script .= "\t\$sr = getArgument(\"sr\");\n";
+        $script .= "\t\$curl_pager = \"\";\n";
+        $script .= "\t\$dialog = \"\";\n";
         // $script.="\t\$tablename = \"$table\";\n";
-        $script.="\tif(isset(\$pc)) \$curl_pager=\"&pc=\$pc\";\n";
-        $script.="\tif(isset(\$sr)) \$curl_pager.=\"&sr=\$sr\";\n";
-        $script.="\tif(\$query === \"SELECT\") {\n";
-        $script.="\t\t\t\$sql = \"select $indexfield, $secondfield from \$tablename order by $indexfield\";\n";
-        $script.="\t\t\t\$dbgrid = \$datacontrols->createPagerDbGrid(\$tablename, \$sql, \$id, \"page.php\", \"&query=ACTION\$curl_pager\", \"\", true, true, \$dialog, array(0, 400), 15, \$grid_colors, \$cs);\n";
-        $script.="\t\t\t//\$dbgrid = tableShadow(\$tablename, \$dbgrid);\n";
-        $script.="\t\t\techo \"<br>\".\$dbgrid;\n";
-        $script.="\t} elseif(\$query === \"ACTION\") {\n";
-        $script.="?>\n";
+        $script .= "\tif(isset(\$pc)) \$curl_pager=\"&pc=\$pc\";\n";
+        $script .= "\tif(isset(\$sr)) \$curl_pager.=\"&sr=\$sr\";\n";
+        $script .= "\tif(\$query === \"SELECT\") {\n";
+        $script .= "\t\t\t\$sql = \"select $indexfield, $secondfield from \$tablename order by $indexfield\";\n";
+        $script .= "\t\t\t\$dbgrid = \$datacontrols->createPagerDbGrid(\$tablename, \$sql, \$id, \"page.php\", \"&query=ACTION\$curl_pager\", \"\", true, true, \$dialog, array(0, 400), 15, \$grid_colors, \$cs);\n";
+        $script .= "\t\t\t//\$dbgrid = tableShadow(\$tablename, \$dbgrid);\n";
+        $script .= "\t\t\techo \"<br>\".\$dbgrid;\n";
+        $script .= "\t} elseif(\$query === \"ACTION\") {\n";
+        $script .= "?>\n";
         //$page_filename=getPageFilename($database, $page_id);
-        $page_filename="page.php";
+        $page_filename = "page.php";
         if ($with_frames) {
-            $script.="<form method=\"POST\" name=\"$formname\" action=\"<?php echo \$lg?>/$page_filename?id=$page_id&lg=fr\">\n";
+            $script .= "<form method=\"POST\" name=\"$formname\" action=\"<?php echo \$lg?>/$page_filename?id=$page_id&lg=fr\">\n";
         } elseif (!$with_frames) {
-            $script.="<form method=\"POST\" name=\"$formname\" action=\"page.php?id=$page_id&lg=fr\">\n";
+            $script .= "<form method=\"POST\" name=\"$formname\" action=\"page.php?id=$page_id&lg=fr\">\n";
         }
-        $script.="\t<input type=\"hidden\" name=\"query\" value=\"ACTION\">\n";
-        $script.="\t<input type=\"hidden\" name=\"event\" value=\"onRun\">\n";
-        $script.="\t<input type=\"hidden\" name=\"pc\" value=\"<?php echo \$pc?>\">\n";
-        $script.="\t<input type=\"hidden\" name=\"sr\" value=\"<?php echo \$sr?>\">\n";
-        $script.="\t<input type=\"hidden\" name=\"$indexfield\" value=\"<?php echo $$indexfield?>\">\n";
-        $script.="\t<table border=\"1\" bordercolor=\"<?php echo \$panel_colors[\"border_color\"]?>\" cellpadding=\"0\" cellspacing=\"0\" witdh=\"100%\" height=\"1\">\n";
-        $script.="\t\t<tr>\n";
-        $script.="\t\t\t<td align=\"center\" valign=\"top\" bgcolor=\"<?php echo \$panel_colors[\"back_color\"]?>\">\n";
-        $script.="\t\t\t\t<table>\n";
-        $inputs="";
+        $script .= "\t<input type=\"hidden\" name=\"query\" value=\"ACTION\">\n";
+        $script .= "\t<input type=\"hidden\" name=\"event\" value=\"onRun\">\n";
+        $script .= "\t<input type=\"hidden\" name=\"pc\" value=\"<?php echo \$pc?>\">\n";
+        $script .= "\t<input type=\"hidden\" name=\"sr\" value=\"<?php echo \$sr?>\">\n";
+        $script .= "\t<input type=\"hidden\" name=\"$indexfield\" value=\"<?php echo $$indexfield?>\">\n";
+        $script .= "\t<table border=\"1\" bordercolor=\"<?php echo \$panel_colors[\"border_color\"]?>\" cellpadding=\"0\" cellspacing=\"0\" witdh=\"100%\" height=\"1\">\n";
+        $script .= "\t\t<tr>\n";
+        $script .= "\t\t\t<td align=\"center\" valign=\"top\" bgcolor=\"<?php echo \$panel_colors[\"back_color\"]?>\">\n";
+        $script .= "\t\t\t\t<table>\n";
+        $inputs = "";
         for ($i = 0; $i < sizeof($A_formFields); $i++) {
-            $inputs.= $A_formFields[$i] . "\n";
+            $inputs .= $A_formFields[$i] . "\n";
         }
-        $script.= $inputs;
+        $script .= $inputs;
         //$script.="<tr><td align=\"center\" colspan=\"2\"><input type=\"submit\" name=\"action\" value=\"<?php echo \$action>\" onClick=\"return runForm(\"$formname\");\">\n";
-    
-        $script.="\t\t\t\t\t<tr>\n";
-        $script.="\t\t\t\t\t\t<td align=\"center\" colspan=\"2\">\n";
-        $script.="\t\t\t\t\t\t\t<input type=\"submit\" name=\"action\" value=\"<?php echo \$action?>\">\n";
-        $script.="\t\t\t\t\t\t\t<?php   if(\$action!=\"Ajouter\") { ?>\n";
+
+        $script .= "\t\t\t\t\t<tr>\n";
+        $script .= "\t\t\t\t\t\t<td align=\"center\" colspan=\"2\">\n";
+        $script .= "\t\t\t\t\t\t\t<input type=\"submit\" name=\"action\" value=\"<?php echo \$action?>\">\n";
+        $script .= "\t\t\t\t\t\t\t<?php   if(\$action!=\"Ajouter\") { ?>\n";
         //$script.="<input type=\"submit\" name=\"action\" value=\"Supprimer\" onClick=\"return runForm(\"$formname\");\">\n";
-        $script.="\t\t\t\t\t\t\t\t<input type=\"submit\" name=\"action\" value=\"Supprimer\">\n";
-        $script.="\t\t\t\t\t\t\t<?php   } ?>\n";
-        $script.="\t\t\t\t\t\t\t<input type=\"reset\" name=\"action\" value=\"Annuler\">\n";
+        $script .= "\t\t\t\t\t\t\t\t<input type=\"submit\" name=\"action\" value=\"Supprimer\">\n";
+        $script .= "\t\t\t\t\t\t\t<?php   } ?>\n";
+        $script .= "\t\t\t\t\t\t\t<input type=\"reset\" name=\"action\" value=\"Annuler\">\n";
         //$script.="<input type=\"submit\" name=\"action\" value=\"Retour\" onClick=\"return runForm(\"$formname\");\">\n";
-        $script.="\t\t\t\t\t\t\t<input type=\"submit\" name=\"action\" value=\"Retour\">\n";
-        $script.="\t\t\t\t\t\t</td>\n";
-        $script.="\t\t\t\t\t</tr>\n";
-        $script.="\t\t\t\t</table>\n";
-        $script.="\t\t\t</td>\n";
-        $script.="\t\t</tr>\n";
-        $script.="\t</table>\n";
-        $script.="</form>\n";
+        $script .= "\t\t\t\t\t\t\t<input type=\"submit\" name=\"action\" value=\"Retour\">\n";
+        $script .= "\t\t\t\t\t\t</td>\n";
+        $script .= "\t\t\t\t\t</tr>\n";
+        $script .= "\t\t\t\t</table>\n";
+        $script .= "\t\t\t</td>\n";
+        $script .= "\t\t</tr>\n";
+        $script .= "\t</table>\n";
+        $script .= "</form>\n";
         //$script.="<table><tr><td valign=\"middle\"><a href=\"javascript: history.go(-1);\"><img src=\"../img/scroll/left_0.gif\" border=\"0\">Retour</a></td></tr></table>\n";
-        $script.="<?php   \t} ?>\n";
-        $script.="</center>\n";
+        $script .= "<?php   \t} ?>\n";
+        $script .= "</center>\n";
 
         return $script;
     }

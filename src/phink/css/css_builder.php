@@ -27,7 +27,8 @@ namespace Phink\CascadingStyleSheet;
 
 class CssBuilder {
 
-    public static function build () {
+    public static function build () : void
+    {
         $theme = 'base';
 
         $images = [

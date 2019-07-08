@@ -23,6 +23,8 @@
  */
 namespace Phink\Web;
 
+use Phink\Core\IObject;
+
  /**
  * Description of TObject
  *
@@ -30,7 +32,7 @@ namespace Phink\Web;
  */
  
 
- interface IWebObject extends IHttpTransport {
+ interface IWebObject extends IHttpTransport, IObject {
  
     public function getApplication();
     public function getCacheFileName();

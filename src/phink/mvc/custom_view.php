@@ -18,7 +18,7 @@
  
  namespace Phink\MVC;
 
-use Phink\Core\TObject;
+use Phink\Web\IWebObject;
 use Phink\Xml\TXmlDocument;
 use Phink\Registry\TRegistry;
 use Phink\Web\UI\TCustomControl;
@@ -44,7 +44,7 @@ abstract class TCustomView extends TCustomControl
     protected $pattern = '';
     protected $depth = 0;
 
-    public function __construct(TObject $parent)
+    public function __construct(IWebObject $parent)
     {
         $this->setParent($parent);
         $this->path = $parent->getPath();
@@ -53,31 +53,31 @@ abstract class TCustomView extends TCustomControl
         //$this->redis = new Client($this->context->getRedis());
     }
 
-    public function isDirty()
+    public function isDirty() : bool
     {
         return $this->_dirty;
     }
 
-    public function getDepth()
+    public function getDepth() : int
     {
         return $this->depth;
     }
-    public function setDepth($value)
+    public function setDepth($value) : void
     {
         $this->depth = $value;
     }
 
-    public function getCreations()
+    public function getCreations() : string
     {
         return $this->creations;
     }
 
-    public function getAdditions()
+    public function getAdditions() : string
     {
         return $this->additions;
     }
 
-    public function getAfterBinding()
+    public function getAfterBinding() : string
     {
         return $this->afterBinding;
     }
@@ -87,17 +87,17 @@ abstract class TCustomView extends TCustomControl
     //     $this->viewHtml = $html;
     // }
     
-    public function getViewHtml()
+    public function getViewHtml() : string
     {
         return $this->viewHtml;
     }
 
-    public function setTwigHtml($html)
+    public function setTwigHtml($html) : void
     {
         $this->twigHtml = $html;
     }
     
-    public function getTwigHtml()
+    public function getTwigHtml() : string
     {
         return $this->twigHtml;
     }
@@ -126,7 +126,7 @@ abstract class TCustomView extends TCustomControl
         return $text;
     }
 
-    public function parse()
+    public function parse() : bool
     {
         self::$logger->debug($this->viewName . ' IS REGISTERED : ' . (TRegistry::exists('code', $this->controllerFileName) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
 

@@ -15,12 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
- namespace Phink\Xml;
+
+namespace Phink\Xml;
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 use Phink\Core\TObject;
 
 /**
@@ -31,7 +32,7 @@ use Phink\Core\TObject;
 class TXmlMatch extends TObject
 {
     //put your code here
-    private $_id = 0;
+
     private $_parentId = 0;
     private $_name = '';
     private $_text = '';
@@ -46,9 +47,9 @@ class TXmlMatch extends TObject
     private $_method = '';
 
     //$text, $groups, $position, $start, $end, $childName, $closer
-    public function __construct($array)
+    public function __construct(array $array)
     {
-        $this->_id = $array['id'];
+        $this->id = $array['id'];
         $this->_parentId = $array['parentId'];
         $this->_text = $array['element'];
         $this->_tmpText = $this->_text;
@@ -62,33 +63,29 @@ class TXmlMatch extends TObject
         $this->_method = $array['method'];
 
         $this->_hasChildren = isset($this->_closer);
-        if($this->_hasChildren) {
-            $this->_end = $this->_closer['endsAt'];    
+        if ($this->_hasChildren) {
+            $this->_end = $this->_closer['endsAt'];
         }
-        
     }
 
-    public function getId()
-    {
-        return $this->_id;
-    }
 
-    public function getParentId()
+
+    public function getParentId(): int
     {
         return $this->_parentId;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->_name;
     }
 
-    public function getText()
+    public function getText(): string
     {
         return $this->_text;
     }
 
-    public function getDepth()
+    public function getDepth(): int
     {
         return $this->_depth;
     }
@@ -96,41 +93,39 @@ class TXmlMatch extends TObject
     public function properties($key)
     {
         $result = false;
-        if(isset($this->_properties[$key])) {
+        if (isset($this->_properties[$key])) {
             $result = $this->_properties[$key];
-        }        
+        }
         return $result;
     }
 
-    public function getStart()
+    public function getStart(): int
     {
         return $this->_start;
     }
 
-    public function getEnd()
+    public function getEnd(): int
     {
         return $this->_end;
     }
 
-    public function getChildName()
+    public function getChildName(): stirng
     {
         return $this->_childName;
     }
 
-    public function hasChildren()
+    public function hasChildren(): bool
     {
         return $this->_hasChildren;
     }
 
-    public function getCloser()
+    public function getCloser(): array
     {
         return $this->_closer;
     }
-    
-    public function getMethod()
+
+    public function getMethod(): string
     {
         return $this->_method;
     }
-
 }
-

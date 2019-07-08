@@ -18,8 +18,10 @@
 
 namespace Phink\Web\UI;
 
-use Phink\Core\TObject;
+use Phink\Core\IObject;
 use Phink\MVC\TActionInfo;
+use Phink\MVC\TCustomView;
+use Phink\MVC\TModel;
 
 /**
  * Description of custom_control
@@ -33,7 +35,7 @@ abstract class TCustomCachedControl extends TCustomControl
     protected $viewHtml = '';
     protected $isDeclared = false;
 
-    public function __construct(TObject $parent)
+    public function __construct(IObject $parent)
     {
         parent::__construct($parent);
 
@@ -66,44 +68,44 @@ abstract class TCustomCachedControl extends TCustomControl
         $this->response = $parent->getResponse();
     }
 
-    public function getView()
+    public function getView() : TCustomView
     {
         return $this->view;
     }
     
-    public function getModel()
+    public function getModel() : TModel
     {
         return $this->model;
     }
        
-    public function getInnerHtml()
+    public function getInnerHtml() : string
     {
         return $this->innerHtml;
     }
     
-    public function renderView()
+    public function renderView() : void
     {
         // include "data://text/plain;base64," . base64_encode($this->viewHtml);
         eval('?>' . $this->viewHtml . '<?php ');
     }
     
-    public function createObjects()
+    public function createObjects() : void
     {
     }
     
-    public function declareObjects()
+    public function declareObjects() : void
     {
     }
 
-    public function afterBinding()
+    public function afterBinding() : void 
     {
     }
     
-    public function displayHtml()
+    public function displayHtml() : void 
     {
     }
     
-    public function getViewHtml()
+    public function getViewHtml() : void
     {
         // if(isset($_REQUEST['PHPSESSID'])) {
         //     self::$logger->debug(__METHOD__ . '::PHPSESSID::' . $_REQUEST['PHPSESSID']);
@@ -137,7 +139,7 @@ abstract class TCustomCachedControl extends TCustomControl
         $this->response->setData('view', $html);
     }
     
-    public function render()
+    public function render() : void
     {
         $this->init();
         $this->createObjects();
@@ -152,7 +154,7 @@ abstract class TCustomCachedControl extends TCustomControl
         $this->unload();
     }
     
-    public function perform()
+    public function perform() : void
     {
         $this->init();
         $this->createObjects();

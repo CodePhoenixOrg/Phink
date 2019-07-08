@@ -20,7 +20,8 @@ namespace Phink\JavaScript;
  
 class JsBuilder {
 
-    public static function build () {
+    public static function build () : void
+    {
         $destdir = DOCUMENT_ROOT . 'js' . DIRECTORY_SEPARATOR;
 
         $js_filename = $destdir . '_3rdparty.js';

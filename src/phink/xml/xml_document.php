@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 /*
     Possible regex to replace the strpos based method stuff
     $re = '/(<phx:element.[^>]+?[^\/]>)(.*?)(<\/phx:element>)|(<phx:.+?>)|(<\/phx:\w+>)/is';
@@ -23,7 +23,7 @@
 
 */
 
- namespace Phink\Xml;
+namespace Phink\Xml;
 
 use Phink\Core\TObject;
 
@@ -56,58 +56,58 @@ class TXmlDocument extends TObject
 {
     private $_count = 0;
     private $_cursor = 0;
+    private $_matches = [];
     private $_text = STR_EMPTY;
-    private $_matches = array();
     private $_id = -1;
     private $_match = null;
-    private $_list = array();
-    private $_depths = array();
-    private $_matchesByDepth = array();
+    private $_list = [];
+    private $_depths = [];
+    private $_matchesByDepth = [];
     private $_endPos = -1;
 
     public function __construct($text)
     {
         $this->_text = $text . OPEN_TAG . TAG_PATTERN_ANY . 'eof' . STR_SPACE . TERMINATOR . CLOSE_TAG;
-        
+
         $this->_endPos = strlen($this->_text);
     }
 
-    public function getMatches()
+    public function getMatches(): array
     {
         return $this->_matches;
     }
 
-    public function getCount()
+    public function getCount(): int
     {
         return $this->_count;
     }
 
-    public function getCursor()
+    public function getCursor(): int
     {
         return $this->_cursor;
     }
 
-    public function getList()
+    public function getList(): array
     {
         return $this->_list;
     }
-    
-    public function fieldValue($i, $field, $value)
+
+    public function fieldValue(int $i, string $field, string $value)
     {
         $this->_list[$i][$field] = $value;
     }
 
-    public function getMaxDepth()
+    public function getMaxDepth(): int
     {
         return count($this->_depths);
     }
 
-    public function getMatchesByDepth()
+    public function getMatchesByDepth(): array
     {
         return $this->_matchesByDepth;
     }
 
-    public function elementName($s, $offset)
+    public function elementName(string $s, int $offset): string
     {
         if (!isset($offset)) {
             $offset = 0;
@@ -146,7 +146,7 @@ class TXmlDocument extends TObject
         return $result;
     }
 
-    public function getMatch()
+    public function getMatch(): ?TXmlMatch
     {
         if ($this->_match == null) {
             //$this->_match = new TXmlMatch($this->_list[$this->_matchesByDepth[$this->_id]]);
@@ -156,19 +156,19 @@ class TXmlDocument extends TObject
         return $this->_match;
     }
 
-    public function nextMatch()
+    public function nextMatch(): ?TXmlMatch
     {
         $this->_match = null;
         if ($this->_id == $this->_count - 1) {
-            return false;
+            return null;
         }
 
         $this->_id++;
 
-        return ($this->getMatch());
+        return $this->getMatch();
     }
 
-    public function replaceMatch($replace)
+    public function replaceMatch(string $replace): string
     {
         if ($this->_match->hasChildren()) {
             $start = $this->_match->getStart();
@@ -182,9 +182,9 @@ class TXmlDocument extends TObject
         return $this->_text;
     }
 
-    public function replaceThisMatch(TXmlMatch $match, $text, $replace)
+    public function replaceThisMatch(TXmlMatch $match, string $text, string $replace): string
     {
-        
+
         if ($match->hasChildren()) {
             $start = $match->getStart();
             $closer = $match->getCloser();
@@ -197,11 +197,11 @@ class TXmlDocument extends TObject
 
         return $text;
     }
-    
-    private function _parse($tag, $text, $cursor)
+
+    private function _parse(string $tag, string $text, string $cursor): array
     {
-        $properties = array();
-        
+        $properties = [];
+
         $endElementPos = strpos($text, OPEN_TAG . TERMINATOR . $tag, $cursor);
         $openElementPos = strpos($text, OPEN_TAG . $tag, $cursor);
         if ($openElementPos > -1 && $endElementPos > -1 && $openElementPos > $endElementPos) {
@@ -209,7 +209,7 @@ class TXmlDocument extends TObject
             $closeElementPos = strpos($text, CLOSE_TAG, $openElementPos);
             return [$openElementPos, $closeElementPos, $properties];
         }
-        
+
         $spacePos = strpos($text, STR_SPACE, $openElementPos);
         $equalPos = strpos($text, '=', $spacePos);
         $openQuotePos = strpos($text, QUOTE, $openElementPos);
@@ -221,7 +221,7 @@ class TXmlDocument extends TObject
             $value = substr($text, $openQuotePos + 1, $closeQuotePos - $openQuotePos - 1);
             $properties[trim($key)] = $value;
             $lastCloseQuotePos = $closeQuotePos;
-            
+
             $spacePos = strpos($text, STR_SPACE, $closeQuotePos);
             $equalPos = strpos($text, '=', $spacePos);
             $openQuotePos = strpos($text, QUOTE, $closeQuotePos + 1);
@@ -236,11 +236,11 @@ class TXmlDocument extends TObject
         } else {
             $closeElementPos =  strpos($text, CLOSE_TAG, $openElementPos);
         }
-        
+
         return [$openElementPos, $closeElementPos, $properties];
     }
 
-    public function matchAll($tag = TAG_PATTERN_ANY)
+    public function matchAll(string $tag = TAG_PATTERN_ANY): bool
     {
         $i = 0;
         $j = -1;
@@ -248,7 +248,7 @@ class TXmlDocument extends TObject
         $s = STR_EMPTY;
         $firstName = STR_EMPTY;
         $secondName = STR_EMPTY;
-        
+
         $cursor = 0;
 
         $text = $this->_text;
@@ -257,9 +257,9 @@ class TXmlDocument extends TObject
         $openElementPos = $result[0];
         $closeElementPos = $result[1];
         $properties = $result[2];
-        
+
         $parentId[0] = -1;
-        
+
         $depth = 0;
         //$this->_depths[$depth] = 1;
 
@@ -272,7 +272,7 @@ class TXmlDocument extends TObject
             if ($arr[1] == 'eof') {
                 break;
             }
-            
+
             $this->_list[$i]['id'] = $i;
             $this->_list[$i]['method'] = $arr[1];
             $this->_list[$i]['element'] = $s;
@@ -286,18 +286,18 @@ class TXmlDocument extends TObject
                 $parentId[$depth] = $i - 1;
             }
             $this->_list[$i]['parentId'] = $parentId[$depth];
- 
+
             $p = strpos($s, STR_SPACE);
-//            if ($p == strlen($firstName) + 1 && $closeElementPos > $p) {
-//                $attributes = trim(substr($s, $p + 1, strlen($s) - $p - 3));
-//                $this->_list[$i]['properties'] = TStringUtils::parameterStringToArray($attributes);
-//            }
+            //            if ($p == strlen($firstName) + 1 && $closeElementPos > $p) {
+            //                $attributes = trim(substr($s, $p + 1, strlen($s) - $p - 3));
+            //                $this->_list[$i]['properties'] = TStringUtils::parameterStringToArray($attributes);
+            //            }
 
             $this->_list[$i]['properties'] = $properties;
 
             $cursor = $closeElementPos + 1;
             $secondName = $this->elementName($text, $cursor);
-            
+
             if (TERMINATOR . $firstName != $secondName) {
                 if ($s[1] == TERMINATOR) {
                     $depth--;
@@ -308,13 +308,10 @@ class TXmlDocument extends TObject
                         $contents = substr($text, $this->_list[$pId]['endsAt'] + 1, $this->_list[$i]['startsAt'] - $this->_list[$pId]['endsAt'] - 1);
                         $this->_list[$pId]['properties']['content'] = '!#base64#' . base64_encode($contents); // uniqid();
                     }
-                    
+
                     $this->_list[$pId]['closer'] = $this->_list[$i];
                     unset($this->_list[$i]);
-                } elseif ($s[1] == QUEST_MARK) {
-                } elseif ($s[strlen($s) - 2] == TERMINATOR) {
-                } elseif ($s[1] == SKIP_MARK) {
-                } else {
+                } elseif ($s[1] == QUEST_MARK) { } elseif ($s[strlen($s) - 2] == TERMINATOR) { } elseif ($s[1] == SKIP_MARK) { } else {
                     $sa = explode(':', $secondName);
                     if (isset($sa[1])) {
                         $this->_list[$i]['childName'] = $sa[1];
@@ -323,7 +320,6 @@ class TXmlDocument extends TObject
                     $depth++;
                     $this->_depths[$depth] = 1;
                     unset($parentId[$depth]);
-
                 }
             }
 
@@ -339,13 +335,14 @@ class TXmlDocument extends TObject
         $this->_matchesByDepth = $this->sortMatchesByDepth();
 
         $this->_count = count($this->_list);
+
         return ($this->_count > 0);
     }
 
-    public function sortMatchesByDepth()
+    public function sortMatchesByDepth(): array
     {
         $maxDepth = count($this->_depths);
-        $result = array();
+        $result = [];
         for ($i = $maxDepth; $i > -1; $i--) {
             foreach ($this->_list as $part) {
                 if ($part["depth"] == $i) {

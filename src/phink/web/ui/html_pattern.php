@@ -25,36 +25,36 @@
  */
 trait THtmlPattern {
     //put your code here
-    protected $elements = array();
+    protected $elements = [];
     protected $pattern = '';
 
-    public function getElements()
+    public function getElements() : array
     {
         if(count($this->elements) == 0) {
             $this->_getElements();
         }
         return $this->elements;
     }
-    public function setElements($value)
+    public function setElements(array $value) : void
     {
-        return $this->elements = $value;
+        $this->elements = $value;
     }
 
-    public function getPattern()
+    public function getPattern() : string
     {
         return $this->pattern;
     }
-    public function setPattern($value)
+    public function setPattern(string $value) : void
     {
-        return $this->pattern = $value;
+        $this->pattern = $value;
     }
     
-    public function getPatternName()
+    public function getPatternName() : string
     {
         return 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'html' . PATTERN_EXTENSION;
     }
 
-    private function _getElements()
+    private function _getElements() : void
     {
         $type = $this->getType();
         $path = ROOT_PATH . \Phink\Registry\TRegistry::classPath($type);
@@ -63,7 +63,7 @@ trait THtmlPattern {
         if(file_exists($jsonName)) {
             $json = file_get_contents($jsonName);
             $this->elements = unserialize($json);
-            return true;
+            return;
         }
 
         $patternName = $this->getPatternName();
@@ -93,7 +93,6 @@ trait THtmlPattern {
 
         file_put_contents($jsonName, $jsonElements);
         
-
     }
 
 }

@@ -30,7 +30,7 @@ class TSqlParameters extends TObject
     public $DatabaseName = '';
     public $ServerType = 0;
 
-    public function __construct($host, $user, $password, $databaseName, $serverType)
+    public function __construct(string $host, string $user, string $password, string $databaseName, string $serverType)
     {
         $this->Host = $host;
         $this->User = $user;

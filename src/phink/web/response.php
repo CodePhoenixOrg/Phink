@@ -36,28 +36,28 @@ class TResponse implements \JsonSerializable
     private $_token = '';
     protected $scriptsList = [];
 
-    public function redirect($url, $code = 301, $override = true)
+    public function redirect($url, $code = 301, $override = true) : void
     {
         header('Location: ' . $url, $override, $code);
     }
     
-    public function getToken()
+    public function getToken() : string
     {
         return $this->_token;
     }
 
-    public function setToken($token = '')
+    public function setToken(string $token = '') : void
     {
         $this->_token = $token;
         $this->_data['token'] = $token;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize() : array
     {
         return $this->_data;
     }
 
-    public function addScript($filename)
+    public function addScript(string $filename) : void
     {
         array_push($this->scriptsList, $filename);
     }
@@ -67,13 +67,13 @@ class TResponse implements \JsonSerializable
 //        return $this->scriptsList;
 //    }
 
-    public function setReturn($value)
+    public function setReturn($value) :void
     {
         http_response_code($value);
         $this->_data['return'] = $value;
     }
 
-    public function setData($key, $value = '')
+    public function setData($key, string $value = '')  :void
     {
         if(is_array($key)) {
 //            self::$logger->dump('KEY', $key);
@@ -86,7 +86,8 @@ class TResponse implements \JsonSerializable
             
     }
     
-    public function setException(\Exception $ex) {
+    public function setException(\Exception $ex) : void
+    {
         $this->setData('error', 
             $ex->getCode() . PHP_EOL . 
             $ex->getFile() . PHP_EOL .
@@ -95,7 +96,8 @@ class TResponse implements \JsonSerializable
         );
     }
     
-    private function _getHeaders($hsts = false) {
+    private function _getHeaders($hsts = false) : int
+    {
         $result = 200;
         
         header('Origin: ' . SERVER_ROOT);
@@ -136,7 +138,7 @@ class TResponse implements \JsonSerializable
         return $result;
     }
     
-    public function sendData()
+    public function sendData() : void
     {
         if($this->_token) {
             $this->setToken($this->_token);
@@ -153,7 +155,7 @@ class TResponse implements \JsonSerializable
         }
     }
 
-    public function setMessage($message)
+    public function setMessage($message) : void
     {
         $this->setData('message', $message);
     }    

@@ -28,13 +28,13 @@ namespace Phink\Data;
  * @author david
  */
 interface IDataStatement {
-    public function fetch($mode);
-    public function fetchAll($mode);
-    public function fetchObject();
-    public function getFieldCount();
-    public function getRowCount();
-    public function getFieldName($i);
-    public function getFieldType($i);
-    public function getFieldLen($i);
+    public function fetch(int $mode) : ?array;
+    public function fetchAll(int $mode) : ?array;
+    public function fetchObject() : ?object;
+    public function getFieldCount() : ?int;
+    public function getRowCount() : ?int;
+    public function getFieldName(int $i) : string;
+    public function getFieldType(int $i) : string;
+    public function getFieldLen(int $i) : int;
 }
 ?>

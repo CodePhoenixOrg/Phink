@@ -34,7 +34,7 @@ class TAuthentication extends TStaticObject
         
     }
 
-    public function getUserId()
+    public function getUserId() : string
     {
         if (!isset($this->userId) || empty($this->userId)) {
             if (isset($_SESSION['userId'])) {
@@ -46,13 +46,13 @@ class TAuthentication extends TStaticObject
         return $this->userId;
     }
 
-    public function setUserId($value)
+    public function setUserId($value) : void
     {
         $_SESSION['userId'] = $value;
         $this->userId = $value;
     }
 
-    public function getUserName()
+    public function getUserName() : string
     {
         if (!isset($this->userName) || empty($this->userName)) {
             if (isset($_SESSION['userName'])) {
@@ -64,16 +64,16 @@ class TAuthentication extends TStaticObject
         return $this->userName;
     }
     
-    public function setUserName($value)
+    public function setUserName($value) : void
     {
         $_SESSION['userName'] = $value;
         $this->userName = $value;
     }
 
-    public static function getPermissionByToken ($token)
+    public static function getPermissionByToken (string $token) : ?string
     {
         
-        $result = false;
+        $result = null;
         
         if($token != '') {
 
@@ -86,9 +86,9 @@ class TAuthentication extends TStaticObject
         return $result;
     }    
 
-    public static function setUserToken($userId, $login)
+    public static function setUserToken(string $userId, string $login) : ?string
     {
-        $result = false;
+        $result = null;
         
         $connection = TDataAccess::getCryptoDB();
         $token = TCrypto::generateToken('');
@@ -100,9 +100,9 @@ class TAuthentication extends TStaticObject
         return ($token || $stmt->fetch()) ? $token : $result;
     }    
     
-    public function updateToken($token)
+    public function updateToken($token) : ?int
     {
-        $result = false;
+        $result = null;
         
         $connection = TDataAccess::getCryptoDB();
         $stmt = $connection->query("select * from crypto where token=:token and outdated=0;", ['token' => $token]);
@@ -117,9 +117,9 @@ class TAuthentication extends TStaticObject
         return $result;
     }    
     
-    public function renewToken($token = '')
+    public function renewToken($token = '') : ?string
     {
-        $result = false;
+        $result = null;
 
         self::$logger->debug(__METHOD__ . '::TOKEN::' . $token);
         

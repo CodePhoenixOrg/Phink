@@ -22,46 +22,46 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
 {
     use \Phink\Data\UI\TDataTag;
     
-    private $_children = array();
+    private $_children = [];
     private $_rowCount;
     private $_pageNum;
     private $_childrenCount;
     protected $contents = null;
     protected $hasChildren = false;
 
-    public function getChildren()
+    public function getChildren() : ?array
     {
         return $this->_children;
     }
-    public function setChildren($value)
+    public function setChildren(array $value) : void
     {
         $this->_children = $value;
     }
     
-    public function getChildrenCount()
+    public function getChildrenCount() : int
     {
         return $this->_childrenCount;
     }
     
-    public function getRowCount()
+    public function getRowCount() : int
     {
         return $this->_rowCount;
     }
-    public function setRowCount($value)
+    public function setRowCount(int $value) : void
     {
         $this->_rowCount = $value;
     }
     
-    public function getPageNum()
+    public function getPageNum() : int
     {
         return $this->_pageNum;
     }
-    public function setPageNum($value)
+    public function setPageNum(int $value) : void
     {
         $this->_pageNum = $value;
     }
 
-    public function init()
+    public function init() : void
     {
         $childrenCount = count($this->_children);
         $this->hasChildren = $childrenCount > 0;
@@ -96,7 +96,7 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
     //     $this->addChild($this);
     // }
 
-    public static function getGridData($id, \Phink\Data\IDataStatement $stmt, $rowsPerPage = 1)
+    public static function getGridData($id, \Phink\Data\IDataStatement $stmt, $rowsPerPage = 1) : array
     {
         $templateFilename = RUNTIME_JS_DIR . $id . '_template.json';
         $templates = '';
@@ -148,13 +148,13 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
         return $result;
     }
     
-    public function getData()
+    public function getData() : void
     {
         $this->data = self::getGridData($this->getParent()->getViewName(), $this->statement, $this->_rowCount);
         $this->response->setData('data', $this->data);
     }
     
-    public function renderHtml()
+    public function renderHtml() : void
     {
         $this->data = self::getGridData($this->getParent()->getViewName(), $this->statement, $this->_rowCount);
     

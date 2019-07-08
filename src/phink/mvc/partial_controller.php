@@ -18,13 +18,15 @@
  
  namespace Phink\MVC;
 
+use Phink\Core\IObject;
+use Phink\Web\IWebObject;
 use Phink\MVC\TPartialView;
 use Phink\MVC\TCustomController;
 
 class TPartialController extends TCustomController 
 {
     
-    public function __construct(\Phink\Core\TObject $parent)
+    public function __construct(IWebObject $parent)
     {
         parent::__construct($parent);
         
@@ -37,7 +39,7 @@ class TPartialController extends TCustomController
         $this->view = new TPartialView($parent, $this); 
     }   
     
-    public function render()
+    public function render() : void
     {
         $this->init();
         $this->parse();

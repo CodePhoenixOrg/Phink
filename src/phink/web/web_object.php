@@ -67,7 +67,7 @@ trait TWebObject
 
 //    protected $authentication = null;
     
-//    public function __construct(TObject $parent)
+//    public function __construct(IObject $parent)
 //    {
 //        $this->request = $parent->getRequest();
 //        $this->response = $parent->getResponse();

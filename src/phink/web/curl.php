@@ -27,7 +27,8 @@ namespace Phink\Web;
 class TCurl extends \Phink\Core\TStaticObject {
     //put your code here
     
-    public function request($uri, $header = [], $data = []) {
+    public function request($uri, $header = [], $data = []) : object
+    {
         
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $uri);

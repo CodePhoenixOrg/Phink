@@ -6,7 +6,7 @@ use Phink\Data\CLient\PDO\Mapper\TPdoCustomDataTypesMapper;
 
 class TPdoMySQLDataTypesMapper extends TPdoCustomDataTypesMapper
 {
-    public function getInfo($index)
+    public function getInfo($index) : ?object
     {
         if ($this->result === null) {
             try {
@@ -20,7 +20,7 @@ class TPdoMySQLDataTypesMapper extends TPdoCustomDataTypesMapper
 
                 $this->result = $connection->query($this->sql);
             } catch (\Exception $ex) {
-                return false;
+                return null;
             }
         }
 
@@ -29,7 +29,7 @@ class TPdoMySQLDataTypesMapper extends TPdoCustomDataTypesMapper
         return $this->info;
     }
 
-    public function setTypes()
+    public function setTypes() : void
     {
         $this->native_types = (array) null;
         $this->native2php_assoc = (array) null;

@@ -52,7 +52,7 @@ class TPdoDataStatement extends TObject implements IDataStatement
     private $_sql = '';
     private $_driver;
 
-    public function __construct($statement, TPdoConnection $connection = null, $sql = '')
+    public function __construct(\PDOStatement $statement, TPdoConnection $connection = null, $sql = '')
     {
         $this->_statement = $statement;
         $this->_sql = $sql;
@@ -66,41 +66,41 @@ class TPdoDataStatement extends TObject implements IDataStatement
         } 
     }
 
-    public function getValue($i)
+    public function getValue($i) : array
     {
         return $this->_values[$i];
     }
 
-    public function fetch($mode = \PDO::FETCH_NUM)
+    public function fetch(int $mode = \PDO::FETCH_NUM) : ?array
     {
         $this->_values = $this->_statement->fetch($mode);
-        return $this->_values;
+        return (!$this->_values) ? null : $this->_values;
     }
     
-    public function fetchAll($mode = \PDO::FETCH_NUM)
+    public function fetchAll(int $mode = \PDO::FETCH_NUM) : ?array
     {
         $this->_values = $this->_statement->fetchAll($mode);
-        return $this->_values;
+        return (!$this->_values) ? null : $this->_values;
     }
     
-    public function fetchAssoc()
+    public function fetchAssoc() : ?array
     {
         $this->_values = $this->_statement->fetch(\PDO::FETCH_ASSOC);
-        return $this->_values;
+        return (!$this->_values) ? null : $this->_values;
     }
 
-    public function fetchAllAssoc()
+    public function fetchAllAssoc() : ?array
     {
         $this->_values = $this->_statement->fetchAll(\PDO::FETCH_ASSOC);
-        return $this->_values;
+        return (!$this->_values) ? null : $this->_values;
     }
 
-    public function fetchObject()
+    public function fetchObject() : ?object
     {
         return $this->_statement->fetchObject();
     }
     
-    public function getFieldCount()
+    public function getFieldCount() : ?int
     {
         if(!isset($this->_fieldCount)) {
             try {
@@ -117,7 +117,7 @@ class TPdoDataStatement extends TObject implements IDataStatement
         return $this->_fieldCount;
     }
 
-    public function getRowCount()
+    public function getRowCount() : ?int
     {
         if(!isset($this->_rowCount)) {
             try {
@@ -134,7 +134,7 @@ class TPdoDataStatement extends TObject implements IDataStatement
         return $this->_rowCount;
     }
 
-    public function getFieldNames()
+    public function getFieldNames() : array
     {
         if(count($this->_colNames) == 0 && $this->_connection !== null) {
 
@@ -147,7 +147,7 @@ class TPdoDataStatement extends TObject implements IDataStatement
         return $this->_colNames;        
     }
 
-    public function getFieldName($i)
+    public function getFieldName($i) : string
     {
         $name = '';
 
@@ -164,7 +164,7 @@ class TPdoDataStatement extends TObject implements IDataStatement
         return $name;
     }
 
-    public function getFieldType($i)
+    public function getFieldType(int $i) : string
     {
         $type = '';
 
@@ -181,7 +181,7 @@ class TPdoDataStatement extends TObject implements IDataStatement
         return $type;
     }
 
-    public function getFieldLen($i)
+    public function getFieldLen(int $i) : int
     {
         $len = 0;
 
@@ -198,22 +198,22 @@ class TPdoDataStatement extends TObject implements IDataStatement
         return $len;
     }
 
-    public function typeNumToName($type)
+    public function typeNumToName(int $type) : string
     {
         return $this->_typesMapper->typeNumToName($type);
     }
 
-    public function typeNameToPhp($type)
+    public function typeNameToPhp(string $type) : string
     {
         return $this->_typesMapper->typeNameToPhp($type);
     }
 
-    public function typeNumToPhp($type)
+    public function typeNumToPhp(int $type) : string 
     {
         return $this->_typesMapper->typeNumToPhp($type);
     }
 
-    private function _setTypesMapper()
+    private function _setTypesMapper() : void
     {
         if ($this->_driver === TServerType::MYSQL) {
             $this->_typesMapper = new TPdoMySQLDataTypesMapper($this->_config, $this->_sql);

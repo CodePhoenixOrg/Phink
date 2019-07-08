@@ -34,46 +34,47 @@ class TPager extends \Phink\MVC\TPartialController
     protected $forCtrl;
     protected $forApp;
 
-    public function setStatement($value)
+    public function setStatement($value) : void
     {
         $this->statement = $value;
     }
 
-    public function setCaption($value)
+    public function setCaption($value) : void
     {
         $this->caption = $value;
     }
 
-    public function setPageCount($value)
+    public function setPageCount($value) : void
     {
         $this->pageCount = $value;
     }
     
-    public function setCurrentPage($value)
+    public function setCurrentPage($value) : void
     {
         $this->currentPage = $value;
     }
     
-    public function setPageNum($value)
+    public function setPageNum($value) : void
     {
         $this->pageNum = $value;
     }
     
-    public function setOnclick($value)
+    public function setOnclick($value) : void
     {
         $this->onclick = $value;
     }
     
-    public function setFor($value)
+    public function setFor($value) : void
     {
         $this->forThis = $value;
     }
 
-    public function getCacheFilename() {
+    public function getCacheFilename() : string
+    {
         return SRC_ROOT . REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $this->path . $this->forThis . 'pager' . CLASS_EXTENSION);
     }
 
-    public function init()
+    public function init() : void
     {
         $forControl = $this->parent->getChildById($this->forThis);
 
