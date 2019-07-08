@@ -31,7 +31,7 @@ class PhinkBuilder {
 
         $filenames = [
                 'main.js'
-            ,   'utils/text.js'
+            ,   'utils/utils.js'
             ,   'core/registry.js'
             ,   'core/object.js'
             ,   'core/url.js'
