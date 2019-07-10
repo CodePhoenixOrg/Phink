@@ -16,12 +16,16 @@
         "classmap": [
             "src/phink/"
         ],
-        "exclude-from-classmap":
-        [
-            "src/phink/phink_library.php",            
-            "src/phink/web/ui/widget/console/consolew.class.php"
+        "exclude-from-classmap": [
+            "src/phink/phink_library.php"
+        ],
+        "psr-4": {
+            "Phink" : ""
+        },
+        "files": [
+            "src/phink/core/constants.php"
         ]
-    },    
+    },
     "require": {
         "php": ">=7.0.0",
         "twig/twig": "^2.0",
