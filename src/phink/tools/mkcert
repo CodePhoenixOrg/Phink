@@ -77,7 +77,7 @@ openssl req \
 	-out ${CN}.csr \
 	-subj "/C=FR/ST=${ST}/L=${L}/O=${O}/OU=${OU}/CN=${CN}/emailAddress=david.blanchard@phink.org"
 
-V3EXT=<<<
+V3EXT=<<V3_EXT
 authorityKeyIdentifier=keyid,issuer
 basicConstraints=CA:FALSE
 keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
@@ -85,7 +85,10 @@ subjectAltName = @alt_names
 
 [alt_names]
 DNS.1 = ${CN}
-V3EXT
+V3_EXT
+
+echo $V3EXT
+echo "$V3EXT"
 
 echo $V3EXT > v3.ext
 
