@@ -42,12 +42,12 @@ then
 	exit 1;
 fi
 
-if [ ! -d ~/.certs/${CN} ];
+if [ ! -d ~/.certs ];
 then
-	mkdir -p ~/.certs/${CN};
+	mkdir -p ~/.certs;
 fi
 
-cd ~/.certs/${CN};
+cd ~/.certs;
 
 if [ ! -f rootCA.key ];
 then
@@ -62,6 +62,14 @@ then
 		-subj "/C=FR/ST=IDF/L=Paris/O=CodePhoenixOrg/OU=IT/CN=E-Commerce/emailAddress=david.blanchard@phink.org"
 fi
 
+
+if [ ! -d ~/.certs/${CN} ];
+then
+	mkdir -p ~/.certs/${CN};
+fi
+
+cd ~/.certs/${CN};
+
 openssl req \
  	-newkey rsa:2048 \
 	-nodes \
@@ -69,13 +77,26 @@ openssl req \
 	-out ${CN}.csr \
 	-subj "/C=FR/ST=${ST}/L=${L}/O=${O}/OU=${OU}/CN=${CN}/emailAddress=david.blanchard@phink.org"
 
+V3EXT=<<<
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = ${CN}
+V3EXT
+
+echo $V3EXT > v3.ext
+
 openssl x509 \
 	-req -in ${CN}.csr \
-	-CA ca.pem \
-	-CAkey ca.key \
+	-CA ~/.certs/rootCA.pem \
+	-CAkey ~/.certs/rootCA.key \
 	-CAcreateserial \
 	-out ${CN}.pem \
-	-days 1024 -sha256
+	-days 1024 -sha256 \
+	-extfile v3.ext
 
 openssl x509 \
 	-signkey ${CN}.key \
@@ -86,7 +107,7 @@ openssl x509 \
 
 openssl pkcs12 -export -clcerts -in ${CN}.crt -inkey ${CN}.key -out ${CN}.p12
 
-echo Use ${OU}.pem as SSL certificate
-echo Use ${OU}.key as certificate key
-echo Use ${OU}.p12 as client side certificate
+echo Use ${CN}.pem as SSL certificate
+echo Use ${CN}.key as certificate key
+echo Use ${CN}.p12 as client side certificate
 
