@@ -1,50 +1,103 @@
 #!/bin/bash
-CU=$1;
-CN=$2;
+C=$1;
+ST=$2;
+L=$3;
+O=$4;
+OU=$5;
+CN=$6;
 
-if [ -z "${CU}" ];
+if [ -z "${C}" ];
 then
-	echo "The customer name is missing";
+	echo "The country code is missing";
+	exit 1;
+fi
+
+if [ -z "${ST}" ];
+then
+	echo "The state is missing";
+	exit 1;
+fi
+
+if [ -z "${L}" ];
+then
+	echo "The location is missing";
+	exit 1;
+fi
+
+if [ -z "${O}" ];
+then
+	echo "The organization name is missing";
+	exit 1;
+fi
+
+if [ -z "${OU}" ];
+then
+	echo "The organization unit is missing";
 	exit 1;
 fi
 
 if [ -z "${CN}" ];
 then
-	echo "The domain is missing";
+	echo "The common name is missing";
 	exit 1;
 fi
 
-if [ ! -d certs/${CN} ];
+if [ ! -d ~/.certs ];
 then
-	mkdir -p certs/${CN};
+	mkdir -p ~/.certs;
 fi
 
-cd certs/${CN};
+cd ~/.certs;
+
+if [ ! -f rootCA.key ];
+then
+	openssl genrsa -des3 -out rootCA.key 2048
+
+	openssl req -x509 \
+		-new -nodes \
+ 		-key rootCA.key \
+		-sha256 \
+		-days 1024 \
+		-out rootCA.crt \
+		-subj "/C=FR/ST=IDF/L=Paris/O=CodePhoenixOrg/OU=IT/CN=E-Commerce/emailAddress=dpjb@hotmail.fr"
+fi
 
 
-openssl genrsa -out ca.key 2048
-openssl req -x509 \
-	-new -nodes \
-	-key ca.key \
-	-sha256 \
-	-days 1024 \
-	-out ca.pem \
-	-subj "/C=FR/ST=IDF/L=Paris/O=CodePhoenixOrg/OU=IT/CN=E-Commerce/emailAddress=david.blanchard@phink.org"
+if [ ! -d ~/.certs/${CN} ];
+then
+	mkdir -p ~/.certs/${CN};
+fi
+
+cd ~/.certs/${CN};
 
 openssl req \
  	-newkey rsa:2048 \
 	-nodes \
 	-keyout ${CN}.key \
 	-out ${CN}.csr \
-	-subj "/C=FR/ST=IDF/L=Paris/O=CodePhoenixOrg/OU=${CU}/CN=${CN}/emailAddress=david.blanchard@phink.org"
+	-subj "/C=FR/ST=${ST}/L=${L}/O=${O}/OU=${OU}/CN=${CN}/emailAddress=somebody@${CN}"
+
+cat << V3_EXT > v3.ext
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = $CN
+V3_EXT
+
+cat v3.ext
 
 openssl x509 \
 	-req -in ${CN}.csr \
-	-CA ca.pem \
-	-CAkey ca.key \
+	-CA ~/.certs/rootCA.crt \
+	-CAkey ~/.certs/rootCA.key \
 	-CAcreateserial \
 	-out ${CN}.pem \
-	-days 1024 -sha256
+	-days 1024 -sha256 \
+	-extfile v3.ext
 
 openssl x509 \
 	-signkey ${CN}.key \
@@ -55,7 +108,7 @@ openssl x509 \
 
 openssl pkcs12 -export -clcerts -in ${CN}.crt -inkey ${CN}.key -out ${CN}.p12
 
-echo Use ${CU}.pem as SSL certificate
-echo Use ${CU}.key as certificate key
-echo Use ${CU}.p12 as client side certificate
+echo Use ${CN}.crt as SSL certificate
+echo Use ${CN}.key as certificate key
+echo Use ${CN}.p12 as client side certificate
 
