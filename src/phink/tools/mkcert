@@ -58,8 +58,8 @@ then
  		-key rootCA.key \
 		-sha256 \
 		-days 1024 \
-		-out rootCA.pem \
-		-subj "/C=FR/ST=IDF/L=Paris/O=CodePhoenixOrg/OU=IT/CN=E-Commerce/emailAddress=david.blanchard@phink.org"
+		-out rootCA.crt \
+		-subj "/C=FR/ST=IDF/L=Paris/O=CodePhoenixOrg/OU=IT/CN=E-Commerce/emailAddress=dpjb@hotmail.fr"
 fi
 
 
@@ -75,26 +75,24 @@ openssl req \
 	-nodes \
 	-keyout ${CN}.key \
 	-out ${CN}.csr \
-	-subj "/C=FR/ST=${ST}/L=${L}/O=${O}/OU=${OU}/CN=${CN}/emailAddress=david.blanchard@phink.org"
+	-subj "/C=FR/ST=${ST}/L=${L}/O=${O}/OU=${OU}/CN=${CN}/emailAddress=somebody@${CN}"
 
-V3EXT=<<V3_EXT
+cat << V3_EXT > v3.ext
 authorityKeyIdentifier=keyid,issuer
 basicConstraints=CA:FALSE
 keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth
 subjectAltName = @alt_names
 
 [alt_names]
-DNS.1 = ${CN}
+DNS.1 = $CN
 V3_EXT
 
-echo $V3EXT
-echo "$V3EXT"
-
-echo $V3EXT > v3.ext
+cat v3.ext
 
 openssl x509 \
 	-req -in ${CN}.csr \
-	-CA ~/.certs/rootCA.pem \
+	-CA ~/.certs/rootCA.crt \
 	-CAkey ~/.certs/rootCA.key \
 	-CAcreateserial \
 	-out ${CN}.pem \
@@ -110,7 +108,7 @@ openssl x509 \
 
 openssl pkcs12 -export -clcerts -in ${CN}.crt -inkey ${CN}.key -out ${CN}.p12
 
-echo Use ${CN}.pem as SSL certificate
+echo Use ${CN}.crt as SSL certificate
 echo Use ${CN}.key as certificate key
 echo Use ${CN}.p12 as client side certificate
 

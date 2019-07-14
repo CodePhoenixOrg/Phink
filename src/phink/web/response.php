@@ -73,7 +73,7 @@ class TResponse implements \JsonSerializable
         $this->_data['return'] = $value;
     }
 
-    public function setData($key, string $value = '')  :void
+    public function setData($key, $value = '')  :void
     {
         if(is_array($key)) {
 //            self::$logger->dump('KEY', $key);
