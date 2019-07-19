@@ -160,7 +160,7 @@ abstract class TCustomApplication extends TObject
         $this->setCommand(
             'rlog',
             '',
-            'All logs and temporary files cleared',
+            'All log files cleared',
             function (callable $callback = null) {
                 $data = $this->clearLogs();
                 if ($callback !== null) {
@@ -176,10 +176,9 @@ abstract class TCustomApplication extends TObject
     {
         $result = '';
         try {
-            TCache::clearRuntime();
             self::getLogger()->clearAll();
 
-            $result = 'All logs2 and temporary files cleared';
+            $result = 'All logs cleared';
         } catch (\Throwable $ex) {
             self::writeException($ex);
 
@@ -188,12 +187,27 @@ abstract class TCustomApplication extends TObject
         return $result;
     }
 
-    protected function getDebugLog() : string
+    public function clearRuntime() : string
+    {
+        $result = '';
+        try {
+            TCache::clearRuntime();
+
+            $result = 'All runtime files deleted';
+        } catch (\Throwable $ex) {
+            self::writeException($ex);
+
+            $result = 'Impossible to delete runtime files';
+        }
+        return $result;
+    }
+
+    public function getDebugLog() : string
     {
         return self::getLogger()->getDebugLog();
     }
 
-    protected function getPhpErrorLog() : string
+    public function getPhpErrorLog() : string
     {
         return self::getLogger()->getPhpErrorLog();
     }

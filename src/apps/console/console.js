@@ -17,8 +17,29 @@ Phink.DOM.ready(function () {
                 document.querySelector('html').setAttribute('class', 'solaris');
             }
             , clearLogs: function () {
-                this.getJSON('rlog', {
+                this.getJSON('console', {
                     "action": 'clearLogs'
+                } , function (data) {
+                    document.querySelector("#result").innerHTML = data.result;
+                });
+            }
+            , deleteRuntime: function () {
+                this.getJSON('console', {
+                    "action": 'clearRuntime'
+                } , function (data) {
+                    document.querySelector("#result").innerHTML = data.result;
+                });
+            }
+            , displayDebugLog: function () {
+                this.getJSON('console', {
+                    "action": 'displayDebugLog'
+                } , function (data) {
+                    document.querySelector("#result").innerHTML = data.result;
+                });
+            }
+            , displayPhpErrorLog: function () {
+                this.getJSON('console', {
+                    "action": 'displayPhpErrorLog'
                 } , function (data) {
                     document.querySelector("#result").innerHTML = data.result;
                 });
@@ -37,6 +58,15 @@ Phink.DOM.ready(function () {
             }
             document.querySelector('#rlog').onclick = function () {
                 conMain.clearLogs();
+            }
+            document.querySelector('#delrun').onclick = function () {
+                conMain.deleteRuntime();
+            }
+            document.querySelector('#debug').onclick = function () {
+                conMain.displayDebugLog();
+            }
+            document.querySelector('#phperr').onclick = function () {
+                conMain.displayPhpErrorLog();
             }
         });
 });

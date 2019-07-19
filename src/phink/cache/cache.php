@@ -81,23 +81,27 @@ class TCache extends TStaticObject
     {
         $result = false;
         $error_dir = [];
+        $test = false;
 
         try {
             
             if (file_exists(RUNTIME_DIR)) {
-                $result = $result || TFileUtils::delTree(RUNTIME_DIR);
+                $ok = TFileUtils::delTree(RUNTIME_DIR);
+                $result = $result || $ok;
             } else {
                 $error_dir[] = RUNTIME_DIR;
             }
 
             if (file_exists(RUNTIME_JS_DIR)) {
-                $result = $result || TFileUtils::delTree(RUNTIME_JS_DIR);
+                $ok = TFileUtils::delTree(RUNTIME_JS_DIR);
+                $result = $result || $ok;
             } else {
                 $error_dir[] = RUNTIME_JS_DIR;
             }
 
             if (file_exists(RUNTIME_CSS_DIR)) {
-                $result = $result || TFileUtils::delTree(RUNTIME_CSS_DIR);
+                $ok = TFileUtils::delTree(RUNTIME_CSS_DIR);
+                $result = $result || $ok;
             } else {
                 $error_dir[] = RUNTIME_CSS_DIR;
             }

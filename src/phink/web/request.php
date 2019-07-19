@@ -306,23 +306,23 @@ class TRequest extends \Phink\Core\TObject
         return $result;
     }
 
+    public static function getArgument($arg, $default = ''): string
+    {
+        $result = '';
 
-    public function getArgument($arg, $default = '') : string
-{
-    $result = '';
+        // mysql_escape_string
+        if (isset($_GET[$arg])) {
+            $result = filter_input(INPUT_GET, $arg, FILTER_SANITIZE_STRING);
+        } elseif (isset($_POST[$arg])) {
+            $result = filter_input(INPUT_POST, $arg, FILTER_SANITIZE_STRING);
+        }
 
-	// mysql_escape_string
-    if (isset($_GET[$arg])) {
-        $result = filter_input(INPUT_GET, $arg, FILTER_SANITIZE_STRING);
-    } elseif (isset($_POST[$arg])) {
-        $result = filter_input(INPUT_POST, $arg, FILTER_SANITIZE_STRING);
+        if ($result === '') {
+            $result = $default;
+        }
+        return $result;
     }
-    
-    if ($result === '') {
-        $result = $default;
-    }
-    return $result;
-}
+
     public function getQueryArguments(string $arg = null)
     {
         if (!isset($_REQUEST[$arg])) return false;

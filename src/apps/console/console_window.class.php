@@ -73,4 +73,25 @@ class TConsoleWindow extends TPartialController
 
         return TActionInfo::set($this, 'result', $data);
     }
+
+    public function clearRuntime() : TActionInfo
+    {
+        $data = $this->getApplication()->clearRuntime();
+
+        return TActionInfo::set($this, 'result', $data);
+    }
+
+    public function displayDebugLog() : TActionInfo
+    {
+        $data = $this->getApplication()->getDebugLog();
+
+        return TActionInfo::set($this, 'result', $data);
+    }
+
+    public function displayPhpErrorLog() : TActionInfo
+    {
+        $data = $this->getApplication()->getPhpErrorLog();
+
+        return TActionInfo::set($this, 'result', $data);
+    }    
 }
