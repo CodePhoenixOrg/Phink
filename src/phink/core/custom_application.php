@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 
 namespace Phink\Core;
 
@@ -34,6 +34,7 @@ namespace Phink\Core;
 use Phink\Core\TObject;
 use Phink\Cache\TCache;
 use Phink\Auth\TAuthentication;
+use Phink\Registry\TRegistry;
 
 abstract class TCustomApplication extends TObject
 {
@@ -41,7 +42,7 @@ abstract class TCustomApplication extends TObject
     const DEBUG_MODE = 'DEBUG';
     const TEST_MODE = 'TEST';
     const PROD_MODE = 'PROD';
-    
+
     private static $_executionMode = self::PROD_MODE;
     private static $_verboseMode = false;
     private static $_useTransactions = true;
@@ -52,6 +53,7 @@ abstract class TCustomApplication extends TObject
     protected $scriptName = 'app.php';
     protected $appDirectory = '';
     protected $canStop = false;
+    protected $dataConfName = '';
     private $_usage = '';
     private $_appini = [];
 
@@ -60,11 +62,10 @@ abstract class TCustomApplication extends TObject
         parent::__construct();
     }
 
-    protected function execute() : void
-    {
-    }
+    protected function execute(): void
+    { }
 
-    protected function ignite() : void
+    protected function ignite(): void
     {
         $this->loadINI();
 
@@ -80,7 +81,7 @@ abstract class TCustomApplication extends TObject
                 }
             }
         );
-        
+
         $this->setCommand(
             'ini',
             '',
@@ -107,7 +108,7 @@ abstract class TCustomApplication extends TObject
                 }
             }
         );
-        
+
         $this->setCommand(
             'name',
             '',
@@ -120,7 +121,7 @@ abstract class TCustomApplication extends TObject
                 }
             }
         );
-    
+
         $this->setCommand(
             'constants',
             '',
@@ -169,10 +170,10 @@ abstract class TCustomApplication extends TObject
             }
         );
     }
-    
-    abstract protected function displayConstants() : array;
-    
-    public function clearLogs() : string
+
+    abstract protected function displayConstants(): array;
+
+    public function clearLogs(): string
     {
         $result = '';
         try {
@@ -187,7 +188,7 @@ abstract class TCustomApplication extends TObject
         return $result;
     }
 
-    public function clearRuntime() : string
+    public function clearRuntime(): string
     {
         $result = '';
         try {
@@ -202,17 +203,17 @@ abstract class TCustomApplication extends TObject
         return $result;
     }
 
-    public function getDebugLog() : string
+    public function getDebugLog(): string
     {
         return self::getLogger()->getDebugLog();
     }
 
-    public function getPhpErrorLog() : string
+    public function getPhpErrorLog(): string
     {
         return self::getLogger()->getPhpErrorLog();
     }
 
-    public function loadINI() : void
+    public function loadINI(): void
     {
         try {
             $ini = null;
@@ -221,57 +222,75 @@ abstract class TCustomApplication extends TObject
             }
             $ini = parse_ini_file(SRC_ROOT  . 'config/app.ini');
             $this->appName = isset($ini['name']) ? $ini['name'] : $this->appName;
+            $this->dataConfName = isset($ini['config']) ? $ini['config'] : $this->dataConfName;
 
+            $dataDir = dir(realpath(APP_DATA));
+
+            $entry = '';
+            while (($entry = $dataDir->read()) !== false) {
+                $info = (object) \pathinfo($entry);
+
+                if ($info->extension == 'json') {
+                    $conf = file_get_contents(APP_DATA . $entry);
+                    $conf = json_decode($conf);
+                    TRegistry::write('connections', $info->filename, $conf);
+                    // self::getLogger()->dump('DATA CONF ' . $info->filename, $conf);
+                }
+            }
+            $dataDir->close();
+
+            // if (file_exists(APP_DATA . $this->dataConfName)) {
+            //     $confs = file_get_contents(APP_DATA . $this->dataConfName);
+            //     $confs = $confs->connections;
+            //     TRegistry::write('data', 'connections', $confs);
+            // }
             $this->_appini = $ini;
         } catch (\Throwable $ex) {
             $this->writeException($ex);
         }
     }
 
-    public static function write($string, ...$params) : void
-    {
-    }
-        
-    public static function writeLine($string, ...$params) : void
-    {
-    }
+    public static function write($string, ...$params): void
+    { }
 
-    public static function writeException(\Throwable $ex, $file = null, $line = null) : void
-    {
-    }
+    public static function writeLine($string, ...$params): void
+    { }
 
-    public function help() : void
+    public static function writeException(\Throwable $ex, $file = null, $line = null): void
+    { }
+
+    public function help(): void
     {
         $this->writeLine($this->getApplicationName());
         $this->writeLine('Expected commands : ');
         $this->writeLine($this->_usage);
     }
 
-    public function getApplicationName() : string
+    public function getApplicationName(): string
     {
         return $this->appName;
     }
 
-    public function getApplicationDirectory() :  string
+    public function getApplicationDirectory(): string
     {
         return $this->appDirectory;
     }
 
-    public function setCommand(string $long, string $short = '', string $definition = '', $callback = null) : void
+    public function setCommand(string $long, string $short = '', string $definition = '', $callback = null): void
     {
         $this->commands[$long] = [
             'short' => $short,
             'definition' => $definition,
             'callback' => $callback
         ];
-        
+
         if ($short !== '') {
             $this->_usage .= "\t--$long, -$short : $definition" . PHP_EOL;
         } else {
             $this->_usage .= "\t--$long : $definition" . PHP_EOL;
         }
     }
-    
+
     // public function commandRunner(string $cmd, callable $callback, $arg = null) {
 
     //     if (isset($this->commands[$cmd])) {
@@ -293,26 +312,26 @@ abstract class TCustomApplication extends TObject
         return $this->canStop;
     }
 
-    public static function getExecutionMode() : string
+    public static function getExecutionMode(): string
     {
         return self::$_executionMode;
     }
-    
-    public function getOS() : string
+
+    public function getOS(): string
     {
         return PHP_OS;
     }
 
-    public static function setExecutionMode($myExecutionMode) : void
+    public static function setExecutionMode($myExecutionMode): void
     {
         if (!$myExecutionMode) {
             $myExecutionMode = (APP_IS_WEB) ?  'debug' : 'prod';
         }
-        
+
         $prod = ($myExecutionMode == 'prod');
         $test = ($myExecutionMode == 'test' || $myExecutionMode == 'devel' || $myExecutionMode == 'dev');
         $debug = ($myExecutionMode == 'debug');
-        
+
         if ($prod) {
             self::$_executionMode = self::PROD_MODE;
         }
@@ -323,55 +342,55 @@ abstract class TCustomApplication extends TObject
             self::$_executionMode = self::DEBUG_MODE;
         }
     }
-    
-    public static function getVerboseMode() : bool
+
+    public static function getVerboseMode(): bool
     {
         return self::$_verboseMode;
     }
-    
+
     public static function setVerboseMode($set = false)
     {
         self::$_verboseMode = $set;
     }
-    
-    public static function getTransactionUse() : bool
+
+    public static function getTransactionUse(): bool
     {
         return self::$_useTransactions;
     }
 
-    public static function useTransactions($set = true) : void
+    public static function useTransactions($set = true): void
     {
         self::$_useTransactions = $set;
     }
-    
-    public static function isProd() : bool
+
+    public static function isProd(): bool
     {
         return self::$_executionMode == self::PROD_MODE;
     }
 
-    public static function isTest() :  bool
+    public static function isTest(): bool
     {
         return self::$_executionMode == self::TEST_MODE;
     }
 
-    public static function isDebug() : bool
+    public static function isDebug(): bool
     {
         return self::$_executionMode == self::DEBUG_MODE;
     }
 
-    public static function authenticateByToken($token) : string 
+    public static function authenticateByToken($token): string
     {
-        
+
         // On prend le token en cours
         if (is_string($token)) {
             // avec ce token on récupère l'utilisateur et un nouveau token
             $token = TAuthentication::getUserCredentialsByToken($token);
         }
-        
+
         return $token;
     }
 
-    protected static function _write($string, ...$params) : string
+    protected static function _write($string, ...$params): string
     {
         if (is_array($string)) {
             $string = print_r($string, true);
