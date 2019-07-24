@@ -34,14 +34,14 @@ Phink.DOM.ready(function () {
                 this.getJSON('console', {
                     "action": 'displayDebugLog'
                 } , function (data) {
-                    document.querySelector("#result").innerHTML = data.result;
+                    document.querySelector("#result").innerHTML = '<pre>' + data.result + '</pre>';
                 });
             }
             , displayPhpErrorLog: function () {
                 this.getJSON('console', {
                     "action": 'displayPhpErrorLog'
                 } , function (data) {
-                    document.querySelector("#result").innerHTML = data.result;
+                    document.querySelector("#result").innerHTML = '<pre>' + data.result + '</pre>';
                 });
             }
         })
