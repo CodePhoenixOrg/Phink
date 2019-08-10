@@ -35,6 +35,7 @@ use Phink\Core\TObject;
 use Phink\Cache\TCache;
 use Phink\Auth\TAuthentication;
 use Phink\Registry\TRegistry;
+use Phink\Registry\TRegistry as PhinkTRegistry;
 
 abstract class TCustomApplication extends TObject
 {
@@ -50,6 +51,7 @@ abstract class TCustomApplication extends TObject
     protected $commands = [];
     protected $callbacks = [];
     protected $appName = 'app';
+    protected $appTitle = '';
     protected $scriptName = 'app.php';
     protected $appDirectory = '';
     protected $canStop = false;
@@ -114,7 +116,7 @@ abstract class TCustomApplication extends TObject
             '',
             'Display the running application name.',
             function (callable $callback = null) {
-                $data = $this->getApplicationName();
+                $data = $this->getName();
                 $this->writeLine($data);
                 if ($callback !== null) {
                     \call_user_func($callback, $data);
@@ -122,6 +124,19 @@ abstract class TCustomApplication extends TObject
             }
         );
 
+        $this->setCommand(
+            'title',
+            '',
+            'Display the running application title.',
+            function (callable $callback = null) {
+                $data = $this->getTitle();
+                $this->writeLine($data);
+                if ($callback !== null) {
+                    \call_user_func($callback, $data);
+                }
+            }
+        );
+        
         $this->setCommand(
             'constants',
             '',
@@ -140,6 +155,20 @@ abstract class TCustomApplication extends TObject
             'Display the debug log.',
             function (callable $callback = null) {
                 $data = $this->getDebugLog();
+                if ($callback !== null) {
+                    \call_user_func($callback, $data);
+                }
+            }
+        );
+
+        $this->setCommand(
+            'info-modules',
+            '',
+            'Display the module section of phpinfo() output.',
+            function (callable $callback = null) {
+                ob_start();
+                phpinfo(INFO_MODULES);
+                $data = ob_get_clean();
                 if ($callback !== null) {
                     \call_user_func($callback, $data);
                 }
@@ -220,9 +249,15 @@ abstract class TCustomApplication extends TObject
             if (!file_exists(SRC_ROOT . 'config/app.ini')) {
                 return;
             }
-            $ini = parse_ini_file(SRC_ROOT  . 'config/app.ini');
-            $this->appName = isset($ini['name']) ? $ini['name'] : $this->appName;
-            $this->dataConfName = isset($ini['config']) ? $ini['config'] : $this->dataConfName;
+            $ini = parse_ini_file(SRC_ROOT  . 'config/app.ini', TRUE, INI_SCANNER_TYPED);
+            $this->appName = isset($ini['application']['name']) ? $ini['application']['name'] : $this->appName;
+            $this->appTitle = isset($ini['application']['title']) ? $ini['application']['title'] : $this->appTitle;
+            
+            foreach($ini as $key=>$values) {
+                TRegistry::write('ini', $key, $values);
+            }
+            unset($ini);
+            // $this->dataConfName = isset($ini['config']) ? $ini['config'] : $this->dataConfName;
 
             $dataDir = dir(realpath(APP_DATA));
 
@@ -232,7 +267,7 @@ abstract class TCustomApplication extends TObject
 
                 if ($info->extension == 'json') {
                     $conf = file_get_contents(APP_DATA . $entry);
-                    $conf = json_decode($conf);
+                    $conf = json_decode($conf, true);
                     TRegistry::write('connections', $info->filename, $conf);
                     // self::getLogger()->dump('DATA CONF ' . $info->filename, $conf);
                 }
@@ -244,7 +279,7 @@ abstract class TCustomApplication extends TObject
             //     $confs = $confs->connections;
             //     TRegistry::write('data', 'connections', $confs);
             // }
-            $this->_appini = $ini;
+            $this->_appini = TRegistry::item('ini');
         } catch (\Throwable $ex) {
             $this->writeException($ex);
         }
@@ -261,17 +296,22 @@ abstract class TCustomApplication extends TObject
 
     public function help(): void
     {
-        $this->writeLine($this->getApplicationName());
+        $this->writeLine($this->getName());
         $this->writeLine('Expected commands : ');
         $this->writeLine($this->_usage);
     }
 
-    public function getApplicationName(): string
+    public function getName(): string
     {
         return $this->appName;
     }
+    
+    public function getTitle(): string
+    {
+        return $this->appTitle;
+    }
 
-    public function getApplicationDirectory(): string
+    public function getDirectory(): string
     {
         return $this->appDirectory;
     }
