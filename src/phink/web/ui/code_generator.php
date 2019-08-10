@@ -116,13 +116,15 @@ trait TCodeGenerator
                     
                     self::$logger->dump('FULL_QUALIFIED_CLASS_NAME: ', $fqcn);
                     
-                    
-                    $jsCode = '';
                     if (file_exists(DOCUMENT_ROOT . $fullJsCachePath)) {
                         $view->getResponse()->addScript($fullJsCachePath);
-                    } elseif (file_exists(SRC_ROOT . $fullJsClassPath)) {
-                        $jsCtrlCode = file_get_contents(SRC_ROOT . $fullJsClassPath) . PHP_EOL;
-                        file_put_contents(DOCUMENT_ROOT . $fullJsCachePath, $jsCtrlCode);
+                    }
+                    if (file_exists(SRC_ROOT . $fullJsClassPath)) {
+                        copy (SRC_ROOT . $fullJsClassPath, DOCUMENT_ROOT . $fullJsCachePath);
+                        $view->getResponse()->addScript($fullJsCachePath);
+                    }
+                    if (file_exists(SITE_ROOT . $fullJsClassPath)) {
+                        copy (SITE_ROOT . $fullJsClassPath, DOCUMENT_ROOT . $fullJsCachePath);
                         $view->getResponse()->addScript($fullJsCachePath);
                     }
                     TRegistry::setCode($fullClassPath, $code);
@@ -249,6 +251,7 @@ trait TCodeGenerator
     
     public function writeHTML(TXmlDocument $doc, TCustomView $view)
     {
+        $motherView = $view->getMotherView();
         $viewHtml = $view->getViewHtml();
         $scripts = '';
         $head = '';
@@ -265,6 +268,8 @@ trait TCodeGenerator
             $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($view->getViewName());
             if (!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
                 copy(SITE_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
+                self::getLogger()->debug("copy(" . SRC_ROOT . $this->getJsControllerFileName() . ", " . DOCUMENT_ROOT . $cacheJsFilename . ")");
+
             }
             // \Phink\Utils\TFileUtils::webPath($view->getCssFileName())
             $scripts = "<script src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheJsFilename . "'></script>" . PHP_EOL;
@@ -292,11 +297,16 @@ trait TCodeGenerator
         if ($scripts !== '') {
             $scripts .= '</body>' . PHP_EOL;
             $viewHtml = str_replace('</body>', $scripts, $viewHtml);
+            TRegistry::write($this->getMotherUID(), 'scripts', $scripts);
+            // $motherView->addScriptTag($scripts);
         }
 
         if ($head !== '') {
             $head .= '</head>' . PHP_EOL;
             $viewHtml = str_replace('</head>', $head, $viewHtml);
+            TRegistry::write($this->getMotherUID(), 'linkRel', $head);
+            // $motherView->addLinkRelTag($head);
+
         }
 
         $count = $doc->getCount();
