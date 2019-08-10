@@ -28,7 +28,7 @@ class TScriptMaker extends TObject
     { }
 
     public function makeCode(
-        $database,
+        $conf,
         $table = "",
         $stmt,
         $page_id = 0,
@@ -41,7 +41,8 @@ class TScriptMaker extends TObject
         $script = "\n";
         //$script.="<script language=\"JavaScript\" src=\"js/pz_form_events.js\"></script>\n";
         $script = "<?php   \n";
-        $script .= "\t\$cs = connection(CONNECT,\$database);\n";
+        $script .= "\tuse Phink\Data\Client\PDO\TPdoConnection;\n";
+        $script .= "\t\$cs = TPdoConnection::opener('$conf');\n";
         $script .= "\t\$query = getArgument(\"query\", \"SELECT\");\n";
         $script .= "\t\$event = getArgument(\"event\", \"onLoad\");\n";
         $script .= "\t\$action = getArgument(\"action\", \"Ajouter\");\n";
@@ -187,7 +188,7 @@ class TScriptMaker extends TObject
     ): string {
         $formname = $table . "Form";
 
-        $analyzer = new TAnalyzer();
+        $analyzer = new TAnalyzer;
         $references = $analyzer->searchReferences($database, $table, $cs);
         $A_formFields = $references["form_fields"];
 
@@ -212,11 +213,11 @@ class TScriptMaker extends TObject
         $script .= "\t} elseif(\$query === \"ACTION\") {\n";
         $script .= "?>\n";
         //$page_filename=getPageFilename($database, $page_id);
-        $page_filename = "page.php";
+        $page_filename = "page.html";
         if ($with_frames) {
             $script .= "<form method=\"POST\" name=\"$formname\" action=\"<?php echo \$lg?>/$page_filename?id=$page_id&lg=fr\">\n";
         } elseif (!$with_frames) {
-            $script .= "<form method=\"POST\" name=\"$formname\" action=\"page.php?id=$page_id&lg=fr\">\n";
+            $script .= "<form method=\"POST\" name=\"$formname\" action=\"page.html?id=$page_id&lg=fr\">\n";
         }
         $script .= "\t<input type=\"hidden\" name=\"query\" value=\"ACTION\">\n";
         $script .= "\t<input type=\"hidden\" name=\"event\" value=\"onRun\">\n";
