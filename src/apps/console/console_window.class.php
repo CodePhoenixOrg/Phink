@@ -20,7 +20,7 @@ class TConsoleWindow extends TPartialController
         $cmd = isset($this->parameters['console']) ? $this->parameters['console'] : '';
         $arg = isset($this->parameters['arg']) ? $this->parameters['arg'] : null;
 
-        $this->setArgs($this->parameters);
+        // $this->setArgs($this->parameters);
 
         $this->commandRunner($cmd, function ($data) {
             $this->setText($data);
