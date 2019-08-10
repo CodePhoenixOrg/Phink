@@ -15,21 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
- 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 namespace Phink\Core;
 
 use \ReflectionClass;
+use DateTime;
 
-interface IObject {
-    function getId() : string;
-    function getParent() : IObject;
-    function setParent(IObject $parent) : void;
-    function getType() : string;
+interface IObject
+{
+    function getUID(): string;
+    function getId(): string;
+    function getParent(): ?IObject;
+    // function setParent(IObject $parent) : void;
+    function getType(): string;
 }
 /**
  * Description of TObject
@@ -39,20 +37,28 @@ interface IObject {
 
 class TObject extends TStaticObject implements IObject
 {
-    //put your code here
-    
     private $_reflection = null;
     protected $parent = null;
+    protected $uid = '';
     protected $id = 'noname';
     protected $serialFilename = '';
     protected $isSerialized = '';
-    protected $children = array();
+    protected $children = [];
     protected $fqClassName = '';
     protected static $instance = null;
 
     public function __construct(IObject $parent = null)
     {
         $this->parent = $parent;
+        $this->uid = uniqid(rand(), true);
+    }
+
+    public function getUID(): string
+    {
+        if ($this->uid == '') {
+            $this->uid = uniqid('', true);
+        }
+        return $this->uid;
     }
 
     public function getId(): string
@@ -73,7 +79,7 @@ class TObject extends TStaticObject implements IObject
 
     public function getReflection(): ?ReflectionClass
     {
-        if($this->_reflection == NULL) {
+        if ($this->_reflection == NULL) {
             $this->_reflection = new ReflectionClass(get_class($this));
         }
         return $this->_reflection;
@@ -83,91 +89,25 @@ class TObject extends TStaticObject implements IObject
     {
         $ref = $this->getReflection();
         $met = $ref->getMethod($method);
-        
+
         $params = [];
-        foreach($met->getParameters() as $currentParam)  {
+        foreach ($met->getParameters() as $currentParam) {
             array_push($params, $currentParam->name);
         }
-        
+
         return $params;
     }
-    
-    public function validate($method)
-    {
-        if ($method == '') return false;
-        
-        $result = [];
-        
-        if(!method_exists($this, $method)) {
-            throw new \BadMethodCallException($this->getFQClassName() . "::$method is undefined");
-        } else {
 
-            $params = $this->getMethodParameters($method);
-            
-            $args = $_REQUEST;
-            if(isset($args['PHPSESSID'])) unset($args['PHPSESSID']);
-            if(isset($args['action'])) unset($args['action']);
-            if(isset($args['token'])) unset($args['token']);
-            if(isset($args['q'])) unset($args['q']);
-            if(isset($args['_'])) unset($args['_']);
-            $args = array_keys($args);
-            
-            $validArgs = [];
-            foreach($args as $arg) {
-                if(!in_array($arg, $params)) {
-                    throw new \BadMethodCallException($this->getFQClassName() . "::$method::$arg is undefined");
-                } else {
-                    array_push($validArgs, $arg);
-                }
-            }
-            foreach($params as $param) {
-                if(!in_array($param, $validArgs)) {
-                    throw new \BadMethodCallException($this->getFQClassName() . "::$method::$param is missing");
-                } else {
-                    $result[$param] = \Phink\Web\TRequest::getQueryStrinng($param);
-                }
-            }
-            
-        }
-
-        return $result;
-    }
-
-    public function invoke($method, $params = array())
-    {
-        $result = null;
-        $values = array_values($params);
-        
-        if(count($values) > 0) {
-            $args = '"' . implode('", "', $values) . '"';
-            self::$logger->debug(__METHOD__ . '::INVOKE_ACTION::' . $method  . '(' . $args . ')');
-//            include 'data://text/plain;base64,' . base64_encode('<?php $this->' . $method  . '(' . $args . ')');
-            $ref = new \ReflectionMethod($this->getFQClassName(), $method);
-            $result = $ref->invokeArgs($this, $values);
-        } else {
-            self::$logger->debug(__METHOD__ . '::INVOKE_ACTION::' . $method  . '()');
-//            $ref->invoke($this);
-            $result = $this->$method();
-        }
-
-        return $result;
-    }
-    
-    public function getParent(): IObject
+    public function getParent(): ?IObject
     {
         return $this->parent;
     }
 
-    public function setParent(IObject $parent): void
-    {
-        $this->parent = $parent;
-    }
-    
     public function addChild(IObject $child)
     {
         $this->children[$child->getId()] = $child;
     }
-    
+
     public function removeChild(IObject $child): void
     {
         unset($this->children[$child->getId()]);
@@ -176,14 +116,14 @@ class TObject extends TStaticObject implements IObject
     public function getChildById($id): ?object
     {
         $result = null;
-            
-        if(array_key_exists($id, $this->children)) {
+
+        if (array_key_exists($id, $this->children)) {
             $result = $this->children[$id];
         }
-        
+
         return $result;
     }
-    
+
     public function getChildrenIds(): ?array
     {
         return array_keys($this->children);
@@ -201,19 +141,18 @@ class TObject extends TStaticObject implements IObject
         return (count($typeParts) > 0) ? implode('\\', $typeParts) : '';
     }
 
-    public function getFQClassName() : string
+    public function getFQClassName(): string
     {
-        if($this->fqClassName == '') {
+        if ($this->fqClassName == '') {
             $this->fqClassName = get_class($this);
         }
         return $this->fqClassName;
     }
-    
+
     public function getType(): string
     {
         $typeParts = explode('\\', $this->getFQClassName());
         return array_pop($typeParts);
-        
     }
 
     public function getBaseType(): string
@@ -226,19 +165,78 @@ class TObject extends TStaticObject implements IObject
         $reflection = $this->getReflection();
         return $reflection->getFileName();
     }
-    
+
+    public function validate($method)
+    {
+        if ($method == '') return false;
+
+        $result = [];
+
+        if (!method_exists($this, $method)) {
+            throw new \BadMethodCallException($this->getFQClassName() . "::$method is undefined");
+        } else {
+
+            $params = $this->getMethodParameters($method);
+
+            $args = $_REQUEST;
+            if (isset($args['PHPSESSID'])) unset($args['PHPSESSID']);
+            if (isset($args['action'])) unset($args['action']);
+            if (isset($args['token'])) unset($args['token']);
+            if (isset($args['q'])) unset($args['q']);
+            if (isset($args['_'])) unset($args['_']);
+            $args = array_keys($args);
+
+            $validArgs = [];
+            foreach ($args as $arg) {
+                if (!in_array($arg, $params)) {
+                    throw new \BadMethodCallException($this->getFQClassName() . "::$method::$arg is undefined");
+                } else {
+                    array_push($validArgs, $arg);
+                }
+            }
+            foreach ($params as $param) {
+                if (!in_array($param, $validArgs)) {
+                    throw new \BadMethodCallException($this->getFQClassName() . "::$method::$param is missing");
+                } else {
+                    $result[$param] = \Phink\Web\TRequest::getQueryStrinng($param);
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    public function invoke($method, $params = array())
+    {
+        $result = null;
+        $values = array_values($params);
+
+        if (count($values) > 0) {
+            $args = '"' . implode('", "', $values) . '"';
+            self::$logger->debug(__METHOD__ . '::INVOKE_ACTION::' . $method  . '(' . $args . ')');
+            //            include 'data://text/plain;base64,' . base64_encode('<?php $this->' . $method  . '(' . $args . ')');
+            $ref = new \ReflectionMethod($this->getFQClassName(), $method);
+            $result = $ref->invokeArgs($this, $values);
+        } else {
+            self::$logger->debug(__METHOD__ . '::INVOKE_ACTION::' . $method  . '()');
+            //            $ref->invoke($this);
+            $result = $this->$method();
+        }
+
+        return $result;
+    }
+
     public function serialize(): string
     {
         //return serialize($this);
         $this->_reflection = $this->getReflection();
         $methods = $this->_reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
-        
+
         $result = print_r($methods, true);
-        
+
         return $result;
-        
     }
-    
+
     public function unserialize($serialized)
     {
         //return (object)unserialize($serialized);
@@ -248,21 +246,21 @@ class TObject extends TStaticObject implements IObject
     {
         $this->serialFilename = RUNTIME_DIR . $this->id . JSON_EXTENSION;
         $this->isSerialized = true;
-        
-//        $phpObject = var_export($this, true);
-//        $objectFilename = RUNTIME_DIR . $this->id . '.obj.txt';
-//        file_put_contents($objectFilename, $phpObject);
+
+        //        $phpObject = var_export($this, true);
+        //        $objectFilename = RUNTIME_DIR . $this->id . '.obj.txt';
+        //        file_put_contents($objectFilename, $phpObject);
 
         file_put_contents($this->serialFilename, $this->serialize());
     }
-    
-    public function wake() 
+
+    public function wake()
     {
         $serialFilename = RUNTIME_DIR . $this->id . JSON_EXTENSION;
         $result = file_exists($serialFilename);
-        
+
         $serialized = ($result) ? file_get_contents($serialFilename) : $result;
-        
+
         return ($serialized) ? unserialize($serialized) : $result;
     }
 
@@ -270,20 +268,20 @@ class TObject extends TStaticObject implements IObject
     {
         $serialFilename = RUNTIME_DIR . $id . JSON_EXTENSION;
         $result = file_exists($serialFilename);
-        
+
         $serialized = ($result) ? file_get_contents($serialFilename) : $result;
-        
+
         return ($serialized) ? unserialize($serialized) : $result;
     }
-    
+
     public static function arraysToObjects(array $value): array
     {
         $result = array();
-        
+
         foreach ($value as $array) {
             array_push($result, (object) $array);
         }
-        
+
         return $result;
     }
 }

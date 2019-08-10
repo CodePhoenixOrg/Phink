@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 namespace Phink\Web;
 
 /**
@@ -23,15 +23,16 @@ namespace Phink\Web;
  *
  * @author david
  */
- 
+
 use Phink\Registry\TRegistry;
 use Phink\Core\TCustomApplication;
 use Phink\Web\UI\TCustomControl;
+use Phink\TAutoloader;
 
 trait TWebObject
 {
     use THttpTransport;
-    
+
     private static $_currentDirectory;
     private static $_currentFilePath;
     private static $_currentClassName;
@@ -40,8 +41,8 @@ trait TWebObject
     private static $_pageNumber;
     private static $_pageCount;
     protected $redis = null;
-//    protected $response = null;
-//    protected $request = null;
+    //    protected $response = null;
+    //    protected $request = null;
     protected $modelFileName = '';
     protected $viewFileName = '';
     protected $controllerFileName = '';
@@ -64,15 +65,16 @@ trait TWebObject
     protected $parentView = null;
     protected $parentType = null;
     protected $motherView = null;
+    protected $motherUID = '';
 
-//    protected $authentication = null;
-    
-//    public function __construct(IObject $parent)
-//    {
-//        $this->request = $parent->getRequest();
-//        $this->response = $parent->getResponse();
-//    }
- 
+    //    protected $authentication = null;
+
+    //    public function __construct(IObject $parent)
+    //    {
+    //        $this->request = $parent->getRequest();
+    //        $this->response = $parent->getResponse();
+    //    }
+
     public static function pageNumber($value = null)
     {
         if (isset($value)) {
@@ -116,12 +118,12 @@ trait TWebObject
     {
         return $this->cacheFileName;
     }
-    
-    public function getPhpCode() : string
+
+    public function getPhpCode(): string
     {
         if (!$this->code) {
-//        $this->code = $this->redis->mget($this->getCacheFileName());
-//        $this->code = $this->code[0];
+            //        $this->code = $this->redis->mget($this->getCacheFileName());
+            //        $this->code = $this->code[0];
             if (file_exists($this->getCacheFileName())) {
                 $this->code = file_get_contents($this->getCacheFileName());
             }
@@ -129,12 +131,12 @@ trait TWebObject
 
         return $this->code;
     }
-    
+
     public function preHtmlExists()
     {
         return file_exists($this->getPreHtmlName());
     }
-        
+
     public function getGlobalDesignName()
     {
         $parts = pathinfo($this->getFileName());
@@ -158,114 +160,117 @@ trait TWebObject
         return DOCUMENT_ROOT . 'tmp' . DIRECTORY_SEPARATOR . $parts['filename'] . '.xml';
     }
 
-    public function setMotherView(?TCustomControl $value) : void
-    {
-        if($value !== null && $value->getType() == 'TView' && $this->motherView === null) {
-            $this->motherView = $value;
-        }
-    }
-    
-    public function getMotherView() : ?TCustomControl
+    public function getMotherView(): ?TCustomControl
     {
         return $this->motherView;
     }
-    
+
+    public function getMotherUID(): string
+    {
+        return $this->motherUID;
+    }
+
     public function getParentType()
     {
         return $this->parentType;
     }
-    
+
     public function getAuthentication()
     {
         return $this->authentication;
     }
 
-    public function setRedis(array $params) : void
+    public function setRedis(array $params): void
     {
-        $this->redis = $params;
+        if(class_exists('Redis')) {
+
+            // $this->redis = new Redis($params);
+            $this->redis = null;
+        }
+       
     }
 
-    public function getRedis() : ?object
+    public function getRedis(): ?object
     {
         return $this->redis;
     }
-    
-    public function getPath() : string
+
+    public function getPath(): string
     {
         return $this->path;
     }
 
-    public function getDirName() : string
+    public function getDirName(): string
     {
         return $this->dirName;
     }
 
-    public function getClassName() : string
+    public function getClassName(): string
     {
         return $this->className;
     }
-    
-    public function getActionName() : string
+
+    public function getActionName(): string
     {
         return $this->actionName;
     }
-    
-    public function getFileNamespace() : string
+
+    public function getFileNamespace(): string
     {
         return $this->namespace;
     }
-    
-    public function getRawPhpName() : string
+
+    public function getRawPhpName(): string
     {
         return $this->cacheFileName;
     }
-    
-    public function getModelFileName() : string
+
+    public function getModelFileName(): string
     {
         return $this->modelFileName;
     }
 
-    public function getViewFileName() : string
+    public function getViewFileName(): string
     {
         return $this->viewFileName;
     }
 
-    public function getControllerFileName() : string
+    public function getControllerFileName(): string
     {
         return $this->controllerFileName;
     }
 
-    public function getJsControllerFileName() : string
+    public function getJsControllerFileName(): string
     {
         return $this->jsControllerFileName;
     }
 
-    public function getCssFileName() : string
+    public function getCssFileName(): string
     {
         return $this->cssFileName;
     }
 
-    public function getApplication() : TCustomApplication
+    public function getApplication(): TCustomApplication
     {
         return $this->application;
     }
 
-    public function getParameters() : array
+    public function getParameters(): array
     {
         return $this->parameters;
     }
 
-    public function getCommands() : array
+    public function getCommands(): array
     {
         return $this->commands;
     }
-    
-    public function getViewName() : string
+
+    public function getViewName(): string
     {
         return $this->viewName;
     }
-    
-    public function setViewName($viewName = null) : void
+
+    public function setViewName($viewName = null): void
     {
         $uri = ($viewName === null) ? REQUEST_URI : $viewName;
         $requestUriParts = explode('/', $uri);
@@ -275,7 +280,6 @@ trait TWebObject
 
         $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
         $this->className = ucfirst($this->viewName);
-        
     }
 
     public function getTwigEnvironment()
@@ -287,44 +291,44 @@ trait TWebObject
     {
         $result = '';
 
-        if($this->getTwigEnvironment() !== null) {
+        if ($this->getTwigEnvironment() !== null) {
             $result = $this->getTwigEnvironment()->render($this->getViewName() . PREHTML_EXTENSION, $dictionary);
         }
 
         return $result;
     }
 
-    public function renderTwigByName(string $viewName, array $dictionary = []) : string
+    public function renderTwigByName(string $viewName, array $dictionary = []): string
     {
         $result = '';
 
-        if($this->getTwigEnvironment() !== null) {
+        if ($this->getTwigEnvironment() !== null) {
             $result = $this->getTwigEnvironment()->render($viewName, $dictionary);
         }
 
         return $result;
     }
 
-    public function getNamespace() : string
+    public function getNamespace(): string
     {
         return $this->namespace;
     }
 
-    public function setNamespace() : void
+    public function setNamespace(): void
     {
         $this->namespace = $this->getFileNamespace();
-        
+
         if (!isset($this->namespace)) {
             $this->namespace = \Phink\TAutoloader::getDefaultNamespace();
         }
     }
-    
-    public function isInternalView() : bool
+
+    public function isInternalView(): bool
     {
         return $this->viewIsInternal;
     }
 
-    public function setNames() : void
+    public function setNames(): void
     {
         $this->actionName = (isset($_REQUEST['action'])) ? $_REQUEST['action'] : '';
         $this->modelFileName = 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
@@ -334,7 +338,7 @@ trait TWebObject
         $this->jsControllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
         if ($this->isInternalView()) {
             $dirName = $this->getDirName();
-            $this->viewFileName = $dirName. DIRECTORY_SEPARATOR  . $this->viewName . PREHTML_EXTENSION;
+            $this->viewFileName = $dirName . DIRECTORY_SEPARATOR  . $this->viewName . PREHTML_EXTENSION;
             $this->cssFileName = $dirName . DIRECTORY_SEPARATOR . $this->viewName . CSS_EXTENSION;
             $this->controllerFileName = $dirName . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
             $this->jsControllerFileName = $dirName . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
@@ -345,10 +349,10 @@ trait TWebObject
             if ($info !== null) {
                 // $this->viewName = \Phink\TAutoloader::classNameToFilename($this->className);
                 $this->viewName = \Phink\TAutoloader::classNameToFilename($this->className);
-                if($info->path[0] == '@') {
+                if ($info->path[0] == '@') {
                     $path = str_replace("@" . DIRECTORY_SEPARATOR, PHINK_VENDOR_APPS, $info->path);
                 } else {
-                    $path = PHINK_VENDOR_LIB . $info->path; 
+                    $path = PHINK_VENDOR_LIB . $info->path;
                 }
                 // $path = $info->path;
                 if ($info->hasTemplate) {
@@ -362,16 +366,31 @@ trait TWebObject
                 $this->className = $info->namespace . '\\' . $this->className;
             }
         }
-        self::getLogger()->dump('MVC FILE NAMES::', [
-            $this->viewFileName,
-            $this->controllerFileName,
-            $this->cssFileName,
-            $this->jsControllerFileName
-        ]);
+
+        TRegistry::write(
+            $this->getUID(),
+            [
+                "parentUID" => ($this->getParent() !== null) ? $this->getParent()->getUID() : '',
+                "id" => $this->getId(),
+                "name" => $this->viewName,
+                "view" => $this->viewFileName,
+                "controller" => $this->controllerFileName,
+                "css" => $this->cssFileName,
+                "js" =>  $this->jsControllerFileName,
+                "cache" =>
+                [
+                    "controller" => SRC_ROOT . TAutoloader::cacheFilenameFromView($this->viewName),
+                    "css" => SRC_ROOT . TAutoloader::cacheCssFilenameFromView($this->viewName),
+                    "js" =>  SRC_ROOT . TAutoloader::cacheJsFilenameFromView($this->viewName)
+                ]
+            ]
+        );
+
+        self::getLogger()->dump('MVC FILE NAMES FOR ' . $this->getUID(), TRegistry::item($this->getUID()));
         $this->setCacheFileName();
     }
 
-    public function cloneNamesFrom($parent) : void
+    public function cloneNamesFrom($parent): void
     {
         $this->className = $parent->getClassName();
         $this->actionName = $parent->getActionName();
@@ -381,6 +400,5 @@ trait TWebObject
         $this->controllerFileName = $parent->getControllerFileName();
         $this->jsControllerFileName = $parent->getJsControllerFileName();
         $this->namespace = $parent->getNamespace();
-        
     }
 }

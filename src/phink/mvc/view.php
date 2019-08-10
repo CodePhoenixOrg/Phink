@@ -55,7 +55,11 @@ class TView extends TCustomView
         $this->setCacheFileName();
         $this->cacheFileName = $parent->getCacheFileName();
 
-        $this->setMotherView($this);
+        // $this->setMotherView($this);
+        if ($this->getType() == 'TView' && $this->motherView === null) {
+            $this->motherView = $this;
+            $this->motherUID = $this->getUID();
+        }
 
         TRegistry::importClasses($this->viewFileName);
 
