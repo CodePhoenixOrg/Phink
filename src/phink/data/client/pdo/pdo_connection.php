@@ -32,13 +32,16 @@ use Phink\Data\TCrudQueries;
 
 class TPdoConnectionException extends \Exception
 {
-    public function __construct(string $message = "" , int $code = 0, Throwable $previous = NULL)
+    public function __construct(string $message = "" , int $code = 0, \Throwable $previous = NULL)
     {
         parent::__construct($message, $code, $previous);
     }
 }
 
 use PDO;
+use Phink\Registry\TRegistry;
+use PDOException;
+
 /**
  * Description of TPdoConnection
  *
@@ -60,19 +63,30 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
         $this->configure();
     }
 
-    public static function builder($filename) : TPdoConnection
+    public static function builder(string $confname) : TPdoConnection
     {
         $result = null;
         try {
+
             $config = new TPdoConfiguration();
-            $config->loadConfiguration(APP_DATA . $filename . JSON_EXTENSION);
+            if(!$config->loadConfiguration($confname)) {
+                throw new \Exception("The configuration `$confname` was not found.");
+            }
             $result = new TPdoConnection($config);
-    
-        } catch (\Exception \PDOException $e) {
+
+        } catch (\Exception|\PDOException $e) {
             throw new TPdoConnectionException('Something went wrong while building the connection.', 1, $e);
         } finally {
             return $result;
         }
+    }
+
+    public static function opener($confname) : TPdoConnection
+    {
+        $result = self::builder($confname);
+        $result->open();
+
+        return $result;
     }
 
     public function getDriver() : string
@@ -167,12 +181,13 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
                 $statement = $this->_state->query($sql);
             }
             
+            if(!$statement && count($this->_state->errorInfo()) > 0) {
+                throw new \PDOException($this->_state->errorInfo()[2], $this->_state->errorInfo()[1], null);
+            }
+
             $result = new TPdoDataStatement($statement, $this, $sql);
-        } catch (\PDOException $ex) {
-            debugLog(__FILE__ . ':' . __LINE__ . ':', ['SQL' => $sql, 'PARAMS' => $params]);
-            debugLog(__FILE__ . ':' . __LINE__ . ':', ['exception' => $ex]);
-        } catch (\Exception $ex) {
-            debugLog(__FILE__ . ':' . __LINE__ . ':', ['exception' => $ex]);
+        } catch (\Exception | \PDOException $ex) {
+            self::getLogger()->error($ex);
         }
         
         return $result;
