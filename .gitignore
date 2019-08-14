@@ -3,3 +3,4 @@ nbproject
 vendor
 .vscode
 .DS_Store
+xdebug*

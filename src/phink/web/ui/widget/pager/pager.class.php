@@ -81,7 +81,7 @@ class TPager extends \Phink\MVC\TPartialController
         $this->forView = ($this->getMotherView() !== null) ? $this->getMotherView()->getViewName() : $this->parent->getViewName();
 
         $this->forCtrl = $this->parent->getViewName();
-        $this->forApp = $this->getApplication()->getApplicationName();
+        $this->forApp = $this->getApplication()->getName();
 
     
         $this->pageNum = (int) (!$this->pageNum) ? 1 : $this->pageNum;

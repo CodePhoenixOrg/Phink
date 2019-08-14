@@ -79,8 +79,8 @@ class EggLib extends Phink\Core\TObject
     public function __construct(\Phink\UI\TConsoleApplication $parent)
     {
         $this->setParent($parent);
-        $this->appDir = $parent->getApplicationDirectory();
-        $this->appName = $parent->getApplicationName();
+        $this->appDir = $parent->getDirectory();
+        $this->appName = $parent->getName();
     }
     
     public function makeScripts(string $usertable) : void

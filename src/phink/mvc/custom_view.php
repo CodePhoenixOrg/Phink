@@ -46,7 +46,7 @@ abstract class TCustomView extends TCustomControl
 
     public function __construct(IWebObject $parent)
     {
-        $this->setParent($parent);
+        parent::__construct($parent);
         $this->path = $parent->getPath();
         $this->application = $parent->getApplication();
         

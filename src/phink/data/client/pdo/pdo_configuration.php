@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
- 
+
+
 namespace Phink\Data\Client\PDO;
 
 //require_once 'phink/configuration/data/sqlconfiguration.php';
@@ -24,6 +24,8 @@ namespace Phink\Data\Client\PDO;
 
 use Phink\Configuration\Data\TJsonConfiguration;
 use Phink\Data\TServerType;
+use Phink\Registry\TRegistry;
+
 /**
  * Description of mysqlconfiguration
  *
@@ -50,9 +52,33 @@ class TPdoConfiguration extends TJsonConfiguration
         $this->canConfigure = false;
     }
 
-    public function configure() : void
+    public function loadConfiguration(string $confname): bool
     {
-        parent::configure();
+        $result = false;
+
+        if (file_exists($confname)) {
+            $result = parent::loadConfiguration($confname);
+
+            return $result;
+        }
+
+        if (TRegistry::exists('connections', $confname)) {
+            $this->canConfigure = false;
+            $this->contents = TRegistry::read('connections', $confname);
+
+            $this->configure();
+
+            $result = true;
+        }
+
+        return $result;
+    }
+
+    public function configure(): void
+    {
+        if ($this->canConfigure) {
+            parent::configure();
+        }
 
         $this->_driver = $this->contents['driver'];
         $this->_databaseName = $this->contents['database'];
@@ -62,12 +88,12 @@ class TPdoConfiguration extends TJsonConfiguration
         $this->_port = $this->contents['port'];
     }
 
-    public function getDriver() : string
+    public function getDriver(): string
     {
         return $this->_driver;
     }
-    
-    public function getDatabaseName() : string
+
+    public function getDatabaseName(): string
     {
         return $this->_databaseName;
     }
@@ -75,24 +101,23 @@ class TPdoConfiguration extends TJsonConfiguration
     /*
      * Following properties are default null string in constructor because they may not be used (eg: SQLite)
      */
-    public function getHost() : string
+    public function getHost(): string
     {
         return $this->_host;
     }
 
-    public function getUser() : string
+    public function getUser(): string
     {
         return $this->_user;
     }
 
-    public function getPassword() : string
+    public function getPassword(): string
     {
         return $this->_password;
     }
 
-    public function getPort() : string
+    public function getPort(): string
     {
         return $this->_port;
     }
-
 }

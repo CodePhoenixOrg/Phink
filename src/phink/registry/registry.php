@@ -107,19 +107,20 @@ class TRegistry extends TStaticObject
         $registry = (!empty($localRegistryContents)) ? json_decode($localRegistryContents, true) : [];
         // self::getLogger()->dump('LOCAL REGISTRY ARRAY', $registry);
 
-        if($registry === null) {
+        if ($registry === null) {
             return;
         }
 
-        foreach($registry['classes'] as $class) {
+        foreach ($registry['classes'] as $class) {
             $info = new TClassInfo($class);
-            if($info->isValid()) {
+            if ($info->isValid()) {
                 self::registerClass($info);
             }
         }
     }
 
-    public static function registerClass(TClassInfo $info) {
+    public static function registerClass(TClassInfo $info)
+    {
         self::write('classes', $info->getType(), [
             'alias' => $info->getAlias(),
             'path' => $info->getPath(),
@@ -179,13 +180,23 @@ class TRegistry extends TStaticObject
         //self::$logger->debug('CODE REGISTRY : ' . print_r($keys, true));
     }
 
-    public static function write($item, $key, $value): void
+    public static function write($item, ...$params): void
     {
         if (!isset(self::$_items[$item])) {
             self::$_items[$item] = [];
         }
-
-        self::$_items[$item][$key] = $value;
+        if (count($params) === 2) {
+            $key = $params[0];
+            $value = $params[1];
+            self::$_items[$item][$key] = $value;
+        }
+        if (count($params) === 1 && is_array($params)) {
+            if (count($params[0]) > 0 && is_array($params[0])) {
+                foreach ($params[0] as $key => $value) {
+                    self::$_items[$item][$key] = $value;
+                }
+            }
+        }
     }
 
     public static function add($item, $key, $value): void
@@ -205,7 +216,7 @@ class TRegistry extends TStaticObject
         }
     }
 
-    public static function read($item, $key, $defaultValue = null): \mixed
+    public static function read($item, $key, $defaultValue = null)
     {
         $result = null;
 
@@ -246,8 +257,10 @@ class TRegistry extends TStaticObject
             } else {
                 return self::$_items[$item];
             }
-        } else {
+        }
+        if (!isset(self::$_items[$item])) {
             self::$_items[$item] = [];
+            // self::$_items[$item][] = $value;
             return self::$_items[$item];
         }
     }

@@ -19,14 +19,15 @@
  namespace Phink\Web;
 
 use Phink\Core\TStaticObject;
- use Phink\TAutoloader;
+use Phink\TAutoloader;
+use \Phink\Core\TRouter;
 
  /**
  * Description of router
  *
  * @author David
  */
-class TWebRouter extends \Phink\Core\TRouter
+class TWebRouter extends TRouter
 {
     private $_isCached = false;
 

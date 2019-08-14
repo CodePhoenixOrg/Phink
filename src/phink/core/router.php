@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 namespace Phink\Core;
 
 use \Phink\Core\TObject;
@@ -25,7 +25,7 @@ use \Phink\Rest\TRestRouter;
 class TRouter extends TObject implements \Phink\Web\IWebObject
 {
     use \Phink\Web\TWebObject;
-   
+
     protected $apiName = '';
     protected $baseNamespace = '';
     protected $apiFileName = '';
@@ -44,45 +44,41 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();
         $this->twigEnvironment = $parent->getTwigEnvironment();
-
     }
-    
-    public function getTranslation() : string
+
+    public function getTranslation(): string
     {
         return $this->translation;
     }
-    
+
     public function getRequestType(): string
     {
         return $this->requestType;
     }
 
-    public function isFound() : bool
+    public function isFound(): bool
     {
         return $this->_isFound;
     }
-    
-    public function match() : string
+
+    public function match(): string
     {
         $result = REQUEST_TYPE_WEB;
-        
+
         if ($this->routes()) {
-            foreach ($this->routes as $key=>$value) {
+            foreach ($this->routes as $key => $value) {
                 $result = $key;
                 $this->requestType = $key;
-                
+
                 $methods = $value;
                 $method = strtolower(REQUEST_METHOD);
 
                 if (isset($methods[$method])) {
                     $routes = $methods[$method];
                     $url = REQUEST_URI;
-                    foreach ($routes as $key=>$value) {
+                    foreach ($routes as $key => $value) {
                         // $key = str_replace("/", "\/", $key);
                         $matches = \preg_replace('@' . $key . '@', $value, $url);
-                        $this->getLogger()->debug('URL: ' . $url);
-                        $this->getLogger()->debug('MATCHES: ' . $matches);
-                        $this->getLogger()->debug('KEY: ' . $key);
 
                         if ($matches !== $url) {
                             $this->_isFound = true;
@@ -99,18 +95,21 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
                             } else {
                                 $this->path = APP_DIR . $baseurl['path'];
                             }
-                            
-                            $this->getLogger()->dump('PATH', $this->path);
-                            $this->getLogger()->dump('BASEURL', $baseurl);
-                            $this->getLogger()->dump('IS FOUND', $this->_isFound ? 'TRUE' : 'FALSE');
 
                             $this->parameters = [];
                             if (isset($baseurl['query'])) {
                                 parse_str($baseurl['query'], $this->parameters);
                             }
 
-                            $this->getLogger()->dump('PARAMETERS', $this->parameters);
-                            
+                            $this->getLogger()->dump('IS FOUND', $this->_isFound ? 'TRUE' : 'FALSE');
+                            if ($this->_isFound) {
+                                $this->getLogger()->debug('URL: ' . $url);
+                                $this->getLogger()->debug('MATCHES: key = ' .  $key . ', value = ' . $matches);
+                                $this->getLogger()->dump('PATH', $this->path);
+                                $this->getLogger()->dump('BASEURL', $baseurl);
+                                $this->getLogger()->dump('PARAMETERS', $this->parameters);
+                            }
+
                             return $result;
                         }
                     }
@@ -126,7 +125,7 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
         return $result;
     }
 
-    public function routes() : array
+    public function routes(): array
     {
         $routesArray = TRegistry::item('routes');
 
@@ -138,7 +137,6 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
             }
 
             $routesArray = json_decode($routesFile, true);
-
         } elseif (count($routesArray) === 0 && !file_exists(DOCUMENT_ROOT . 'routes.json')) {
             $routesArray = [];
             $routesArray['web'] = [];
@@ -154,20 +152,18 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
         $routesArray['web']['get']["^/tuto/$"] = "@/tuto/index.phtml";
         $routesArray['web']['post']["^/console$"] = "@/console/console_window.phtml";
 
-        foreach ($routesArray as $key=>$value) {
+        foreach ($routesArray as $key => $value) {
             TRegistry::write('routes', $key, $value);
         }
 
         $this->routes = $routesArray;
-        
+
         return $routesArray;
     }
 
     public function translate()
-    {
-    }
+    { }
 
     public function dispatch()
-    {
-    }
+    { }
 }

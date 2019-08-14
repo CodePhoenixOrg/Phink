@@ -20,11 +20,9 @@ namespace Phink\MVC;
 
 use Phink\Web\IWebObject;
 use Phink\Web\UI\TCustomControl;
-use TActionInfo;
 
 abstract class TCustomController extends TCustomControl
 {
-
     protected $innerHtml = '';
     protected $creations = '';
     protected $declarations = '';
@@ -119,15 +117,18 @@ abstract class TCustomController extends TCustomControl
 
     public function renderView() : void
     {
-//        include "data://text/plain;base64," . base64_encode($this->viewHtml);
+    //    include "data://text/plain;base64," . base64_encode($this->viewHtml);
         eval('?>' . $this->viewHtml . '<?php ');
     }
 
     public function renderedHtml() : void
     {
-//        include "data://text/plain;base64," . base64_encode($this->innerHtml);
-//        echo $this->innerHtml;
+    //    include "data://text/plain;base64," . base64_encode($this->innerHtml);
+    /**
         eval('?>' . $this->innerHtml . '<?php ');
+         */
+        echo $this->innerHtml;
+
     }
 
 }
