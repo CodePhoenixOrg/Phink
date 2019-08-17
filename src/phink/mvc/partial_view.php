@@ -26,7 +26,7 @@ class TPartialView extends TCustomView
 {
     public function __construct(IWebObject $father, IWebObject $parent)
     {
-        $this->setMotherView($father);
+        $this->motherView = $father;
         $this->className = $parent->getType();
         parent::__construct($parent);
 
