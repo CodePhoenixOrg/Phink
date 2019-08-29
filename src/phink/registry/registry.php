@@ -180,6 +180,11 @@ class TRegistry extends TStaticObject
         //self::$logger->debug('CODE REGISTRY : ' . print_r($keys, true));
     }
 
+    /**
+     * @param mixed $item Name of the key
+     * @param array $params May one key/value pair or an array of pairs
+     * @return void 
+     */
     public static function write($item, ...$params): void
     {
         if (!isset(self::$_items[$item])) {
@@ -225,6 +230,22 @@ class TRegistry extends TStaticObject
         }
 
         return $result;
+    }
+
+    public static function ini($section, $key = null)
+    {
+        $section = self::read('ini', $section);
+        $value = null;
+
+        if($key === null) {
+            return $section;
+        }
+
+        if(is_array($section)) {
+            $value = isset($section[$key]) ? $section[$key] : $value;
+        }
+
+        return $value;
     }
 
     public static function remove($item): void
@@ -273,5 +294,10 @@ class TRegistry extends TStaticObject
     public static function clear(): void
     {
         TRegistry::$_items = [];
+    }
+
+    public static function dump(string $key): void
+    {
+        self::getLogger()->dump('Registry key ' . $key, TRegistry::item($key));
     }
 }
