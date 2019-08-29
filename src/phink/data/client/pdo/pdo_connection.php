@@ -168,7 +168,7 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
 
     }
     
-    public function query(string $sql = '', ?array $params = null)
+    public function query(string $sql = '', ?array $params = null): ?TPdoDataStatement
     {
         $statement = null;
         $result = false;
@@ -198,7 +198,7 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
         return $this->_state->exec($sql);
     }
 
-    public function prepare(string $sql) : bool
+    public function prepare(string $sql): ?\PDOStatement
     {
         return $this->_state->prepare($sql);
     }
