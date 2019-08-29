@@ -77,6 +77,7 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
                     $routes = $methods[$method];
                     $url = REQUEST_URI;
                     foreach ($routes as $key => $value) {
+                        $key = str_replace('?', '\?', $key);
                         // $key = str_replace("/", "\/", $key);
                         $matches = \preg_replace('@' . $key . '@', $value, $url);
 
