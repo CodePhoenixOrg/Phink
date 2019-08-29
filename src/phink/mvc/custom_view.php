@@ -22,6 +22,7 @@ use Phink\Web\IWebObject;
 use Phink\Xml\TXmlDocument;
 use Phink\Registry\TRegistry;
 use Phink\Web\UI\TCustomControl;
+use Phink\Web\TWebObject;
 
 abstract class TCustomView extends TCustomControl
 {
@@ -202,7 +203,9 @@ abstract class TCustomView extends TCustomControl
         }
       
 //        $this->redis->mset($this->preHtmlName, $this->declarations . $this->viewHtml);
-        
+
+        TWebObject::register($this);
+
         // We generate the code, but we don't flag it as parsed because it was not "executed"
         return false;
     }

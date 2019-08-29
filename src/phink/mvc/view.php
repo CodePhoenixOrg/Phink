@@ -50,18 +50,24 @@ class TView extends TCustomView
         $this->viewIsInternal = $parent->isInternalView();
         $this->path = $parent->getPath();
         $this->twigEnvironment = $parent->getTwigEnvironment();
+        $this->motherView = $parent->getMotherView();
+        $this->isMotherView = false;
 
         $this->cloneNamesFrom($parent);
         $this->setCacheFileName();
         $this->cacheFileName = $parent->getCacheFileName();
 
         // $this->setMotherView($this);
+
         if ($this->getType() == 'TView' && $this->motherView === null) {
             $this->motherView = $this;
+            $this->isMotherView = true;
             $this->motherUID = $this->getUID();
+
         }
 
         TRegistry::importClasses($this->viewFileName);
+
 
     }
 

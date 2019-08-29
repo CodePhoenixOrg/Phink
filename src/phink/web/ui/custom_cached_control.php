@@ -22,7 +22,8 @@ use Phink\Core\IObject;
 use Phink\MVC\TActionInfo;
 use Phink\MVC\TCustomView;
 use Phink\MVC\TModel;
-
+use Phink\Registry\TRegistry;
+use Phink\Web\TWebObject;
 /**
  * Description of custom_control
  *
@@ -118,6 +119,8 @@ abstract class TCustomCachedControl extends TCustomControl
         }
         $this->displayHtml();
         $html = ob_get_clean();
+        TWebObject::register($this);
+
         $this->unload();
 
         /*
@@ -151,6 +154,9 @@ abstract class TCustomCachedControl extends TCustomControl
         $this->displayHtml();
 
         $this->renderHtml();
+
+        TWebObject::register($this);
+
         $this->unload();
     }
     
@@ -193,6 +199,11 @@ abstract class TCustomCachedControl extends TCustomControl
                 echo $twig;
             } else {
                 $this->displayHtml();
+            }
+            TWebObject::register($this);
+
+            if($this->getParent()->isMotherView()) {
+                TRegistry::dump($this->getUID());
             }
 
             $this->unload();

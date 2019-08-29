@@ -36,7 +36,6 @@ abstract class TCustomControl extends TObject implements IHttpTransport, IWebObj
     {
         parent::__construct($parent);
 
-        // $this->setMotherView($parent->getMotherView());
         $this->motherView = $parent->getMotherView();
         $this->motherUID = $parent->getMotherUID();
     }

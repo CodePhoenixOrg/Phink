@@ -66,6 +66,7 @@ trait TWebObject
     protected $parentType = null;
     protected $motherView = null;
     protected $motherUID = '';
+    protected $isMotherView = false;
 
     //    protected $authentication = null;
 
@@ -168,6 +169,11 @@ trait TWebObject
     public function getMotherUID(): string
     {
         return $this->motherUID;
+    }
+
+    public function isMotherView(): bool
+    {
+        return $this->isMotherView;
     }
 
     public function getParentType()
@@ -367,26 +373,7 @@ trait TWebObject
             }
         }
 
-        TRegistry::write(
-            $this->getUID(),
-            [
-                "parentUID" => ($this->getParent() !== null) ? $this->getParent()->getUID() : '',
-                "id" => $this->getId(),
-                "name" => $this->viewName,
-                "view" => $this->viewFileName,
-                "controller" => $this->controllerFileName,
-                "css" => $this->cssFileName,
-                "js" =>  $this->jsControllerFileName,
-                "cache" =>
-                [
-                    "controller" => SRC_ROOT . TAutoloader::cacheFilenameFromView($this->viewName),
-                    "css" => SRC_ROOT . TAutoloader::cacheCssFilenameFromView($this->viewName),
-                    "js" =>  SRC_ROOT . TAutoloader::cacheJsFilenameFromView($this->viewName)
-                ]
-            ]
-        );
-
-        self::getLogger()->dump('MVC FILE NAMES FOR ' . $this->getUID(), TRegistry::item($this->getUID()));
+ 
         $this->setCacheFileName();
     }
 
@@ -400,5 +387,29 @@ trait TWebObject
         $this->controllerFileName = $parent->getControllerFileName();
         $this->jsControllerFileName = $parent->getJsControllerFileName();
         $this->namespace = $parent->getNamespace();
+    }
+
+    public static function register(IWebObject $object) : void
+    {
+        TRegistry::write(
+            $object->getUID(),
+            [
+                "id" => $object->getId(),
+                "name" => $object->getViewName(),
+                "UID" => $object->getUID(),                
+                "parentUID" => ($object->getParent() !== null) ? $object->getParent()->getUID() : '',
+                "isMotherView" => ($object->isMotherView()) ? "true" : "false",
+                "view" => $object->getViewFileName(),
+                "controller" => $object->getControllerFileName(),
+                "css" => $object->getCssFileName(),
+                "js" =>  $object->getJsControllerFileName(),
+                "cache" =>
+                [
+                    "controller" => SRC_ROOT . TAutoloader::cacheFilenameFromView($object->getViewName()),
+                    "css" => SRC_ROOT . TAutoloader::cacheCssFilenameFromView($object->getViewName()),
+                    "js" =>  SRC_ROOT . TAutoloader::cacheJsFilenameFromView($object->getViewName())
+                ]
+            ]
+        );
     }
 }
