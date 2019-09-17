@@ -161,7 +161,12 @@ abstract class TCustomView extends TCustomControl
 
             //     $this->viewHtml = file_get_contents(SITE_ROOT . $this->viewFileName, FILE_USE_INCLUDE_PATH);
             // }
-        
+            $head = $this->getStyleSheetTag();
+            $scripts = $this->getScriptTag();
+    
+            $this->appendToHead($head, $this->viewHtml);
+            $this->appendToBody($scripts, $this->viewHtml);
+
             // $this->redis->mset($templateName, $this->viewHtml);
             // self::$logger->debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');
             // self::$logger->debug('HTML VIEW : <pre>[' . PHP_EOL . htmlentities($this->viewHtml) . PHP_EOL . '...]</pre>');
@@ -210,5 +215,79 @@ abstract class TCustomView extends TCustomControl
         return false;
     }
 
+    public function getScriptTag() : string
+    {
+        $scripts = '';
+        $cacheJsFilename ='';
 
+        if (file_exists(SRC_ROOT . $this->getJsControllerFileName()) && $this->getType() == 'TView') {
+            $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($this->getViewName());
+            if (!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
+                copy(SRC_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
+            }
+            // \Phink\Utils\TFileUtils::webPath($this->getCssFileName())
+            $scripts = "<script src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheJsFilename . "'></script>" . PHP_EOL;
+        }
+        if (file_exists(SITE_ROOT . $this->getJsControllerFileName())) {
+            $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($this->getViewName());
+            if (!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
+                copy(SITE_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
+                self::getLogger()->debug("copy(" . SRC_ROOT . $this->getJsControllerFileName() . ", " . DOCUMENT_ROOT . $cacheJsFilename . ")");
+
+            }
+            // \Phink\Utils\TFileUtils::webPath($this->getCssFileName())
+            $scripts = "<script src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheJsFilename . "'></script>" . PHP_EOL;
+        }
+
+        return $scripts;
+
+    }
+
+    public function getStyleSheetTag() : string
+    {
+        $head = '';
+        $cacheCssFilename = '';
+
+        if (file_exists(SRC_ROOT . $this->getCssFileName()) && $this->getType() == 'TView') {
+            $cacheCssFilename = \Phink\TAutoloader::cacheCssFilenameFromView($this->getViewName());
+            if (!file_exists(DOCUMENT_ROOT . $cacheCssFilename)) {
+                copy(SRC_ROOT . $this->getCssFileName(), DOCUMENT_ROOT . $cacheCssFilename);
+            }
+            //\Phink\Utils\TFileUtils::webPath($this->getCssFileName()
+            // $scripts .= "<script>Phink.Web.Object.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "');</script>" . PHP_EOL;
+            $head = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "' />" . PHP_EOL;
+        }
+        if (file_exists(SITE_ROOT . $this->getCssFileName()) && $this->getType() == 'TView') {
+            $cacheCssFilename = \Phink\TAutoloader::cacheCssFilenameFromView($this->getViewName());
+            if (!file_exists(DOCUMENT_ROOT . $cacheCssFilename)) {
+                copy(SITE_ROOT . $this->getCssFileName(), DOCUMENT_ROOT . $cacheCssFilename);
+            }
+            //\Phink\Utils\TFileUtils::webPath($this->getCssFileName()
+            // $scripts .= "<script>Phink.Web.Object.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "');</script>" . PHP_EOL;
+            $head = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "' />" . PHP_EOL;
+        }
+
+        return $head;
+
+    }
+
+    public function appendToBody(string $scripts, string &$viewHtml) : void 
+    {
+        if ($scripts !== '') {
+            $scripts .= '</body>' . PHP_EOL;
+            $viewHtml = str_replace('</body>', $scripts, $viewHtml);
+            TRegistry::write($this->getMotherUID(), 'scripts', $scripts);
+            // $motherView->addScriptTag($scripts);
+        }
+    }
+
+    public function appendToHead(string $head, string &$viewHtml) : void 
+    {
+        if ($head !== '') {
+            $head .= '</head>' . PHP_EOL;
+            $viewHtml = str_replace('</head>', $head, $viewHtml);
+            TRegistry::write($this->getMotherUID(), 'linkRel', $head);
+            // $motherView->addLinkRelTag($head);
+        }   
+    }
 }

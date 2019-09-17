@@ -253,61 +253,6 @@ trait TCodeGenerator
     {
         $motherView = $view->getMotherView();
         $viewHtml = $view->getViewHtml();
-        $scripts = '';
-        $head = '';
-
-        if (file_exists(SRC_ROOT . $view->getJsControllerFileName()) && !strstr($view->getJsControllerFileName(), 'main.js') && $view->getType() == 'TView') {
-            $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($view->getViewName());
-            if (!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
-                copy(SRC_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
-            }
-            // \Phink\Utils\TFileUtils::webPath($view->getCssFileName())
-            $scripts = "<script src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheJsFilename . "'></script>" . PHP_EOL;
-        }
-        if (file_exists(SITE_ROOT . $view->getJsControllerFileName()) && !strstr($view->getJsControllerFileName(), 'main.js') && $view->getType() == 'TView') {
-            $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($view->getViewName());
-            if (!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
-                copy(SITE_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
-                self::getLogger()->debug("copy(" . SRC_ROOT . $this->getJsControllerFileName() . ", " . DOCUMENT_ROOT . $cacheJsFilename . ")");
-
-            }
-            // \Phink\Utils\TFileUtils::webPath($view->getCssFileName())
-            $scripts = "<script src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheJsFilename . "'></script>" . PHP_EOL;
-        }
-
-        if (file_exists(SRC_ROOT . $view->getCssFileName()) && $view->getType() == 'TView') {
-            $cacheCssFilename = \Phink\TAutoloader::cacheCssFilenameFromView($view->getViewName());
-            if (!file_exists(DOCUMENT_ROOT . $cacheCssFilename)) {
-                copy(SRC_ROOT . $view->getCssFileName(), DOCUMENT_ROOT . $cacheCssFilename);
-            }
-            //\Phink\Utils\TFileUtils::webPath($view->getCssFileName()
-            // $scripts .= "<script>Phink.Web.Object.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "');</script>" . PHP_EOL;
-            $head = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "' />" . PHP_EOL;
-        }
-        if (file_exists(SITE_ROOT . $view->getCssFileName()) && $view->getType() == 'TView') {
-            $cacheCssFilename = \Phink\TAutoloader::cacheCssFilenameFromView($view->getViewName());
-            if (!file_exists(DOCUMENT_ROOT . $cacheCssFilename)) {
-                copy(SITE_ROOT . $view->getCssFileName(), DOCUMENT_ROOT . $cacheCssFilename);
-            }
-            //\Phink\Utils\TFileUtils::webPath($view->getCssFileName()
-            // $scripts .= "<script>Phink.Web.Object.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "');</script>" . PHP_EOL;
-            $head = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "' />" . PHP_EOL;
-        }
-
-        if ($scripts !== '') {
-            $scripts .= '</body>' . PHP_EOL;
-            $viewHtml = str_replace('</body>', $scripts, $viewHtml);
-            TRegistry::write($this->getMotherUID(), 'scripts', $scripts);
-            // $motherView->addScriptTag($scripts);
-        }
-
-        if ($head !== '') {
-            $head .= '</head>' . PHP_EOL;
-            $viewHtml = str_replace('</head>', $head, $viewHtml);
-            TRegistry::write($this->getMotherUID(), 'linkRel', $head);
-            // $motherView->addLinkRelTag($head);
-
-        }
 
         $count = $doc->getCount();
         $matchesSort = $doc->getMatchesByDepth();
