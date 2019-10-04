@@ -87,7 +87,18 @@ class TRegistry extends TStaticObject
                 'isAutoloaded' => true
             ]
         );
-
+        self::write(
+            'classes',
+            'TUserComponent',
+            [
+                'alias' => 'component',
+                'path' => 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'user_component' . DIRECTORY_SEPARATOR,
+                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\UserComponent',
+                'hasTemplate' => false,
+                'canRender' => true,
+                'isAutoloaded' => true
+            ]
+        );
         return true;
     }
 
@@ -226,7 +237,7 @@ class TRegistry extends TStaticObject
         $result = null;
 
         if (self::$_items[$item] !== null) {
-            $result = (self::$_items[$item][$key] !== null) ? self::$_items[$item][$key] : (($defaultValue !== null) ? $defaultValue : null);
+            $result = isset(self::$_items[$item][$key]) ? self::$_items[$item][$key] : (($defaultValue !== null) ? $defaultValue : null);
         }
 
         return $result;

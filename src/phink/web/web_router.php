@@ -80,8 +80,8 @@ class TWebRouter extends TRouter
     {
         if ($this->_isCached) {
             $view = new \Phink\MVC\TView($this);
-            TAutoloader::loadCachedFile($view);
-
+            $class = TAutoloader::loadCachedFile($view);
+            $class->perform();
             return true;
         }
 
@@ -94,7 +94,8 @@ class TWebRouter extends TRouter
         $view->parse();
         
         if (file_exists($view->getCacheFileName())) {
-            TAutoloader::loadCachedFile($view);
+            $class = TAutoloader::loadCachedFile($view);
+            $class->perform();
             return true;
         }
         
@@ -116,22 +117,25 @@ class TWebRouter extends TRouter
         $this->namespace .= '\\Controllers';
     }
     
-    public function includeController()
+    public function includeController(): ?array
     {
-        $result = false;
+        $file = ''; $type = ''; $code = '';
         
         $result = TAutoloader::includeClass($this->controllerFileName, RETURN_CODE);
-        if (!$result) {
+        if($result !== null) {
+            list($file, $type, $code) = $result;
+        }
+        if ($result === null) {
             if ($this->getRequest()->isAJAX() && $this->request->isPartialView()) {
-                $result = TAutoloader::includeDefaultPartialController($this->namespace, $this->className);
+                list($file, $type, $code) = TAutoloader::includeDefaultPartialController($this->namespace, $this->className);
             } else {
-                $result = TAutoloader::includeDefaultController($this->namespace, $this->className);
+                list($file, $type, $code) = TAutoloader::includeDefaultController($this->namespace, $this->className);
             }
 
-            \Phink\Registry\TRegistry::setCode($this->controllerFileName, $result['code']);
+            \Phink\Registry\TRegistry::setCode($this->controllerFileName, $code);
         }
 
-        return $result;
+        return [$file, $type, $code];
     }
     
 }

@@ -334,9 +334,17 @@ trait TWebObject
         return $this->viewIsInternal;
     }
 
-    public function setNames(): void
+    public function setNames(?string $typeName = null): void
     {
-        $this->actionName = (isset($_REQUEST['action'])) ? $_REQUEST['action'] : '';
+        if($typeName !== null) {
+            $typeName = strtolower($typeName);
+
+            $this->viewName = $typeName; 
+        }
+
+        if($typeName === null) {
+            $this->actionName = (isset($_REQUEST['action'])) ? $_REQUEST['action'] : '';
+        }
         $this->modelFileName = 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
         $this->viewFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR  . $this->viewName . PREHTML_EXTENSION;
         $this->cssFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $this->viewName . CSS_EXTENSION;

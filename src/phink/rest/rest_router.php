@@ -64,9 +64,9 @@ class TRestRouter extends \Phink\Core\TRouter
             include SRC_ROOT . $model;
         }
         
-        $include = \Phink\TAutoloader::includeClass($this->className, INCLUDE_FILE);
-        include SRC_ROOT . $include['file'];
-        $fqObject = $include['type'];
+        list($file, $type, $code) = \Phink\TAutoloader::includeClass($this->className, INCLUDE_FILE);
+        include SRC_ROOT . $file;
+        $fqObject = $type;
         
         $instance = new $fqObject($this);
         

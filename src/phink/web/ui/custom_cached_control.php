@@ -55,11 +55,11 @@ abstract class TCustomCachedControl extends TCustomControl
         $this->className = $this->getType();
         $this->viewName = lcfirst($this->className);
         
-        $include = \Phink\TAutoloader::includeModelByName($this->viewName);
-        $model = SRC_ROOT . $include['file'];
+        list($file, $type, $code) = \Phink\TAutoloader::includeModelByName($this->viewName);
+        $model = SRC_ROOT . $file;
         if (file_exists($model)) {
             include $model;
-            $modelClass = $include['type'];
+            $modelClass = $type;
 
             $this->model = new $modelClass();
         }
@@ -165,6 +165,8 @@ abstract class TCustomCachedControl extends TCustomControl
         $this->init();
         $this->createObjects();
         if ($this->getRequest()->isAJAX()) {
+            $this->partialLoad();
+
             try {
                 $actionName = $this->actionName;
 
@@ -200,7 +202,7 @@ abstract class TCustomCachedControl extends TCustomControl
             } else {
                 $this->displayHtml();
             }
-            TWebObject::register($this);
+            //TWebObject::register($this);
 
             if($this->getParent()->isMotherView()) {
                 TRegistry::dump($this->getUID());

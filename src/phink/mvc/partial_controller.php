@@ -33,8 +33,8 @@ class TPartialController extends TCustomController
         $this->className = $this->getType();
         $this->viewName = lcfirst($this->className);
        
-        $include = \Phink\TAutoloader::includeModelByName($this->viewName);
-        $modelClass = $include['type'];
+        list($file, $type, $code) = \Phink\TAutoloader::includeModelByName($this->viewName);
+        $modelClass = $type;
         $this->model = new $modelClass();        
         $this->view = new TPartialView($parent, $this); 
     }   
@@ -45,8 +45,8 @@ class TPartialController extends TCustomController
         $this->parse();
         $this->beforeBinding();
         $this->renderCreations();
-        $this->afterBinding();
         $this->renderDeclarations();
+        $this->afterBinding();
         $this->renderView();
         if(!$this->isRendered) {
             $this->renderHtml();
