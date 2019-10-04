@@ -1,20 +1,36 @@
-var con = null;
-var conHost = window.location.hostname;
 Phink.DOM.ready(function () {
 
-    con = Phink.Web.Application.create(conHost, 'console');
+    con = Phink.Web.Application.create(conHost, conName);
     con.createView('main');
 
     var conMain = con.createController('main', 'main')
         .actions({
             themeIbmPc: function () {
-                document.querySelector('html').setAttribute('class', 'ibm-pc');
+                this.getJSON('console', {
+                    "action": 'setTheme', "theme": 'ibm_pc'
+                } , function (data) {
+                    conMain.applyTheme(data);
+                });
             }
             , themeAmstradCpc: function () {
-                document.querySelector('html').setAttribute('class', 'amstrad-cpc');
+                this.getJSON('console', {
+                    "action": 'setTheme', "theme": 'amstrad_cpc'
+                } , function (data) {
+                    conMain.applyTheme(data);
+                });
             }
             , themeSolaris: function () {
-                document.querySelector('html').setAttribute('class', 'solaris');
+                this.getJSON('console', {
+                    "action": 'setTheme', "theme": 'solaris'
+                } , function (data) {
+                    conMain.applyTheme(data);
+                });
+            }
+            , applyTheme: function(data) {
+                document.querySelector("#result").innerHTML = data.theme.name;
+                document.querySelector(':root').style.setProperty('--back-color', data.theme.backColor);
+                document.querySelector(':root').style.setProperty('--fore-color', data.theme.foreColor);
+                console.log(data);
             }
             , clearLogs: function () {
                 this.getJSON('console', {
@@ -24,9 +40,7 @@ Phink.DOM.ready(function () {
                 });
             }
             , deleteRuntime: function () {
-                this.getJSON('console', {
-                    "action": 'clearRuntime'
-                } , function (data) {
+                Phink.Commands.clearRuntime(function (data) {
                     document.querySelector("#result").innerHTML = data.result;
                 });
             }

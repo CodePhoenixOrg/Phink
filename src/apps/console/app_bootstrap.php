@@ -15,25 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+namespace Phink\Apps\Console;
 
-class Bootstrap {
+use Phink\Core\TBootstrap;
 
-    public static function mount() {
+class Bootstrap extends TBootstrap
+{
+    public static function start(string $path): void
+    {
+        self::getLogger()->debug('START BOOTSTRAP');
 
-        $filenames = [
+        (new Bootstrap())->mount($path, [
             'console_window.class.php'
-        ];
-
-        if(Phar::running() != '') {
-            foreach ($filenames as $filename) {
-                include pathinfo($filename, PATHINFO_BASENAME);
-            }
-        } else {
-            foreach ($filenames as $filename) {
-                include __DIR__ . "/" . $filename;
-            }
-        }          
+        ])->loadINI($path);
     }
+
 }
 
-Bootstrap::mount();
+Bootstrap::start(PHINK_APPS_ROOT . '/console/');
+
