@@ -1,0 +1,108 @@
+<script language="javascript">
+	function checkValues() {
+		if (document.myForm.usertable.value == "") {
+			alert("Vous devez choisir une table.");
+			return false;
+		} else {
+			document.myForm.action = 'admin?di=mkfields&lg=<phx:echo var="lang" />';
+		}
+
+		return true;
+	}
+</script>
+<div class="step" >
+<form method='post' name='myForm' action=''>
+
+<input type='hidden' name='query' value=''>
+		<input type='hidden' name='basedir' value='<phx:echo var="basedir" />'>
+		<input type='hidden' name='userdb' value='<phx:echo var="userdb" />'>
+		<input type='hidden' name='filename' value='<phx:echo var="filepath" />'>
+		<input type='hidden' name='pz_current_tab' value=''>
+
+	<fieldset style='width:450px;'>
+	<legend>Créer un script à partir d'une table</legend>
+	<table border='0' bordercolor='0' width='85%' valign='top' style='display:hidden;'>
+	<tr><td width='50%'><b>Base de donnée</b></td><td width='50%'><b>Table</b></td><td></td></tr>
+	<tr><td>
+	<select name='userdb' onChange='<phx:echo var="on_change" />;document.myForm.submit();'>
+		<phx:echo var="database_list['list']" />
+	</select>
+	</td><td>
+	<select name='usertable' onChange='<phx:echo var="on_change_table" />;document.myForm.submit();'>
+		<phx:echo var="table_list['list']" />
+	</select>
+	</td><td>
+	</td></tr>
+	<tr><td colspan='2'><hr></td></tr>
+	<tr><td colspan='2'>
+	<b>Propriétés du script :</b>
+	</td></tr>
+	<tr><td>
+	<span><input type='radio'<phx:echo var="rad_dbgrid[0]" /> name='dbgrid' value='0'>DB Grid seul</span>
+	</td><td>
+	<span><input type='checkbox'<phx:echo var="chk_filter" /> name='filter' value='1'>+ Filtre</span>
+	</td></tr>
+	<tr><td>
+	<span><input type='radio'<phx:echo var="rad_dbgrid[1]" /> name='dbgrid' value='1'>DB Grid + Fiche</span>
+	</td><td>
+	<span><input type='checkbox'<phx:echo var="chk_addoption" /> name='addoption' value='1'>+ Bouton ajouter</span>
+	</td></tr>
+	<tr><td colspan='2'><hr></td></tr>
+	<tr><td colspan='2'>
+	<b>Propriétés du menu :</b>
+	</td></tr>
+	<tr><td>
+	<span><input type='radio'<phx:echo var="rad_menu[0]" /> name='menu' value='0'>Index auto-incrémenté</span>
+	</td><td>
+	Niveau
+	<select name='me_level'>
+	<option value='0'>Invisible</option>
+	<option value='1'>Menu principal</option>
+	<option selected value='2'>Sous-menu</option>
+	</select>
+	</td></tr>
+	<tr><td>
+	<span><input type='checkbox' name='autogen' checked='checked' value='1'>Entrée auto-générée</span>&nbsp;
+	</td><td>Bloc 
+	<select name='bl_id'>
+		<phx:echo var="block_list['list']" />
+		</select>
+	</td></tr>
+	<tr><td colspan='2'><hr></td></tr>
+	<tr><td colspan='2'>
+	<b>Propriétés du dictionaire :</b>
+	</td></tr>
+	<tr><td>
+	<span>Index <input type='text' name='di_name' value='<phx:echo var="di_name" />' size='8' maxlength='8'></span>
+	</td><td>
+	<span>Libellé court <input type='text' name='di_short' value='<phx:echo var="di_short" />' size='16'></span>
+	</td></tr>
+	<tr><td colspan='2'>
+	<span>Libellé long <br><input type='text' name='di_long' value='<phx:echo var="di_long" />' size='70'></span>
+	</td></tr>
+	<tr><td colspan='2'><hr></td></tr>
+	<tr><td colspan='3'>
+	<b>Chemin du script :</b>
+	</td></tr>
+	<tr><td>Rép. <phx:echo var="srvdir" />
+	</td><td>Nom 
+	<input type='text' name='pa_filename' value='<phx:echo var="pa_filename" />' style='width:70px'>
+	<select name='extension'>
+	<option>.php</option>
+	<option>.php4</option>
+	<option>.php5</option>
+	<option>.inc</option>
+	<option>.old</option>
+	<option>.bak</option>
+	</select>
+	</td></tr>
+	<tr><td colspan='3' align='center'>
+	<br><input type='button' name='previous' value='<< Précédent' onClick='document.myForm.action=\"admin?id=17&lg=<phx:echo var="lg" />\";document.myForm.submit()'>
+	&nbsp;<input type='button' name='next' value='Suivant >>' onClick='if(checkValues()) document.myForm.submit();'>
+	</td></tr>
+	</table>
+	</fieldset>
+
+
+</form>
+</div>

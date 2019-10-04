@@ -1,0 +1,46 @@
+{
+    "classes": [
+        {
+            "Mkmain": {
+                "alias": "mkmain",
+                "path": "@/page/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+            , "Mkscript": {
+                "alias": "mkscript",
+                "path": "@/page/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+            , "Mkfields": {
+                "alias": "mkfields",
+                "path": "@/page/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+            , "Mkfile": {
+                "alias": "mkfile",
+                "path": "@/page/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+            , "Mkfinal": {
+                "alias": "mkfinal",
+                "path": "@/page/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+        }
+    ]
+}
