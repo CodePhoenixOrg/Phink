@@ -111,12 +111,13 @@ if (APP_IS_WEB) {
     define('HTTP_ORIGIN', (isset($_SERVER['HTTP_ORIGIN'])) ? $_SERVER['HTTP_ORIGIN'] : '');
     define('HTTP_ACCEPT', (isset($_SERVER['HTTP_ACCEPT'])) ? $_SERVER['HTTP_ACCEPT'] : '');
     define('HTTP_PORT', $_SERVER['SERVER_PORT']);
+    define('COOKIE', $_COOKIE);
     define('REQUEST_URI', $_SERVER['REQUEST_URI']);
     define('REQUEST_METHOD', $_SERVER['REQUEST_METHOD']);
     define('QUERY_STRING', $_SERVER['QUERY_STRING']);
     define('SERVER_NAME', $_SERVER['SERVER_NAME']);
     define('SERVER_HOST', HTTP_PROTOCOL . '://' . HTTP_HOST);
-    define('SERVER_ROOT', HTTP_PROTOCOL . '://' . SERVER_NAME . ((HTTP_PORT !== '80') ? ':' . HTTP_PORT : ''));
+    define('SERVER_ROOT', HTTP_PROTOCOL . '://' . SERVER_NAME . ((HTTP_PORT !== '80' && HTTP_PORT !== '443') ? ':' . HTTP_PORT : ''));
     define('BASE_URI', SERVER_NAME . ((HTTP_PORT !== '80') ? ':' . HTTP_PORT : '') . ((REQUEST_URI !== '') ? REQUEST_URI : ''));
     define('FULL_URI', HTTP_PROTOCOL . '://' . BASE_URI);
     define('FULL_SSL_URI', 'https://' . BASE_URI);
