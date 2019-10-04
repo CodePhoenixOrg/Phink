@@ -41,7 +41,7 @@
     "require": {
         "php": ">=7.0.0",
         "twig/twig": "^2.0",
-        "phink/phinkjs": "v0.2.*",
+        "phink/phinkjs": "^0.3",
         "components/jquery": ">=1.9.1",
         "components/jqueryui": ">=1.12.1",
         "components/font-awesome": "=4.7.0",
