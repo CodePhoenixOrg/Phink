@@ -35,10 +35,11 @@ use Phink\Core\TObject;
 use Phink\Cache\TCache;
 use Phink\Auth\TAuthentication;
 use Phink\Registry\TRegistry;
-use Phink\Registry\TRegistry as PhinkTRegistry;
 
 abstract class TCustomApplication extends TObject
 {
+    use \Phink\Core\TIniLoader;
+
     //put your code here
     const DEBUG_MODE = 'DEBUG';
     const TEST_MODE = 'TEST';
@@ -69,7 +70,7 @@ abstract class TCustomApplication extends TObject
 
     protected function ignite(): void
     {
-        $this->loadINI();
+        $this->loadInFile();
 
         $this->setCommand(
             'help',
@@ -89,8 +90,8 @@ abstract class TCustomApplication extends TObject
             '',
             'Display the ini file if exists',
             function (callable $callback = null) {
-                $this->loadINI();
-                $data = $this->_appini;
+                $this->loadInFile();
+                $data = TRegistry::item('ini');
                 $this->writeLine($data);
                 if ($callback !== null) {
                     \call_user_func($callback, $data);
@@ -242,44 +243,17 @@ abstract class TCustomApplication extends TObject
         return self::getLogger()->getPhpErrorLog();
     }
 
-    public function loadINI(): void
+    public function loadInFile(): void
     {
         try {
-            $ini = null;
-            if (!file_exists(SRC_ROOT . 'config/app.ini')) {
+            $exist = $this->loadINI(SRC_ROOT);
+            if (!$exist) {
                 return;
             }
-            $ini = parse_ini_file(SRC_ROOT  . 'config/app.ini', TRUE, INI_SCANNER_TYPED);
-            $this->appName = isset($ini['application']['name']) ? $ini['application']['name'] : $this->appName;
-            $this->appTitle = isset($ini['application']['title']) ? $ini['application']['title'] : $this->appTitle;
             
-            foreach($ini as $key=>$values) {
-                TRegistry::write('ini', $key, $values);
-            }
-            unset($ini);
-            // $this->dataConfName = isset($ini['config']) ? $ini['config'] : $this->dataConfName;
+            $this->appName = TRegistry::read('application', 'name');
+            $this->appTitle = TRegistry::read('application', 'title');
 
-            $dataDir = dir(realpath(APP_DATA));
-
-            $entry = '';
-            while (($entry = $dataDir->read()) !== false) {
-                $info = (object) \pathinfo($entry);
-
-                if ($info->extension == 'json') {
-                    $conf = file_get_contents(APP_DATA . $entry);
-                    $conf = json_decode($conf, true);
-                    TRegistry::write('connections', $info->filename, $conf);
-                    // self::getLogger()->dump('DATA CONF ' . $info->filename, $conf);
-                }
-            }
-            $dataDir->close();
-
-            // if (file_exists(APP_DATA . $this->dataConfName)) {
-            //     $confs = file_get_contents(APP_DATA . $this->dataConfName);
-            //     $confs = $confs->connections;
-            //     TRegistry::write('data', 'connections', $confs);
-            // }
-            $this->_appini = TRegistry::item('ini');
         } catch (\Throwable $ex) {
             $this->writeException($ex);
         }
