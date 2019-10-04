@@ -14,16 +14,28 @@
     ],
     "autoload": {
         "classmap": [
-            "src/phink/"
+            "src/phink/",
+            "src/puzzle/"
         ],
         "exclude-from-classmap": [
-            "src/phink/phink_library.php"
+            "src/phink/phink_library.php",
+            "src/puzzle/ipuzzle_library.php",
+            "src/puzzle/ipz_db.php",
+            "src/puzzle/ipz_dico.php",
+            "src/puzzle/ipz_pdf.php",
+            "src/puzzle/ipz_init.php",
+            "src/puzzle/ipz_empty_file.php",
+            "src/puzzle/ipz_calendar.php",
+            "src/puzzle/ipz_connection.php"
         ],
         "psr-4": {
-            "Phink\\" : ""
+            "Phink\\" : "",
+            "Puzzle\\" : ""        
         },
         "files": [
-            "src/phink/core/constants.php"
+            "src/phink/core/constants.php",
+            "src/puzzle/ipz_misc.php",
+            "src/puzzle/ipz_constants.php"
         ]
     },
     "require": {
