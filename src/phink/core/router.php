@@ -152,6 +152,8 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
         $routesArray['web']['get']["^/console/([a-z-]+)/([a-z-]+)$"] = "@/console/console.phtml?console=$1&arg=$2";
         $routesArray['web']['get']["^/tuto/$"] = "@/tuto/index.phtml";
         $routesArray['web']['post']["^/console$"] = "@/console/console_window.phtml";
+        $routesArray['web']['get']["^/admin$"] = "@/admin/page.phtml";
+        $routesArray['web']['get']["^/admin/([a-z-]+)$"] = "@/admin/page.phtml?$1";
 
         foreach ($routesArray as $key => $value) {
             TRegistry::write('routes', $key, $value);
