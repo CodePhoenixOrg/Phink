@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,9 +18,8 @@
 
 namespace Phink\Core;
 
-use \Phink\Core\TObject;
-use \Phink\Registry\TRegistry;
-use \Phink\Rest\TRestRouter;
+use Phink\Core\TObject;
+use Phink\Registry\TRegistry;
 
 class TRouter extends TObject implements \Phink\Web\IWebObject
 {
@@ -73,48 +72,54 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
                 $methods = $value;
                 $method = strtolower(REQUEST_METHOD);
 
-                if (isset($methods[$method])) {
-                    $routes = $methods[$method];
-                    $url = REQUEST_URI;
-                    foreach ($routes as $key => $value) {
-                        $key = str_replace('?', '\?', $key);
-                        // $key = str_replace("/", "\/", $key);
-                        $matches = \preg_replace('@' . $key . '@', $value, $url);
-
-                        if ($matches !== $url) {
-                            $this->_isFound = true;
-                            $this->requestType = $key;
-                            $this->translation = $matches;
-
-                            $this->viewIsInternal = substr($this->translation, 0, 1) == '@';
-                            $baseurl = parse_url($this->translation);
-                            $this->dirName = pathinfo($this->translation, PATHINFO_DIRNAME);
-
-                            if ($this->viewIsInternal) {
-                                $path = substr($baseurl['path'], 2);
-                                $this->path = PHINK_VENDOR_APPS . $path;
-                            } else {
-                                $this->path = APP_DIR . $baseurl['path'];
-                            }
-
-                            $this->parameters = [];
-                            if (isset($baseurl['query'])) {
-                                parse_str($baseurl['query'], $this->parameters);
-                            }
-
-                            $this->getLogger()->dump('IS FOUND', $this->_isFound ? 'TRUE' : 'FALSE');
-                            if ($this->_isFound) {
-                                $this->getLogger()->debug('URL: ' . $url);
-                                $this->getLogger()->debug('MATCHES: key = ' .  $key . ', value = ' . $matches);
-                                $this->getLogger()->dump('PATH', $this->path);
-                                $this->getLogger()->dump('BASEURL', $baseurl);
-                                $this->getLogger()->dump('PARAMETERS', $this->parameters);
-                            }
-
-                            return $result;
-                        }
-                    }
+                if (!isset($methods[$method])) {
+                    continue;
                 }
+
+                $routes = $methods[$method];
+                $url = REQUEST_URI;
+                foreach ($routes as $key => $value) {
+                    $key = str_replace('?', '\?', $key);
+                    // $key = str_replace("/", "\/", $key);
+                    $matches = \preg_replace('@' . $key . '@', $value, $url);
+
+                    if ($matches === $url) {
+                        continue;
+                    }
+
+                    $this->_isFound = true;
+                    $this->requestType = $key;
+                    $this->translation = $matches;
+
+                    $this->viewIsInternal = substr($this->translation, 0, 1) == '@';
+                    $baseurl = parse_url($this->translation);
+                    $this->dirName = pathinfo($this->translation, PATHINFO_DIRNAME);
+
+                    if ($this->viewIsInternal) {
+                        $path = substr($baseurl['path'], 2);
+                        $this->path = PHINK_VENDOR_APPS . $path;
+                    } else {
+                        $this->path = APP_DIR . $baseurl['path'];
+                    }
+
+                    $this->parameters = [];
+                    if (isset($baseurl['query'])) {
+                        parse_str($baseurl['query'], $this->parameters);
+                    }
+
+                    $this->getLogger()->dump('IS FOUND', $this->_isFound ? 'TRUE' : 'FALSE');
+                    if ($this->_isFound) {
+                        $this->getLogger()->debug('URL: ' . $url);
+                        $this->getLogger()->debug('MATCHES: key = ' . $key . ', value = ' . $matches);
+                        $this->getLogger()->dump('PATH', $this->path);
+                        $this->getLogger()->dump('BASEURL', $baseurl);
+                        $this->getLogger()->dump('PARAMETERS', $this->parameters);
+                    }
+
+                    return $result;
+
+                }
+
             }
         }
 
@@ -165,8 +170,8 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
     }
 
     public function translate()
-    { }
+    {}
 
     public function dispatch()
-    { }
+    {}
 }
