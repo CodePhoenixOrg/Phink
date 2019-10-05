@@ -14,11 +14,6 @@ class Console extends TController
     protected $themeBackColor = '';
     protected $themeForeColor = '';
 
-    public function init() : void
-    {
-        $this->getApplication()->loadINI(PHINK_APPS_ROOT . 'console/');
-    }
-
     public function load() : void 
     {
         $this->consoleName = $this->getApplication()->getName();

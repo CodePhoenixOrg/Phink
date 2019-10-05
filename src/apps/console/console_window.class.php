@@ -20,11 +20,6 @@ class TConsoleWindow extends TPartialController
     protected $themeBackColor = '';
     protected $themeForeColor = '';
 
-    public function partialLoad() : void
-    {
-        $this->getApplication()->loadINI(PHINK_APPS_ROOT . 'console/');
-    }
-
     public function afterBinding(): void
     {
         $this->consoleName = $this->getApplication()->getName();
