@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,8 @@ namespace Phink\Core;
 
 use Phink\Core\TStaticObject;
 
-class TBootstrap extends TStaticObject {
+abstract class TBootstrap extends TStaticObject
+{
 
     use TiniLoader;
 
@@ -30,16 +31,19 @@ class TBootstrap extends TStaticObject {
 
     public function mount(string $path, array $filenames): TBootstrap
     {
-        if(\Phar::running() != '') {
+        if (\Phar::running() != '') {
             foreach ($filenames as $filename) {
                 include pathinfo($path . $filename, PATHINFO_BASENAME);
             }
         } else {
             foreach ($filenames as $filename) {
-                include $path . $filename;
+                // include $path . $filename;
             }
         }
 
         return $this;
     }
+
+    public function start(string $path) : void
+    {}
 }
