@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,14 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
- namespace Phink\Web;
 
-use Phink\Core\TStaticObject;
+namespace Phink\Web;
+
+use Phink\Core\TRouter;
+use Phink\Registry\TRegistry;
 use Phink\TAutoloader;
-use \Phink\Core\TRouter;
 
- /**
+/**
  * Description of router
  *
  * @author David
@@ -42,10 +42,10 @@ class TWebRouter extends TRouter
         $this->viewIsInternal = $parent->isInternalView();
         $this->path = $parent->getPath();
         $this->twigEnvironment = $parent->getTwigEnvironment();
-                
+
         $this->translation = $parent->getTranslation();
         $this->parameters = $parent->getParameters();
-        
+
     }
 
     public function translate(): bool
@@ -57,16 +57,16 @@ class TWebRouter extends TRouter
         $this->dirName = $info->dirname;
         $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
         $this->className = ucfirst($this->viewName);
-        
+
         $this->setNamespace();
         $this->setNames();
 
-        if(file_exists(SRC_ROOT . $this->getPath())) {
+        if (file_exists(SRC_ROOT . $this->getPath())) {
             // $this->path = SRC_ROOT . $this->getPath();
             $isTranslated = true;
         }
 
-        if(file_exists(SITE_ROOT . $this->getPath())) {
+        if (file_exists(SITE_ROOT . $this->getPath())) {
             // $this->path = SITE_ROOT . $this->getPath();
             $isTranslated = true;
         }
@@ -78,6 +78,21 @@ class TWebRouter extends TRouter
 
     public function dispatch(): bool
     {
+        if($this->viewIsInternal) {
+            $dir = SITE_ROOT . $this->dirName . DIRECTORY_SEPARATOR;
+
+            self::getLogger()->debug('BOOTSTRAP PATH::' . $dir . 'bootstrap' . CLASS_EXTENSION);
+            if(file_exists($dir . 'bootstrap' . CLASS_EXTENSION)) {
+                list($namespace, $className, $classText) = TAutoloader::getClassDefinition($dir . 'bootstrap' . CLASS_EXTENSION);
+                include $dir . 'bootstrap' . CLASS_EXTENSION;
+    
+                $bootstrapClass = $namespace . '\\'  . $className;
+    
+                $bootstrap = new $bootstrapClass;
+                $bootstrap->start($dir);
+            }
+        }
+
         if ($this->_isCached) {
             $view = new \Phink\MVC\TView($this);
             $class = TAutoloader::loadCachedFile($view);
@@ -86,23 +101,23 @@ class TWebRouter extends TRouter
         }
 
 //        $modelClass = ($include = TAutoloader::includeModelByName($this->viewName)) ? $include['type'] : DEFALT_MODEL;
-//        include $include['file'];
-//        $model = new $modelClass();
+        //        include $include['file'];
+        //        $model = new $modelClass();
         $include = $this->includeController();
 
         $view = new \Phink\MVC\TView($this);
         $view->parse();
-        
+
         if (file_exists($view->getCacheFileName())) {
             $class = TAutoloader::loadCachedFile($view);
             $class->perform();
             return true;
         }
-        
+
         return true;
     }
 
-    public function setNamespace() : void
+    public function setNamespace(): void
     {
         if (strstr(SERVER_NAME, 'localhost')) {
             $this->namespace = CUSTOM_NAMESPACE;
@@ -116,13 +131,16 @@ class TWebRouter extends TRouter
         }
         $this->namespace .= '\\Controllers';
     }
-    
+
     public function includeController(): ?array
     {
-        $file = ''; $type = ''; $code = '';
-        
+        $file = '';
+        $type = '';
+        $code = '';
+
+
         $result = TAutoloader::includeClass($this->controllerFileName, RETURN_CODE);
-        if($result !== null) {
+        if ($result !== null) {
             list($file, $type, $code) = $result;
         }
         if ($result === null) {
@@ -132,10 +150,10 @@ class TWebRouter extends TRouter
                 list($file, $type, $code) = TAutoloader::includeDefaultController($this->namespace, $this->className);
             }
 
-            \Phink\Registry\TRegistry::setCode($this->controllerFileName, $code);
+            TRegistry::setCode($this->controllerFileName, $code);
         }
 
         return [$file, $type, $code];
     }
-    
+
 }
