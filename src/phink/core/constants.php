@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,7 +121,7 @@ if (APP_IS_WEB) {
     define('BASE_URI', SERVER_NAME . ((HTTP_PORT !== '80') ? ':' . HTTP_PORT : '') . ((REQUEST_URI !== '') ? REQUEST_URI : ''));
     define('FULL_URI', HTTP_PROTOCOL . '://' . BASE_URI);
     define('FULL_SSL_URI', 'https://' . BASE_URI);
-    define('DEFALT_MODEL', ROOT_NAMESPACE . '\\MVC\\TModel');
+    define('DEFAULT_MODEL', ROOT_NAMESPACE . '\\MVC\\TModel');
     define('DEFAULT_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TController');
     define('DEFAULT_PARTIAL_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TPartialController');
     define('DEFAULT_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TControl');
