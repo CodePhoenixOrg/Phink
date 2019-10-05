@@ -20,11 +20,6 @@ class Mkfields extends TPartialController
 		$addoption, $me_id, $me_level, $bl_id, $di_long, $di_short, $di_name, 
 		$autogen, $extension, $basedir, $lg, $options, $defs;
 
-	public function partialLoad() : void
-	{
-		$this->getApplication()->loadINI(PHINK_APPS_ROOT . 'admin/');
-	}
-
 	public function beforeBinding(): void
     {		
         $this->lang = TRegistry::ini('application', 'lang');

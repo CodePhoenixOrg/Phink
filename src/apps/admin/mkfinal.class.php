@@ -21,11 +21,6 @@ class Mkfinal extends TPartialController
 		$lg, $wwwroot, $rel_page_filename, $script_exists_tostring, $props, $mindex, $me_id, 
 		$pa_id, $sstatus, $YES = 'Oui', $NO = 'Non';
 
-	public function partialLoad() : void
-	{
-		$this->getApplication()->loadINI(PHINK_APPS_ROOT . 'admin/');
-	}
-
 	public function beforeBinding(): void
     {
         $this->lang = TRegistry::ini('application', 'lang');

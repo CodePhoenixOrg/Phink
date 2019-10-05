@@ -17,11 +17,6 @@ class Mkscript extends TPartialController
 	protected $hidden, $rad_menu, $rad_dbgrid, $on_change, $on_change_table, $database_list, 
 		$table_list, $tab_ides, $tab_mkscript, $bloc_list, $di_name, $di_short, $di_long,
 		$pa_filename, $srvdir, $srvfiles, $basedir, $userdb, $filepath;
-
-	public function partialLoad() : void
-	{
-		$this->getApplication()->loadINI(PHINK_APPS_ROOT . 'admin/');
-	}
 	
 	public function beforeBinding(): void
     {		

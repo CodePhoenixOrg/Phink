@@ -27,11 +27,6 @@ class Page extends TController
     protected $scriptMaker;
     protected $userComponent0;
 
-    public function init(): void
-    {
-        $this->getApplication()->loadINI(PHINK_APPS_ROOT . 'admin/');
-    }
-
     public function load(): void
     {
 

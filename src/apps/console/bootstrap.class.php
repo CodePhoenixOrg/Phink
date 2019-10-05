@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,16 +21,11 @@ use Phink\Core\TBootstrap;
 
 class Bootstrap extends TBootstrap
 {
-    public static function start(string $path): void
+    public function start(string $path): void
     {
-        self::getLogger()->debug('START BOOTSTRAP');
-
         (new Bootstrap())->mount($path, [
             'console_window.class.php'
         ])->loadINI($path);
     }
 
 }
-
-Bootstrap::start(PHINK_APPS_ROOT . '/console/');
-

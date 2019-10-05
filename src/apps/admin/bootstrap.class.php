@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,18 +21,15 @@ use Phink\Core\TBootstrap;
 
 class AppBootstrap extends TBootstrap
 {
-    public static function start(string $path): void
+    public function start(string $path): void
     {
         (new Bootstrap())->mount($path, [
             'mkmain.class.php',
             'mkscript.class.php',
             'mkfields.class.php',
             'mkfile.class.php',
-            'mkfinal.class.php'
+            'mkfinal.class.php',
         ])->loadINI($path);
     }
 
 }
-
-Bootstrap::start(PHINK_APPS_ROOT . '/admin/');
-
