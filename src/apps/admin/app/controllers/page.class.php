@@ -90,7 +90,7 @@ class Page extends TController
             $this->alink_color = "black";
         }
 
-        $this->img = "media/images";
+        $this->img = "/assets/admin/img";
 
         //$ses_login=$_SESSION["ses_login"];
         //$authentication=getAuthentication($ses_login);
