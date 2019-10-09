@@ -3,7 +3,7 @@
         {
             "Mkmain": {
                 "alias": "mkmain",
-                "path": "@/page/",
+                "path": "@/admin/",
                 "namespace": "Phink\\Apps\\Admin",
                 "hasTemplate": true,
                 "canRender": true,
@@ -11,7 +11,7 @@
             }
             , "Mkscript": {
                 "alias": "mkscript",
-                "path": "@/page/",
+                "path": "@/admin/",
                 "namespace": "Phink\\Apps\\Admin",
                 "hasTemplate": true,
                 "canRender": true,
@@ -19,7 +19,7 @@
             }
             , "Mkfields": {
                 "alias": "mkfields",
-                "path": "@/page/",
+                "path": "@/admin/",
                 "namespace": "Phink\\Apps\\Admin",
                 "hasTemplate": true,
                 "canRender": true,
@@ -27,7 +27,7 @@
             }
             , "Mkfile": {
                 "alias": "mkfile",
-                "path": "@/page/",
+                "path": "@/admin/",
                 "namespace": "Phink\\Apps\\Admin",
                 "hasTemplate": true,
                 "canRender": true,
@@ -35,7 +35,7 @@
             }
             , "Mkfinal": {
                 "alias": "mkfinal",
-                "path": "@/page/",
+                "path": "@/admin/",
                 "namespace": "Phink\\Apps\\Admin",
                 "hasTemplate": true,
                 "canRender": true,
