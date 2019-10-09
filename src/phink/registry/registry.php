@@ -102,9 +102,9 @@ class TRegistry extends TStaticObject
         return true;
     }
 
-    public static function importClasses(string $viewFileName): void
+    public static function importClasses(string $dirName): void
     {
-        $localRegistryFilename = dirname(SITE_ROOT . $viewFileName) . '/registry.json';
+        $localRegistryFilename = SITE_ROOT . $dirName . '/registry.json';
 
         if (!file_exists($localRegistryFilename)) {
             return;
