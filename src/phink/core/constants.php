@@ -71,6 +71,15 @@ if (APP_IS_WEB) {
     define('PHINK_APPS_ROOT', SITE_ROOT . PHINK_VENDOR_APPS);
     define('PHINKJS_ROOT', SITE_ROOT . PHINKJS_VENDOR);
 
+    // Puzzle Library constants 
+    define('PUZZLE_VENDOR_SRC', PHINK_VENDOR_SRC);
+    define('PUZZLE_VENDOR_LIB', PUZZLE_VENDOR_SRC . 'puzzle' . DIRECTORY_SEPARATOR);
+    define('PUZZLE_VENDOR_APPS', PHINK_VENDOR_APPS);
+    define('PUZZLEJS_VENDOR', PUZZLE_VENDOR_LIB . 'js' . DIRECTORY_SEPARATOR);
+    define('PUZZLE_ROOT', SITE_ROOT . PUZZLE_VENDOR_LIB);
+    define('PUZZLE_APPS_ROOT', PHINK_APPS_ROOT);
+    define('PUZZLEJS_ROOT', SITE_ROOT . PUZZLEJS_VENDOR);
+
     define('APP_DIR', 'app');
     
     define('APP_ROOT', SRC_ROOT . APP_DIR . DIRECTORY_SEPARATOR);
@@ -126,6 +135,8 @@ if (APP_IS_WEB) {
     define('DEFAULT_PARTIAL_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TPartialController');
     define('DEFAULT_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TControl');
     define('DEFAULT_PARTIAL_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TPartialControl');
+
+
 
 } else {
     define('DOCUMENT_ROOT', '');
