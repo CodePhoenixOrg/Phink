@@ -42,8 +42,10 @@ abstract class TCustomController extends TCustomControl
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();        
         $this->parameters = $parent->getParameters();
-        $this->path = $this->getPath();
-        $this->twigEnvironment = $this->getTwigEnvironment();
+        $this->path = $parent->getPath();
+        $this->dirName = $parent->getDirName();
+        $this->twigEnvironment = $parent->getTwigEnvironment();
+        $this->componentIsInternal = $parent->isInternalComponent();
 
         $this->cloneNamesFrom($parent);
     }
