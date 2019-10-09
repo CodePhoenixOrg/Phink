@@ -18,9 +18,13 @@
 
 namespace Phink\Web\UI;
 
-use Phink\Core\TObject;
-use Phink\MVC\TActionInfo;
+use Phink\Core\IObject;
 
 class TPartialControl extends TCustomCachedControl
 {
+    public function __construct(IObject $parent)
+    {
+        parent::__construct($parent);
+
+    }
 }
