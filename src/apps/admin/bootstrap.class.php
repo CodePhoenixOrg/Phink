@@ -21,15 +21,19 @@ use Phink\Core\TBootstrap;
 
 class AppBootstrap extends TBootstrap
 {
-    public function start(string $path): void
+    public function start(): void
     {
-        (new Bootstrap())->mount($path, [
-            'mkmain.class.php',
-            'mkscript.class.php',
-            'mkfields.class.php',
-            'mkfile.class.php',
-            'mkfinal.class.php',
-        ])->loadINI($path);
+        // $this->mount($this->path, [
+        //     'mkmain.class.php',
+        //     'mkscript.class.php',
+        //     'mkfields.class.php',
+        //     'mkfile.class.php',
+        //     'mkfinal.class.php',
+        // ]);
+
+        $this->loadINI($this->getPath());
+        $this->copyAssets();
+
     }
 
 }

@@ -21,11 +21,13 @@ use Phink\Core\TBootstrap;
 
 class Bootstrap extends TBootstrap
 {
-    public function start(string $path): void
+    public function start(): void
     {
-        (new Bootstrap())->mount($path, [
-            'console_window.class.php'
-        ])->loadINI($path);
+        // $this->mount($this->path, [
+        //     'console_window.class.php'
+        // ]);
+        $this->loadINI($this->getPath());
+        $this->copyAssets();
     }
 
 }
