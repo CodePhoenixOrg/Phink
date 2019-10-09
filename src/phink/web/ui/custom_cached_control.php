@@ -40,17 +40,17 @@ abstract class TCustomCachedControl extends TCustomControl
     {
         parent::__construct($parent);
 
-        $this->view = $parent;
-
         $this->parameters = $parent->getParameters();
         $this->application = $parent->getApplication();
         $this->commands = $this->application->getCommands();
-        $this->path = $this->getPath();
+        $this->path = $parent->getPath();
+        $this->dirName = $parent->getDirName();
         $this->twigEnvironment = $parent->getTwigEnvironment();
         
         $this->cloneNamesFrom($parent);
         $this->setCacheFileName();
         $this->cacheFileName = $parent->getCacheFileName();
+        $this->componentIsInternal = $parent->isInternalComponent();
         
         $this->className = $this->getType();
         $this->viewName = lcfirst($this->className);
@@ -119,7 +119,7 @@ abstract class TCustomCachedControl extends TCustomControl
         }
         $this->displayHtml();
         $html = ob_get_clean();
-        TWebObject::register($this);
+        // TWebObject::register($this);
 
         $this->unload();
 
@@ -155,7 +155,7 @@ abstract class TCustomCachedControl extends TCustomControl
 
         $this->renderHtml();
 
-        TWebObject::register($this);
+        //TWebObject::register($this);
 
         $this->unload();
     }
