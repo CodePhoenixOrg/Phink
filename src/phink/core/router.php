@@ -79,7 +79,7 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
                 $routes = $methods[$method];
                 $url = REQUEST_URI;
                 foreach ($routes as $key => $value) {
-                    $key = str_replace('?', '\?', $key);
+                    // $key = str_replace('?', '\?', $key);
                     // $key = str_replace("/", "\/", $key);
                     $matches = \preg_replace('@' . $key . '@', $value, $url);
 
@@ -91,13 +91,14 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
                     $this->requestType = $key;
                     $this->translation = $matches;
 
-                    $this->viewIsInternal = substr($this->translation, 0, 1) == '@';
+                    $this->componentIsInternal = substr($this->translation, 0, 1) == '@';
                     $baseurl = parse_url($this->translation);
                     $this->dirName = pathinfo($this->translation, PATHINFO_DIRNAME);
 
-                    if ($this->viewIsInternal) {
+                    if ($this->componentIsInternal) {
                         $path = substr($baseurl['path'], 2);
                         $this->path = PHINK_VENDOR_APPS . $path;
+
                     } else {
                         $this->path = APP_DIR . $baseurl['path'];
                     }
@@ -151,14 +152,14 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
             $routesArray['web']['get']["^/$"] = "@/welcome/home.phtml";
         }
 
-        $routesArray['web']['get']["^/console$"] = "@/console/console.phtml";
-        $routesArray['web']['get']["^/console/$"] = "@/console/console.phtml?console=help";
-        $routesArray['web']['get']["^/console/([a-z-]+)$"] = "@/console/console.phtml?console=$1";
-        $routesArray['web']['get']["^/console/([a-z-]+)/([a-z-]+)$"] = "@/console/console.phtml?console=$1&arg=$2";
+        $routesArray['web']['get']["^/console$"] = "@/console/app/views/console.phtml";
+        $routesArray['web']['get']["^/console/$"] = "@/console/app/views/console.phtml?console=help";
+        $routesArray['web']['get']["^/console/([a-z-]+)$"] = "@/console/app/views/console.phtml?console=$1";
+        $routesArray['web']['get']["^/console/([a-z-]+)/([a-z-]+)$"] = "@/console/app/views/console.phtml?console=$1&arg=$2";
         $routesArray['web']['get']["^/tuto/$"] = "@/tuto/index.phtml";
-        $routesArray['web']['post']["^/console$"] = "@/console/console_window.phtml";
-        $routesArray['web']['get']["^/admin$"] = "@/admin/page.phtml";
-        $routesArray['web']['get']["^/admin/([a-z-]+)$"] = "@/admin/page.phtml?$1";
+        $routesArray['web']['post']["^/console$"] = "@/console/app/views/console_window.phtml";
+        $routesArray['web']['get']["^/admin$"] = "@/admin/app/views/page.phtml";
+        $routesArray['web']['get']["^/admin/([a-z-]+)$"] = "@/admin/app/views/page.phtml?$1";
 
         foreach ($routesArray as $key => $value) {
             TRegistry::write('routes', $key, $value);
