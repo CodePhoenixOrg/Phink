@@ -51,7 +51,7 @@ class TView extends TCustomView
         $this->componentIsInternal = $parent->isInternalComponent();
 
         $this->cloneNamesFrom($parent);
-        // $this->setCacheFileName();
+        $this->setCacheFileName();
         $this->cacheFileName = $parent->getCacheFileName();
 
         // if ($this->getType() == 'TView' && $this->motherView === null) {
