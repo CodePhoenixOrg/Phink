@@ -21,7 +21,7 @@ namespace Phink\Web;
 use Phink\Core\TRouter;
 use Phink\Registry\TRegistry;
 use Phink\TAutoloader;
-
+use Phink\MVC\TView;
 /**
  * Description of router
  *
@@ -39,7 +39,7 @@ class TWebRouter extends TRouter
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();
         $this->dirName = $parent->getDirName();
-        $this->viewIsInternal = $parent->isInternalView();
+        $this->componentIsInternal = $parent->isInternalComponent();
         $this->path = $parent->getPath();
         $this->twigEnvironment = $parent->getTwigEnvironment();
 
@@ -55,6 +55,11 @@ class TWebRouter extends TRouter
         $info = (object) \pathinfo($this->path);
         $this->viewName = $info->filename;
         $this->dirName = $info->dirname;
+
+        if ($this->componentIsInternal) {
+            $this->dirName = dirname($this->dirName, 2);
+        }
+
         $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
         $this->className = ucfirst($this->viewName);
 
@@ -78,23 +83,24 @@ class TWebRouter extends TRouter
 
     public function dispatch(): bool
     {
-        if($this->viewIsInternal) {
+        if($this->componentIsInternal) {
             $dir = SITE_ROOT . $this->dirName . DIRECTORY_SEPARATOR;
 
             self::getLogger()->debug('BOOTSTRAP PATH::' . $dir . 'bootstrap' . CLASS_EXTENSION);
+
             if(file_exists($dir . 'bootstrap' . CLASS_EXTENSION)) {
                 list($namespace, $className, $classText) = TAutoloader::getClassDefinition($dir . 'bootstrap' . CLASS_EXTENSION);
                 include $dir . 'bootstrap' . CLASS_EXTENSION;
     
                 $bootstrapClass = $namespace . '\\'  . $className;
     
-                $bootstrap = new $bootstrapClass;
-                $bootstrap->start($dir);
+                $bootstrap = new $bootstrapClass($dir);
+                $bootstrap->start();
             }
         }
 
         if ($this->_isCached) {
-            $view = new \Phink\MVC\TView($this);
+            $view = new TView($this);
             $class = TAutoloader::loadCachedFile($view);
             $class->perform();
             return true;
@@ -105,7 +111,7 @@ class TWebRouter extends TRouter
         //        $model = new $modelClass();
         $include = $this->includeController();
 
-        $view = new \Phink\MVC\TView($this);
+        $view = new TView($this);
         $view->parse();
 
         if (file_exists($view->getCacheFileName())) {
@@ -114,7 +120,7 @@ class TWebRouter extends TRouter
             return true;
         }
 
-        return true;
+        return false;
     }
 
     public function setNamespace(): void
