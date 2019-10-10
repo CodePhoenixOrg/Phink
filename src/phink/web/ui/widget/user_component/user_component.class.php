@@ -32,6 +32,10 @@ class TUserComponent extends TCustomControl
     public function __construct(IObject $parent)
     {
         parent::__construct($parent);
+
+        $this->componentIsInternal = $parent->isInternalComponent();
+        $this->dirName = $parent->getDirName();
+        $this->path = $parent->getPath();
     }
 
     public function setComponentType(string $value) : void
@@ -47,32 +51,39 @@ class TUserComponent extends TCustomControl
     public function render() : void 
     {
         $this->setNames($this->componentType);
-        $result = [
-            $this->modelFileName,
-            $this->viewFileName,
-            $this->cssFileName,
-            $this->controllerFileName,
-            $this->jsControllerFileName 
+        $names = [
+            $this->isInternalComponent() ? 'YES' : 'NO',
+            $this->getPath(),
+            $this->getDirName(),
+            $this->getModelFileName(),
+            $this->getViewFileName(),
+            $this->getCssFileName(),
+            $this->getControllerFileName(),
+            $this->getJsControllerFileName() 
         ];
+
+        foreach ($names as $name) {
+            echo $name . '<br />'; 
+        }
 
         $code = '';
 
-        $this->setCacheFileName();
+        //$this->setCacheFileName();
         if(file_exists($this->getCacheFileName())) {
             list($namespace, $className, $code) = TAutoloader::getClassDefinition($this->cacheFileName);
             
             include $this->cacheFileName;
 
-            $fqClassName = trim($namespace) . "\\" . trim($className);
+            $fqClassName = $namespace . '\\' . $className;
 
             $class = new $fqClassName($this->getParent());
             $class->render();
         }
 
         if(!file_exists($this->getCacheFileName())) {
-            list($this->controllerFileName, $className, $code) = $this->includeController();
+            list($controllerFileName, $className, $code) = $this->includeController();
 
-            include $this->controllerFileName;
+            include $controllerFileName;
     
             $class = new $className($this->getParent());
             $class->render();
