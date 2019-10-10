@@ -33,42 +33,36 @@ use Phink\Registry\TRegistry;
  */
 class TView extends TCustomView
 {
-    //put your code here
-    
     public function __construct(\Phink\Web\IWebObject $parent)
     {
-
         parent::__construct($parent);
         
         $this->authentication = $parent->getAuthentication();
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();
         $this->application = $parent->getApplication();
+
         $this->commands = $this->application->getCommands();
         $this->parameters = $parent->getParameters();
         $this->viewName = $parent->getViewName();
-        $this->viewIsInternal = $parent->isInternalView();
-        $this->path = $parent->getPath();
         $this->twigEnvironment = $parent->getTwigEnvironment();
-        $this->motherView = $parent->getMotherView();
-        $this->isMotherView = false;
+        $this->path = $parent->getPath();
+        $this->dirName = $parent->getDirName();
+        $this->componentIsInternal = $parent->isInternalComponent();
 
         $this->cloneNamesFrom($parent);
-        $this->setCacheFileName();
+        // $this->setCacheFileName();
         $this->cacheFileName = $parent->getCacheFileName();
 
-        // $this->setMotherView($this);
-
-        if ($this->getType() == 'TView' && $this->motherView === null) {
+        // if ($this->getType() == 'TView' && $this->motherView === null) {
             $this->motherView = $this;
             $this->isMotherView = true;
             $this->motherUID = $this->getUID();
+        // }
 
-        }
-
-        TRegistry::importClasses($this->viewFileName);
+        TRegistry::importClasses($this->getDirName());
 
 
     }
 
-}
+ }
