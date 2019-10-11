@@ -37,19 +37,9 @@ class TView extends TCustomView
     {
         parent::__construct($parent);
         
-        $this->authentication = $parent->getAuthentication();
-        $this->request = $parent->getRequest();
-        $this->response = $parent->getResponse();
-        $this->application = $parent->getApplication();
-
-        $this->commands = $this->application->getCommands();
-        $this->parameters = $parent->getParameters();
         $this->viewName = $parent->getViewName();
-        $this->twigEnvironment = $parent->getTwigEnvironment();
-        $this->path = $parent->getPath();
-        $this->dirName = $parent->getDirName();
-        $this->componentIsInternal = $parent->isInternalComponent();
 
+        $this->clonePrimitivesFrom($parent);
         $this->cloneNamesFrom($parent);
         $this->setCacheFileName();
         $this->cacheFileName = $parent->getCacheFileName();

@@ -19,6 +19,12 @@
 namespace Phink\Web\UI;
 
 use Phink\Core\IObject;
+use Phink\MVC\TActionInfo;
+use Phink\MVC\TCustomView;
+use Phink\MVC\TModel;
+use Phink\Registry\TRegistry;
+use Phink\Web\TWebObject;
+use Phink\TAutoloader;
 
 class TControl extends TCustomCachedControl
 {
@@ -28,6 +34,24 @@ class TControl extends TCustomCachedControl
 
         $this->view = $parent;
 
+        $this->clonePrimitivesFrom($parent);
+
+        $this->className = $this->getType();
+        $this->viewName = $this->view->getViewName();
+
+        //$this->setViewName($this->className);
+        $this->setNames();
+        
+        $this->setCacheFileName();
+
+        list($file, $type, $code) = TAutoloader::includeModelByName($this->viewName);
+        $model = SRC_ROOT . $file;
+        if (file_exists($model)) {
+            include $model;
+            $modelClass = $type;
+
+            $this->model = new $modelClass();
+        }
     }
 
     

@@ -22,6 +22,8 @@ use Phink\Core\IObject;
 use Phink\Web\IWebObject;
 use Phink\MVC\TPartialView;
 use Phink\MVC\TCustomController;
+use Phink\TAutoloader;
+use Phink\Registry\TRegistry;
 
 class TPartialController extends TCustomController 
 {
@@ -29,14 +31,14 @@ class TPartialController extends TCustomController
     public function __construct(IWebObject $parent)
     {
         parent::__construct($parent);
-        
+
         $this->className = $this->getType();
-        $this->viewName = lcfirst($this->className);
+        $this->setViewName($this->className);
        
-        list($file, $type, $code) = \Phink\TAutoloader::includeModelByName($this->viewName);
+        list($file, $type, $code) = TAutoloader::includeModelByName($this->viewName);
         $modelClass = $type;
         $this->model = new $modelClass();        
-        $this->view = new TPartialView($parent, $this); 
+        $this->view = new TPartialView($this); 
     }   
     
     public function render() : void

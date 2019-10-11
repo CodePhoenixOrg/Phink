@@ -24,6 +24,8 @@ use Phink\MVC\TCustomView;
 use Phink\MVC\TModel;
 use Phink\Registry\TRegistry;
 use Phink\Web\TWebObject;
+use Phink\TAutoloader;
+
 /**
  * Description of custom_control
  *
@@ -40,33 +42,7 @@ abstract class TCustomCachedControl extends TCustomControl
     {
         parent::__construct($parent);
 
-        $this->parameters = $parent->getParameters();
-        $this->application = $parent->getApplication();
-        $this->commands = $this->application->getCommands();
-        $this->path = $parent->getPath();
-        $this->dirName = $parent->getDirName();
-        $this->twigEnvironment = $parent->getTwigEnvironment();
-        
-        $this->cloneNamesFrom($parent);
-        $this->setCacheFileName();
-        $this->cacheFileName = $parent->getCacheFileName();
-        $this->componentIsInternal = $parent->isInternalComponent();
-        
-        $this->className = $this->getType();
-        $this->viewName = lcfirst($this->className);
-        
-        list($file, $type, $code) = \Phink\TAutoloader::includeModelByName($this->viewName);
-        $model = SRC_ROOT . $file;
-        if (file_exists($model)) {
-            include $model;
-            $modelClass = $type;
 
-            $this->model = new $modelClass();
-        }
-        
-        $this->authentication = $parent->getAuthentication();
-        $this->request = $parent->getRequest();
-        $this->response = $parent->getResponse();
     }
 
     public function getView() : TCustomView
@@ -124,7 +100,7 @@ abstract class TCustomCachedControl extends TCustomControl
         $this->unload();
 
         /*
-                $cachedJsController = RUNTIME_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
+                $cachedJsController = RUNTIME_DIR . TAutoloader::cacheJsFilenameFromView($this->viewName);
                 if(file_exists($cachedJsController)) {
                     $jsCode = file_get_contents($cachedJsController);
                     $html .= PHP_EOL . "?>" .PHP_EOL . $jsCode . PHP_EOL;
@@ -133,7 +109,7 @@ abstract class TCustomCachedControl extends TCustomControl
                 }
         */
         if (file_exists(SRC_ROOT . $this->getJsControllerFileName())) {
-            $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
+            $cacheJsFilename = TAutoloader::cacheJsFilenameFromView($this->viewName);
             if (!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
                 copy(SRC_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
             }

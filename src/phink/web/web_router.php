@@ -33,18 +33,9 @@ class TWebRouter extends TRouter
 
     public function __construct($parent)
     {
-        $this->application = $parent->getApplication();
-        $this->commands = $this->application->getCommands();
-        $this->authentication = $parent->getAuthentication();
-        $this->request = $parent->getRequest();
-        $this->response = $parent->getResponse();
-        $this->dirName = $parent->getDirName();
-        $this->componentIsInternal = $parent->isInternalComponent();
-        $this->path = $parent->getPath();
-        $this->twigEnvironment = $parent->getTwigEnvironment();
+        $this->clonePrimitivesFrom($parent);
 
         $this->translation = $parent->getTranslation();
-        $this->parameters = $parent->getParameters();
 
     }
 
@@ -83,6 +74,7 @@ class TWebRouter extends TRouter
 
     public function dispatch(): bool
     {
+
         if($this->componentIsInternal) {
             $dir = SITE_ROOT . $this->dirName . DIRECTORY_SEPARATOR;
 

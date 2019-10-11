@@ -36,18 +36,8 @@ abstract class TCustomController extends TCustomControl
     {
         parent::__construct($parent);
         
-        $this->application = $parent->getApplication();
-        $this->commands = $this->application->getCommands();
-        $this->authentication = $parent->getAuthentication();
-        $this->request = $parent->getRequest();
-        $this->response = $parent->getResponse();        
-        $this->parameters = $parent->getParameters();
-        $this->path = $parent->getPath();
-        $this->dirName = $parent->getDirName();
-        $this->twigEnvironment = $parent->getTwigEnvironment();
-        $this->componentIsInternal = $parent->isInternalComponent();
-
-        $this->cloneNamesFrom($parent);
+        $this->clonePrimitivesFrom($parent);
+        //$this->cloneNamesFrom($parent);
     }
 
     public function getInnerHtml() : string

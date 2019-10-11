@@ -24,10 +24,10 @@ namespace Phink\Web;
  * @author david
  */
 
-use Phink\Registry\TRegistry;
 use Phink\Core\TCustomApplication;
-use Phink\Web\UI\TCustomControl;
+use Phink\Registry\TRegistry;
 use Phink\TAutoloader;
+use Phink\Web\UI\TCustomControl;
 
 trait TWebObject
 {
@@ -59,14 +59,13 @@ trait TWebObject
     protected $parameters = [];
     protected $commands = [];
     protected $application = null;
-    protected $viewIsInternal = false;
+    protected $componentIsInternal = false;
     protected $path = '';
     protected $twigEnvironment = null;
     protected $parentView = null;
     protected $parentType = null;
     protected $motherView = null;
     protected $motherUID = '';
-    protected $isMotherView = false;
 
     //    protected $authentication = null;
 
@@ -171,11 +170,6 @@ trait TWebObject
         return $this->motherUID;
     }
 
-    public function isMotherView(): bool
-    {
-        return $this->isMotherView;
-    }
-
     public function getParentType()
     {
         return $this->parentType;
@@ -188,12 +182,12 @@ trait TWebObject
 
     public function setRedis(array $params): void
     {
-        if(class_exists('Redis')) {
+        if (class_exists('Redis')) {
 
             // $this->redis = new Redis($params);
             $this->redis = null;
         }
-       
+
     }
 
     public function getRedis(): ?object
@@ -276,16 +270,27 @@ trait TWebObject
         return $this->viewName;
     }
 
-    public function setViewName($viewName = null): void
+    public function setViewName(string $className = ''): void
     {
-        $uri = ($viewName === null) ? REQUEST_URI : $viewName;
-        $requestUriParts = explode('/', $uri);
-        $this->viewName = array_pop($requestUriParts);
-        $viewNameParts = explode('.', $this->viewName);
-        $this->viewName = array_shift($viewNameParts);
+        $dummy = 0;
+        if (!empty($className)) {
 
-        $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
-        $this->className = ucfirst($this->viewName);
+            $info = TRegistry::classInfo($className);
+            if ($info !== null) {
+                $this->viewName = TAutoloader::innerClassNameToFilename($className);
+            }
+            if ($info === null) {
+                $this->viewName = TAutoloader::userClassNameToFilename($className);
+            }
+            return;
+        }
+
+        if (empty($className)) {
+            $requestUriParts = explode('/', $REQUEST_URI);
+            $this->viewName = array_pop($requestUriParts);
+            $viewNameParts = explode('.', $this->viewName);
+            $this->viewName = array_shift($viewNameParts);
+        }
     }
 
     public function getTwigEnvironment()
@@ -329,65 +334,142 @@ trait TWebObject
         }
     }
 
-    public function isInternalView(): bool
+    public function isInternalComponent(): bool
     {
-        return $this->viewIsInternal;
+        return $this->componentIsInternal;
     }
 
     public function setNames(?string $typeName = null): void
     {
-        if($typeName !== null) {
-            $typeName = strtolower($typeName);
-
-            $this->viewName = $typeName; 
+        if ($typeName !== null) {
+            $this->setViewName($typeName);
         }
 
-        if($typeName === null) {
+        if ($typeName === null) {
             $this->actionName = (isset($_REQUEST['action'])) ? $_REQUEST['action'] : '';
         }
         $this->modelFileName = 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
-        $this->viewFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR  . $this->viewName . PREHTML_EXTENSION;
+        $this->viewFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $this->viewName . PREHTML_EXTENSION;
         $this->cssFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $this->viewName . CSS_EXTENSION;
         $this->controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
         $this->jsControllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
-        if ($this->isInternalView()) {
+        if ($this->isInternalComponent()) {
             $dirName = $this->getDirName();
-            $this->viewFileName = $dirName . DIRECTORY_SEPARATOR  . $this->viewName . PREHTML_EXTENSION;
-            $this->cssFileName = $dirName . DIRECTORY_SEPARATOR . $this->viewName . CSS_EXTENSION;
-            $this->controllerFileName = $dirName . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
-            $this->jsControllerFileName = $dirName . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
+            $this->modelFileName = $dirName . DIRECTORY_SEPARATOR . $this->modelFileName;
+            $this->viewFileName = $dirName . DIRECTORY_SEPARATOR . $this->viewFileName;
+            $this->cssFileName = $dirName . DIRECTORY_SEPARATOR . $this->cssFileName;
+            $this->controllerFileName = $dirName . DIRECTORY_SEPARATOR . $this->controllerFileName;
+            $this->jsControllerFileName = $dirName . DIRECTORY_SEPARATOR . $this->jsControllerFileName;
         }
 
-        if (!file_exists($this->viewFileName)) {
+        if (!file_exists(SITE_ROOT . $this->viewFileName) && !file_exists(SRC_ROOT . $this->viewFileName)) {
             $info = TRegistry::classInfo($this->className);
             if ($info !== null) {
                 // $this->viewName = \Phink\TAutoloader::classNameToFilename($this->className);
-                $this->viewName = \Phink\TAutoloader::classNameToFilename($this->className);
                 if ($info->path[0] == '@') {
-                    $path = str_replace("@" . DIRECTORY_SEPARATOR, PHINK_VENDOR_APPS, $info->path);
+                    $path = str_replace("@" . DIRECTORY_SEPARATOR, PHINK_VENDOR_APPS, $info->path) . 'app' . DIRECTORY_SEPARATOR;
+                    $this->controllerFileName = $path . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
+                    $this->jsControllerFileName = $path . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
+                    $this->cssFileName = $path . 'views' . DIRECTORY_SEPARATOR . $this->viewName . CSS_EXTENSION;
+                    $this->viewFileName = $path . 'views' . DIRECTORY_SEPARATOR . $this->viewName . PREHTML_EXTENSION;
+
                 } else {
+                    $this->viewName = \Phink\TAutoloader::innerClassNameToFilename($this->className);
+
                     $path = PHINK_VENDOR_LIB . $info->path;
+                    $this->controllerFileName = $path . $this->viewName . CLASS_EXTENSION;
+                    $this->jsControllerFileName = $path . $this->viewName . JS_EXTENSION;
+                    $this->cssFileName = $path . $this->viewName . CSS_EXTENSION;
+                    $this->viewFileName = $path . $this->viewName . PREHTML_EXTENSION;
+
                 }
                 // $path = $info->path;
-                if ($info->hasTemplate) {
-                    $this->viewFileName = $path . $this->viewName . PREHTML_EXTENSION;
-                } else {
+                if (!$info->hasTemplate) {
                     $this->viewFileName = '';
                 }
-                $this->controllerFileName = $path . $this->viewName . CLASS_EXTENSION;
-                $this->jsControllerFileName = $path . $this->viewName . JS_EXTENSION;
-                $this->cssFileName = $path . $this->viewName . CSS_EXTENSION;
+
                 $this->className = $info->namespace . '\\' . $this->className;
             }
         }
 
- 
         $this->setCacheFileName();
+    }
+
+    public function getMvcFileNamesByTypeName(?string $typeName = null): ?array
+    {
+        $result = [];
+
+        $info = TRegistry::classInfo($typeName);
+        if ($info !== null) {
+            $viewName = TAutoloader::innerClassNameToFilename($typeName);
+        }
+        if ($info === null) {
+            $viewName = TAutoloader::userClassNameToFilename($typeName);
+        }
+        
+        if ($typeName === null) {
+            $actionName = (isset($_REQUEST['action'])) ? $_REQUEST['action'] : '';
+        }
+        $modelFileName = 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
+        $viewFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $viewName . PREHTML_EXTENSION;
+        $cssFileName = 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $viewName . CSS_EXTENSION;
+        $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
+        $jsControllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . JS_EXTENSION;
+        if ($this->isInternalComponent()) {
+            $dirName = $this->getDirName();
+            $modelFileName = $dirName . DIRECTORY_SEPARATOR . $modelFileName;
+            $viewFileName = $dirName . DIRECTORY_SEPARATOR . $viewFileName;
+            $cssFileName = $dirName . DIRECTORY_SEPARATOR . $cssFileName;
+            $controllerFileName = $dirName . DIRECTORY_SEPARATOR . $controllerFileName;
+            $jsControllerFileName = $dirName . DIRECTORY_SEPARATOR . $jsControllerFileName;
+        }
+
+        if (!file_exists(SITE_ROOT . $viewFileName) && !file_exists(SRC_ROOT . $viewFileName)) {
+            $info = TRegistry::classInfo($typeName);
+            if ($info !== null) {
+                $viewName = \Phink\TAutoloader::innerClassNameToFilename($typeName);
+
+                if ($info->path[0] == '@') {
+                    $path = str_replace("@" . DIRECTORY_SEPARATOR, PHINK_VENDOR_APPS, $info->path) . 'app' . DIRECTORY_SEPARATOR;
+                    $controllerFileName = $path . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
+                    $jsControllerFileName = $path . 'controllers' . DIRECTORY_SEPARATOR . $viewName . JS_EXTENSION;
+                    $cssFileName = $path . 'views' . DIRECTORY_SEPARATOR . $viewName . CSS_EXTENSION;
+                    $viewFileName = $path . 'views' . DIRECTORY_SEPARATOR . $viewName . PREHTML_EXTENSION;
+
+                } else {
+
+                    $path = PHINK_VENDOR_LIB . $info->path;
+                    $controllerFileName = $path . $viewName . CLASS_EXTENSION;
+                    $jsControllerFileName = $path . $viewName . JS_EXTENSION;
+                    $cssFileName = $path . $viewName . CSS_EXTENSION;
+                    $viewFileName = $path . $viewName . PREHTML_EXTENSION;
+
+                }
+                // $path = $info->path;
+                if (!$info->hasTemplate) {
+                    $viewFileName = '';
+                }
+
+                $typeName = $info->namespace . '\\' . $typeName;
+            }
+        }
+
+        $cacheFileName = RUNTIME_DIR . strtolower(str_replace(DIRECTORY_SEPARATOR, '_', $controllerFileName));
+
+        return [
+            'modelFileName' => $modelFileName,
+            'viewFileName' => $viewFileName,
+            'controllerFileName' => $controllerFileName,
+            'jsControllerFileName' => $jsControllerFileName,
+            'cssFileName' => $cssFileName,
+            'cacheFileName' => $cacheFileName
+        ];
+
     }
 
     public function cloneNamesFrom($parent): void
     {
-        $this->className = $parent->getClassName();
+        // $this->className = $parent->getClassName();
         $this->actionName = $parent->getActionName();
         $this->modelFileName = $parent->getModelFileName();
         $this->viewFileName = $parent->getViewFileName();
@@ -397,27 +479,21 @@ trait TWebObject
         $this->namespace = $parent->getNamespace();
     }
 
-    public static function register(IWebObject $object) : void
+    public function clonePrimitivesFrom($parent)
     {
-        TRegistry::write(
-            $object->getUID(),
-            [
-                "id" => $object->getId(),
-                "name" => $object->getViewName(),
-                "UID" => $object->getUID(),                
-                "parentUID" => ($object->getParent() !== null) ? $object->getParent()->getUID() : '',
-                "isMotherView" => ($object->isMotherView()) ? "true" : "false",
-                "view" => $object->getViewFileName(),
-                "controller" => $object->getControllerFileName(),
-                "css" => $object->getCssFileName(),
-                "js" =>  $object->getJsControllerFileName(),
-                "cache" =>
-                [
-                    "controller" => SRC_ROOT . TAutoloader::cacheFilenameFromView($object->getViewName()),
-                    "css" => SRC_ROOT . TAutoloader::cacheCssFilenameFromView($object->getViewName()),
-                    "js" =>  SRC_ROOT . TAutoloader::cacheJsFilenameFromView($object->getViewName())
-                ]
-            ]
-        );
+        $this->path = $parent->getPath();
+        $this->dirName = $parent->getDirName();
+        $this->application = $parent->getApplication();
+        $this->authentication = $parent->getAuthentication();
+        $this->application = $parent->getApplication();
+
+        $this->commands = $this->application->getCommands();
+        $this->parameters = $parent->getParameters();
+        $this->twigEnvironment = $parent->getTwigEnvironment();
+        $this->componentIsInternal = $parent->isInternalComponent();
+
+        $this->request = $parent->getRequest();
+        $this->response = $parent->getResponse();
+
     }
 }

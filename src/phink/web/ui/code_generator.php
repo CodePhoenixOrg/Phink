@@ -27,6 +27,7 @@ use Phink\Registry\TRegistry;
 use Phink\Xml\TXmlDocument;
 use Phink\Xml\TXmlMatch;
 use Phink\MVC\TCustomView;
+use \Phink\TAutoloader;
 
 /**
  * Description of code_generator
@@ -102,15 +103,15 @@ trait TCodeGenerator
                     }
                     $fqcn = $info->namespace . '\\' . $className;
                 } elseif ($className !== 'this') {
-                    $viewName = lcfirst($className);
+                    $viewName = TAutoloader::userClassNameToFilename($className);
                     $fullClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
                     $fullJsClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . JS_EXTENSION;
-                    $fullJsCachePath = \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
+                    $fullJsCachePath = TAutoloader::cacheJsFilenameFromView($viewName);
                     array_push($requires, '\\Phink\\TAutoloader::import($this, "' . $className . '");');
 
                     self::$logger->dump('FULL_CLASS_PATH', $fullClassPath);
 
-                    list($file, $fqcn, $code) = \Phink\TAutoloader::includeClass($fullClassPath, RETURN_CODE);
+                    list($file, $fqcn, $code) = TAutoloader::includeClass($fullClassPath, RETURN_CODE);
                     
                     self::$logger->dump('FULL_QUALIFIED_CLASS_NAME: ', $fqcn);
                     

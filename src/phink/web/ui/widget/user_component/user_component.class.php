@@ -18,10 +18,15 @@
  
 namespace Phink\Web\UI\Widget\UserComponent;
 
-use Phink\Registry\TRegistry;
-use Phink\Web\UI\TCustomControl;
-use Phink\Core\IObject;
 use Phink\TAutoloader;
+use Phink\Core\IObject;
+use Phink\MVC\TActionInfo;
+use Phink\MVC\TCustomView;
+use Phink\MVC\TPartialView;
+use Phink\MVC\TModel;
+use Phink\Registry\TRegistry;
+use Phink\Web\TWebObject;
+use Phink\Web\UI\TCustomControl;
 
 class TUserComponent extends TCustomControl
 {
@@ -33,9 +38,8 @@ class TUserComponent extends TCustomControl
     {
         parent::__construct($parent);
 
-        $this->componentIsInternal = $parent->isInternalComponent();
-        $this->dirName = $parent->getDirName();
-        $this->path = $parent->getPath();
+        $this->clonePrimitivesFrom($parent);
+
     }
 
     public function setComponentType(string $value) : void
@@ -50,29 +54,21 @@ class TUserComponent extends TCustomControl
 
     public function render() : void 
     {
-        $this->setNames($this->componentType);
-        $names = [
-            $this->isInternalComponent() ? 'YES' : 'NO',
-            $this->getPath(),
-            $this->getDirName(),
-            $this->getModelFileName(),
-            $this->getViewFileName(),
-            $this->getCssFileName(),
-            $this->getControllerFileName(),
-            $this->getJsControllerFileName() 
-        ];
+        $mvcFileNames = $this->getMvcFileNamesByTypeName($this->componentType);
 
-        foreach ($names as $name) {
-            echo $name . '<br />'; 
+        foreach ($mvcFileNames as $key => $name) {
+            echo $key . '::' . $name . '<br />'; 
         }
+
+        $cachedFileName = $mvcFileNames['cacheFileName'];
+        $controllerFileName = $mvcFileNames['controllerFileName'];
 
         $code = '';
 
-        //$this->setCacheFileName();
-        if(file_exists($this->getCacheFileName())) {
-            list($namespace, $className, $code) = TAutoloader::getClassDefinition($this->cacheFileName);
+        if(file_exists($cachedFileName)) {
+            list($namespace, $className, $code) = TAutoloader::getClassDefinition($cachedFileName);
             
-            include $this->cacheFileName;
+            include $cachedFileName;
 
             $fqClassName = $namespace . '\\' . $className;
 
@@ -80,8 +76,9 @@ class TUserComponent extends TCustomControl
             $class->render();
         }
 
-        if(!file_exists($this->getCacheFileName())) {
-            list($controllerFileName, $className, $code) = $this->includeController();
+        if(!file_exists($cachedFileName)) {
+            
+            list($controllerFileName, $className, $code) = TAutoloader::includeClass($controllerFileName, RETURN_CODE | INCLUDE_FILE);
 
             include $controllerFileName;
     
@@ -89,23 +86,6 @@ class TUserComponent extends TCustomControl
             $class->render();
         }
         
-    }
-
-    public function includeController(): ?array
-    {
-        $file = ''; $type = ''; $code = '';
-
-        $result = TAutoloader::includeClass($this->controllerFileName, RETURN_CODE | INCLUDE_FILE);
-        if($result !== null) {
-            list($file, $type, $code) = $result;
-        }
-        if ($result === null) {
-            list($file, $type, $code) = TAutoloader::includeDefaultPartialController($this->namespace, $this->className);
-
-            TRegistry::setCode($this->controllerFileName, $code);
-        }
-
-        return [$file, $type, $code];
     }
 
 }

@@ -24,22 +24,18 @@
 
 class TPartialView extends TCustomView
 {
-    public function __construct(IWebObject $father, IWebObject $parent)
+    public function __construct(IWebObject $parent, ?string $className = null)
     {
-        $this->motherView = $father;
         $this->className = $parent->getType();
+        if($className !== null) {
+            $this->className = $className;
+        }
         parent::__construct($parent);
 
-        $this->setViewName();
+        $this->clonePrimitivesFrom($parent);
+
+        $this->setViewName($this->className);
         $this->setNamespace();
         $this->setNames();
-                
-        $this->request = $parent->getRequest();
-        $this->response = $parent->getResponse();
-    }
-
-    public function setViewName($viewName = null) : void
-    {
-        $this->viewName = lcfirst($this->className);
     }
 }

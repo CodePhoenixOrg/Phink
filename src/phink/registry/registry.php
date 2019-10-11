@@ -32,10 +32,11 @@ class TRegistry extends TStaticObject
     private static $_classRegistry = null;
     private static $_code = [];
     private static $_items = [];
+    private static $_isInit = false;
 
     public static function init(): bool
     {
-        if (isset(self::$_items['classes'])) {
+        if (self::$_isInit) {
             return true;
         }
 
@@ -99,7 +100,10 @@ class TRegistry extends TStaticObject
                 'isAutoloaded' => true
             ]
         );
-        return true;
+
+        self::$_isInit = true;
+
+        return self::$_isInit;
     }
 
     public static function importClasses(string $dirName): void
@@ -142,7 +146,7 @@ class TRegistry extends TStaticObject
         ]);
     }
 
-    public static function classInfo($className = '')
+    public static function classInfo(string $className = '')
     {
         $result = null;
 
