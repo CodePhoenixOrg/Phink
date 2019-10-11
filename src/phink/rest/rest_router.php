@@ -47,11 +47,12 @@ class TRestRouter extends \Phink\Core\TRouter
         
         $className = array_pop($path);
      
-        $this->className = 'app' . DIRECTORY_SEPARATOR . 'rest' . DIRECTORY_SEPARATOR . $className . CLASS_EXTENSION;
+        $this->controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'rest' . DIRECTORY_SEPARATOR . $className . CLASS_EXTENSION;
+        $this->modelFileName = 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $className . CLASS_EXTENSION;
         
         // $this->getLogger()->debug('REST CONTROLLER: ' . SRC_ROOT . $this->className);
         
-        return file_exists(SRC_ROOT . $this->className);
+        return file_exists(SRC_ROOT . $this->controllerFileName);
     }
 
     public function dispatch()
@@ -59,16 +60,14 @@ class TRestRouter extends \Phink\Core\TRouter
         $data = [];
         $method = REQUEST_METHOD;
 
-        $model = str_replace('rest', 'models', $this->className);
-        if(file_exists(SRC_ROOT . $model)) {
-            include SRC_ROOT . $model;
+        if(file_exists(SRC_ROOT . $this->modelFileName)) {
+            include SRC_ROOT . $this->modelFileName;
         }
         
-        list($file, $type, $code) = \Phink\TAutoloader::includeClass($this->className, INCLUDE_FILE);
-        include SRC_ROOT . $file;
-        $fqObject = $type;
+        list($controllerFileName, $className, $code) = \Phink\TAutoloader::includeClass($this->controllerFileName, INCLUDE_FILE);
+        include $controllerFileName;
         
-        $instance = new $fqObject($this);
+        $instance = new $className($this);
         
         $request_body = file_get_contents('php://input');
         

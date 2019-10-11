@@ -51,7 +51,6 @@ class TWebRouter extends TRouter
             $this->dirName = dirname($this->dirName, 2);
         }
 
-        $this->viewName = ($this->viewName == '') ? MAIN_VIEW : $this->viewName;
         $this->className = ucfirst($this->viewName);
 
         $this->setNamespace();
