@@ -106,7 +106,7 @@ class Page extends TController
         $di = getArgument("di");
 
         if($di === '') {
-            $di = "mkmain";
+            $di = "TMakeMain";
         }
         $this->userComponent0->setComponentType($di);
     }

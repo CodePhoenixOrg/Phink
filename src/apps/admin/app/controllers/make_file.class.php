@@ -11,7 +11,7 @@ use Puzzle\Menus;
 use Puzzle\Controls;
 use Puzzle\Data\Controls as DbControls;
 
-class Mkfile extends TPartialController
+class TMakeFile extends TPartialController
 {
 	// tools
 	protected $menus, $conf, $lang, $db_prefix, $scriptMaker;

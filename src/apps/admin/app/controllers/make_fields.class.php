@@ -10,7 +10,7 @@ use Puzzle\Menus;
 use Puzzle\Controls;
 use Puzzle\Data\Controls as DbControls;
 
-class Mkfields extends TPartialController
+class TMakeFields extends TPartialController
 {
 	// tools
 	protected $page, $menus, $conf, $lang, $db_prefix, $scriptMaker;

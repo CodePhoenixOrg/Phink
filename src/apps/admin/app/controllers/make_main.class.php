@@ -6,7 +6,7 @@ use Phink\MVC\TPartialController;
 use Phink\Registry\TRegistry;
 use Puzzle\Menus;
 
-class Mkmain extends TPartialController
+class TMakeMain extends TPartialController
 {
 	// view fields
 	protected $tab_ctrl_name, $rad_choice, $choice, $tab_ides, $on_click, $tab_start, $page, 

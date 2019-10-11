@@ -8,7 +8,7 @@ use Puzzle\Data\Controls as DataControls;
 use Puzzle\Controls;
 use Phink\Data\Client\PDO\TPdoConnection;
 
-class Mkscript extends TPartialController
+class TMakeScript extends TPartialController
 {
 	// tools
 	protected $page, $menus, $conf, $lang, $db_prefix, $scriptMaker;

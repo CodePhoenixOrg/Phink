@@ -1,7 +1,7 @@
 {
     "classes": [
         {
-            "Mkmain": {
+            "TMakeMain": {
                 "alias": "mkmain",
                 "path": "@/admin/",
                 "namespace": "Phink\\Apps\\Admin",
@@ -9,7 +9,7 @@
                 "canRender": true,
                 "isAutoloaded": false
             }
-            , "Mkscript": {
+            , "TMakeScript": {
                 "alias": "mkscript",
                 "path": "@/admin/",
                 "namespace": "Phink\\Apps\\Admin",
@@ -17,7 +17,7 @@
                 "canRender": true,
                 "isAutoloaded": false
             }
-            , "Mkfields": {
+            , "TMakeFields": {
                 "alias": "mkfields",
                 "path": "@/admin/",
                 "namespace": "Phink\\Apps\\Admin",
@@ -25,7 +25,7 @@
                 "canRender": true,
                 "isAutoloaded": false
             }
-            , "Mkfile": {
+            , "TMakeFile": {
                 "alias": "mkfile",
                 "path": "@/admin/",
                 "namespace": "Phink\\Apps\\Admin",
@@ -33,7 +33,7 @@
                 "canRender": true,
                 "isAutoloaded": false
             }
-            , "Mkfinal": {
+            , "TMakeFinal": {
                 "alias": "mkfinal",
                 "path": "@/admin/",
                 "namespace": "Phink\\Apps\\Admin",
