@@ -125,9 +125,11 @@ class TRegistry extends TStaticObject
         if ($registry === null) {
             return;
         }
+        
+        $classes = count($registry['classes']) > 0 ? $registry['classes'][0] : [];
 
-        foreach ($registry['classes'] as $class) {
-            $info = new TClassInfo($class);
+        foreach ($classes as $type => $class) {
+            $info = new TClassInfo([$type => $class]);
             if ($info->isValid()) {
                 self::registerClass($info);
             }
