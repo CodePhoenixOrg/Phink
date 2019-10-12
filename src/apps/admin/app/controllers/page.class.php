@@ -3,7 +3,6 @@
 namespace Phink\Apps\Admin;
 
 use Phink\MVC\TController;
-use Phink\Web\UI\TScriptMaker;
 use Puzzle\Menus;
 use Puzzle\Design;
 use Phink\Registry\TRegistry;
@@ -24,7 +23,6 @@ class Page extends TController
     protected $conf;
     protected $lang;
     protected $db_prefix;
-    protected $scriptMaker;
     protected $userComponent0;
 
     public function load(): void
@@ -45,8 +43,6 @@ class Page extends TController
 
         $this->menus = new Menus($this->lang, $this->db_prefix);
         $design = new Design;
-        // $scriptMaker = new Puzzle\ScriptsMaker();
-        $this->scriptMaker = new TScriptMaker;
 
         if($id == 1) {
             $id = $this->menus->getPageId($this->conf, "mkmain.php");
@@ -103,11 +99,18 @@ class Page extends TController
     {
 
         $id = getArgument("id", 1);
-        $di = getArgument("di");
+        $di = getArgument("di", "mkmain");
 
-        if($di === '') {
-            $di = "TMakeMain";
-        }
-        $this->userComponent0->setComponentType($di);
+        $pages = [
+            "mkmain" => "TMakeMain",
+            "mkscript" => "TMakeScript",
+            "mkfields" => "TMakeFields",
+            "mkfile" => "TMakeFile",
+            "mkfinal" => "TMakeFinal"
+        ];
+
+        $typeName = $pages[$di];
+
+        $this->userComponent0->setComponentType($typeName);
     }
 }
