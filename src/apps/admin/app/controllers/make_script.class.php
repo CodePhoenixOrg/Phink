@@ -11,7 +11,7 @@ use Phink\Data\Client\PDO\TPdoConnection;
 class TMakeScript extends TPartialController
 {
 	// tools
-	protected $page, $menus, $conf, $lang, $db_prefix, $scriptMaker;
+	protected $page, $menus, $conf, $lang, $db_prefix;
 
 	// view fields
 	protected $hidden, $rad_menu, $rad_dbgrid, $on_change, $on_change_table, $database_list, 
@@ -25,7 +25,6 @@ class TMakeScript extends TPartialController
         $this->db_prefix = TRegistry::ini('data', 'db_prefix');
 		$this->conf = TRegistry::ini('data', 'conf');
 		$this->menus = new Menus($this->lang, $this->db_prefix);
-        // $this->scriptMaker = new TScriptMaker;
 
 		$database = TRegistry::read('connections', $this->conf)['database'];
 

@@ -13,7 +13,7 @@ use Puzzle\Data\Controls as DbControls;
 class TMakeFields extends TPartialController
 {
 	// tools
-	protected $page, $menus, $conf, $lang, $db_prefix, $scriptMaker;
+	protected $page, $menus, $conf, $lang, $db_prefix;
 
 	// view fields
 	protected $pa_filename, $datacontrols, $userdb, $usertable, $dbgrid, $menu, $filter, 

@@ -8,10 +8,12 @@ use Puzzle\Menus;
 
 class TMakeMain extends TPartialController
 {
-	// view fields
-	protected $tab_ctrl_name, $rad_choice, $choice, $tab_ides, $on_click, $tab_start, $page, 
-		$menus, $conf, $lang, $db_prefix, $scriptMaker;
+	// tools
+	protected $menus, $conf, $lang, $db_prefix;
 
+	// view fields
+	protected $tab_ctrl_name, $rad_choice, $choice, $tab_ides, $on_click, $tab_start, $page;
+	
 	public function beforeBinding(): void
     {		
         $this->lang = TRegistry::ini('application', 'lang');

@@ -127,7 +127,7 @@ class TMakeFile extends TPartialController
 			file_put_contents('tmp_code.php', $script);
 
 			$script = $this->scriptMaker->makePage($this->userdb, $this->usertable, $this->pa_filename, $this->pa_id, $this->indexfield, $this->secondfield, $A_sqlFields, $cs, false);
-			file_put_contents('tmp_admin', $script);
+			file_put_contents('tmp_page.php', $script);
 		
 
 		}

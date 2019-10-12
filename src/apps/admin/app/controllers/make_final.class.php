@@ -10,10 +10,10 @@ use Puzzle\Menus;
 use Puzzle\Controls;
 use Puzzle\Data\Controls as DbControls;
 
-class TMakefinal extends TPartialController
+class TMakeFinal extends TPartialController
 {
 	// tools
-	protected $page, $menus, $conf, $lang, $db_prefix, $scriptMaker;
+	protected $page, $menus, $conf, $lang, $db_prefix;
 
 	// view fields
 	protected $userdb, $usertable, $menu, $filter, $addoption, $me_level, $bl_id, $pa_filename,
@@ -94,7 +94,7 @@ class TMakefinal extends TPartialController
 		if ($this->save == $this->YES) {
 
 			copy('tmp_code.php', $root_code_filename);
-			copy('tmp_page.html', $root_page_filename);
+			copy('tmp_page.php', $root_page_filename);
 			TLog::create()->debug(__FILE__ . ':' . __LINE__ . ':FILE:PAGE:' . $root_code_filename);
 			TLog::create()->debug(__FILE__ . ':' . __LINE__ . ':FILE:CODE:' . $root_page_filename);
 
@@ -112,7 +112,7 @@ class TMakefinal extends TPartialController
 			}
 		}
 		unlink('tmp_code.php');
-		unlink('tmp_page.html');
+		unlink('tmp_page.php');
 
 	}
 	
