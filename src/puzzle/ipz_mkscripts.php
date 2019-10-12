@@ -162,15 +162,15 @@ class ScriptsMaker extends Base
         $script .= "\t\tbreak;\n";
         $script .= "\t\t}\n";
         if ($with_frames) {
-            $script.="\t\techo \"<script language='JavaScript'>window.location.href='page.html?id=$page_id&lg=$lg'</script>\";\n";
+            $script.="\t\techo \"<script language='JavaScript'>window.location.href='admin?id=$page_id&lg=$lg'</script>\";\n";
         } elseif (!$with_frames) {
             $script.="\t\t\$query=\"SELECT\";\n";
         }
         
-        //$script.="\t\techo \"<script language='JavaScript'>window.location.href='page.html?id=$page_id&lg=fr'</script>\";\n";
+        //$script.="\t\techo \"<script language='JavaScript'>window.location.href='admin?id=$page_id&lg=fr'</script>\";\n";
         // $script.="\t} else if(\$event==\"onUnload\" && \$query==\"ACTION\") {\n";
         // $script.="\t\t\$cs=connection(DISCONNECT,\$database);\n";
-        // $script.="\t\techo \"<script language='JavaScript'>window.location.href='page.html?id=$page_id&lg=fr'</script>\";\n";
+        // $script.="\t\techo \"<script language='JavaScript'>window.location.href='admin?id=$page_id&lg=fr'</script>\";\n";
         $script .= "\t}\n";
         // $script.="\? >\n";
 
@@ -210,13 +210,13 @@ class ScriptsMaker extends Base
         $script.="\tif(isset(\$sr)) \$curl_pager.=\"&sr=\$sr\";\n";
         $script.="\tif(\$query === \"SELECT\") {\n";
         $script.="\t\t\t\$sql = \"select $indexfield, $secondfield from \$tablename order by $indexfield\";\n";
-        $script.="\t\t\t\$dbgrid = \$datacontrols->createPagerDbGrid(\$tablename, \$sql, \$id, \"page.html\", \"&query=ACTION\$curl_pager\", \"\", true, true, \$dialog, array(0, 400), 15, \$grid_colors, \$cs);\n";
+        $script.="\t\t\t\$dbgrid = \$datacontrols->createPagerDbGrid(\$tablename, \$sql, \$id, \"admin\", \"&query=ACTION\$curl_pager\", \"\", true, true, \$dialog, array(0, 400), 15, \$grid_colors, \$cs);\n";
         $script.="\t\t\t//\$dbgrid = tableShadow(\$tablename, \$dbgrid);\n";
         $script.="\t\t\techo \"<br>\".\$dbgrid;\n";
         $script.="\t} elseif(\$query === \"ACTION\") {\n";
         $script.="?>\n";
         //$page_filename=getPageFilename($database, $page_id);
-        $page_filename="page.html";
+        $page_filename="admin";
         if ($with_frames) {
             $script.="<form method=\"POST\" name=\"$formname\" action=\"$page_filename?id=$page_id&lg=$lg\">\n";
         } elseif (!$with_frames) {
@@ -373,27 +373,27 @@ class ScriptsMaker extends Base
         } elseif (!$with_frames) {
             $script.="\t\t\$query=\"SELECT\";\n";
         }
-        //$script.="\t\techo \"<script language='JavaScript'>window.location.href='page.html?id=$page_id&lg=fr'</script>\";\n";
+        //$script.="\t\techo \"<script language='JavaScript'>window.location.href='admin?id=$page_id&lg=fr'</script>\";\n";
         $script.="\t} else if(\$event==\"onUnload\" && \$query==\"ACTION\") {\n";
         $script.="\t\t\$cs=connection(\"disconnect\",\"$database\");\n";
-        $script.="\t\techo \"<script language='JavaScript'>window.location.href='page.html?id=$page_id&lg=fr'</script>\";\n";
+        $script.="\t\techo \"<script language='JavaScript'>window.location.href='admin?id=$page_id&lg=fr'</script>\";\n";
         $script.="\t}\n";
 
         $script.="if(\$query==\"SELECT\") {\n";
         $script.="\t\t\$sql=\"select $indexfield, $secondfield from $table order by $indexfield\";\n";
 
-        $script.="\t\t\$dbgrid=\$datacontrols->createPagerDbGrid(\"$table\", \$sql, \$id, \"page.html\", \"&query=ACTION\$curl_pager\", \"\", true, true, \$dialog, array(0, 400), 15, \$grid_colors, \$cs);\n";
+        $script.="\t\t\$dbgrid=\$datacontrols->createPagerDbGrid(\"$table\", \$sql, \$id, \"admin\", \"&query=ACTION\$curl_pager\", \"\", true, true, \$dialog, array(0, 400), 15, \$grid_colors, \$cs);\n";
   
         $script.="\t\t//\$dbgrid=tableShadow(\"$table\", \$dbgrid);\n";
         $script.="\t\techo \"<br>\".\$dbgrid;\n";
         $script.="} elseif(\$query==\"ACTION\") {\n";
         $script.="?>\n";
         //$page_filename=getPageFilename($database, $page_id);
-        $page_filename="page.html";
+        $page_filename="admin";
         if ($with_frames) {
             $script.="<form method='POST' name='$formname' action='$page_filename?id=$page_id&lg=$lg'>\n";
         } elseif (!$with_frames) {
-            $script.="<form method='POST' name='$formname' action='page.html?id=$page_id&lg=$lg'>\n";
+            $script.="<form method='POST' name='$formname' action='admin?id=$page_id&lg=$lg'>\n";
         }
         $script.="\t<input type='hidden' name='query' value='ACTION'>\n";
         $script.="\t<input type='hidden' name='event' value='onRun'>\n";
@@ -523,7 +523,7 @@ class ScriptsMaker extends Base
         //if($with_frames)
         $script.="\t<form method='POST' name='$formname' action='$page_filename?id=$page_id&lg=fr'>\n";
         //else if(!$with_frames)
-        //$script.="<form method='POST' name='$formname' action='page.html?id=$page_id&lg=fr'>\n";
+        //$script.="<form method='POST' name='$formname' action='admin?id=$page_id&lg=fr'>\n";
         $script.="\t\t<input type='hidden' name='query' value='ACTION'>\n";
         $script.="\t\t<input type='hidden' name='event' value='onRun'>\n";
         $script.="\t\t<input type='hidden' name='pc' value='<?php echo \$pc?>'>\n";
