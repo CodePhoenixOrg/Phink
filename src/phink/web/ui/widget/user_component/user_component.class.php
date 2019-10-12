@@ -56,9 +56,9 @@ class TUserComponent extends TCustomControl
     {
         $mvcFileNames = $this->getMvcFileNamesByTypeName($this->componentType);
 
-        foreach ($mvcFileNames as $key => $name) {
-            echo $key . '::' . $name . '<br />'; 
-        }
+        // foreach ($mvcFileNames as $key => $name) {
+        //     echo $key . '::' . $name . '<br />'; 
+        // }
 
         $cachedFileName = $mvcFileNames['cacheFileName'];
         $controllerFileName = $mvcFileNames['controllerFileName'];
