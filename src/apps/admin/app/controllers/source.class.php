@@ -1,23 +1,38 @@
-<html>
+<?php
 
-<body bgcolor="lightgrey">
-	<center>
-		<?php
-		include_once 'puzzle/ipz_source.php';
+namespace Phink\Apps\Admin;
 
-		use \Puzzle\Source;
+use Phink\MVC\TController;
+use Phink\Web\UI\TScriptMaker;
+use Puzzle\Menus;
+use Puzzle\Design;
+use Phink\Registry\TRegistry;
+use Puzzle\Source as PHPSource;
 
-		$source = new Source;
+class Source extends TController
+{
+	protected $source;
+    protected $appTitle;
+    protected $page_colors;
+    protected $grid_colors;
+    protected $panel_colors;
+    protected $file;
+    protected $lang;
+	
+	public function load() : void 
+	{
+        $this->page_colors = (object)TRegistry::ini('page_colors');
+        $this->grid_colors = (object)TRegistry::ini('grid_colors');
+        $this->panel_colors = (object)TRegistry::ini('panel_colors');
+        $this->appName = $this->getApplication()->getName();
+		$this->appTitle = $this->getApplication()->getTitle() . " Admin";
+		
+		$phpsrc = new PHPSource;
 
-		$file = $_GET["file"];
+		$this->file = getArgument("file");
 
-		$script = file_get_contents($file);
-		$source = $source->highlightPhp($script, true);
+		$script = file_get_contents($this->file);
+		$this->source = $phpsrc->highlightPhp($script, true);
 
-		echo "<h1>Source du script $file</h1><br>\n";
-		echo "<div style='text-align:left;width:800px;height:600px;background:white;overflow:scroll'>\n$source\n</div><br>\n";
-		?>
-	</center>
-</body>
-
-</html>
+	}
+}
