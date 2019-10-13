@@ -7,8 +7,6 @@ use Phink\Data\Client\PDO\TPdoConnection;
 use Phink\Data\TAnalyzer;
 use Phink\Log\TLog;
 use Puzzle\Menus;
-use Puzzle\Controls;
-use Puzzle\Data\Controls as DbControls;
 
 class TMakeFinal extends TPartialController
 {
@@ -57,8 +55,6 @@ class TMakeFinal extends TPartialController
 		$tmp_filename = 'tmp_' . $this->pa_filename;
 		$this->wwwroot = getWwwRoot();
 
-		echo "<br>";
-
 		$this->rel_page_filename = $this->pa_filename . $this->extension;
 
 		$this->basedir .= "/";
@@ -97,7 +93,6 @@ class TMakeFinal extends TPartialController
 			copy('tmp_page.php', $root_page_filename);
 			TLog::create()->debug(__FILE__ . ':' . __LINE__ . ':FILE:PAGE:' . $root_code_filename);
 			TLog::create()->debug(__FILE__ . ':' . __LINE__ . ':FILE:CODE:' . $root_page_filename);
-
 
 			$this->sstatus = "Page enregistrée";
 		} elseif ($this->save == $this->NO) {

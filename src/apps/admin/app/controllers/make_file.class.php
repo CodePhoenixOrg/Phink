@@ -113,13 +113,13 @@ class TMakeFile extends TPartialController
 					$this->di_long
 				);
 
-				echo "<p style='color:red'>Le script $rel_page_filename a été ajouté au triplet dictionnaire-page-menu sous l'id de page $this->pa_id et l'id de menu $this->me_id.</p>";
+				$this->message .= "<p style='color:red'>Le script $rel_page_filename a été ajouté au triplet dictionnaire-page-menu sous l'id de page $this->pa_id et l'id de menu $this->me_id.</p>";
 			}
 
 			//echo "$cur_pa_filename<br>";
 			$this->message .= "<p>Voulez-vous conserver le script ?</p>\n";
 			if ($script_exists) {
-				$message = "<p style='color:red'>Attention ! Un fichier portant ce nom existe déjà.<br>" .
+				$this->message .= "<p style='color:red'>Attention ! Un fichier portant ce nom existe déjà.<br>" .
 					"Voulez-vous écraser le script actuel sachant que toutes les modifications effectuées seront perdues ?</p>\n";
 			}
 
