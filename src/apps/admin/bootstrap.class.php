@@ -23,13 +23,9 @@ class AppBootstrap extends TBootstrap
 {
     public function start(): void
     {
-        // $this->mount($this->path, [
-        //     'mkmain.class.php',
-        //     'mkscript.class.php',
-        //     'mkfields.class.php',
-        //     'mkfile.class.php',
-        //     'mkfinal.class.php',
-        // ]);
+        $this->mount([
+            BUSINESS_DIR . 'sub_page' . CLASS_EXTENSION
+        ]);
 
         $this->loadINI($this->getPath());
         $this->copyAssets();

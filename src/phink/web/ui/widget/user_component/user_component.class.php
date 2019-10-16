@@ -20,12 +20,7 @@ namespace Phink\Web\UI\Widget\UserComponent;
 
 use Phink\TAutoloader;
 use Phink\Core\IObject;
-use Phink\MVC\TActionInfo;
-use Phink\MVC\TCustomView;
-use Phink\MVC\TPartialView;
-use Phink\MVC\TModel;
 use Phink\Registry\TRegistry;
-use Phink\Web\TWebObject;
 use Phink\Web\UI\TCustomControl;
 
 class TUserComponent extends TCustomControl

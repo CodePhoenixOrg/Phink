@@ -80,14 +80,15 @@ if (APP_IS_WEB) {
     define('PUZZLE_APPS_ROOT', PHINK_APPS_ROOT);
     define('PUZZLEJS_ROOT', SITE_ROOT . PUZZLEJS_VENDOR);
 
-    define('APP_DIR', 'app');
+    define('APP_DIR', 'app' . DIRECTORY_SEPARATOR);
     
-    define('APP_ROOT', SRC_ROOT . APP_DIR . DIRECTORY_SEPARATOR);
+    define('APP_ROOT', SRC_ROOT . APP_DIR);
     define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
     define('MODEL_ROOT', APP_ROOT . 'models' . DIRECTORY_SEPARATOR);
     define('REST_ROOT', APP_ROOT . 'rest' . DIRECTORY_SEPARATOR);
     define('VIEW_ROOT', APP_ROOT . 'views' . DIRECTORY_SEPARATOR);
-    define('BUSINESS_ROOT', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
+    define('BUSINESS_DIR', APP_DIR . 'business' . DIRECTORY_SEPARATOR);
+    define('BUSINESS_ROOT', SRC_ROOT . BUSINESS_DIR);
 
     define('REL_RUNTIME_DIR', 'runtime' . DIRECTORY_SEPARATOR);
     define('RUNTIME_DIR', SRC_ROOT . REL_RUNTIME_DIR);

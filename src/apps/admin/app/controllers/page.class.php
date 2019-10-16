@@ -94,23 +94,4 @@ class Page extends TController
         //if($authentication) {
         $border_color = "eeeeee";
     }
-
-    public function afterBinding(): void
-    {
-
-        $id = getArgument("id", 1);
-        $di = getArgument("di", "mkmain");
-
-        $pages = [
-            "mkmain" => "TMakeMain",
-            "mkscript" => "TMakeScript",
-            "mkfields" => "TMakeFields",
-            "mkfile" => "TMakeFile",
-            "mkfinal" => "TMakeFinal"
-        ];
-
-        $typeName = $pages[$di];
-
-        $this->userComponent0->setComponentType($typeName);
-    }
 }

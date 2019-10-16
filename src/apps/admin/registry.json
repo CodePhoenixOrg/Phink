@@ -41,6 +41,14 @@
                 "canRender": true,
                 "isAutoloaded": false
             }
+            , "TSubPage": {
+                "alias": "subpage",
+                "path": "@/admin/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": false,
+                "canRender": true,
+                "isAutoloaded": true
+            }
         }
     ]
 }
