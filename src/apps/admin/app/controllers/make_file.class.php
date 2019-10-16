@@ -88,7 +88,7 @@ class TMakeFile extends TPartialController
 
 			$L_sqlFields = substr($L_sqlFields, 0, strlen($L_sqlFields) - 1);
 			$A_sqlFields = explode(",", $L_sqlFields);
-			$this->ndexfield = $A_sqlFields[0];
+			$this->indexfield = $A_sqlFields[0];
 			$this->secondfield = $A_sqlFields[1];
 
 			list($this->me_id, $this->pa_id) = $this->menus->getMenuAndPage($this->conf, $rel_page_filename);
