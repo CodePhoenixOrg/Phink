@@ -156,11 +156,13 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
         $routesArray['web']['get']["^/console/$"] = "@/console/app/views/console.phtml?console=help";
         $routesArray['web']['get']["^/console/([a-z-]+)$"] = "@/console/app/views/console.phtml?console=$1";
         $routesArray['web']['get']["^/console/([a-z-]+)/([a-z-]+)$"] = "@/console/app/views/console.phtml?console=$1&arg=$2";
-        $routesArray['web']['get']["^/tuto/$"] = "@/tuto/index.phtml";
-        $routesArray['web']['get']["^/admin(\\?([a-z0-9-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
-        $routesArray['web']['get']["^/admin/source(\\?([a-z0-9\._\-=&]+))?$"] = "@/admin/app/views/source.phtml?$2";
         $routesArray['web']['post']["^/console$"] = "@/console/app/views/console_window.phtml";
-        $routesArray['web']['post']["^/admin(\\?([a-z0-9-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
+        $routesArray['web']['get']["^/tuto/$"] = "@/tuto/index.phtml";
+        $routesArray['web']['get']["^/admin(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
+        $routesArray['web']['post']["^/admin(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
+        $routesArray['web']['get']["^/page.html(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
+        $routesArray['web']['post']["^/page.html(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
+        $routesArray['web']['get']["^/admin/source(\\?([a-z0-9\._\-=&]+))?$"] = "@/admin/app/views/source.phtml?$2";
         
         foreach ($routesArray as $key => $value) {
             TRegistry::write('routes', $key, $value);
