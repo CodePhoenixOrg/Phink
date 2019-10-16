@@ -276,7 +276,8 @@ class Controls extends \Puzzle\Base
         
             La fonction renvoie un tableau à deux éléments nominatifs : pager_ctrl et sql_query
         */
-        global $img, $pc, $lg;
+        // global $img, $pc, $lg;
+        $img = 'assets/admin/img';
 
         $table="";
         $sql_query=strtolower(trim($sql_query));
@@ -398,7 +399,7 @@ class Controls extends \Puzzle\Base
         
         */
         // global $img, $pc, $lg;
-        $img = 'img';
+        $img = 'assets/admin/img';
 
         $sql_query=strtolower(trim($sql_query));
         $p=strpos($sql_query, " ");
@@ -528,7 +529,7 @@ class Controls extends \Puzzle\Base
         $pc = getArgument("pc");
         $sr = getArgument("sr");
 
-        $img = 'img';
+        $img = 'assets/admin/img';
     
         $criterion=getArgument("criterion");
     
@@ -562,7 +563,7 @@ class Controls extends \Puzzle\Base
         }
     
         if (!isset($image_link)) {
-            $image_link="img/edit.png";
+            $image_link="$img/edit.png";
         }
 
         $add="Ajouter";
@@ -730,7 +731,7 @@ class Controls extends \Puzzle\Base
             $hidden_fields.
             "<tr>\n";
             if ($fields_count>1) {
-                $filters.="<td bgcolor=\"$pager_color\"><img src=\"img/filter.png\" border=\"0\"></td>";
+                $filters.="<td bgcolor=\"$pager_color\"><img src=\"$img/filter.png\" border=\"0\"></td>";
             }
         
             $filter_button="<input type=\"submit\" name=\"filter\" value=\"Filtrer\">\n";
@@ -1029,8 +1030,9 @@ class Controls extends \Puzzle\Base
         
             Dessine un tableau dont les informations sont le result d'une requête SQL passée à $sql. Les parametres $page_link et $image_link sont utilisés pour la premiere colonne. Si $image_link est vide, la valeur affichée est celle du champ d'index.
         */
-        global $sr, $pc, $img, $lg, $database;
-    
+        // global $sr, $pc, $img, $lg, $database;
+        $img = 'assets/admin/img';
+
         $criterion = getArgument("criterion");
         $image_link = $page_link;
 
@@ -1063,7 +1065,7 @@ class Controls extends \Puzzle\Base
         }
     
         if ($image_link=="") {
-            $image_link="img/edit.png";
+            $image_link="$img/edit.png";
         }
 
         $add="Ajouter";
@@ -1186,7 +1188,7 @@ class Controls extends \Puzzle\Base
         if ($can_filter) {
             $filters="<form method=\"post\" action=\"admin?id=$pager_id&lg=$lg\" name=\"filter\"><tr>\n";
             if ($fields_count>1) {
-                $filters.="<td bgcolor=\"$pager_color\"><img src=\"img/filter.png\" border=\"0\"></td>";
+                $filters.="<td bgcolor=\"$pager_color\"><img src=\"$img/filter.png\" border=\"0\"></td>";
             }
             $filter_button="<input type=\"submit\" name=\"filter\" value=\"Filtrer\">\n";
         } else {
@@ -1490,9 +1492,10 @@ class Controls extends \Puzzle\Base
             Desciption des paramètres :
         
         */
-        global $img, $lg;
+        // global $img, $lg;
+        $img = 'assets/admin/img';
 
-        $image_link="img/edit.png";
+        $image_link="$img/edit.png";
         $step = getArgument('pc');
 
         //Détermine les couleurs du dbGrid
