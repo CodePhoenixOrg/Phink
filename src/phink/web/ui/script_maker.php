@@ -160,7 +160,7 @@ class TScriptMaker extends TObject
         $script .= "\t\tbreak;\n";
         $script .= "\t\t}\n";
         if ($with_frames) {
-            $script .= "\t\techo \"<script language='JavaScript'>window.location.href='page.html?id=$page_id&lg=$lg'</script>\";\n";
+            $script .= "\t\techo \"<script language='JavaScript'>window.location.href='admin?id=$page_id&lg=$lg'</script>\";\n";
         } elseif (!$with_frames) {
             $script .= "\t\t\$query=\"SELECT\";\n";
         }
@@ -177,11 +177,11 @@ class TScriptMaker extends TObject
 
     public function makePage(
         $database,
-        $table = "",
-        $pa_filename = "",
+        $table = '',
+        $pa_filename = '',
         $page_id = 0,
-        $indexfield = 0,
-        $secondfield = "",
+        $indexfield = '',
+        $secondfield = '',
         $A_sqlFields,
         $cs,
         $with_frames
