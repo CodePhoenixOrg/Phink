@@ -1,17 +1,15 @@
 <?php
 namespace Phink\Apps\Admin;
 
-use Puzzle\Menus;
-use Puzzle\Design;
-use Phink\TAutoloader;
 use Phink\Core\IObject;
 use Phink\Registry\TRegistry;
 use Phink\Web\UI\Widget\UserComponent\TUserComponent;
+use Puzzle\Menus;
 
-class TSubPage extends TUserComponent {
+class TSubPage extends TUserComponent
+{
 
-    protected
-        $menus, $conf, $lang, $db_prefix;
+    protected $menus, $conf, $lang, $db_prefix;
 
     public function __construct(IObject $parent)
     {
@@ -25,36 +23,32 @@ class TSubPage extends TUserComponent {
 
     }
 
-    public function render() : void 
+    public function render(): void
     {
-        $id = getArgument("id");
-        $di = getArgument("di");
+        $id = $this->getQueryParameters('id');
+        $di = $this->getQueryParameters('di');
 
-        $pages = [
-            "mkmain" => "TMakeMain",
-            "mkscript" => "TMakeScript",
-            "mkfields" => "TMakeFields",
-            "mkfile" => "TMakeFile",
-            "mkfinal" => "TMakeFinal"
-        ];
+        if (!empty($id)) {
+            $title_page = $this->menus->retrievePageById($this->conf, $id, $this->lang);
+            $di = $title_page["index"];
+        } else if (!empty($di)) {
+            $title_page = $this->menus->retrievePageByDictionaryId($this->conf, $di, $this->lang);
+            $id = $title_page["index"];
+        }
 
-        if(isset($pages[$di])) {
-            $this->setComponentType($pages[$di]);
+        self::getLogger()->debug('ID::' . $id);
+        self::getLogger()->debug('DI::' . $di);
+
+
+        if (isset($di)) {
+            $this->setComponentType($di);
+
             parent::render();
-            
+
             return;
         }
 
-        if ($di !== '') {
-            $title_page = $this->menus->retrievePageByDictionaryId($this->conf, $di, $this->lang);
-            $id = $title_page["index"];
-        } else {
-            // $title_page = retrievePageByMenuId($conf, $id, $this->lang);
-            $title_page = $this->menus->retrievePageById($this->conf, $id, $this->lang);
-            $di = $title_page["index"];
-        }
-        // $this->title = $title_page["title"];
-        $page = $this->lang . "/" . $title_page["page"];
+        $page = SITE_ROOT . $this->getDirName() . DIRECTORY_SEPARATOR . APP_DIR . 'pages' . DIRECTORY_SEPARATOR . $title_page["page"];
 
         include $page;
 
