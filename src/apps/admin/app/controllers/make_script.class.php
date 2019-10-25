@@ -16,7 +16,7 @@ class TMakeScript extends TPartialController
 	// view fields
 	protected $hidden, $rad_menu, $rad_dbgrid, $on_change, $on_change_table, $database_list, 
 		$table_list, $tab_ides, $tab_mkscript, $bloc_list, $di_name, $di_short, $di_long,
-		$pa_filename, $srvdir, $srvfiles, $basedir, $userdb, $filepath;
+		$pa_filename, $srvdir, $srvfiles, $basedir, $userdb, $filepath, $chk_filter, $chk_addoption;
 	
 	public function beforeBinding(): void
     {		
@@ -69,14 +69,14 @@ class TMakeScript extends TPartialController
 		$this->rad_dbgrid[$dbgrid] = " checked";
 
 		//Option de filtre
-		$chk_filter = '';
+		$this->chk_filter = '';
 		$filter = getArgument('filter');
 		if ($filter == "1") $chk_filter = " checked";
 
 		//Option d'ajout
-		$chk_addoption = '';
+		$this->chk_addoption = '';
 		$addoption = getArgument('addoption');
-		if ($addoption == "1") $chk_addoption = " checked";
+		if ($addoption == "1") $this->chk_addoption = " checked";
 
 		$me_id = getArgument('me_id');
 
