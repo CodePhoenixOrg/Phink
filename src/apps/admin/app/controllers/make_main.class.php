@@ -26,6 +26,7 @@ class TMakeMain extends TPartialController
 		$this->choice = getArgument('choice', 0);
 		$this->rad_choice[$this->choice]=" checked"; 
 		$this->tab_ides = $this->menus->getTabIdes($this->conf);
+		array_shift($this->tab_ides);
 		$this->on_click="var index=get_radio_value(\"myTabForm\", \"choice\");";
 		$this->on_click.=jsArray("myTabCaptions", $this->tab_ides);
 		$this->on_click.="location.href=\"admin?di=\"+myTabCaptions[index]+\"&lg=$this->lang\";";
