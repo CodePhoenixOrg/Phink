@@ -260,6 +260,23 @@ trait TWebObject
         return $this->parameters;
     }
 
+    public function getQueryParameters(string $param = null)
+    {
+        if (!isset($this->parameters[$param])) return false;
+
+        $value = $this->parameters[$param];
+        
+        return $this->filterParameter($value);
+    }
+
+    public function filterParameter($param)
+    {
+        $result = filter_var($param, FILTER_SANITIZE_ENCODED);
+        $result = html_entity_decode($result, ENT_QUOTES);
+        
+        return $result;
+    }
+
     public function getCommands(): array
     {
         return $this->commands;
@@ -496,4 +513,5 @@ trait TWebObject
         $this->response = $parent->getResponse();
 
     }
+
 }
