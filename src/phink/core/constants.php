@@ -177,6 +177,7 @@ define('REQUEST_TYPE_REST', 'rest');
 
 define('DEBUG_LOG', LOG_PATH . 'debug.log');
 define('ERROR_LOG', LOG_PATH . 'error.log');
+define('SQL_LOG', LOG_PATH . 'sql.log');
 
 $appconf = DOCUMENT_ROOT . 'config' . DIRECTORY_SEPARATOR . 'app.ini';
 

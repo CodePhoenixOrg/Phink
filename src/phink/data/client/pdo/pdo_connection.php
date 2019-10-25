@@ -177,6 +177,13 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
             if($params != null) {
                 $statement = $this->_state->prepare($sql);
                 $statement->execute($params);
+
+                $debugSQL = $sql;
+                foreach($params as $field => $value) {
+                    $debugSQL = str_replace($field, "'$value'", $debugSQL);
+                }
+
+                self::getLogger()->sql($debugSQL);
             } else {
                 $statement = $this->_state->query($sql);
             }
