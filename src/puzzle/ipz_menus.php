@@ -364,7 +364,7 @@ INSERT;
 
         $main_menu = '';
         $sql = "";
-        $sql =   "select m.pa_id, m.me_level, d.di_{$this->lg}_short " .
+        $sql =   "select m.pa_id, m.me_level, d.di_{$this->lg}_short, d.di_name " .
             "from {$this->db_prefix}menus m, {$this->db_prefix}dictionary d " .
             "where m.di_name=d.di_name " .
             "and m.me_level='$level' " .
@@ -382,11 +382,13 @@ INSERT;
             $index = $rows[0];
             $level = $rows[1];
             $caption = $rows[2];
+            $name = $rows[3];
             //$target=$rows[3];
             //$link=$rows[4];
 
             #$main_menu=$main_menu . "<td bgcolor='black'><a href='admin?id=$index&lg=" . ${this->lg} . "'><span style='color:#ffffff'><b>$caption</b></span></a><span style='color:#ffffff'><b>&nbsp;|&nbsp;</b></span></td>";
-            $menu_items[] =  "<a href='admin?id=$index&lg={$this->lg}'><span>$caption</span></a>";
+            //$menu_items[] =  "<a href='admin?id=$index&lg={$this->lg}'><span>$caption</span></a>";
+            $menu_items[] =  "<a href='admin?id=$index&di=$name&lg={$this->lg}'><span>$caption</span></a>";
 
             if ($count == 0) {
                 $default_id = $index;
