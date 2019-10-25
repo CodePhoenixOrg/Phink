@@ -158,6 +158,7 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
         $routesArray['web']['get']["^/console/([a-z-]+)/([a-z-]+)$"] = "@/console/app/views/console.phtml?console=$1&arg=$2";
         $routesArray['web']['post']["^/console$"] = "@/console/app/views/console_window.phtml";
         $routesArray['web']['get']["^/tuto/$"] = "@/tuto/index.phtml";
+        $routesArray['web']['get']["^/admin$"] = "@/admin/app/views/page.phtml?di=mkmain";
         $routesArray['web']['get']["^/admin(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
         $routesArray['web']['post']["^/admin(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
         $routesArray['web']['get']["^/page.html(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
