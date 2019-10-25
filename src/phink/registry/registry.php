@@ -146,14 +146,21 @@ class TRegistry extends TStaticObject
             'canRender' => $info->canRender(),
             'isAutoloaded' => $info->isAutoloaded()
         ]);
+        self::write('classes', $info->getAlias(), ['type' => $info->getType()]);
     }
 
-    public static function classInfo(string $className = '')
+    public static function classInfo(string &$className = '')
     {
         $result = null;
 
         if (self::init() && isset(self::$_items['classes'][$className])) {
-            $result = (object) self::$_items['classes'][$className];
+            $result = self::$_items['classes'][$className];
+            if(isset($result['type'])) {
+                $className = $result['type'];
+                $result = self::$_items['classes'][$result['type']];
+            }
+
+            $result = (object) $result;
         }
 
         return $result;
