@@ -36,9 +36,20 @@ class TSubPage extends TUserComponent
             $id = $title_page["index"];
         }
 
+        $page = SITE_ROOT . $this->getDirName() . DIRECTORY_SEPARATOR . APP_DIR . 'pages' . DIRECTORY_SEPARATOR . $title_page["page"];
+        if(!\file_exists($page)) {
+            $page = DOCUMENT_ROOT . $this->lang . DIRECTORY_SEPARATOR . $title_page["page"];
+        }
+
+        if(\file_exists($page)) {
+            include $page;
+
+            return;
+        }
+
         self::getLogger()->debug('ID::' . $id);
         self::getLogger()->debug('DI::' . $di);
-
+        self::getLogger()->debug('PAGE iNFO::', $title_page);
 
         if (isset($di)) {
             $this->setComponentType($di);
@@ -47,10 +58,5 @@ class TSubPage extends TUserComponent
 
             return;
         }
-
-        $page = SITE_ROOT . $this->getDirName() . DIRECTORY_SEPARATOR . APP_DIR . 'pages' . DIRECTORY_SEPARATOR . $title_page["page"];
-
-        include $page;
-
     }
 }
