@@ -204,10 +204,10 @@ function escapeQuote($value)
 
 function filterPOST($arg)
 {
-	$result = filter_input(INPUT_POST, $arg, FILTER_SANITIZE_STRING);
-	$result = html_entity_decode($result, ENT_QUOTES);
-	
-	return $result;
+    $result = filter_input(INPUT_POST, $arg, FILTER_SANITIZE_STRING);
+    $result = html_entity_decode($result, ENT_QUOTES);
+
+    return $result;
 }
 
 function getArgument($arg, $default = '')

@@ -15,24 +15,28 @@ class Base extends TObject
     public function __construct($lg, $db_prefix)
     {
         parent::__construct();
-        
+
         $this->db_prefix = $db_prefix;
         $this->lg = $lg;
     }
 
-    public function setDatabaseName($value) {
+    public function setDatabaseName($value)
+    {
         $this->database = $value;
     }
 
-    public function getDatabaseName() {
+    public function getDatabaseName()
+    {
         return $this->database;
     }
 
-    public function setConfigName($value) {
+    public function setConfigName($value)
+    {
         $this->configName = $value;
     }
 
-    public function getConfigName() {
+    public function getConfigName()
+    {
         return $this->configName;
     }
 }

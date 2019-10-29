@@ -16,12 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+class iPuzzleLibrary
+{
 
-class iPuzzleLibrary {
+    public static function mount()
+    {
 
-    public static function mount() {
-
-        $filenames = [ 
+        $filenames = [
             "constants.php",
             "base.php",
             "misc.php",
@@ -33,7 +34,7 @@ class iPuzzleLibrary {
             "design.php",
             "controls.php",
             "db_controls.php",
-            "db_graphs.php",            
+            "db_graphs.php",
             "blocks.php",
             "framed_blocks.php",
             "menus.php",
@@ -42,7 +43,7 @@ class iPuzzleLibrary {
             "source.php",
             "splash.php",
             "mail.php",
-            "diary.php"
+            "diary.php",
 
             // "db.php",
             // "dico.php",
@@ -50,13 +51,13 @@ class iPuzzleLibrary {
             //"init.php",
             //"empty_file.php",
             // "calendar.php",
-    
+
         ];
 
         foreach ($filenames as $filename) {
             include __DIR__ . "/ipz_" . $filename;
         }
-   
+
     }
 }
 

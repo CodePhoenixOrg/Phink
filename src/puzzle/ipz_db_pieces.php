@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ */
 namespace Puzzle;
 
 class Pieces
@@ -34,10 +34,10 @@ class Pieces
 <script language="JavaScript" src="js/pz_cursor.js"></script>
 JAVASCRIPT;
 
-		echo $js;
-	}
-	
-    public function debugScroller($switch=false)
+        echo $js;
+    }
+
+    public function debugScroller($switch = false)
     {
         if ($switch) {
             echo '
@@ -79,18 +79,18 @@ JAVASCRIPT;
     public function container($name, $top, $left, $height, $width, $cursor_width)
     {
         echo '
-<div id="scrX_'. $name.' style="position:absolute;z-index:1;height:16px;visibility:visible" onMouseOver="PZ_SCROLLBOX=my_'.$name.';PZ_CURSOR=my_'.$name.'.cursorX;">
-	<table height="'. $cursor_width.'" width="'. $width.'" cellpadding="0" cellspacing="0" border="0">
+<div id="scrX_' . $name . ' style="position:absolute;z-index:1;height:16px;visibility:visible" onMouseOver="PZ_SCROLLBOX=my_' . $name . ';PZ_CURSOR=my_' . $name . '.cursorX;">
+	<table height="' . $cursor_width . '" width="' . $width . '" cellpadding="0" cellspacing="0" border="0">
 	<tr>
-	<td id="butL_'. $name.'"> <img src="/img/scroll/scrollerXleft.png" height="16" width="13"
+	<td id="butL_' . $name . '"> <img src="/img/scroll/scrollerXleft.png" height="16" width="13"
 			onMouseDown="PZ_SCROLLBOX.goLeft();"
 			onMouseUp="PZ_SCROLLBOX.stop();"
 		> </td>
-	<td id="accX_'. $name.'"> <img width="'. ($width-26) .'" height="16" src="/img/scroll/scrollerXmiddle.png"
+	<td id="accX_' . $name . '"> <img width="' . ($width - 26) . '" height="16" src="/img/scroll/scrollerXmiddle.png"
 			onMouseDown="PZ_SCROLLBOX.goFastLeft();"
 			onMouseUp="PZ_SCROLLBOX.stop();"
 		> </td>
-	<td id="butR_'. $name.'"> <img src="/img/scroll/scrollerXright.png" height="16" width="13"
+	<td id="butR_' . $name . '"> <img src="/img/scroll/scrollerXright.png" height="16" width="13"
 			onMouseDown="PZ_SCROLLBOX.goRight();"
 			onMouseUp="PZ_SCROLLBOX.stop();"
 		> </td>
@@ -98,24 +98,24 @@ JAVASCRIPT;
 	</table>
 </div>
 
-<div id="scrY_'. $name.'" style="position:absolute;z-index:1;visibility:visible" onMouseOver="PZ_SCROLLBOX=my_'. $name.';PZ_CURSOR=my_'. $name.'.cursorY;"> 
-	<table width="'. $cursor_width.'" height="'. $height.'" cellpadding="0" cellspacing="0" border="0">
+<div id="scrY_' . $name . '" style="position:absolute;z-index:1;visibility:visible" onMouseOver="PZ_SCROLLBOX=my_' . $name . ';PZ_CURSOR=my_' . $name . '.cursorY;">
+	<table width="' . $cursor_width . '" height="' . $height . '" cellpadding="0" cellspacing="0" border="0">
 	<tr>
-	<td id="butU_'. $name.'" width="16" height="13">
+	<td id="butU_' . $name . '" width="16" height="13">
                <img src="/img/scroll/scrollerYtop.png" width="16" height="13"
 	       		onMouseDown="PZ_SCROLLBOX.goUp();"
 			onMouseUp="PZ_SCROLLBOX.stop();"
-		></td>	
+		></td>
 	</tr>
 	<tr>
-	<td id="accY_'. $name.'" width="16" height="'. ($height-26) .'">
-               <img src="/img/scroll/scrollerYmiddle.png" width="16" height="'. ($height-26).'"
+	<td id="accY_' . $name . '" width="16" height="' . ($height - 26) . '">
+               <img src="/img/scroll/scrollerYmiddle.png" width="16" height="' . ($height - 26) . '"
 	       		onMouseDown="PZ_SCROLLBOX.goFastUp();"
 			onMouseUp="PZ_SCROLLBOX.stop();"
 		></td>
 	</tr>
 	<tr>
-	<td id="butD_'. $name.'" width="16" height="13">
+	<td id="butD_' . $name . '" width="16" height="13">
 	        <img src="/img/scroll/scrollerYbottom.png" width="16" height="13"
 		        onMouseDown="PZ_SCROLLBOX.goDown();"
 			onMouseUp="PZ_SCROLLBOX.stop();"
@@ -124,40 +124,40 @@ JAVASCRIPT;
 	</table>
 </div>
 
-<div id="curX_'. $name.'" style="position:absolute;z-index:2;visibility:visible" onMouseOver="PZ_SCROLLBOX=my_'. $name.';PZ_CURSOR=my_'. $name.'.cursorX;">
+<div id="curX_' . $name . '" style="position:absolute;z-index:2;visibility:visible" onMouseOver="PZ_SCROLLBOX=my_' . $name . ';PZ_CURSOR=my_' . $name . '.cursorX;">
 	<img src="/img/scroll/cursorX.png" height="16" width="16" onMouseDown="PZ_CURSOR.changeEvents();">
 </div>
-<div id="curY_'. $name.'" style="position:absolute;z-index:2;visibility:visible" onMouseOver="PZ_SCROLLBOX=my_'. $name.';PZ_CURSOR=my_'. $name.'.cursorY;" >
+<div id="curY_' . $name . '" style="position:absolute;z-index:2;visibility:visible" onMouseOver="PZ_SCROLLBOX=my_' . $name . ';PZ_CURSOR=my_' . $name . '.cursorY;" >
 	<img src="/img/scroll/cursorY.png" height="16" width="16" onMouseDown="PZ_CURSOR.changeEvents();">
 </div>
 
 <script language="JavaScript">
-	var my_'. $name.'=new pz_object("cnt_'. $name.'", '. $top.', '. $left.', '. $height.', '. $width.', '. $cursor_width.');
-	
-	my_'. $name.'.table=eval(document.getElementById("'. $name.'"));
+	var my_' . $name . '=new pz_object("cnt_' . $name . '", ' . $top . ', ' . $left . ', ' . $height . ', ' . $width . ', ' . $cursor_width . ');
 
-	my_'. $name.'.scrollerX=eval(document.getElementById("scrX_'. $name.'"));
-	my_'. $name.'.buttonLeft=eval(document.getElementById("butL_'. $name.'"));
-	my_'. $name.'.acceleratorX=eval(document.getElementById("accX_'. $name.'"));
-	my_'. $name.'.buttonRight=eval(document.getElementById("butR_'. $name.'"));
-	
-	my_'. $name.'.scrollerY=eval(document.getElementById("scrY_'. $name.'"));
-	my_'. $name.'.buttonUp=eval(document.getElementById("butU_'. $name.'"));
-	my_'. $name.'.acceleratorY=eval(document.getElementById("accY_'. $name.'"));
-	my_'. $name.'.buttonDown=eval(document.getElementById("butD_'. $name.'"));
+	my_' . $name . '.table=eval(document.getElementById("' . $name . '"));
 
-	my_'. $name.'.init();
+	my_' . $name . '.scrollerX=eval(document.getElementById("scrX_' . $name . '"));
+	my_' . $name . '.buttonLeft=eval(document.getElementById("butL_' . $name . '"));
+	my_' . $name . '.acceleratorX=eval(document.getElementById("accX_' . $name . '"));
+	my_' . $name . '.buttonRight=eval(document.getElementById("butR_' . $name . '"));
 
-	my_'. $name.'.cursorX=new pz_cursor("curX_'. $name.'", 16, 16);
-	my_'. $name.'.cursorX.scroller=my_'. $name.'.scrollerX;
-	my_'. $name.'.cursorX.init_cursorX();
-	
-	my_'. $name.'.cursorY=new pz_cursor("curY_'. $name.'", 16, 16);
-	my_'. $name.'.cursorY.scroller=my_'. $name.'.scrollerY;
-	my_'. $name.'.cursorY.init_cursorY();
-	
-	my_'. $name.'.show();
+	my_' . $name . '.scrollerY=eval(document.getElementById("scrY_' . $name . '"));
+	my_' . $name . '.buttonUp=eval(document.getElementById("butU_' . $name . '"));
+	my_' . $name . '.acceleratorY=eval(document.getElementById("accY_' . $name . '"));
+	my_' . $name . '.buttonDown=eval(document.getElementById("butD_' . $name . '"));
+
+	my_' . $name . '.init();
+
+	my_' . $name . '.cursorX=new pz_cursor("curX_' . $name . '", 16, 16);
+	my_' . $name . '.cursorX.scroller=my_' . $name . '.scrollerX;
+	my_' . $name . '.cursorX.init_cursorX();
+
+	my_' . $name . '.cursorY=new pz_cursor("curY_' . $name . '", 16, 16);
+	my_' . $name . '.cursorY.scroller=my_' . $name . '.scrollerY;
+	my_' . $name . '.cursorY.init_cursorY();
+
+	my_' . $name . '.show();
 
 </script>';
-	}
+    }
 }

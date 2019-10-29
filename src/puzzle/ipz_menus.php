@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ */
 
 namespace Puzzle;
 
@@ -56,7 +56,7 @@ class Menus extends Base
         $sql = 'delete from {$this->db_prefix}v_menus;';
         $cs->query($sql);
 
-        $sql =   "insert into {$this->db_prefix}v_menus (me_id, pa_id, me_level, di_name, me_target, pa_filename, di_fr_short, di_fr_long, di_en_short, di_en_long)" .
+        $sql = "insert into {$this->db_prefix}v_menus (me_id, pa_id, me_level, di_name, me_target, pa_filename, di_fr_short, di_fr_long, di_en_short, di_en_long)" .
             "select m.me_id, m.pa_id, m.me_level, m.di_name, m.me_target, p.pa_filename, d.di_fr_short, d.di_fr_long, d.di_en_short, d.di_en_long " .
             "from {$this->db_prefix}menus m, {$this->db_prefix}pages p, {$this->db_prefix}dictionary d " .
             "where m.di_name = d.di_name " .
@@ -65,7 +65,7 @@ class Menus extends Base
         //echo $sql;
         $cs->query($sql);
 
-        $sql =   "select me_id as Menu, pa_id as Page, me_level as Niveau, di_name as Dictionnaire, me_target as Cible, pa_filename as Fichier, di_fr_short as 'Francais court', di_fr_long as 'Francais long', di_en_short as 'Anglais court', di_en_long as 'Anglais long' from {$this->db_prefix}v_menus";
+        $sql = "select me_id as Menu, pa_id as Page, me_level as Niveau, di_name as Dictionnaire, me_target as Cible, pa_filename as Fichier, di_fr_short as 'Francais court', di_fr_long as 'Francais long', di_en_short as 'Anglais court', di_en_long as 'Anglais long' from {$this->db_prefix}v_menus";
 
         //tableau_sql("menu", $sql, 0, "edit.php", "", "&database=$database", "", "", "", $cs);
         //container("menu", 50, 250, 200, 355, 16);
@@ -77,21 +77,21 @@ class Menus extends Base
     /*
     function menu_exists($database, $pa_filename="")
     {
-        $cs=connection(CONNECT, $database);
-    
-        $sql=	"select m.me_id, m.pa_id, m.me_level, m.di_name, m.me_target, p.pa_filename, d.di_fr_short, d.di_fr_long, d.di_en_short, d.di_en_long " .
-                    "from menus m, pages p, dictionary d " .
-                    "where m.di_name = d.di_name " .
-                    "and p.di_name = d.di_name " .
-            "and p.pa_filename = '$pa_filename' " .
-                    "order by m.me_id";
-    
-        $stmt = $cs->query($sql);
-        $exists=$result->num_rows>0;
-    
-        return $exists;
+    $cs=connection(CONNECT, $database);
+
+    $sql=    "select m.me_id, m.pa_id, m.me_level, m.di_name, m.me_target, p.pa_filename, d.di_fr_short, d.di_fr_long, d.di_en_short, d.di_en_long " .
+    "from menus m, pages p, dictionary d " .
+    "where m.di_name = d.di_name " .
+    "and p.di_name = d.di_name " .
+    "and p.pa_filename = '$pa_filename' " .
+    "order by m.me_id";
+
+    $stmt = $cs->query($sql);
+    $exists=$result->num_rows>0;
+
+    return $exists;
     }
-    */
+     */
 
     public function getPageId($userdb, $pa_filename)
     {
@@ -134,7 +134,7 @@ class Menus extends Base
 
     public function getPageFilename($conf, $id = 0)
     {
-        $sql =   "select p.pa_filename " .
+        $sql = "select p.pa_filename " .
             "from {$this->db_prefix}pages p, {$this->db_prefix}menus m, {$this->db_prefix}dictionary d " .
             "where m.di_name=d.di_name " .
             "and p.pa_id=m.pa_id " .
@@ -217,15 +217,15 @@ INSERT;
 
         $cs->beginTransaction();
 
-        $sql =   "update {$this->db_prefix}menus set di_name='$di_name', me_level='$me_level', me_target='$me_target', pa_id=$pa_id " .
+        $sql = "update {$this->db_prefix}menus set di_name='$di_name', me_level='$me_level', me_target='$me_target', pa_id=$pa_id " .
             "where me_id=$me_id";
         $affected_rows = $cs->exec($sql);
 
-        $sql =   "update {$this->db_prefix}pages set di_name='$di_name', pa_filename='$pa_filename'" .
+        $sql = "update {$this->db_prefix}pages set di_name='$di_name', pa_filename='$pa_filename'" .
             "where pa_id=$pa_id";
         $affected_rows += $cs->exec($sql);
 
-        $sql =   "update {$this->db_prefix}menus set di_fr_short='$di_fr_short', di_fr_long='$di_fr_long', di_en_short='$di_en_short', di_en_long='$di_en_long' where di_name=$di_name";
+        $sql = "update {$this->db_prefix}menus set di_fr_short='$di_fr_short', di_fr_long='$di_fr_long', di_en_short='$di_en_short', di_en_long='$di_en_long' where di_name=$di_name";
         $affected_rows += $cs->exec($sql);
 
         $cs->commit();
@@ -309,7 +309,6 @@ INSERT;
             imagecopy($im, $src_im, $fwidth + $offset + 12, 0, 0, 0, 12, 24);
             imagedestroy($src_im);
 
-
             $width = imagesx($im);
             $height = imagesy($im);
             $shadow_color = ImageColorAllocate($im, 0, 0, 0);
@@ -364,13 +363,13 @@ INSERT;
 
         $main_menu = '';
         $sql = "";
-        $sql =   "select m.pa_id, m.me_level, d.di_{$this->lg}_short, d.di_name " .
+        $sql = "select m.pa_id, m.me_level, d.di_{$this->lg}_short, d.di_name " .
             "from {$this->db_prefix}menus m, {$this->db_prefix}dictionary d " .
             "where m.di_name=d.di_name " .
             "and m.me_level='$level' " .
             "order by m.me_id";
 
-        //		echo $sql . "<br>";
+        //        echo $sql . "<br>";
         self::getLogger()->debug($sql, __FILE__, __LINE__);
         self::getLogger()->dump('LG', $this->lg);
 
@@ -388,7 +387,7 @@ INSERT;
 
             #$main_menu=$main_menu . "<td bgcolor='black'><a href='admin?id=$index&lg=" . ${this->lg} . "'><span style='color:#ffffff'><b>$caption</b></span></a><span style='color:#ffffff'><b>&nbsp;|&nbsp;</b></span></td>";
             //$menu_items[] =  "<a href='admin?id=$index&lg={$this->lg}'><span>$caption</span></a>";
-            $menu_items[] =  "<a href='admin?id=$index&di=$name&lg={$this->lg}'><span>$caption</span></a>";
+            $menu_items[] = "<a href='admin?id=$index&di=$name&lg={$this->lg}'><span>$caption</span></a>";
 
             if ($count == 0) {
                 $default_id = $index;
@@ -407,7 +406,7 @@ INSERT;
     {
         $main_menu = "";
         $sql = "";
-        $sql =   "select m.pa_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename " .
+        $sql = "select m.pa_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename " .
             "from {$this->db_prefix}menus m, {$this->db_prefix}pages p, {$this->db_prefix}dictionary d " .
             "where m.me_level=1 " .
             "and m.pa_id=p.pa_id " .
@@ -443,7 +442,7 @@ INSERT;
             $sub_menu = "<table width='100%'>";
         }
 
-        $sql =    "select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id " .
+        $sql = "select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id " .
             "from {$this->db_prefix}menus m, {$this->db_prefix}pages p, {$this->db_prefix}dictionary d " .
             "where m.di_name=d.di_name " .
             "and p.pa_id=m.pa_id " .
@@ -487,7 +486,7 @@ INSERT;
                         break;
                     case "5":
                         $sub_menu .= "<tr><td>&nbsp;&nbsp;&nbsp;<a href='admin?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
-                        // no break
+                    // no break
                     case "6":
                         $sub_menu .= "<tr><td><a href='$link' target='_new'>$caption</a></td></tr>";
                         break;
@@ -511,7 +510,7 @@ INSERT;
             $sub_menu = "<table width='100%'>";
         }
 
-        $sql =   "select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id " .
+        $sql = "select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id " .
             "from {$this->db_prefix}menus m, {$this->db_prefix}pages p, {$this->db_prefix}dictionary d " .
             "where m.me_level>1 " .
             "and m.pa_id=p.pa_id " .
@@ -532,7 +531,7 @@ INSERT;
             }
         }
 
-        $sql =   "select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id " .
+        $sql = "select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id " .
             "from {$this->db_prefix}menus m, pages p, {$this->db_prefix}dictionary d " .
             "where m.me_level=1 " .
             "and m.pa_id=p.pa_id " .
@@ -588,7 +587,7 @@ INSERT;
                         break;
                     case "5":
                         $sub_menu .= "<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;<a href='admin?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
-                        // no break
+                    // no break
                     case "6":
                         $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='$link' target='_new'>$caption</a></td></tr>";
                         break;
@@ -609,7 +608,7 @@ INSERT;
         $title = "";
         $page = "";
         $sql = "";
-        $sql =   "select d.di_name, p.pa_filename, m.me_charset, d.di_{$this->lg}_short, d.di_{$this->lg}_long " .
+        $sql = "select d.di_name, p.pa_filename, m.me_charset, d.di_{$this->lg}_short, d.di_{$this->lg}_long " .
             "from {$this->db_prefix}pages p, {$this->db_prefix}menus m, {$this->db_prefix}dictionary d " .
             "where m.di_name=d.di_name " .
             "and p.di_name=m.di_name " .
@@ -643,9 +642,9 @@ INSERT;
         $filename=${this->lg}."/".$page;
 
         if (!file_exists($filename)) {
-            copy("includes/fichier_vide.php", $filename);
+        copy("includes/fichier_vide.php", $filename);
         }
-        */
+         */
         return $title_page;
     }
 
@@ -654,7 +653,7 @@ INSERT;
         $title = "";
         $page = "";
         $sql = "";
-        $sql =   "select d.di_name, p.pa_filename, m.me_charset, d.di_{$this->lg}_short, d.di_{$this->lg}_long " .
+        $sql = "select d.di_name, p.pa_filename, m.me_charset, d.di_{$this->lg}_short, d.di_{$this->lg}_long " .
             "from {$this->db_prefix}pages p, {$this->db_prefix}menus m, {$this->db_prefix}dictionary d " .
             "where m.di_name=d.di_name " .
             "and p.di_name=m.di_name " .
@@ -689,9 +688,9 @@ INSERT;
         $filename=${this->lg}."/".$page;
 
         if (!file_exists($filename)) {
-            copy("includes/fichier_vide.php", $filename);
+        copy("includes/fichier_vide.php", $filename);
         }
-        */
+         */
         return $title_page;
     }
 
@@ -700,7 +699,7 @@ INSERT;
         $title = "";
         $page = "";
         $sql = "";
-        $sql =   "select m.me_id, p.pa_filename, m.me_charset, d.di_{$this->lg}_short, d.di_{$this->lg}_long " .
+        $sql = "select m.me_id, p.pa_filename, m.me_charset, d.di_{$this->lg}_short, d.di_{$this->lg}_long " .
             "from {$this->db_prefix}pages p, {$this->db_prefix}menus m, {$this->db_prefix}dictionary d " .
             "where m.di_name=d.di_name " .
             "and p.di_name=m.di_name " .

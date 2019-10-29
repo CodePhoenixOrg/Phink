@@ -15,10 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-namespace Puzzle\Data;
 
-use PDOStatement;
+namespace Puzzle\Data;
 
 use Phink\Core\TObject;
 use Puzzle\Data\Driver;
@@ -54,7 +52,8 @@ class Statement extends TObject
 
     }
 
-    public function execute($params = []) {
+    public function execute($params = [])
+    {
         $result = null;
 
         if (isset($params)) {
@@ -63,7 +62,7 @@ class Statement extends TObject
             $result = $this->_statement->execute();
         }
 
-        return $result; 
+        return $result;
     }
 
     public function fetch($mode = \PDO::FETCH_NUM)
@@ -71,7 +70,7 @@ class Statement extends TObject
         $this->_values = $this->_statement->fetch($mode);
         return $this->_values;
     }
-    
+
     public function fetchAll($mode = \PDO::FETCH_NUM)
     {
         $this->_values = $this->_statement->fetchAll($mode);
@@ -82,7 +81,7 @@ class Statement extends TObject
     {
         return $this->_statement->fetchObject();
     }
-    
+
     public function columnCount()
     {
         if (!isset($this->_fieldCount)) {
@@ -217,7 +216,7 @@ class Statement extends TObject
             $this->_sqliteTypes();
         }
     }
-    
+
     private function _sqliteTypes()
     {
         $this->_native_types = (array) null;
@@ -230,14 +229,12 @@ class Statement extends TObject
         $this->_native_types[4] = "REAL";
         $this->_native_types[5] = "NUMERIC";
 
-        
         $this->_native2php_assoc["INTEGER"] = "int";
         $this->_native2php_assoc["TEXT"] = "string";
         $this->_native2php_assoc["BLOB"] = "blob";
         $this->_native2php_assoc["REAL"] = "float";
         $this->_native2php_assoc["NUMERIC"] = "float";
 
-        
         $this->_native2php_num[1] = "int";
         $this->_native2php_num[2] = "string";
         $this->_native2php_num[3] = "blob";
@@ -269,7 +266,7 @@ class Statement extends TObject
         $this->_native_types[252] = "BLOB";
         $this->_native_types[253] = "VARCHAR";
         $this->_native_types[254] = "CHAR";
-        
+
         $this->_native2php_assoc["TINYINT"] = "int";
         $this->_native2php_assoc["SMALLINT"] = "int";
         $this->_native2php_assoc["INT"] = "int";
@@ -287,7 +284,7 @@ class Statement extends TObject
         $this->_native2php_assoc["BLOB"] = "blob";
         $this->_native2php_assoc["VARCHAR"] = "string";
         $this->_native2php_assoc["CHAR"] = "char";
-        
+
         $this->_native2php_num[1] = "int";
         $this->_native2php_num[2] = "int";
         $this->_native2php_num[3] = "int";

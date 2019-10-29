@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ */
 
 namespace Puzzle;
 
@@ -36,11 +36,11 @@ class Source
 </style>
 <?php
 
-		// Set the static content root differently on php.net
-		if (!isset($MYSITE)) {
-			$MYSITE="";
-		}
-        $_SERVER['STATIC_ROOT'] = ($MYSITE == 'http://www.php.net/') ?  'http://static.php.net/www.php.net' : '';
+        // Set the static content root differently on php.net
+        if (!isset($MYSITE)) {
+            $MYSITE = "";
+        }
+        $_SERVER['STATIC_ROOT'] = ($MYSITE == 'http://www.php.net/') ? 'http://static.php.net/www.php.net' : '';
     }
 
     // Highlight PHP code
@@ -59,12 +59,12 @@ class Source
         highlight_string($code);
         $highlighted = ob_get_contents();
         ob_end_clean();
-    
+
         /*
         if ($return) { return $highlighted; }
         else { echo $highlighted; }
-        */
-    
+         */
+
         return $highlighted;
     }
 
@@ -84,47 +84,47 @@ class Source
         highlight_string($code);
         $highlighted = ob_get_contents();
         ob_end_clean();
-    
+
         // Fix output to use CSS classes and wrap well
         $highlighted = '<div class="phpcode">' . str_replace(
-        array(
-            '&nbsp;',
-            '<br />',
-            '<span style="color:',
-            '</span>',
-            "\n ",
-            '  '
-        ),
-        array(
-            ' ',
-            "<br />\n",
-            '<span class="',
-            '</span>',
-            "\n&nbsp;",
-            '&nbsp; '
-        ),
-        $highlighted
-    ) . '</div>';
-    
+            array(
+                '&nbsp;',
+                '<br />',
+                '<span style="color:',
+                '</span>',
+                "\n ",
+                '  ',
+            ),
+            array(
+                ' ',
+                "<br />\n",
+                '<span class="',
+                '</span>',
+                "\n&nbsp;",
+                '&nbsp; ',
+            ),
+            $highlighted
+        ) . '</div>';
+
         /*
         if ($return) { return $highlighted; }
         else { echo $highlighted; }
-        */
-    
+         */
+
         return $highlighted;
     }
 
-    public function getPagename($url="")
+    public function getPagename($url = "")
     {
         // No file param specified
         if (!isset($url)) {
             echo "<h1>No page URL specified</h1>";
             exit;
         }
- 
+
         // Get dirname of the specified URL part
         $dir = dirname($url);
- 
+
         // Some dir was present in the filename
         if (!empty($dir) && !preg_match("!^(\\.|/)$!", $dir)) {
             $page_name = $_SERVER['DOCUMENT_ROOT'] . $url;

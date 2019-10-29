@@ -15,14 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 namespace Puzzle\Data;
 
 define("CONNECT", "connect");
 define("DISCONNECT", "disconnect");
 
 use PDO;
-
 use Phink\Core\TObject;
 use Puzzle\Data\Driver;
 use Puzzle\Data\Statement;
@@ -51,7 +50,7 @@ class Connection extends TObject
     public function __construct($driver, $databaseName, $host = '', $user = '', $password = '', $port = 0)
     {
         parent::__construct();
-        
+
         $this->_driver = $driver;
         $this->_databaseName = $databaseName;
         $this->_host = $host;
@@ -63,21 +62,21 @@ class Connection extends TObject
 
         $this->_config = [
             'driver' => $driver,
-            'host' => $host, 
-            'database' => $databaseName, 
-            'user' => $user, 
+            'host' => $host,
+            'database' => $databaseName,
+            'user' => $user,
             'password' => $password,
-            'port' => $port
+            'port' => $port,
         ];
 
         if ($this->_driver == Driver::MYSQL) {
             $this->_params = [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8", PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_NUM];
             $this->_dsn = $this->_driver . ':host=' . $this->_host . ';dbname=' . $this->_databaseName;
-        } elseif($this->_driver == Driver::SQLSERVER) {
+        } elseif ($this->_driver == Driver::SQLSERVER) {
             $this->_params = [PDO::SQLSRV_ATTR_ENCODING => PDO::SQLSRV_ENCODING_SYSTEM, PDO::SQLSRV_ATTR_DIRECT_QUERY => true];
-            $this->_dsn = $this->_driver . ':Driver=' . $this->_host . ';Database=' . $this->_databaseName; 
-        } elseif($this->_driver == Driver::SQLITE) {
-            $this->_dsn = $this->_driver . ':' . $this->_databaseName; 
+            $this->_dsn = $this->_driver . ':Driver=' . $this->_host . ';Database=' . $this->_databaseName;
+        } elseif ($this->_driver == Driver::SQLITE) {
+            $this->_dsn = $this->_driver . ':' . $this->_databaseName;
         }
     }
 
@@ -85,7 +84,7 @@ class Connection extends TObject
     {
         return $this->_driver;
     }
-    
+
     public function getState()
     {
         return $this->_state;
@@ -94,7 +93,7 @@ class Connection extends TObject
     public function open()
     {
         try {
-            if($this->_params != null) {
+            if ($this->_params != null) {
                 $this->_state = new \PDO($this->_dsn, $this->_user, $this->_password, $this->_params);
             } else {
                 $this->_state = new \PDO($this->_dsn, $this->_user, $this->_password);
@@ -105,18 +104,18 @@ class Connection extends TObject
 
         return $this->_state !== null;
     }
-    
+
     public function query($sql = '', array $params = null)
     {
         $result = false;
         try {
-            if($params != null) {
+            if ($params != null) {
                 $this->_statement = $this->_state->prepare($sql);
                 $this->_statement->execute($params);
             } else {
                 $this->_statement = $this->_state->query($sql);
             }
-            
+
             $result = new Statement($this->_statement, $this->_config, $sql);
         } catch (\PDOException $ex) {
             self::getLogger()->debug(__FILE__ . ':' . __LINE__ . ':', ['SQL' => $sql, 'PARAMS' => $params]);
@@ -124,7 +123,7 @@ class Connection extends TObject
         } catch (\Exception $ex) {
             self::getLogger()->debug(__FILE__ . ':' . __LINE__ . ':', ['exception' => $ex]);
         }
-        
+
         return $result;
     }
 
@@ -142,42 +141,42 @@ class Connection extends TObject
     {
         $this->_state->beginTransaction();
     }
-    
+
     public function commit()
     {
         $this->_state->commit();
     }
-    
+
     public function rollback()
     {
         $this->_state->rollBack();
     }
-    
+
     public function inTransaction()
     {
         $this->_state->inTransaction();
     }
-    
+
     public function lastInsertId()
     {
         return $this->_state->lastInsertId();
     }
-    
+
     public function setAttribute($key, $value)
     {
         $this->_state->setAttribute($key, $value);
     }
-    
+
     public function getAttribute($key)
     {
         return $this->_state->getAttribute($key);
     }
-    
+
     public function getLastInsertId()
     {
         return $this->_state->lastInsertId();
     }
-    
+
     public function quote($value)
     {
         return $this->_state->quote($value);
@@ -195,5 +194,5 @@ class Connection extends TObject
     {
         $this->close();
     }
-    
+
 }

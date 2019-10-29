@@ -40,7 +40,7 @@ class JsBuilder
             'validator.js',
             'design.js',
             'menus.js',
-            'shared.js'
+            'shared.js',
         ];
 
         $js_content = '';

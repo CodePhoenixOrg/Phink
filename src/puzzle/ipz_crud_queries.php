@@ -15,15 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
- namespace Puzzle\Data;
+
+namespace Puzzle\Data;
 
 /**
  * Description of crudQueries
  *
  * @author david
  */
-trait CrudQueries  {
+trait CrudQueries
+{
     //put your code here
 
     private $_select = '';
@@ -32,10 +33,9 @@ trait CrudQueries  {
     private $_delete = '';
     private $_parameters = '';
 
-
     /**
      * SELECT query
-     *  
+     *
      * @param string $value SQL query
      * @param mixed array $params Set of values for the parametered query
      */
@@ -46,12 +46,12 @@ trait CrudQueries  {
     }
     public function getSelectQuery()
     {
-        return (object)['sql' => $this->_select, 'params' => $this->_parameters];
+        return (object) ['sql' => $this->_select, 'params' => $this->_parameters];
     }
 
     /**
      * INSERT query
-     *  
+     *
      * @param string $value SQL query
      * @param mixed array $params Set of values for the parametered query
      */
@@ -62,12 +62,12 @@ trait CrudQueries  {
     }
     public function getInsertQuery()
     {
-        return (object)['sql' => $this->_insert, 'params' => $this->_parameters];
+        return (object) ['sql' => $this->_insert, 'params' => $this->_parameters];
     }
 
     /**
      * UPDATE query
-     *  
+     *
      * @param string $value SQL query
      * @param mixed array $params Set of values for the parametered query
      */
@@ -78,12 +78,12 @@ trait CrudQueries  {
     }
     public function getUpdateQuery()
     {
-        return (object)['sql' => $this->_update, 'params' => $this->_parameters];
+        return (object) ['sql' => $this->_update, 'params' => $this->_parameters];
     }
 
     /**
      * DELETE query
-     *  
+     *
      * @param string $value SQL query
      * @param mixed array $params Set of values for the parametered query
      */
@@ -94,7 +94,7 @@ trait CrudQueries  {
     }
     public function getDeleteQuery()
     {
-        return (object)['sql' => $this->_delete, 'params' => $this->_parameters];
+        return (object) ['sql' => $this->_delete, 'params' => $this->_parameters];
     }
-    
+
 }
