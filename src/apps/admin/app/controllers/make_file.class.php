@@ -14,10 +14,10 @@ use Puzzle\Data\Controls as DbControls;
 class TMakeFile extends TPartialController
 {
 	// tools
-	protected $menus, $conf, $lang, $db_prefix, $scriptMaker;
+	protected $menus, $workconf, $workdb, $userconf, $userdb, $lang, $db_prefix, $scriptMaker;
 
 	// view fields
-	protected $userdb, $usertable, $dbgrid, $menu, $filter, $addoption, $me_level, $bl_id,
+	protected $usertable, $dbgrid, $menu, $filter, $addoption, $me_level, $bl_id,
 		$pa_filename, $extension, $basedir, $save, $autogen, $catalog, $query, $di_long,
 		$di_short, $di_name, $lg, $me_id, $pa_id, $message, $indexfield, $secondfield,
 		$YES = 'Oui', $NO = 'Non';
@@ -30,6 +30,8 @@ class TMakeFile extends TPartialController
 		$this->menus = new Menus($this->lang, $this->db_prefix);
         $this->scriptMaker = new TScriptMaker;
 
+		$this->workdb = getArgument("workdb");
+		$this->userconf = getArgument("userconf");
 		$this->userdb = getArgument("userdb");
 		$this->usertable = getArgument("usertable");
 		$this->dbgrid = getArgument("dbgrid");
@@ -49,13 +51,14 @@ class TMakeFile extends TPartialController
 		$this->di_short = getArgument("di_short");
 		$this->di_name = getArgument("di_name");
 		$this->lg = getArgument("lg", "fr");
-		$cs = TPdoConnection::opener($this->conf);
+		$workcs = TPdoConnection::opener($this->conf);
+		$usercs = TPdoConnection::opener($this->userconf);
 		// $this->cs = connection(CONNECT, $userdb) or die("UserDb='$userdb'<br>");
 		$tmp_filename = 'tmp_' . $this->pa_filename;
 		$wwwroot = getWwwRoot();
 
 		$analyzer = new TAnalyzer;
-		$references = $analyzer->searchReferences($this->userdb, $this->usertable, $cs);
+		$references = $analyzer->searchReferences($this->userdb, $this->usertable, $usercs);
 		$A_fieldDefs = $references["field_defs"];
 
 		$this->message = "<br>";
@@ -81,7 +84,7 @@ class TMakeFile extends TPartialController
 			$L_sqlFields = "";
 			$A_sqlFields = [];
 
-			$stmt = $cs->query($sql);
+			$stmt = $usercs->query($sql);
 			while ($rows = $stmt->fetch()) {
 				$L_sqlFields .= $rows[0] . ",";
 			}
@@ -123,10 +126,10 @@ class TMakeFile extends TPartialController
 					"Voulez-vous écraser le script actuel sachant que toutes les modifications effectuées seront perdues ?</p>\n";
 			}
 
-			$script = $this->scriptMaker->makeCode($this->conf, $this->usertable, $stmt, $this->pa_id, $this->indexfield, $this->secondfield, $A_fieldDefs, $cs, false);
+			$script = $this->scriptMaker->makeCode($this->userconf, $this->usertable, $stmt, $this->pa_id, $this->indexfield, $this->secondfield, $A_fieldDefs, $usercs, false);
 			file_put_contents('tmp_code.php', $script);
 
-			$script = $this->scriptMaker->makePage($this->userdb, $this->usertable, $this->pa_filename, $this->pa_id, $this->indexfield, $this->secondfield, $A_sqlFields, $cs, false);
+			$script = $this->scriptMaker->makePage($this->userdb, $this->usertable, $this->pa_filename, $this->pa_id, $this->indexfield, $this->secondfield, $A_sqlFields, $usercs, false);
 			file_put_contents('tmp_page.php', $script);
 		
 

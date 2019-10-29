@@ -18,7 +18,9 @@
 
 		<form name='myForm' method='POST' action='admin?di=mkfinal&lg=<phx:echo var="lg" />'>
 	
+		<input type='hidden' name='workdb' value='<phx:echo var="workdb" />'>
 		<input type='hidden' name='userdb' value='<phx:echo var="userdb" />'>
+		<input type='hidden' name='userconf' value='<phx:echo var="userconf" />'>
 		<input type='hidden' name='usertable' value='<phx:echo var="usertable" />'>
 		<input type='hidden' name='dbgrid' value='<phx:echo var="dbgrid" />'>
 		<input type='hidden' name='menu' value='<phx:echo var="menu" />'>

@@ -1,7 +1,9 @@
 <fieldset style='width:450px;'>
 <legend>Créer un script à partir d'une table</legend>
 <form name='myForm' method='POST' action=''>
+	<input type='hidden' name='workdb' value='<phx:echo var="workdb" />'>
 	<input type='hidden' name='userdb' value='<phx:echo var="userdb" />'>
+	<input type='hidden' name='userconf' value='<phx:echo var="userconf" />'>
 	<input type='hidden' name='usertable' value='<phx:echo var="usertable" />'>
 	<input type='hidden' name='dbgrid' value='<phx:echo var="dbgrid" />'>
 	<input type='hidden' name='menu' value='<phx:echo var="menu" />'>

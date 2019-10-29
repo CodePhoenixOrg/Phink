@@ -13,10 +13,10 @@ use Puzzle\Data\Controls as DbControls;
 class TMakeFields extends TPartialController
 {
 	// tools
-	protected $page, $menus, $conf, $lang, $db_prefix;
+	protected $page, $menus, $workconf, $workdb, $userconf, $userdb, $lang, $db_prefix;
 
 	// view fields
-	protected $pa_filename, $datacontrols, $userdb, $usertable, $dbgrid, $menu, $filter, 
+	protected $pa_filename, $datacontrols, $usertable, $dbgrid, $menu, $filter, 
 		$addoption, $me_id, $me_level, $bl_id, $di_long, $di_short, $di_name, 
 		$autogen, $extension, $basedir, $lg, $options, $defs;
 
@@ -24,9 +24,11 @@ class TMakeFields extends TPartialController
     {		
         $this->lang = TRegistry::ini('application', 'lang');
         $this->db_prefix = TRegistry::ini('data', 'db_prefix');
-		$this->conf = TRegistry::ini('data', 'conf');
+		$this->workconf = TRegistry::ini('data', 'conf');
 		$this->menus = new Menus($this->lang, $this->db_prefix);
 
+		$this->workdb = getArgument("workdb");
+		$this->userconf = getArgument("userconf");
 		$this->userdb = getArgument("userdb");
 		$this->usertable = getArgument("usertable");
 		$this->dbgrid = getArgument("dbgrid");
@@ -46,7 +48,7 @@ class TMakeFields extends TPartialController
 		$this->lg = getArgument('lg');
 
 
-		$cs = TPdoConnection::opener($this->conf);
+		$usercs = TPdoConnection::opener($this->userconf);
 
 		$tmp_filename = "tmp.php";
 		$wwwroot = getWwwRoot();
@@ -54,7 +56,7 @@ class TMakeFields extends TPartialController
 
 		$analyzer = new TAnalyzer;
 
-		$references = $analyzer->searchReferences($this->userdb, $this->usertable, $cs);
+		$references = $analyzer->searchReferences($this->userdb, $this->usertable, $usercs);
 
 		$this->relation_tables = $references["relation_tables"];
 		$this->relation_fields = $references["relation_fields"];

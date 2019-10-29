@@ -11,24 +11,31 @@ use Phink\Data\Client\PDO\TPdoConnection;
 class TMakeScript extends TPartialController
 {
 	// tools
-	protected $page, $menus, $conf, $lang, $db_prefix;
+	protected $page, $menus, $workconf, $workdb, $userdb, $userconf, $lang, $db_prefix;
 
 	// view fields
-	protected $hidden, $rad_menu, $rad_dbgrid, $on_change, $on_change_table, $database_list, 
+	protected $hidden, $rad_menu, $rad_dbgrid, $on_change, $on_change_table, $database_list, $conf_list, 
 		$table_list, $tab_ides, $tab_mkscript, $bloc_list, $di_name, $di_short, $di_long,
-		$pa_filename, $srvdir, $srvfiles, $basedir, $userdb, $filepath, $chk_filter, $chk_addoption;
+		$pa_filename, $srvdir, $srvfiles, $basedir, $filepath, $chk_filter, $chk_addoption;
 	
 	public function beforeBinding(): void
     {		
 
         $this->lang = TRegistry::ini('application', 'lang');
         $this->db_prefix = TRegistry::ini('data', 'db_prefix');
-		$this->conf = TRegistry::ini('data', 'conf');
 		$this->menus = new Menus($this->lang, $this->db_prefix);
 
-		$database = TRegistry::read('connections', $this->conf)['database'];
+		$this->workconf = TRegistry::ini('data', 'conf');
+		$this->userconf = getArgument('userconf', $this->workconf);
 
-		$this->userdb = getArgument('userdb', $database);
+		$this->workdb = TRegistry::read('connections', $this->workconf)['database'];
+		$this->userdb = TRegistry::read('connections', $this->userconf)['database'];
+		// $this->userdb = getArgument('userdb', $this->userdb);
+
+		self::getLogger()->debug('WORK CONF::' . $this->workconf);
+		self::getLogger()->debug('USER CONF::' . $this->userconf);
+		self::getLogger()->debug('USER DB::' . $this->userdb);
+
 		$this->basedir = getArgument('srvdir');
 		$usertable = getArgument('usertable');
 		$this->pa_filename = getArgument('pa_filename', $usertable);
@@ -39,24 +46,29 @@ class TMakeScript extends TPartialController
 		$datacontrols = new DataControls($lg, $this->db_prefix);
 		$controls = new Controls($lg, $this->db_prefix);
 
-		$cs = TPdoConnection::opener($this->conf);
+		$workcs = TPdoConnection::opener($this->workconf);
+		$usercs = TPdoConnection::opener($this->userconf);
+
 		$tmp_filename = "tmp.php";
 		$wwwroot = getCurrentHttpRoot();
 		$this->filepath = "$wwwroot/$lg/$this->pa_filename";
 		$filedir = "$wwwroot/$lg/";
 
-		$this->tab_ides = $this->menus->getTabIdes($this->conf);
+		$this->tab_ides = $this->menus->getTabIdes($this->workconf);
 
 		if ($this->basedir == "") $this->basedir = getCurrentDir() . "/fr";
+
+		$confs = TRegistry::keys('connections');
 
 		$this->on_change = "";
 		$this->on_change_table = "";
 		$this->srvdir = $controls->create_server_directory_selector("srvdir", "myForm", $this->basedir, $this->on_change);
 		$this->srvfiles = $controls->create_server_file_selector("srvfiles", "myForm", $this->basedir, "php", 5, "srvdir", $this->on_change);
-		$this->database_list = $datacontrols->createOptionsFromQuery("show databases", 0, 0, array(), $this->userdb, false, $cs);
-		$this->table_list = $datacontrols->createOptionsFromQuery("show tables from $this->userdb", 0, 0, array(), $usertable, false, $cs);
+		//$this->database_list = $datacontrols->createOptionsFromQuery("show databases", 0, 0, array(), $this->userdb, false, $workcs);
+		$this->conf_list = $datacontrols->createOptionsFromArray($confs, "", 0, 0, [$this->userconf], $this->userconf, false);
+		$this->table_list = $datacontrols->createOptionsFromQuery("show tables from $this->userdb", 0, 0, array(), $usertable, false, $workcs);
 		$sql = "select b.bl_id, d.di_fr_short from {$this->db_prefix}blocks b, {$this->db_prefix}dictionary d where b.di_name=d.di_name order by d.di_fr_short";
-		$this->block_list = $datacontrols->createOptionsFromQuery($sql, 0, 1, array(), $bl_id, false, $cs);
+		$this->block_list = $datacontrols->createOptionsFromQuery($sql, 0, 1, array(), $bl_id, false, $workcs);
 
 		//Options de menu
 		$this->rad_menu = ['', ''];

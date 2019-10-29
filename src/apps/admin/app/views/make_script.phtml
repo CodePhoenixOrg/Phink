@@ -15,6 +15,7 @@
 
 <input type='hidden' name='query' value=''>
 		<input type='hidden' name='basedir' value='<phx:echo var="basedir" />'>
+		<input type='hidden' name='workdb' value='<phx:echo var="workdb" />'>
 		<input type='hidden' name='userdb' value='<phx:echo var="userdb" />'>
 		<input type='hidden' name='filename' value='<phx:echo var="filepath" />'>
 		<input type='hidden' name='pz_current_tab' value=''>
@@ -24,8 +25,9 @@
 	<table border='0' bordercolor='0' width='85%' valign='top' style='display:hidden;'>
 	<tr><td width='50%'><b>Base de donnée</b></td><td width='50%'><b>Table</b></td><td></td></tr>
 	<tr><td>
-	<select name='userdb' onChange='<phx:echo var="on_change" />;document.myForm.submit();'>
-		<phx:echo var="database_list['list']" />
+	<select name='userconf' onChange='<phx:echo var="on_change" />;document.myForm.submit();'>
+		<!--phx:echo var="database_list['list']" /-->
+		<phx:echo var="conf_list['list']" />
 	</select>
 	</td><td>
 	<select name='usertable' onChange='<phx:echo var="on_change_table" />;document.myForm.submit();'>
