@@ -16,13 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- namespace Phink\Web\UI;
+namespace Phink\Web\UI;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 use Phink\Registry\TRegistry;
 use Phink\Xml\TXmlDocument;
 use Phink\Xml\TXmlMatch;

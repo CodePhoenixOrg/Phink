@@ -19,7 +19,7 @@
  namespace Phink\Web\UI;
 
 /**
- * Description of ahtmlpattern
+ * Description of THtmlPattern
  *
  * @author david
  */

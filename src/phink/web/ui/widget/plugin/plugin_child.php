@@ -19,7 +19,7 @@
  namespace Phink\Web\UI\Widget\Plugin;
 
 /**
- * Description of adatacolumn
+ * Description of TPluginChild
  *
  * @author david
  */
