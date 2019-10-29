@@ -177,6 +177,20 @@ abstract class TCustomApplication extends TObject
         );
 
         $this->setCommand(
+            'connections',
+            '',
+            'Display the data connections registered.',
+            function (callable $callback = null) {
+                $data = TRegistry::item('connections');
+                $this->writeLine($data);
+
+                if ($callback !== null) {
+                    \call_user_func($callback, $data);
+                }
+            }
+        );
+
+        $this->setCommand(
             'error',
             '',
             'Display the php error log.',
