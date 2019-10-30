@@ -14,7 +14,7 @@ class TMakeScript extends TPartialController
 	protected $page, $menus, $workconf, $workdb, $userdb, $userconf, $lang, $db_prefix;
 
 	// view fields
-	protected $hidden, $rad_menu, $rad_dbgrid, $on_change, $on_change_table, $database_list, $conf_list, 
+	protected $hidden, $rad_menu, $rad_dbgrid, $on_change, $on_change_table, $database_list, $conf_list, $menu_list,
 		$table_list, $tab_ides, $tab_mkscript, $bloc_list, $di_name, $di_short, $di_long,
 		$pa_filename, $srvdir, $srvfiles, $basedir, $filepath, $chk_filter, $chk_addoption;
 	
@@ -24,6 +24,7 @@ class TMakeScript extends TPartialController
         $this->lang = TRegistry::ini('application', 'lang');
         $this->db_prefix = TRegistry::ini('data', 'db_prefix');
 		$this->menus = new Menus($this->lang, $this->db_prefix);
+		$lg = getArgument('lg', $this->lang);
 
 		$this->workconf = TRegistry::ini('data', 'conf');
 		$this->userconf = getArgument('userconf', $this->workconf);
@@ -36,12 +37,12 @@ class TMakeScript extends TPartialController
 		self::getLogger()->debug('USER CONF::' . $this->userconf);
 		self::getLogger()->debug('USER DB::' . $this->userdb);
 
-		$this->basedir = getArgument('srvdir');
+		$this->basedir = getArgument('srvdir', getCurrentDir() . DIRECTORY_SEPARATOR . $lg);
 		$usertable = getArgument('usertable');
-		$this->pa_filename = getArgument('pa_filename', $usertable);
+		// $this->pa_filename = getArgument('pa_filename', $usertable);
+		$this->pa_filename = $usertable;
 		$query = getArgument('query', 'MENU');
 		$bl_id = getArgument('bl_id', 0);
-		$lg = getArgument('lg');
 
 		$datacontrols = new DataControls($lg, $this->db_prefix);
 		$controls = new Controls($lg, $this->db_prefix);
@@ -50,13 +51,12 @@ class TMakeScript extends TPartialController
 		$usercs = TPdoConnection::opener($this->userconf);
 
 		$tmp_filename = "tmp.php";
-		$wwwroot = getCurrentHttpRoot();
-		$this->filepath = "$wwwroot/$lg/$this->pa_filename";
-		$filedir = "$wwwroot/$lg/";
+		$filedir = DOCUMENT_ROOT . $lg . DIRECTORY_SEPARATOR;
+		$this->filepath = $filedir . $this->pa_filename;
 
 		$this->tab_ides = $this->menus->getTabIdes($this->workconf);
 
-		if ($this->basedir == "") $this->basedir = getCurrentDir() . "/fr";
+		// if ($this->basedir == "") $this->basedir = getCurrentWwwRoot() . $lg . WEB_SEPARATOR;
 
 		$confs = TRegistry::keys('connections');
 
@@ -71,19 +71,25 @@ class TMakeScript extends TPartialController
 		$this->block_list = $datacontrols->createOptionsFromQuery($sql, 0, 1, array(), $bl_id, false, $workcs);
 
 		//Options de menu
+		$menu_level = [];
+		$menu_level[0] = 'Invisible';
+		$menu_level[1] = 'Menu principal';
+		$menu_level[2] = 'Sous-menu';
+
 		$this->rad_menu = ['', ''];
-		$menu = getArgument('menu', 0);
-		$this->rad_menu[$menu] = " checked";
+		$me_level = getArgument('me_level', '0');
+		$this->rad_menu[$me_level] = " checked";
+		$this->menu_list = $datacontrols->createOptionsFromArray($menu_level, "", 0, 0, [$me_level], $me_level, false);
 
 		//Options de script
 		$this->rad_dbgrid = ['', ''];
-		$dbgrid = getArgument('dbgrid', 0);
+		$dbgrid = getArgument('dbgrid', '0');
 		$this->rad_dbgrid[$dbgrid] = " checked";
 
 		//Option de filtre
 		$this->chk_filter = '';
 		$filter = getArgument('filter');
-		if ($filter == "1") $chk_filter = " checked";
+		if ($filter == "1") $this->chk_filter = " checked";
 
 		//Option d'ajout
 		$this->chk_addoption = '';
