@@ -72,9 +72,9 @@ class TMakeScript extends TPartialController
 
 		//Options de menu
 		$menu_level = [];
-		$menu_level[0] = 'Invisible';
-		$menu_level[1] = 'Menu principal';
-		$menu_level[2] = 'Sous-menu';
+		array_push($menu_level, ['0' => 'Invisible']);
+		array_push($menu_level, ['1' => 'Menu principal']);
+		array_push($menu_level, ['2' => 'Sous-menu']);
 
 		$this->rad_menu = ['', ''];
 		$me_level = getArgument('me_level', '0');
