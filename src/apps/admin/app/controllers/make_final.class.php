@@ -91,8 +91,8 @@ class TMakeFinal extends TPartialController
 
 			copy('tmp_code.php', $root_code_filename);
 			copy('tmp_page.php', $root_page_filename);
-			TLog::create()->debug(__FILE__ . ':' . __LINE__ . ':FILE:PAGE:' . $root_code_filename);
-			TLog::create()->debug(__FILE__ . ':' . __LINE__ . ':FILE:CODE:' . $root_page_filename);
+			self::getLogger()->debug('FILE_PAGE:' . $root_code_filename, __FILE__ , __LINE__);
+			self::getLogger()->debug('FILE_CODE:' . $root_page_filename, __FILE__ , __LINE__);
 
 			$this->sstatus = "Page enregistrée";
 		} elseif ($this->save == $this->NO) {
