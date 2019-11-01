@@ -1965,9 +1965,9 @@ class Controls extends \Puzzle\Base
 
         if (!$only_default) {
             $list .= "<OPTION SELECTED VALUE=\"0\">" . $PZ_ZERO_SELECT . "</OPTION>\n";
-            foreach ($records as $rows) {
-                $value = is_array($rows) ? $rows[$value_col] : $rows;
-                $option = is_array($rows) ? $rows[$option_col] : $rows;
+            foreach ($records as $row) {
+                $value = is_array($row) ? isset($row[$value_col]) ? $row[$value_col] : key($row) : $row;
+                $option = is_array($row) ? isset($row[$option_col]) ? $row[$option_col] : $row[key($row)] : $row;
                 if (!empty($selected)) {
                     $inter = implode("", array_intersect($selected, (array) $value));
                     if ($inter != "") {
