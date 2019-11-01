@@ -711,7 +711,7 @@ INSERT;
         $stmt = $cs->query($sql);
         $rows = $stmt->fetch(\PDO::FETCH_ASSOC);
         $index = $rows["me_id"];
-        $page = $rows["pa_filename"];
+        $page = empty($rows["pa_filename"]) ? "#none" : $rows["pa_filename"];
         $charset = $rows["me_charset"];
         $title = $rows["di_" . $this->lg . "_long"];
         if ($title == "") {
