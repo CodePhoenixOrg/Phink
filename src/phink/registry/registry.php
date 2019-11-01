@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,10 +32,11 @@ class TRegistry extends TStaticObject
     private static $_classRegistry = null;
     private static $_code = [];
     private static $_items = [];
+    private static $_isInit = false;
 
     public static function init(): bool
     {
-        if (isset(self::$_items['classes'])) {
+        if (self::$_isInit) {
             return true;
         }
 
@@ -87,13 +88,27 @@ class TRegistry extends TStaticObject
                 'isAutoloaded' => true
             ]
         );
+        self::write(
+            'classes',
+            'TUserComponent',
+            [
+                'alias' => 'component',
+                'path' => 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'user_component' . DIRECTORY_SEPARATOR,
+                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\UserComponent',
+                'hasTemplate' => false,
+                'canRender' => true,
+                'isAutoloaded' => true
+            ]
+        );
 
-        return true;
+        self::$_isInit = true;
+
+        return self::$_isInit;
     }
 
-    public static function importClasses(string $viewFileName): void
+    public static function importClasses(string $dirName): void
     {
-        $localRegistryFilename = dirname(SITE_ROOT . $viewFileName) . '/registry.json';
+        $localRegistryFilename = SITE_ROOT . $dirName . '/registry.json';
 
         if (!file_exists($localRegistryFilename)) {
             return;
@@ -110,9 +125,11 @@ class TRegistry extends TStaticObject
         if ($registry === null) {
             return;
         }
+        
+        $classes = count($registry['classes']) > 0 ? $registry['classes'][0] : [];
 
-        foreach ($registry['classes'] as $class) {
-            $info = new TClassInfo($class);
+        foreach ($classes as $type => $class) {
+            $info = new TClassInfo([$type => $class]);
             if ($info->isValid()) {
                 self::registerClass($info);
             }
@@ -129,14 +146,21 @@ class TRegistry extends TStaticObject
             'canRender' => $info->canRender(),
             'isAutoloaded' => $info->isAutoloaded()
         ]);
+        self::write('classes', $info->getAlias(), ['type' => $info->getType()]);
     }
 
-    public static function classInfo($className = '')
+    public static function classInfo(string &$className = '')
     {
         $result = null;
 
         if (self::init() && isset(self::$_items['classes'][$className])) {
-            $result = (object) self::$_items['classes'][$className];
+            $result = self::$_items['classes'][$className];
+            if(isset($result['type'])) {
+                $className = $result['type'];
+                $result = self::$_items['classes'][$result['type']];
+            }
+
+            $result = (object) $result;
         }
 
         return $result;
@@ -180,6 +204,11 @@ class TRegistry extends TStaticObject
         //self::$logger->debug('CODE REGISTRY : ' . print_r($keys, true));
     }
 
+    /**
+     * @param mixed $item Name of the key
+     * @param array $params May one key/value pair or an array of pairs
+     * @return void 
+     */
     public static function write($item, ...$params): void
     {
         if (!isset(self::$_items[$item])) {
@@ -221,10 +250,26 @@ class TRegistry extends TStaticObject
         $result = null;
 
         if (self::$_items[$item] !== null) {
-            $result = (self::$_items[$item][$key] !== null) ? self::$_items[$item][$key] : (($defaultValue !== null) ? $defaultValue : null);
+            $result = isset(self::$_items[$item][$key]) ? self::$_items[$item][$key] : (($defaultValue !== null) ? $defaultValue : null);
         }
 
         return $result;
+    }
+
+    public static function ini($section, $key = null)
+    {
+        $section = self::read('ini', $section);
+        $value = null;
+
+        if($key === null) {
+            return $section;
+        }
+
+        if(is_array($section)) {
+            $value = isset($section[$key]) ? $section[$key] : $value;
+        }
+
+        return $value;
     }
 
     public static function remove($item): void
@@ -273,5 +318,10 @@ class TRegistry extends TStaticObject
     public static function clear(): void
     {
         TRegistry::$_items = [];
+    }
+
+    public static function dump(string $key): void
+    {
+        self::getLogger()->dump('Registry key ' . $key, TRegistry::item($key));
     }
 }

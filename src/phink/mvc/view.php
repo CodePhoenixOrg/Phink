@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,36 +33,26 @@ use Phink\Registry\TRegistry;
  */
 class TView extends TCustomView
 {
-    //put your code here
-    
     public function __construct(\Phink\Web\IWebObject $parent)
     {
-
         parent::__construct($parent);
         
-        $this->authentication = $parent->getAuthentication();
-        $this->request = $parent->getRequest();
-        $this->response = $parent->getResponse();
-        $this->application = $parent->getApplication();
-        $this->commands = $this->application->getCommands();
-        $this->parameters = $parent->getParameters();
         $this->viewName = $parent->getViewName();
-        $this->viewIsInternal = $parent->isInternalView();
-        $this->path = $parent->getPath();
-        $this->twigEnvironment = $parent->getTwigEnvironment();
 
+        $this->clonePrimitivesFrom($parent);
         $this->cloneNamesFrom($parent);
         $this->setCacheFileName();
         $this->cacheFileName = $parent->getCacheFileName();
 
-        // $this->setMotherView($this);
-        if ($this->getType() == 'TView' && $this->motherView === null) {
+        // if ($this->getType() == 'TView' && $this->motherView === null) {
             $this->motherView = $this;
+            $this->isMotherView = true;
             $this->motherUID = $this->getUID();
-        }
+        // }
 
-        TRegistry::importClasses($this->viewFileName);
+        TRegistry::importClasses($this->getDirName());
+
 
     }
 
-}
+ }

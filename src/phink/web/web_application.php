@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,17 +32,17 @@ use Phink\Registry\TRegistry;
 use Phink\Rest\TRestRouter;
 use Phink\Web\TWebRouter;
 use Phink\Cache\TCache;
+use \Phink\Core\TCustomApplication;
 
 /**
  * Description of router
  *
  * @author David
  */
-class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTransport, IWebObject
+class TWebApplication extends TCustomApplication implements IHttpTransport, IWebObject
 {
     use \Phink\Web\TWebObject;
     
-    protected $rawPhpName = '';
     protected $params = '';
     protected static $instance = null;
 
@@ -57,16 +57,16 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
         $this->request = new TRequest();
         $this->response = new TResponse();
         
-        // $this->setViewName();
-        // $this->setNamespace();
-        // $this->setNames();
-
         if(class_exists('Twig\Environment')) {
             $loader = new \Twig\Loader\FilesystemLoader(VIEW_ROOT);
             $this->twigEnvironment = new \Twig\Environment($loader, [
                 'cache' => CACHE_DIR,
             ]);
         }
+    }
+
+    public function getCookie(string $name): ?array {
+        return isset(COOKIE[$name]) ? COOKIE[$name] : null;
     }
 
     public function execute() : void
@@ -180,6 +180,12 @@ class TWebApplication extends \Phink\Core\TCustomApplication implements IHttpTra
             \Phink\JavaScript\PhinkBuilder::build();
             // file_put_contents('phink_builder.lock', date('Y-m-d h:i:s'));
         }
+
+        if (!file_exists('puzzle_builder.lock')) {
+            \Puzzle\JsBuilder::build();
+            // file_put_contents('phink_builder.lock', date('Y-m-d h:i:s'));
+        }
+
         if (!file_exists('js_builder.lock')) {
             \Phink\JavaScript\JsBuilder::build();
             file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@ use Phink\Core\IObject;
 use Phink\Web\IWebObject;
 use Phink\MVC\TPartialView;
 use Phink\MVC\TCustomController;
+use Phink\TAutoloader;
+use Phink\Registry\TRegistry;
 
 class TPartialController extends TCustomController 
 {
@@ -29,14 +31,14 @@ class TPartialController extends TCustomController
     public function __construct(IWebObject $parent)
     {
         parent::__construct($parent);
-        
+
         $this->className = $this->getType();
-        $this->viewName = lcfirst($this->className);
+        $this->setViewName($this->className);
        
-        $include = \Phink\TAutoloader::includeModelByName($this->viewName);
-        $modelClass = $include['type'];
+        list($file, $type, $code) = TAutoloader::includeModelByName($this->viewName);
+        $modelClass = $type;
         $this->model = new $modelClass();        
-        $this->view = new TPartialView($parent, $this); 
+        $this->view = new TPartialView($this); 
     }   
     
     public function render() : void
@@ -45,8 +47,8 @@ class TPartialController extends TCustomController
         $this->parse();
         $this->beforeBinding();
         $this->renderCreations();
-        $this->afterBinding();
         $this->renderDeclarations();
+        $this->afterBinding();
         $this->renderView();
         if(!$this->isRendered) {
             $this->renderHtml();

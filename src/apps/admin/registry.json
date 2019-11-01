@@ -1,0 +1,62 @@
+{
+    "classes": [
+        {
+            "TMakeMain": {
+                "alias": "mkmain",
+                "path": "@/admin/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+            , "TMakeScript": {
+                "alias": "mkscript",
+                "path": "@/admin/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+            , "TMakeFields": {
+                "alias": "mkfields",
+                "path": "@/admin/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+            , "TMakeFile": {
+                "alias": "mkfile",
+                "path": "@/admin/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+            , "TMakeFinal": {
+                "alias": "mkfinal",
+                "path": "@/admin/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+            , "TTodo": {
+                "alias": "todo",
+                "path": "@/admin/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+            , "TSubPage": {
+                "alias": "subpage",
+                "path": "@/admin/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": false,
+                "canRender": true,
+                "isAutoloaded": true
+            }
+        }
+    ]
+}

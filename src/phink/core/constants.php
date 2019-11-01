@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,14 +71,24 @@ if (APP_IS_WEB) {
     define('PHINK_APPS_ROOT', SITE_ROOT . PHINK_VENDOR_APPS);
     define('PHINKJS_ROOT', SITE_ROOT . PHINKJS_VENDOR);
 
-    define('APP_DIR', 'app');
+    // Puzzle Library constants 
+    define('PUZZLE_VENDOR_SRC', PHINK_VENDOR_SRC);
+    define('PUZZLE_VENDOR_LIB', PUZZLE_VENDOR_SRC . 'puzzle' . DIRECTORY_SEPARATOR);
+    define('PUZZLE_VENDOR_APPS', PHINK_VENDOR_APPS);
+    define('PUZZLEJS_VENDOR', PUZZLE_VENDOR_LIB . 'js' . DIRECTORY_SEPARATOR);
+    define('PUZZLE_ROOT', SITE_ROOT . PUZZLE_VENDOR_LIB);
+    define('PUZZLE_APPS_ROOT', PHINK_APPS_ROOT);
+    define('PUZZLEJS_ROOT', SITE_ROOT . PUZZLEJS_VENDOR);
+
+    define('APP_DIR', 'app' . DIRECTORY_SEPARATOR);
     
-    define('APP_ROOT', SRC_ROOT . APP_DIR . DIRECTORY_SEPARATOR);
+    define('APP_ROOT', SRC_ROOT . APP_DIR);
     define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
     define('MODEL_ROOT', APP_ROOT . 'models' . DIRECTORY_SEPARATOR);
     define('REST_ROOT', APP_ROOT . 'rest' . DIRECTORY_SEPARATOR);
     define('VIEW_ROOT', APP_ROOT . 'views' . DIRECTORY_SEPARATOR);
-    define('BUSINESS_ROOT', APP_ROOT . 'business' . DIRECTORY_SEPARATOR);
+    define('BUSINESS_DIR', APP_DIR . 'business' . DIRECTORY_SEPARATOR);
+    define('BUSINESS_ROOT', SRC_ROOT . BUSINESS_DIR);
 
     define('REL_RUNTIME_DIR', 'runtime' . DIRECTORY_SEPARATOR);
     define('RUNTIME_DIR', SRC_ROOT . REL_RUNTIME_DIR);
@@ -111,20 +121,23 @@ if (APP_IS_WEB) {
     define('HTTP_ORIGIN', (isset($_SERVER['HTTP_ORIGIN'])) ? $_SERVER['HTTP_ORIGIN'] : '');
     define('HTTP_ACCEPT', (isset($_SERVER['HTTP_ACCEPT'])) ? $_SERVER['HTTP_ACCEPT'] : '');
     define('HTTP_PORT', $_SERVER['SERVER_PORT']);
+    define('COOKIE', $_COOKIE);
     define('REQUEST_URI', $_SERVER['REQUEST_URI']);
     define('REQUEST_METHOD', $_SERVER['REQUEST_METHOD']);
     define('QUERY_STRING', $_SERVER['QUERY_STRING']);
     define('SERVER_NAME', $_SERVER['SERVER_NAME']);
     define('SERVER_HOST', HTTP_PROTOCOL . '://' . HTTP_HOST);
-    define('SERVER_ROOT', HTTP_PROTOCOL . '://' . SERVER_NAME . ((HTTP_PORT !== '80') ? ':' . HTTP_PORT : ''));
+    define('SERVER_ROOT', HTTP_PROTOCOL . '://' . SERVER_NAME . ((HTTP_PORT !== '80' && HTTP_PORT !== '443') ? ':' . HTTP_PORT : ''));
     define('BASE_URI', SERVER_NAME . ((HTTP_PORT !== '80') ? ':' . HTTP_PORT : '') . ((REQUEST_URI !== '') ? REQUEST_URI : ''));
     define('FULL_URI', HTTP_PROTOCOL . '://' . BASE_URI);
     define('FULL_SSL_URI', 'https://' . BASE_URI);
-    define('DEFALT_MODEL', ROOT_NAMESPACE . '\\MVC\\TModel');
+    define('DEFAULT_MODEL', ROOT_NAMESPACE . '\\MVC\\TModel');
     define('DEFAULT_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TController');
     define('DEFAULT_PARTIAL_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TPartialController');
     define('DEFAULT_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TControl');
     define('DEFAULT_PARTIAL_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TPartialControl');
+
+
 
 } else {
     define('DOCUMENT_ROOT', '');
@@ -164,6 +177,7 @@ define('REQUEST_TYPE_REST', 'rest');
 
 define('DEBUG_LOG', LOG_PATH . 'debug.log');
 define('ERROR_LOG', LOG_PATH . 'error.log');
+define('SQL_LOG', LOG_PATH . 'sql.log');
 
 $appconf = DOCUMENT_ROOT . 'config' . DIRECTORY_SEPARATOR . 'app.ini';
 

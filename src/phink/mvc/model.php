@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,13 +65,13 @@ class TModel extends TObject implements IModel
         $this->init();
     }
 
-    public function init() {}
+    public function init(): void {}
     
-    public function getDbConnector()
+    public function getDbConnector(): IConnector
     {
         return $this->dbConnector;
     }
-    public function setDbConnector(IConnector $value)
+    public function setDbConnector(IConnector $value): void
     {
         $this->dbConnector = $value;
     }
@@ -84,48 +84,48 @@ class TModel extends TObject implements IModel
 
     public function delete() {}
 
-    public function getInsertId()
+    public function getInsertId(): int
     {
         return -1;
     }
 
-    public function isNew()
+    public function isNew(): bool
     {
         return $this->isNew;
     }
 
-    public function isDirty()
+    public function isDirty(): bool
     {
         return $this->isDirty;
     }
     
-    public function isFromDB()
+    public function isFromDB(): bool
     {
         return $this->isFromDB;
     }
 
-    public function getIndex()
+    public function getIndex(): int
     {
         return $this->index;
     }
     
-    public function setIndex($value)
+    public function setIndex($value): void
     {
         $this->index = $value;
     }
             
-    public function setTransaction($set = true)
+    public function setTransaction($set = true): void
     {
         $this->setTransaction = $set;
     }
     
-    public function setDirty()
+    public function setDirty(): void
     {
         $this->isDirty = true;
         $this->isNew = false;
     }
     
-    public function setFromDB($set = true)
+    public function setFromDB($set = true): void
     {
         $this->isFromDB = $set;
         if($set) {
@@ -133,7 +133,7 @@ class TModel extends TObject implements IModel
         }
     }
 
-    public function save()
+    public function save(): bool
     {
         $result = false;
         

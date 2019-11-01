@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  namespace Phink\Web\UI;
 
 /**
- * Description of ahtmlelement
+ * Description of THtmlElement
  *
  * @author david
  */

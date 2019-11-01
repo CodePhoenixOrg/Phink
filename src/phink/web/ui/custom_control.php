@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,6 @@ abstract class TCustomControl extends TObject implements IHttpTransport, IWebObj
     {
         parent::__construct($parent);
 
-        // $this->setMotherView($parent->getMotherView());
         $this->motherView = $parent->getMotherView();
         $this->motherUID = $parent->getMotherUID();
     }

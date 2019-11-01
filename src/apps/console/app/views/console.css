@@ -1,23 +1,27 @@
-.ibm-pc * {
+:root {
+    --back-color: black;
+    --fore-color: greenyellow;
+}
+
+.theme * {
     font-family: 'PT Mono', monospace;
     font-size: 10pt;
     font-weight: 400;
+    background-color: var(--back-color);
+    color: var(--fore-color);
+}
+
+.ibm-pc {
     color: greenyellow;
     background-color: black;
 }
 
-.amstrad-cpc * {
-    font-family: 'PT Mono', monospace;
-    font-size: 10pt;
-    font-weight: 400;
+.amstrad-cpc {
     color: yellow;
     background-color: blue;
 }
 
-.solaris * {
-    font-family: 'PT Mono', monospace;
-    font-size: 10pt;
-    font-weight: 400;
+.solaris {
     color: darkblue;
     background-color: antiquewhite;
 }

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +30,7 @@ class PhinkBuilder {
         $js_filename = DOCUMENT_ROOT . 'phink.js';
 
         $filenames = [
-                'main.js'
-            ,   'utils/utils.js'
+                'core/main.js'
             ,   'core/registry.js'
             ,   'core/object.js'
             ,   'core/url.js'
@@ -40,10 +39,14 @@ class PhinkBuilder {
             ,   'web/web_application.js'
             ,   'mvc/view.js'
             ,   'mvc/controller.js'
+            ,   'utils/utils.js'
+            ,   'utils/backend.js'
+            ,   'utils/commands.js'
             ,   'web/ui/plugin.js'
             ,   'web/ui/plugin/accordion.js'
             ,   'web/ui/plugin/list.js'
             ,   'web/ui/plugin/table.js'
+            ,   'bootstrap.js'
         ];
 
         $js_content = '';

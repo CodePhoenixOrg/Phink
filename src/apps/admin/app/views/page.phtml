@@ -1,0 +1,75 @@
+<html lang="fr">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <link rel="stylesheet" defer="sync" href="/css/_3rdparty.css" type="text/css" />
+    <link rel="stylesheet" defer="sync" href="/assets/admin/css/user-agent.css" type="text/css" />
+    <link rel="stylesheet" defer="sync" href="/assets/admin/css/page.css" type="text/css" />
+    <title>Hatcherry</title>
+    <script language="JavaScript">
+    //Paramètres côté client
+
+    //couleur de surlignage (menus, dbGrid, etc.)
+    var hlBackColor = "#46a0E9";
+    var hlTextColor = "white";
+    </script>
+    <script type="text/javascript" data-sources="/puzzle.js" data-depends="/js/_3rdparty.js" src="/phink.js">
+    </script>
+</head>
+
+<body bgcolor="<?php echo $this->page_colors->back_color ?>" text="<?php echo $this->page_colors->text_color ?>"
+    link="<?php echo $this->page_colors->link_color ?>" vlink="<?php echo $this->page_colors->vlink_color ?>"
+    alink="<?php echo $this->page_colors->alink_color ?>" leftmargin="0" topmargin="0">
+    <div class="box">
+        <header class="pageheader">
+            <div class="header-background column page">
+
+                <div class="logo">
+                    <img id="logo" src="<?php echo $this->img ?>/small_logo.png"
+                        onMouseOut="PZ_IMG.src='<?php echo $this->img ?>/small_logo.png';" onMouseOver="PZ_IMG=document.getElementById('logo');
+						PZ_IMG.src='<?php echo $this->img ?>/small_logo_light.png';"
+                        onClick="document.location.href='<?php echo "." ?>'">
+                </div>
+                <div class="title">
+                    <h1><?php echo $this->title ?></h1>
+                </div>
+                <nav class="menu">
+                    <div>
+                        <?php echo $this->toplinks; ?>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <main class="pagemain">
+            <section class="col-sm-3 scroll_container main-background column left">
+
+            </section>
+
+            <section class="col-sm-6 main-background column middle">
+                <div class="scroll_content scroll_middle">
+                    <phx:TSubPage id="userComponent0" componentType="TMakeMain" componentId="mkmain0"/>
+                <?php
+                // include($this->page);
+                ?>
+                </div>
+            </section>
+
+            <section class="col-sm-3 main-background scroll_container column right">
+
+            </section>
+        </main>
+        <footer class="pagefooter">
+            <div class="footer-background column bottom">
+            </div>
+
+        </footer>
+
+        <script type="text/javascript">
+        function phink_main() {}
+        </script>
+
+    </div>
+</body>
+
+</html>

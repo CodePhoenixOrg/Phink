@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,25 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+namespace Phink\Apps\Admin;
 
-class Bootstrap {
+use Phink\Core\TBootstrap;
 
-    public static function mount() {
+class AppBootstrap extends TBootstrap
+{
+    public function start(): void
+    {
+        $this->mount([
+            BUSINESS_DIR . 'sub_page' . CLASS_EXTENSION
+        ]);
 
-        $filenames = [
-            'console_window.class.php'
-        ];
+        $this->loadINI($this->getPath());
+        $this->copyAssets();
 
-        if(Phar::running() != '') {
-            foreach ($filenames as $filename) {
-                include pathinfo($filename, PATHINFO_BASENAME);
-            }
-        } else {
-            foreach ($filenames as $filename) {
-                include __DIR__ . "/" . $filename;
-            }
-        }          
     }
-}
 
-Bootstrap::mount();
+}

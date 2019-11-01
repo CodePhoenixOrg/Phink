@@ -1,0 +1,58 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+#title {
+    position: relative;
+    float: right;
+
+}
+
+.menu {
+    clear: both;
+    background-color: black;
+    color: white;
+    height: 20px;
+    text-align: center;
+}
+
+.menu div span {
+    color: white;
+
+}
+
+#body {
+    display: flex;
+    flex-flow: column;
+    font-weight: 600;
+    height: 100%;
+    overflow-y: none;
+    background-color: #a8eaff;
+
+}
+
+.box {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+
+}
+
+.box .row {
+    border: 1px dotted gray;
+}
+
+.box .row.header {
+    flex: 0 1 auto;
+}
+.box .row.content {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    background-color: #a8eaff;
+
+}
+.box .row.footer {
+    flex: 0 1 40px;
+}

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -306,15 +306,22 @@ class TRequest extends \Phink\Core\TObject
         return $result;
     }
 
-    public static function getArgument($arg, $default = ''): string
+    public static function getArgument($arg, $default = '')
     {
         $result = '';
 
         // mysql_escape_string
+        if (isset($_POST[$arg])) {
+            $result = filter_input(INPUT_POST, $arg, FILTER_SANITIZE_STRING);
+            if(is_array($_POST[$arg])) {
+                $result = filter_input(INPUT_POST, $arg, FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
+            }
+            return $result;
+        }
+
         if (isset($_GET[$arg])) {
             $result = filter_input(INPUT_GET, $arg, FILTER_SANITIZE_STRING);
-        } elseif (isset($_POST[$arg])) {
-            $result = filter_input(INPUT_POST, $arg, FILTER_SANITIZE_STRING);
+            return $result;
         }
 
         if ($result === '') {

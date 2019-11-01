@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,9 @@ use Phink\Core\IObject;
 use Phink\MVC\TActionInfo;
 use Phink\MVC\TCustomView;
 use Phink\MVC\TModel;
+use Phink\Registry\TRegistry;
+use Phink\Web\TWebObject;
+use Phink\TAutoloader;
 
 /**
  * Description of custom_control
@@ -39,33 +42,7 @@ abstract class TCustomCachedControl extends TCustomControl
     {
         parent::__construct($parent);
 
-        $this->view = $parent;
 
-        $this->parameters = $parent->getParameters();
-        $this->application = $parent->getApplication();
-        $this->commands = $this->application->getCommands();
-        $this->path = $this->getPath();
-        $this->twigEnvironment = $parent->getTwigEnvironment();
-        
-        $this->cloneNamesFrom($parent);
-        $this->setCacheFileName();
-        $this->cacheFileName = $parent->getCacheFileName();
-        
-        $this->className = $this->getType();
-        $this->viewName = lcfirst($this->className);
-        
-        $include = \Phink\TAutoloader::includeModelByName($this->viewName);
-        $model = SRC_ROOT . $include['file'];
-        if (file_exists($model)) {
-            include $model;
-            $modelClass = $include['type'];
-
-            $this->model = new $modelClass();
-        }
-        
-        $this->authentication = $parent->getAuthentication();
-        $this->request = $parent->getRequest();
-        $this->response = $parent->getResponse();
     }
 
     public function getView() : TCustomView
@@ -118,10 +95,12 @@ abstract class TCustomCachedControl extends TCustomControl
         }
         $this->displayHtml();
         $html = ob_get_clean();
+        // TWebObject::register($this);
+
         $this->unload();
 
         /*
-                $cachedJsController = RUNTIME_DIR . \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
+                $cachedJsController = RUNTIME_DIR . TAutoloader::cacheJsFilenameFromView($this->viewName);
                 if(file_exists($cachedJsController)) {
                     $jsCode = file_get_contents($cachedJsController);
                     $html .= PHP_EOL . "?>" .PHP_EOL . $jsCode . PHP_EOL;
@@ -130,7 +109,7 @@ abstract class TCustomCachedControl extends TCustomControl
                 }
         */
         if (file_exists(SRC_ROOT . $this->getJsControllerFileName())) {
-            $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($this->viewName);
+            $cacheJsFilename = TAutoloader::cacheJsFilenameFromView($this->viewName);
             if (!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
                 copy(SRC_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
             }
@@ -151,6 +130,9 @@ abstract class TCustomCachedControl extends TCustomControl
         $this->displayHtml();
 
         $this->renderHtml();
+
+        //TWebObject::register($this);
+
         $this->unload();
     }
     
@@ -159,6 +141,8 @@ abstract class TCustomCachedControl extends TCustomControl
         $this->init();
         $this->createObjects();
         if ($this->getRequest()->isAJAX()) {
+            $this->partialLoad();
+
             try {
                 $actionName = $this->actionName;
 
@@ -193,6 +177,11 @@ abstract class TCustomCachedControl extends TCustomControl
                 echo $twig;
             } else {
                 $this->displayHtml();
+            }
+            //TWebObject::register($this);
+
+            if($this->getParent()->isMotherView()) {
+                TRegistry::dump($this->getUID());
             }
 
             $this->unload();

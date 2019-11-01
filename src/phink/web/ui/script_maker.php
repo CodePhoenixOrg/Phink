@@ -1,6 +1,6 @@
 <?php
 /*
-Copyright (C) 2016 David Blanchard
+Copyright (C) 2019 David Blanchard
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -46,6 +46,7 @@ class TScriptMaker extends TObject
         $script .= "\t\$query = getArgument(\"query\", \"SELECT\");\n";
         $script .= "\t\$event = getArgument(\"event\", \"onLoad\");\n";
         $script .= "\t\$action = getArgument(\"action\", \"Ajouter\");\n";
+        $script .= "\t\$lg = getArgument(\"lg\", \"fr\");\n";
         $script .= "\t\$id = getArgument(\"id\");\n";
         $script .= "\t\$di = getArgument(\"di\");\n";
         $script .= "\t\$tablename = \"$table\";\n";
@@ -121,8 +122,7 @@ class TScriptMaker extends TObject
         $script .= implode(", \n", $insertValues) . "\n";
         $script .= "\t\t\t)\n";
         $script .= "SQL;\n";
-        $script .= "\t\t\t\$stmt = \$cs->prepare(\$sql);\n";
-        $script .= "\t\t\t\$stmt->execute($prepare);\n";
+        $script .= "\t\t\t\$stmt = \$cs->query(\$sql, $prepare);\n";
         $script .= "\t\tbreak;\n";
         $script .= "\t\tcase \"Modifier\":\n";
         for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
@@ -130,9 +130,10 @@ class TScriptMaker extends TObject
             $fieldname = $defs[0];
             $script .= "\t\t\t\$$fieldname = filterPOST(\"$fieldname\");\n";
         }
-        $replaces = [];
+        $replaces = (array) null;
         $update = [];
-        $prepare = [];
+        $prepargs = (array) null;
+        $prepare = (array) null;
         for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
             $defs = explode(',', $A_sqlFields[$i]);
             $fieldname = $defs[0];
@@ -151,8 +152,7 @@ class TScriptMaker extends TObject
         $script .= implode(", \n", $update) . "\n";
         $script .= "\t\t\twhere $indexfield = '\$$indexfield';\n";
         $script .= "SQL;\n";
-        $script .= "\t\t\t\$stmt = \$cs->prepare(\$sql);\n";
-        $script .= "\t\t\t\$stmt->execute($prepare);\n";
+        $script .= "\t\t\t\$stmt = \$cs->query(\$sql, $prepare);\n";
         $script .= "\t\tbreak;\n";
         $script .= "\t\tcase \"Supprimer\":\n";
         $script .= "\t\t\t\$sql = \"delete from \$tablename where $indexfield='\$$indexfield'\";\n";
@@ -160,7 +160,7 @@ class TScriptMaker extends TObject
         $script .= "\t\tbreak;\n";
         $script .= "\t\t}\n";
         if ($with_frames) {
-            $script .= "\t\techo \"<script language='JavaScript'>window.location.href='<?php echo \$lg?>/$page_id?id=$page_id&lg=fr'</script>\";\n";
+            $script .= "\t\techo \"<script language='JavaScript'>window.location.href='admin?id=$page_id&lg=$lg'</script>\";\n";
         } elseif (!$with_frames) {
             $script .= "\t\t\$query=\"SELECT\";\n";
         }
@@ -177,11 +177,11 @@ class TScriptMaker extends TObject
 
     public function makePage(
         $database,
-        $table = "",
-        $pa_filename = "",
+        $table = '',
+        $pa_filename = '',
         $page_id = 0,
-        $indexfield = 0,
-        $secondfield = "",
+        $indexfield = '',
+        $secondfield = '',
         $A_sqlFields,
         $cs,
         $with_frames
@@ -197,7 +197,11 @@ class TScriptMaker extends TObject
         $script .= "<?php   \n";
         $script .= "\tinclude(\"" . $pa_filename . "_code.php\");\n";
         $script .= "\tuse \\Puzzle\\Data\\Controls as DataControls;\n";
+        $script .= "\tuse \\Phink\\Registry\\TRegistry;\n";
+        $script .= "\t\$db_prefix = TRegistry::ini(\"data\", \"db_prefix\");\n";
         $script .= "\t\$datacontrols = new DataControls(\$lg, \$db_prefix);\n";
+        $script .= "\t\$grid_colors = TRegistry::ini(\"grid_colors\");\n";
+        $script .= "\t\$panel_colors = TRegistry::ini(\"panel_colors\");\n";
         $script .= "\t\$pc = getArgument(\"pc\");\n";
         $script .= "\t\$sr = getArgument(\"sr\");\n";
         $script .= "\t\$curl_pager = \"\";\n";
@@ -207,7 +211,7 @@ class TScriptMaker extends TObject
         $script .= "\tif(isset(\$sr)) \$curl_pager.=\"&sr=\$sr\";\n";
         $script .= "\tif(\$query === \"SELECT\") {\n";
         $script .= "\t\t\t\$sql = \"select $indexfield, $secondfield from \$tablename order by $indexfield\";\n";
-        $script .= "\t\t\t\$dbgrid = \$datacontrols->createPagerDbGrid(\$tablename, \$sql, \$id, \"page.php\", \"&query=ACTION\$curl_pager\", \"\", true, true, \$dialog, array(0, 400), 15, \$grid_colors, \$cs);\n";
+        $script .= "\t\t\t\$dbgrid = \$datacontrols->createPagerDbGrid(\$tablename, \$sql, \$id, \"page.html\", \"&query=ACTION\$curl_pager\", \"\", true, true, \$dialog, array(0, 400), 15, \$grid_colors, \$cs);\n";
         $script .= "\t\t\t//\$dbgrid = tableShadow(\$tablename, \$dbgrid);\n";
         $script .= "\t\t\techo \"<br>\".\$dbgrid;\n";
         $script .= "\t} elseif(\$query === \"ACTION\") {\n";
@@ -215,7 +219,7 @@ class TScriptMaker extends TObject
         //$page_filename=getPageFilename($database, $page_id);
         $page_filename = "page.html";
         if ($with_frames) {
-            $script .= "<form method=\"POST\" name=\"$formname\" action=\"<?php echo \$lg?>/$page_filename?id=$page_id&lg=fr\">\n";
+            $script .= "<form method=\"POST\" name=\"$formname\" action=\"$page_filename?id=$page_id&lg=fr\">\n";
         } elseif (!$with_frames) {
             $script .= "<form method=\"POST\" name=\"$formname\" action=\"page.html?id=$page_id&lg=fr\">\n";
         }

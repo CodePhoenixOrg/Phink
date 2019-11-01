@@ -1,0 +1,47 @@
+
+
+		<table cellpadding='0' cellspacing='0' border='0'>
+		<tr><td>
+		Script du code
+		</td><td>
+		<input type='button' value='Voir' onClick='window.open("/admin/source?file=tmp_code.php")'>
+		</td></tr>
+		<tr><td>
+		Script de la page
+		</td><td>
+		<input type='button' value='Voir' onClick='window.open("/admin/source?file=tmp_page.php")'>
+		</td></tr>
+
+		</table>
+
+		<phx:echo var="message" />
+
+		<form name='myForm' method='POST' action='admin?di=mkfinal&lg=<phx:echo var="lg" />'>
+	
+		<input type='hidden' name='workdb' value='<phx:echo var="workdb" />'>
+		<input type='hidden' name='userdb' value='<phx:echo var="userdb" />'>
+		<input type='hidden' name='userconf' value='<phx:echo var="userconf" />'>
+		<input type='hidden' name='usertable' value='<phx:echo var="usertable" />'>
+		<input type='hidden' name='dbgrid' value='<phx:echo var="dbgrid" />'>
+		<input type='hidden' name='menu' value='<phx:echo var="menu" />'>
+		<input type='hidden' name='autogen' value='<phx:echo var="autogen" />'>
+		<input type='hidden' name='filter' value='<phx:echo var="filter" />'>
+		<input type='hidden' name='addoption' value='<phx:echo var="addoption" />'>
+		<input type='hidden' name='me_id' value='<phx:echo var="me_id" />'>
+		<input type='hidden' name='pa_id' value='<phx:echo var="pa_id" />'>
+		<input type='hidden' name='me_level' value='<phx:echo var="me_level" />'>
+		<input type='hidden' name='bl_id' value='<phx:echo var="bl_id" />'>
+		<input type='hidden' name='pa_filename' value='<phx:echo var="pa_filename" />'>
+		<input type='hidden' name='extension' value='<phx:echo var="extension" />'>
+		<input type='hidden' name='basedir' value='<phx:echo var="basedir" />'>
+		<input type='hidden' name='query' value='<phx:echo var="query" />'>
+		<input type='hidden' name='indexfield' value='<phx:echo var="indexfield" />'>
+		<input type='hidden' name='secondfield' value='<phx:echo var="secondfield" />'>
+		<input type='hidden' name='di_name' value='<phx:echo var="di_name" />'>
+		<input type='hidden' name='di_long' value='<phx:echo var="di_long" />'>
+		<input type='hidden' name='di_short' value='<phx:echo var="di_short" />'>
+
+		<input type='button' name='previous' value='<< Précédent' onClick='document.myForm.action="admin?di=mkfields&lg=<phx:echo var="lg" />";document.myForm.submit();'>
+		<input type='submit' name='save' value='<phx:echo var="YES" />'>
+		<input type='submit' name='save' value='<phx:echo var="NO" />'>
+		</form>

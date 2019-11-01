@@ -3,6 +3,7 @@ namespace Phink\Apps\Console;
 
 use Phink\MVC\TPartialController;
 use Phink\MVC\TActionInfo;
+use Phink\Registry\TRegistry;
 
 /**
  * Description of dummy
@@ -14,9 +15,16 @@ class TConsoleWindow extends TPartialController
 {
     protected $text = "Unknown command";
     protected $args = '';
- 
-    public function afterBinding() :void
+    protected $cookies = '';
+    protected $consoleName = '';
+    protected $themeBackColor = '';
+    protected $themeForeColor = '';
+
+    public function afterBinding(): void
     {
+        $this->consoleName = $this->getApplication()->getName();
+        $this->cookies = $this->getApplication()->getCookie($this->consoleName);
+
         $cmd = isset($this->parameters['console']) ? $this->parameters['console'] : '';
         $arg = isset($this->parameters['arg']) ? $this->parameters['arg'] : null;
 
@@ -93,5 +101,16 @@ class TConsoleWindow extends TPartialController
         $data = $this->getApplication()->getPhpErrorLog();
 
         return TActionInfo::set($this, 'result', $data);
-    }    
+    }
+
+    public function setTheme(string $theme) : TActionInfo
+    {
+        //setcookie($this->getApplication()->getName() . '[theme]', $theme, time() - 3600);
+        setcookie($this->getApplication()->getName() . '[theme]', $theme, time() + 3600, '/', HTTP_HOST, true, true);
+    
+        $themeBackColor = TRegistry::ini('theme_' . $theme, 'back_color');
+        $themeForeColor = TRegistry::ini('theme_' . $theme, 'fore_color');
+
+        return TActionInfo::set($this, 'theme', ['name' => $theme, 'backColor' => $themeBackColor, 'foreColor' => $themeForeColor]);
+    }
 }

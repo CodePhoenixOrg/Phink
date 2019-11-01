@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,17 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- namespace Phink\Web\UI;
+namespace Phink\Web\UI;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 use Phink\Registry\TRegistry;
 use Phink\Xml\TXmlDocument;
 use Phink\Xml\TXmlMatch;
 use Phink\MVC\TCustomView;
+use \Phink\TAutoloader;
 
 /**
  * Description of code_generator
@@ -102,17 +98,15 @@ trait TCodeGenerator
                     }
                     $fqcn = $info->namespace . '\\' . $className;
                 } elseif ($className !== 'this') {
-                    $viewName = lcfirst($className);
+                    $viewName = TAutoloader::userClassNameToFilename($className);
                     $fullClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
                     $fullJsClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . JS_EXTENSION;
-                    $fullJsCachePath = \Phink\TAutoloader::cacheJsFilenameFromView($viewName);
+                    $fullJsCachePath = TAutoloader::cacheJsFilenameFromView($viewName);
                     array_push($requires, '\\Phink\\TAutoloader::import($this, "' . $className . '");');
 
                     self::$logger->dump('FULL_CLASS_PATH', $fullClassPath);
 
-                    $class = \Phink\TAutoloader::includeClass($fullClassPath, RETURN_CODE);
-                    $fqcn = $class['type'];
-                    $code = $class['code'];
+                    list($file, $fqcn, $code) = TAutoloader::includeClass($fullClassPath, RETURN_CODE);
                     
                     self::$logger->dump('FULL_QUALIFIED_CLASS_NAME: ', $fqcn);
                     
@@ -253,61 +247,6 @@ trait TCodeGenerator
     {
         $motherView = $view->getMotherView();
         $viewHtml = $view->getViewHtml();
-        $scripts = '';
-        $head = '';
-
-        if (file_exists(SRC_ROOT . $view->getJsControllerFileName()) && !strstr($view->getJsControllerFileName(), 'main.js') && $view->getType() == 'TView') {
-            $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($view->getViewName());
-            if (!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
-                copy(SRC_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
-            }
-            // \Phink\Utils\TFileUtils::webPath($view->getCssFileName())
-            $scripts = "<script src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheJsFilename . "'></script>" . PHP_EOL;
-        }
-        if (file_exists(SITE_ROOT . $view->getJsControllerFileName()) && !strstr($view->getJsControllerFileName(), 'main.js') && $view->getType() == 'TView') {
-            $cacheJsFilename = \Phink\TAutoloader::cacheJsFilenameFromView($view->getViewName());
-            if (!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
-                copy(SITE_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
-                self::getLogger()->debug("copy(" . SRC_ROOT . $this->getJsControllerFileName() . ", " . DOCUMENT_ROOT . $cacheJsFilename . ")");
-
-            }
-            // \Phink\Utils\TFileUtils::webPath($view->getCssFileName())
-            $scripts = "<script src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheJsFilename . "'></script>" . PHP_EOL;
-        }
-
-        if (file_exists(SRC_ROOT . $view->getCssFileName()) && $view->getType() == 'TView') {
-            $cacheCssFilename = \Phink\TAutoloader::cacheCssFilenameFromView($view->getViewName());
-            if (!file_exists(DOCUMENT_ROOT . $cacheCssFilename)) {
-                copy(SRC_ROOT . $view->getCssFileName(), DOCUMENT_ROOT . $cacheCssFilename);
-            }
-            //\Phink\Utils\TFileUtils::webPath($view->getCssFileName()
-            // $scripts .= "<script>Phink.Web.Object.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "');</script>" . PHP_EOL;
-            $head = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "' />" . PHP_EOL;
-        }
-        if (file_exists(SITE_ROOT . $view->getCssFileName()) && $view->getType() == 'TView') {
-            $cacheCssFilename = \Phink\TAutoloader::cacheCssFilenameFromView($view->getViewName());
-            if (!file_exists(DOCUMENT_ROOT . $cacheCssFilename)) {
-                copy(SITE_ROOT . $view->getCssFileName(), DOCUMENT_ROOT . $cacheCssFilename);
-            }
-            //\Phink\Utils\TFileUtils::webPath($view->getCssFileName()
-            // $scripts .= "<script>Phink.Web.Object.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "');</script>" . PHP_EOL;
-            $head = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "' />" . PHP_EOL;
-        }
-
-        if ($scripts !== '') {
-            $scripts .= '</body>' . PHP_EOL;
-            $viewHtml = str_replace('</body>', $scripts, $viewHtml);
-            TRegistry::write($this->getMotherUID(), 'scripts', $scripts);
-            // $motherView->addScriptTag($scripts);
-        }
-
-        if ($head !== '') {
-            $head .= '</head>' . PHP_EOL;
-            $viewHtml = str_replace('</head>', $head, $viewHtml);
-            TRegistry::write($this->getMotherUID(), 'linkRel', $head);
-            // $motherView->addLinkRelTag($head);
-
-        }
 
         $count = $doc->getCount();
         $matchesSort = $doc->getMatchesByDepth();

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,41 @@
  
 namespace Phink\Web\UI;
 
-use Phink\Core\TObject;
+use Phink\Core\IObject;
 use Phink\MVC\TActionInfo;
+use Phink\MVC\TCustomView;
+use Phink\MVC\TModel;
+use Phink\Registry\TRegistry;
+use Phink\Web\TWebObject;
+use Phink\TAutoloader;
 
 class TControl extends TCustomCachedControl
 {
+    public function __construct(IObject $parent)
+    {
+        parent::__construct($parent);
+
+        $this->view = $parent;
+
+        $this->clonePrimitivesFrom($parent);
+
+        $this->className = $this->getType();
+        $this->viewName = $this->view->getViewName();
+
+        //$this->setViewName($this->className);
+        $this->setNames();
+        
+        $this->setCacheFileName();
+
+        list($file, $type, $code) = TAutoloader::includeModelByName($this->viewName);
+        $model = SRC_ROOT . $file;
+        if (file_exists($model)) {
+            include $model;
+            $modelClass = $type;
+
+            $this->model = new $modelClass();
+        }
+    }
+
     
 }

@@ -1,8 +1,8 @@
-<html class="ibm-pc" lang="en">
+<html class="theme" lang="en">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title><phx:echo var="consoleName" /></title>
+    <title><phx:echo var="consoleTitle" /></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <meta name="description" content="">
@@ -49,5 +49,12 @@
     <div id="result">
     </div>
     <phx:TConsoleWindow id="console0" />
+    <script>
+        var con = null;
+        var conHost = window.location.hostname;
+        var conName = '<phx:echo var="consoleName" />'
+        document.querySelector(':root').style.setProperty('--back-color', '<phx:echo var="themeBackColor" />');
+        document.querySelector(':root').style.setProperty('--fore-color', '<phx:echo var="themeForeColor" />');
+    </script>
 </body>
 </html>

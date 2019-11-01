@@ -1,0 +1,30 @@
+<html lang="fr">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <link rel="stylesheet" defer="sync" href="/css/_3rdparty.css" type="text/css" />
+    <link rel="stylesheet" defer="sync" href="/assets/admin/css/user-agent.css" type="text/css" />
+    <link rel="stylesheet" defer="sync" href="/assets/admin/css/page.css" type="text/css" />
+    <title><phx:echo var="appTitle" /></title>
+    <script type="text/javascript" data-sources="/puzzle.js" data-depends="/js/_3rdparty.js" src="/phink.js">
+    </script>
+</head>
+
+<body bgcolor="<?php echo $this->page_colors->back_color ?>" text="<?php echo $this->page_colors->text_color ?>"
+
+	<center>
+		<h1>Source du script <phx:echo var="file" /></h1><br>
+		<div style='text-align:left;width:800px;height:600px;background:white;overflow:scroll'>
+		<phx:echo var="source" />
+		</div>
+	</center>
+
+	<script type="text/javascript">
+        function phink_main() {}
+        </script>
+
+    </div>
+</body>
+
+</html>

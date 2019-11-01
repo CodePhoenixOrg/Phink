@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -168,7 +168,7 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
 
     }
     
-    public function query(string $sql = '', ?array $params = null)
+    public function query(string $sql = '', ?array $params = null): ?TPdoDataStatement
     {
         $statement = null;
         $result = false;
@@ -177,6 +177,13 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
             if($params != null) {
                 $statement = $this->_state->prepare($sql);
                 $statement->execute($params);
+
+                $debugSQL = $sql;
+                foreach($params as $field => $value) {
+                    $debugSQL = str_replace($field, "'$value'", $debugSQL);
+                }
+
+                self::getLogger()->sql($debugSQL);
             } else {
                 $statement = $this->_state->query($sql);
             }
@@ -198,7 +205,7 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
         return $this->_state->exec($sql);
     }
 
-    public function prepare(string $sql) : bool
+    public function prepare(string $sql): ?\PDOStatement
     {
         return $this->_state->prepare($sql);
     }

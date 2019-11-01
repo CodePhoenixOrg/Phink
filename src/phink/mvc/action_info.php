@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ use Phink\Web\IHttpTransport;
 use Phink\Web\TRequest;
 use Phink\Web\TResponse;
 use Phink\Core\TObject;
+use Phink\Core\IObject;
 
 class TActionInfo extends TObject implements IHttpTransport
 {
@@ -29,7 +30,7 @@ class TActionInfo extends TObject implements IHttpTransport
 
     protected $data = [];
 
-    public function __construct(IHttpTransport $parent)
+    public function __construct(IObject $parent)
     {
         parent::__construct($parent);
     

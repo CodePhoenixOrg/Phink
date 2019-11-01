@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,12 +32,12 @@ class TLog
 
     private function __construct()
     {
-        
+
     }
 
     public static function create()
     {
-        if(self::$_logger === null) {
+        if (self::$_logger === null) {
             self::$_logger = new TLog();
         }
         return self::$_logger;
@@ -51,6 +51,11 @@ class TLog
     public function debug($message, $filename = null, $line = null)
     {
         $this->_log(DEBUG_LOG, $message, $filename, $line);
+    }
+
+    public function sql($message, $filename = null, $line = null)
+    {
+        $this->_log(SQL_LOG, $message, $filename, $line);
     }
 
     public function error(\Throwable $ex, $filename = null, $line = null)
@@ -72,8 +77,8 @@ class TLog
     {
         $message = (is_array($message) || is_object($message)) ? print_r($message, true) : $message;
 
-        if (!file_exists(dirname(DEBUG_LOG))) {
-            mkdir(dirname(DEBUG_LOG), 0755);
+        if (!file_exists(dirname($filepath))) {
+            mkdir(dirname($filepath), 0755);
         }
         $handle = fopen($filepath, 'a');
 
@@ -85,26 +90,45 @@ class TLog
         fclose($handle);
     }
 
-    public function getDebugLog() : string 
+    public function getDebugLog(): string
     {
-        if(!\file_exists(DEBUG_LOG)) {
+        if (!\file_exists(DEBUG_LOG)) {
             return '';
         }
         return \file_get_contents(DEBUG_LOG);
     }
 
-    public function getPhpErrorLog() : string 
+    public function getErrorLog(): string
     {
-        if(!\file_exists(DOCUMENT_ROOT . 'php_error_log')) {
+        if (!\file_exists(ERROR_LOG)) {
+            return '';
+        }
+        return \file_get_contents(ERROR_LOG);
+    }
+
+    public function getSqlLog(): string
+    {
+        if (!\file_exists(SQL_LOG)) {
+            return '';
+        }
+        return \file_get_contents(SQL_LOG);
+    }
+
+    public function getPhpErrorLog(): string
+    {
+        if (!\file_exists(DOCUMENT_ROOT . 'php_error_log')) {
             return '';
         }
         return \file_get_contents(DOCUMENT_ROOT . 'php_error_log');
     }
 
-    public function clearAll() : void
+    public function clearAll(): void
     {
         if (file_exists(DEBUG_LOG)) {
             unlink(DEBUG_LOG);
+        }
+        if (file_exists(SQL_LOG)) {
+            unlink(SQL_LOG);
         }
         if (file_exists(DOCUMENT_ROOT . 'php_error_log')) {
             unlink(DOCUMENT_ROOT . 'php_error_log');

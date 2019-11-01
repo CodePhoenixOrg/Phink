@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 David Blanchard
+ * Copyright (C) 2019 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,16 +36,8 @@ abstract class TCustomController extends TCustomControl
     {
         parent::__construct($parent);
         
-        $this->application = $parent->getApplication();
-        $this->commands = $this->application->getCommands();
-        $this->authentication = $parent->getAuthentication();
-        $this->request = $parent->getRequest();
-        $this->response = $parent->getResponse();        
-        $this->parameters = $parent->getParameters();
-        $this->path = $this->getPath();
-        $this->twigEnvironment = $this->getTwigEnvironment();
-
-        $this->cloneNamesFrom($parent);
+        $this->clonePrimitivesFrom($parent);
+        //$this->cloneNamesFrom($parent);
     }
 
     public function getInnerHtml() : string
