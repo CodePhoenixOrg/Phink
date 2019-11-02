@@ -20,7 +20,23 @@
 	<input type='hidden' name='di_short' value='<phx:echo var="di_short" />'>
 	<input type='hidden' name='autogen' value='<phx:echo var="autogen" />'>
 	<input type='hidden' name='pz_current_tab' value=''>
-
+	<?php
+	foreach ($this->form_fields as $this->fields) {
+		?>
+	<td><input name='form_fields[]' type='hidden' size='25' value='<phx:echo var="fields" />'></td>
+		<?php
+	}
+	foreach ($this->relation_fields as $this->fields) {
+		?>
+	<td><input name='relation_fields[]' type='hidden' size='25' value='<phx:echo var="fields" />'></td>
+		<?php
+	}
+	foreach ($this->field_defs as $this->defs) {
+		?>
+	<td><input name='field_defs[]' type='hidden' size='25' value='<phx:echo var="defs" />'></td>
+		<?php
+	}
+	?>
 	<table border='0' bordercolor='0' width='85%' valign='top' style='display:hidden;'>
 	<tr><td>
 	<table border='0' cellspacing='0' cellpadding='0'>
@@ -28,8 +44,8 @@
 	<td>Taille DB</td>
 	<td>Type DB</td>
 	<td>Type HTML</td>
-	<td>Largeur</td>
-	<td>Hauteur</td>
+	<td>Colonnes</td>
+	<td>Lignes</td>
 	</tr>
 	<?php
 	foreach ($this->field_defs as $def) {
@@ -37,12 +53,12 @@
 		?><tr><?php
 		$this->options = $this->datacontrols->createOptionsFromArray($this->list, ",", 0, 0, [], $this->defs[3], false);
 		?>
-		<td><input type='text' size='25' value='<phx:echo var="defs[0]" />'></td>
-		<td><input type='text' readonly size='10' value='<phx:echo var="defs[1]" />'></td>
-		<td><input type='text' readonly size='10' value='<phx:echo var="defs[2]" />'></td>
-		<td><select name='<phx:echo var="defs[3]" />'><phx:echo var="options['list']" /></select></td>
-		<td><input type='text' size='5' value='<phx:echo var="defs[4]" />'></td>
-		<td><input type='text' size='5' value='<phx:echo var="defs[5]" />'></td>
+		<td><input name='name[]' type='text' size='25' value='<phx:echo var="defs[0]" />'></td>
+		<td><input name='dbsize[]' type='text' readonly size='10' value='<phx:echo var="defs[1]" />'></td>
+		<td><input name='dbtype[]' type='text' readonly size='10' value='<phx:echo var="defs[2]" />'></td>
+		<td><select name='htmltype[]' name='<phx:echo var="defs[3]" />'><phx:echo var="options['list']" /></select></td>
+		<td><input name='width[]' type='text' size='5' value='<phx:echo var="defs[4]" />'></td>
+		<td><input name='height[]' type='text' size='5' value='<phx:echo var="defs[5]" />'></td>
 		</tr>
 		<?php
 	}

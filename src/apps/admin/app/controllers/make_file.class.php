@@ -30,6 +30,15 @@ class TMakeFile extends TPartialController
 		$this->menus = new Menus($this->lang, $this->db_prefix);
         $this->scriptMaker = new TScriptMaker;
 
+		$field_defs = $this->getRequest()->getArgument("field_defs");
+		$relation_fields = $this->getRequest()->getArgument("relation_fields");
+		$names = $this->getRequest()->getArgument("name");
+		$dbsizes = $this->getRequest()->getArgument("dbsize");
+		$dbtypes = $this->getRequest()->getArgument("dbtype");
+		$htmltypes = $this->getRequest()->getArgument("htmltype");
+		$widths = $this->getRequest()->getArgument("width");
+		$heights = $this->getRequest()->getArgument("height");
+
 		$this->workdb = getArgument("workdb");
 		$this->userconf = getArgument("userconf");
 		$this->userdb = getArgument("userdb");
@@ -57,9 +66,7 @@ class TMakeFile extends TPartialController
 		$tmp_filename = 'tmp_' . $this->pa_filename;
 		$wwwroot = getWwwRoot();
 
-		$analyzer = new TAnalyzer;
-		$references = $analyzer->searchReferences($this->userdb, $this->usertable, $usercs);
-		$A_fieldDefs = $references["field_defs"];
+		$A_fieldDefs = $field_defs;
 
 		$this->message = "<br>";
 
@@ -80,17 +87,9 @@ class TMakeFile extends TPartialController
 
 			$formname = "fiche_$this->usertable";
 			$sql = "show fields from $this->usertable;";
-
-			$L_sqlFields = "";
-			$A_sqlFields = [];
-
 			$stmt = $usercs->query($sql);
-			while ($rows = $stmt->fetch()) {
-				$L_sqlFields .= $rows[0] . ",";
-			}
 
-			$L_sqlFields = substr($L_sqlFields, 0, strlen($L_sqlFields) - 1);
-			$A_sqlFields = explode(",", $L_sqlFields);
+			$A_sqlFields = $relation_fields;
 			$this->indexfield = $A_sqlFields[0];
 			$this->secondfield = $A_sqlFields[1];
 

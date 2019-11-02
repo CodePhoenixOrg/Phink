@@ -18,7 +18,7 @@ class TMakeFields extends TPartialController
 	// view fields
 	protected $pa_filename, $datacontrols, $usertable, $dbgrid, $menu, $filter, 
 		$addoption, $me_id, $me_level, $bl_id, $di_long, $di_short, $di_name, 
-		$autogen, $extension, $basedir, $lg, $options, $defs;
+		$autogen, $extension, $basedir, $lg, $options, $defs, $fields;
 
 	public function beforeBinding(): void
     {		
