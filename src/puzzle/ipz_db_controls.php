@@ -855,7 +855,7 @@ class Controls extends \Puzzle\Base
             $on_mouse_over .= "setRowColor(this, hlBackColor, hlTextColor);";
             $on_mouse_out .= "setBackRowColor(this);";
 
-            $js_events = " onMouseOver=\"$on_mouse_over\" onMouseOut=\"$on_mouse_out\">";
+            $js_events = " onmouseover=\"$on_mouse_over\" onMouseOut=\"$on_mouse_out\">";
             $table .= "<tr id='$name$r' bgcolor='$back_color'$js_events";
             $url = "";
             for ($j = 0; $j < $i; $j++) {
@@ -945,7 +945,7 @@ class Controls extends \Puzzle\Base
             $ahref = "<a href='$url$curl_rows'$target>";
             $a = "</a>";
 
-            $table .= "<tr id='$name$r' bgcolor='$back_color' onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\">";
+            $table .= "<tr id='$name$r' bgcolor='$back_color' onmouseover=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\">";
             for ($j = 0; $j < $i; $j++) {
                 $fieldname = $stmt->getFieldName($j);
                 if ($fieldname == $web_field && $is_url === false) {
@@ -1317,7 +1317,7 @@ class Controls extends \Puzzle\Base
             $on_mouse_over .= "setRowColor(this, hlBackColor, hlTextColor);";
             $on_mouse_out .= "setBackRowColor(this);";
 
-            $js_events = " onMouseOver=\"$on_mouse_over\" onMouseOut=\"$on_mouse_out\"";
+            $js_events = " onmouseover=\"$on_mouse_over\" onMouseOut=\"$on_mouse_out\"";
             $js_events = "";
             $table .= "<tr id='$name$r' bgcolor='$back_color'$js_events>";
             $rowspan = $step;
@@ -1418,7 +1418,7 @@ class Controls extends \Puzzle\Base
             $ahref = "<a href='$url$curl_rows'$target>";
             $a = "</a>";
 
-            $table .= "<tr id='$name$r' bgcolor='$back_color' onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\">";
+            $table .= "<tr id='$name$r' bgcolor='$back_color' onmouseover=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\">";
             for ($j = 0; $j < $i; $j++) {
                 $fieldname = $stmt->getFieldName($j);
                 if ($fieldname == $web_field && $is_url === false) {
@@ -1674,7 +1674,7 @@ class Controls extends \Puzzle\Base
             $on_mouse_over .= "setRowColor(this, hlBackColor, hlTextColor);";
             $on_mouse_out .= "setBackRowColor(this);";
 
-            $js_events = " onMouseOver=\"$on_mouse_over\" onMouseOut=\"$on_mouse_out\">";
+            $js_events = " onmouseover=\"$on_mouse_over\" onMouseOut=\"$on_mouse_out\">";
             $table .= "<tr id='$name$r' bgcolor='$back_color'$js_events";
             for ($j = 0; $j < $i; $j++) {
                 $fieldname = $stmt->getFieldName($j);
@@ -1756,7 +1756,7 @@ class Controls extends \Puzzle\Base
             $ahref = "<a href='$url$curl_rows'$target>";
             $a = "</a>";
 
-            $table .= "<tr id='$name$r' bgcolor='$back_color' onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\">";
+            $table .= "<tr id='$name$r' bgcolor='$back_color' onmouseover=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\">";
             for ($j = 0; $j < $i; $j++) {
                 $fieldname = $stmt->getFieldName($j);
                 if ($fieldname == $web_field && $is_url === false) {
@@ -1837,9 +1837,9 @@ class Controls extends \Puzzle\Base
                 $option = $rows[$option_field];
                 //$option=strtoupper($option);
                 if ($value == $default) {
-                    $list .= "<OPTION SELECTED VALUE=\"$default\" LABEL=\"$option\">$option</OPTION>\n";
+                    $list .= "<option selected value=\"$default\" label=\"$option\">$option</option>\n";
                 } else {
-                    $list .= "<OPTION VALUE=\"$value\" LABEL=\"$option\">$option</OPTION>\n";
+                    $list .= "<option value=\"$value\" label=\"$option\">$option</option>\n";
                 }
             }
         } elseif ($only_default && $default != "") {
@@ -1856,7 +1856,7 @@ class Controls extends \Puzzle\Base
             while ($rows = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $value = $rows[$index_field];
                 $option = $rows[$option_field];
-                $list .= "<OPTION SELECTED VALUE=\"$value\" LABEL=\"$option\">$option</OPTION>\n";
+                $list .= "<option selected value=\"$value\" label=\"$option\">$option</option>\n";
             }
         }
 
@@ -1886,7 +1886,7 @@ class Controls extends \Puzzle\Base
         echo "</pre>";
          */
         if (!$only_default) {
-            $list .= "<OPTION SELECTED VALUE=\"0\">" . $PZ_ZERO_SELECT . "</OPTION>\n";
+            $list .= "<option selected value=\"0\">" . $PZ_ZERO_SELECT . "</option>\n";
             $stmt = $cs->query($sql);
             while ($rows = $stmt->fetch()) {
                 $value = $rows[$value_col];
@@ -1894,13 +1894,13 @@ class Controls extends \Puzzle\Base
                 if (!empty($selected)) {
                     $inter = implode("", array_intersect($selected, (array) $value));
                     if ($inter != "") {
-                        $options .= "<OPTION VALUE=\"$value\">$option</OPTION>\n";
+                        $options .= "<option value=\"$value\">$option</option>\n";
                     }
                 }
                 if ($value == $default) {
-                    $list .= "<OPTION SELECTED VALUE=\"$default\">$option</OPTION>\n";
+                    $list .= "<option selected value=\"$default\">$option</option>\n";
                 } else {
-                    $list .= "<OPTION VALUE=\"$value\">$option</OPTION>\n";
+                    $list .= "<option value=\"$value\">$option</option>\n";
                 }
             }
         } elseif ($only_default && $default != "") {
@@ -1912,10 +1912,10 @@ class Controls extends \Puzzle\Base
             while ($rows = $stmt->fetch()) {
                 $value = $rows[$value_col];
                 $option = $rows[$option_col];
-                $list .= "<OPTION SELECTED VALUE=\"$value\">$option</OPTION>\n";
+                $list .= "<option selected value=\"$value\">$option</option>\n";
             }
             if ($list == "") {
-                $list .= "<OPTION SELECTED VALUE=\"0\">" . $PZ_ZERO_SELECT . "</OPTION>\n";
+                $list .= "<option selected value=\"0\">" . $PZ_ZERO_SELECT . "</option>\n";
             }
         }
 
@@ -1964,20 +1964,20 @@ class Controls extends \Puzzle\Base
          */
 
         if (!$only_default) {
-            $list .= "<OPTION SELECTED VALUE=\"0\">" . $PZ_ZERO_SELECT . "</OPTION>\n";
+            $list .= "<option selected value=\"0\">" . $PZ_ZERO_SELECT . "</option>\n";
             foreach ($records as $row) {
                 $value = is_array($row) ? isset($row[$value_col]) ? $row[$value_col] : key($row) : $row;
                 $option = is_array($row) ? isset($row[$option_col]) ? $row[$option_col] : $row[key($row)] : $row;
                 if (!empty($selected)) {
                     $inter = implode("", array_intersect($selected, (array) $value));
                     if ($inter != "") {
-                        $options .= "<OPTION VALUE=\"$value\">$option</OPTION>\n";
+                        $options .= "<option value=\"$value\">$option</option>\n";
                     }
                 }
                 if ($value == $default) {
-                    $list .= "<OPTION SELECTED VALUE=\"$default\">$option</OPTION>\n";
+                    $list .= "<option selected value=\"$default\">$option</option>\n";
                 } else {
-                    $list .= "<OPTION VALUE=\"$value\">$option</OPTION>\n";
+                    $list .= "<option value=\"$value\">$option</option>\n";
                 }
             }
         }
@@ -1989,9 +1989,9 @@ class Controls extends \Puzzle\Base
         foreach($records as $rows) {
         $value=$rows[$value_col];
         $option=$rows[$option_col];
-        $list.="<OPTION SELECTED VALUE=\"$value\">$option</OPTION>\n";
+        $list.="<option selected value=\"$value\">$option</option>\n";
         }
-        if($list=="") $list.="<OPTION SELECTED VALUE=\"0\">".$PZ_ZERO_SELECT."</OPTION>\n";
+        if($list=="") $list.="<option selected value=\"0\">".$PZ_ZERO_SELECT."</option>\n";
 
         }*/
 
