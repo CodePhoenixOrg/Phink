@@ -30,7 +30,7 @@
 		FROM
 			menus m
 				INNER JOIN
-			dictionary d ON d.di_name = m.di_name
+			dictionary d ON d.di_id = m.di_id
 				LEFT JOIN
 			blocks b ON m.bl_id = b.bl_id
 				LEFT OUTER JOIN
