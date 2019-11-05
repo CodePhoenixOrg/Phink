@@ -21,19 +21,10 @@
 	<input type='hidden' name='autogen' value='<phx:echo var="autogen" />'>
 	<input type='hidden' name='pz_current_tab' value=''>
 	<?php
-	foreach ($this->form_fields as $this->fields) {
+	foreach ($this->data as $defs) {
+		$this->fields = base64_encode($defs);
 		?>
-	<td><input name='form_fields[]' type='hidden' size='25' value='<phx:echo var="fields" />'></td>
-		<?php
-	}
-	foreach ($this->relation_fields as $this->fields) {
-		?>
-	<td><input name='relation_fields[]' type='hidden' size='25' value='<phx:echo var="fields" />'></td>
-		<?php
-	}
-	foreach ($this->field_defs as $this->defs) {
-		?>
-	<td><input name='field_defs[]' type='hidden' size='25' value='<phx:echo var="defs" />'></td>
+	<td><input name='data[]' type='hidden' value='<phx:echo var="fields" />'></td>
 		<?php
 	}
 	?>
@@ -43,22 +34,26 @@
 	<tr><td>Nom</td>
 	<td>Taille DB</td>
 	<td>Type DB</td>
+	<td>Type PHP</td>
 	<td>Type HTML</td>
 	<td>Colonnes</td>
 	<td>Lignes</td>
 	</tr>
 	<?php
-	foreach ($this->field_defs as $def) {
-		$this->defs = explode(",", $def);
+	// foreach ($this->field_defs as $def) {
+	foreach ($this->data as $defs) {
+
+		$this->defs = json_decode($defs);
 		?><tr><?php
-		$this->options = $this->datacontrols->createOptionsFromArray($this->list, ",", 0, 0, [], $this->defs[3], false);
+		$this->options = $this->datacontrols->createOptionsFromArray($this->list, ",", 0, 0, [], $this->defs->htmltype, false);
 		?>
-		<td><input name='name[]' type='text' size='25' value='<phx:echo var="defs[0]" />'></td>
-		<td><input name='dbsize[]' type='text' readonly size='10' value='<phx:echo var="defs[1]" />'></td>
-		<td><input name='dbtype[]' type='text' readonly size='10' value='<phx:echo var="defs[2]" />'></td>
-		<td><select name='htmltype[]' name='<phx:echo var="defs[3]" />'><phx:echo var="options['list']" /></select></td>
-		<td><input name='width[]' type='text' size='5' value='<phx:echo var="defs[4]" />'></td>
-		<td><input name='height[]' type='text' size='5' value='<phx:echo var="defs[5]" />'></td>
+		<td><input name='name[]' type='text' size='25' value='<phx:echo var="defs->fieldname" />'></td>
+		<td><input name='dbsize[]' type='text' readonly size='10' value='<phx:echo var="defs->fieldsize" />'></td>
+		<td><input name='dbtype[]' type='text' readonly size='10' value='<phx:echo var="defs->fieldtype" />'></td>
+		<td><input name='phptype[]' type='text' readonly size='10' value='<phx:echo var="defs->phptype" />'></td>
+		<td><select name='htmltype[]' data-select='<phx:echo var="defs->htmltype" />'><phx:echo var="options['list']" /></select></td>
+		<td><input name='width[]' type='text' size='5' value='<phx:echo var="defs->cols" />'></td>
+		<td><input name='height[]' type='text' size='5' value='<phx:echo var="defs->lines" />'></td>
 		</tr>
 		<?php
 	}

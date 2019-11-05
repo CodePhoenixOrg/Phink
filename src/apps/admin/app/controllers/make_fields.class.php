@@ -18,7 +18,7 @@ class TMakeFields extends TPartialController
 	// view fields
 	protected $pa_filename, $datacontrols, $usertable, $dbgrid, $menu, $filter, 
 		$addoption, $me_id, $me_level, $bl_id, $di_long, $di_short, $di_name, 
-		$autogen, $extension, $basedir, $lg, $options, $defs, $fields;
+		$autogen, $extension, $basedir, $lg, $options, $defs, $fields, $data;
 
 	public function beforeBinding(): void
     {		
@@ -55,15 +55,9 @@ class TMakeFields extends TPartialController
 		$this->datacontrols = new DbControls($this->lang, $this->db_prefix);
 
 		$analyzer = new TAnalyzer;
+		$this->data = $analyzer->searchReferences($this->userdb, $this->usertable, $usercs);
 
-		$references = $analyzer->searchReferences($this->userdb, $this->usertable, $usercs);
-
-		$this->relation_tables = $references["relation_tables"];
-		$this->relation_fields = $references["relation_fields"];
-		$this->form_fields = $references["form_fields"];
-		$this->field_defs = $references["field_defs"];
-
-		$this->list = "LABEL,SELECT,TEXT,TEXTAREA";
+		$this->list = "label,select,text,textarea";
 
 	}
 

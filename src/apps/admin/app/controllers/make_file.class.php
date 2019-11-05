@@ -30,11 +30,13 @@ class TMakeFile extends TPartialController
 		$this->menus = new Menus($this->lang, $this->db_prefix);
         $this->scriptMaker = new TScriptMaker;
 
+		$form_fields = $this->getRequest()->getArgument("form_fields");
 		$field_defs = $this->getRequest()->getArgument("field_defs");
-		$relation_fields = $this->getRequest()->getArgument("relation_fields");
+		$data = $this->getRequest()->getArgument("data");
 		$names = $this->getRequest()->getArgument("name");
 		$dbsizes = $this->getRequest()->getArgument("dbsize");
 		$dbtypes = $this->getRequest()->getArgument("dbtype");
+		$phphtypes = $this->getRequest()->getArgument("phptype");
 		$htmltypes = $this->getRequest()->getArgument("htmltype");
 		$widths = $this->getRequest()->getArgument("width");
 		$heights = $this->getRequest()->getArgument("height");
@@ -65,8 +67,15 @@ class TMakeFile extends TPartialController
 		// $this->cs = connection(CONNECT, $userdb) or die("UserDb='$userdb'<br>");
 		$tmp_filename = 'tmp_' . $this->pa_filename;
 		$wwwroot = getWwwRoot();
+	
+		$A_data = array_map(function($defs) {
+			return base64_decode($defs);
+		}, $data);
 
-		$A_fieldDefs = $field_defs;
+		$relation_fields = array_map(function($defs) {
+			$defs = json_decode($defs, true);
+			return $defs['fieldtype'];
+		}, $A_data);
 
 		$this->message = "<br>";
 
@@ -86,12 +95,9 @@ class TMakeFile extends TPartialController
 		if ($this->save === "") {
 
 			$formname = "fiche_$this->usertable";
-			$sql = "show fields from $this->usertable;";
-			$stmt = $usercs->query($sql);
 
-			$A_sqlFields = $relation_fields;
-			$this->indexfield = $A_sqlFields[0];
-			$this->secondfield = $A_sqlFields[1];
+			$this->indexfield = $relation_fields[0];
+			$this->secondfield = $relation_fields[1];
 
 			list($this->me_id, $this->pa_id) = $this->menus->getMenuAndPage($this->conf, $rel_page_filename);
 
@@ -125,10 +131,10 @@ class TMakeFile extends TPartialController
 					"Voulez-vous écraser le script actuel sachant que toutes les modifications effectuées seront perdues ?</p>\n";
 			}
 
-			$script = $this->scriptMaker->makeCode($this->userconf, $this->usertable, $stmt, $this->pa_id, $this->indexfield, $this->secondfield, $A_fieldDefs, $usercs, false);
+			$script = $this->scriptMaker->makeCode($this->userconf, $this->usertable, $this->pa_id, $this->indexfield, $this->secondfield, $A_data);
 			file_put_contents('tmp_code.php', $script);
 
-			$script = $this->scriptMaker->makePage($this->userdb, $this->usertable, $this->pa_filename, $this->pa_id, $this->indexfield, $this->secondfield, $A_sqlFields, $usercs, false);
+			$script = $this->scriptMaker->makePage($this->userdb, $this->usertable, $this->pa_filename, $this->pa_id, $this->indexfield, $this->secondfield, $A_data);
 			file_put_contents('tmp_page.php', $script);
 		
 
