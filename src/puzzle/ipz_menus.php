@@ -56,12 +56,14 @@ class Menus extends Base
         $sql = 'delete from {$this->db_prefix}v_menus;';
         $cs->query($sql);
 
-        $sql = "insert into {$this->db_prefix}v_menus (me_id, pa_id, me_level, di_name, me_target, pa_filename, di_fr_short, di_fr_long, di_en_short, di_en_long)" .
-            "select m.me_id, m.pa_id, m.me_level, m.di_name, m.me_target, p.pa_filename, d.di_fr_short, d.di_fr_long, d.di_en_short, d.di_en_long " .
-            "from {$this->db_prefix}menus m, {$this->db_prefix}pages p, {$this->db_prefix}dictionary d " .
-            "where m.di_name = d.di_name " .
-            "and p.di_name = d.di_name " .
-            "order by m.me_id";
+        $sql = <<<SQL
+        insert into {$this->db_prefix}v_menus (me_id, pa_id, me_level, di_name, me_target, pa_filename, di_fr_short, di_fr_long, di_en_short, di_en_long)
+            select m.me_id, m.pa_id, m.me_level, m.di_name, m.me_target, p.pa_filename, d.di_fr_short, d.di_fr_long, d.di_en_short, d.di_en_long 
+            from {$this->db_prefix}menus m, {$this->db_prefix}pages p, {$this->db_prefix}dictionary d 
+            where m.di_name = d.di_name 
+            and p.di_name = d.di_name 
+            order by m.me_id
+        SQL;
         //echo $sql;
         $cs->query($sql);
 
@@ -96,7 +98,10 @@ class Menus extends Base
     public function getPageId($userdb, $pa_filename)
     {
         $cs = TPdoConnection::opener($userdb);
-        $sql = "select pa_id from {$this->db_prefix}pages where pa_filename = '$pa_filename'";
+        $sql = <<<SQL
+            select pa_id from {$this->db_prefix}pages 
+                where pa_filename = '$pa_filename'
+        SQL;
         self::getLogger()->debug($sql, __FILE__, __LINE__);
         self::getLogger()->dump('LG', $this->lg);
 
@@ -110,7 +115,11 @@ class Menus extends Base
     public function getMenuId($conf, $pa_filename)
     {
         $cs = TPdoConnection::opener($conf);
-        $sql = "select m.me_id, p.pa_id from {$this->db_prefix}menus m left outer join {$this->db_prefix}pages p on m.pa_id = p.pa_id where p.pa_filename = '$pa_filename'";
+        $sql = <<<SQL
+            select m.me_id, p.pa_id from {$this->db_prefix}menus m 
+                left outer join {$this->db_prefix}pages p on m.pa_id = p.pa_id 
+                where p.pa_filename = '$pa_filename'
+        SQL;
         self::getLogger()->debug($sql, __FILE__, __LINE__);
         $stmt = $cs->query($sql);
         $rows = $stmt->fetch();
@@ -122,7 +131,12 @@ class Menus extends Base
     public function getMenuAndPage($userdb, $pa_filename)
     {
         $cs = TPdoConnection::opener($userdb);
-        $sql = "select m.me_id, p.pa_id from {$this->db_prefix}menus m left outer join {$this->db_prefix}pages p on m.pa_id = p.pa_id where p.pa_filename = '$pa_filename'";
+        $sql = <<<SQL
+            select m.me_id, p.pa_id 
+                from {$this->db_prefix}menus m 
+                left outer join {$this->db_prefix}pages p on m.pa_id = p.pa_id 
+                where p.pa_filename = '$pa_filename'
+        SQL;
         self::getLogger()->debug($sql, __FILE__, __LINE__);
         $stmt = $cs->query($sql);
         $rows = $stmt->fetch();
@@ -134,11 +148,13 @@ class Menus extends Base
 
     public function getPageFilename($conf, $id = 0)
     {
-        $sql = "select p.pa_filename " .
-            "from {$this->db_prefix}pages p, {$this->db_prefix}menus m, {$this->db_prefix}dictionary d " .
-            "where m.di_name=d.di_name " .
-            "and p.pa_id=m.pa_id " .
-            "and m.me_id=" . $id;
+        $sql = <<<SQL
+        select p.pa_filename
+            from {$this->db_prefix}pages p, {$this->db_prefix}menus m, {$this->db_prefix}dictionary d
+            where m.di_id=d.di_id
+            and p.pa_id=m.pa_id
+            and m.me_id=$id;
+        SQL;
         $cs = TPdoConnection::opener($conf);
         $stmt = $cs->query($sql);
         $rows = $stmt->fetch();
@@ -169,27 +185,27 @@ class Menus extends Base
 
             $cs->beginTransaction();
             $sql = <<<INSERT
-    insert into {$this->db_prefix}dictionary (di_name, di_fr_short, di_fr_long, di_en_short, di_en_long)
-    values('$di_name', '$di_fr_short', '$di_fr_long', '$di_en_short', '$di_en_long')
-INSERT;
+            insert into {$this->db_prefix}dictionary (di_name, di_fr_short, di_fr_long, di_en_short, di_en_long)
+                values($di_name', '$di_fr_short', '$di_fr_long', '$di_en_short', '$di_en_long')
+            INSERT;
             $affected_rows = $cs->exec($sql);
             $di_id = $cs->lastInsertId();
 
             self::getLogger()->debug($sql, __FILE__, __LINE__);
 
             $sql = <<<INSERT
-    insert into {$this->db_prefix}pages (di_name, pa_filename)
-    values('$di_name', '$pa_filename')
-INSERT;
+            insert into {$this->db_prefix}pages (di_name, pa_filename)
+                values('$di_name', '$pa_filename')
+            INSERT;
             $affected_rows += $cs->exec($sql);
             $pa_id = $cs->lastInsertId();
 
             self::getLogger()->debug($sql, __FILE__, __LINE__);
 
             $sql = <<<INSERT
-    insert into {$this->db_prefix}menus (di_name, me_level, me_target, pa_id)
-    values('$di_name', '$me_level', '$me_target', $pa_id)
-INSERT;
+            insert into {$this->db_prefix}menus (di_name, me_level, me_target, pa_id)
+                values('$di_name', '$me_level', '$me_target', $pa_id)
+            INSERT;
             $affected_rows += $cs->exec($sql);
             $me_id = $cs->lastInsertId();
 
@@ -217,15 +233,24 @@ INSERT;
 
         $cs->beginTransaction();
 
-        $sql = "update {$this->db_prefix}menus set di_name='$di_name', me_level='$me_level', me_target='$me_target', pa_id=$pa_id " .
-            "where me_id=$me_id";
+        $sql = <<<SQL
+        update {$this->db_prefix}menus m, {$this->db_prefix}dictionary d
+        set m.di_id=d.di_id, me_level='$me_level', me_target='$me_target', pa_id=$pa_id 
+        where m.me_id=$me_id
+        and d.di_id = '$di_name';
+        SQL;
         $affected_rows = $cs->exec($sql);
 
-        $sql = "update {$this->db_prefix}pages set di_name='$di_name', pa_filename='$pa_filename'" .
-            "where pa_id=$pa_id";
+        $sql = <<<SQL
+        update {$this->db_prefix}pages set di_name='$di_name', pa_filename='$pa_filename'
+            where pa_id=$pa_id
+        SQL;
         $affected_rows += $cs->exec($sql);
 
-        $sql = "update {$this->db_prefix}menus set di_fr_short='$di_fr_short', di_fr_long='$di_fr_long', di_en_short='$di_en_short', di_en_long='$di_en_long' where di_name=$di_name";
+        $sql = <<<SQL
+        update {$this->db_prefix}menus set di_fr_short='$di_fr_short', di_fr_long='$di_fr_long', di_en_short='$di_en_short', di_en_long='$di_en_long'
+        where di_name='$di_name'
+        SQL;
         $affected_rows += $cs->exec($sql);
 
         $cs->commit();
@@ -239,13 +264,21 @@ INSERT;
 
         $cs->beginTransaction();
 
-        $sql = "delete from {$this->db_prefix}menus where di_name='$di_name'";
+        $sql = <<<SQL
+        delete from {$this->db_prefix}menus m
+            inner join dictionary d on m.di_id = d.di_id
+            where d.di_name='$di_name'
+        SQL;
         $affected_rows = $cs->exec($sql);
 
-        $sql = "delete from {$this->db_prefix}pages where di_name='$di_name'";
+        $sql = <<<SQL
+        delete from {$this->db_prefix}pages where di_name='$di_name'
+        SQL;
         $affected_rows += $cs->exec($sql);
 
-        $sql = "delete from {$this->db_prefix}dictionary where di_name='$di_name'";
+        $sql = <<<SQL
+        delete from {$this->db_prefix}dictionary where di_name='$di_name'
+        SQL;
         $affected_rows += $cs->exec($sql);
 
         $cs->commit();
@@ -363,13 +396,13 @@ INSERT;
 
         $main_menu = '';
         $sql = "";
-        $sql = "select m.pa_id, m.me_level, d.di_{$this->lg}_short, d.di_name " .
-            "from {$this->db_prefix}menus m, {$this->db_prefix}dictionary d " .
-            "where m.di_name=d.di_name " .
-            "and m.me_level='$level' " .
-            "order by m.me_id";
-
-        //        echo $sql . "<br>";
+        $sql = <<<SQL
+        select m.pa_id, m.me_level, d.di_{$this->lg}_short, d.di_name
+            from {$this->db_prefix}menus m, {$this->db_prefix}dictionary d
+            where m.di_id=d.di_id
+            and m.me_level='$level'
+            order by m.me_id
+        SQL;
         self::getLogger()->debug($sql, __FILE__, __LINE__);
         self::getLogger()->dump('LG', $this->lg);
 
@@ -402,38 +435,6 @@ INSERT;
         return array("index" => $default_id, "menu" => $main_menu);
     }
 
-    public function createFramedMainMenu($userdb, $color, $text_color, $over_color, $width, $height)
-    {
-        $main_menu = "";
-        $sql = "";
-        $sql = "select m.pa_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename " .
-            "from {$this->db_prefix}menus m, {$this->db_prefix}pages p, {$this->db_prefix}dictionary d " .
-            "where m.me_level=1 " .
-            "and m.pa_id=p.pa_id " .
-            "and m.di_name=d.di_name " .
-            "order by m.me_id";
-        $cs = TPdoConnection::opener($userdb);
-        $stmt = $cs->query($sql);
-        while ($rows = $stmt->fetch()) {
-            $index = $rows[0];
-            $level = $rows[1];
-            $caption = $rows[2];
-            $target = $rows[3];
-            $link = $rows[4];
-            $main_menu .= "<applet code=\"fphover.class\" codebase=\"/{$this->database}/java/\" width=\"$width\" height=\"$height\">\n";
-            $main_menu .= "\t<param name=\"textcolor\" value=\"$text_color\">\n";
-            $main_menu .= "\t<param name=\"text\" value=\"$caption\">\n";
-            $main_menu .= "\t<param name=\"color\" value=\"$color\">\n";
-            $main_menu .= "\t<param name=\"hovercolor\" value=\"$over_color\">\n";
-            $main_menu .= "\t<param name=\"effect\" value=\"glow\">\n";
-            $main_menu .= "\t<param name=\"target\" value=\"page\">\n";
-            $main_menu .= "\t<param name=\"url\" valuetype=\"ref\" value=\"{$this->lg}/$link?lg={$this->lg}\">\n";
-            $main_menu .= "</applet>\n\n";
-        }
-        //$stmt->free();
-        return $main_menu;
-    }
-
     public function createSubMenu($conf, $id = 0, $orientation)
     {
         if ($orientation == Menus::SUB_MENU_HORIZONTAL) {
@@ -442,13 +443,15 @@ INSERT;
             $sub_menu = "<table width='100%'>";
         }
 
-        $sql = "select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id " .
-            "from {$this->db_prefix}menus m, {$this->db_prefix}pages p, {$this->db_prefix}dictionary d " .
-            "where m.di_name=d.di_name " .
-            "and p.pa_id=m.pa_id " .
-            "and m.me_id<>m.pa_id " .
-            "and m.me_level>1 " .
-            "and m.pa_id=" . $id;
+        $sql = <<<SQL
+        select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id
+            from {$this->db_prefix}menus m, {$this->db_prefix}pages p, {$this->db_prefix}dictionary d
+            where m.di_id=d.di_id
+            and p.pa_id=m.pa_id
+            and m.me_id<>m.pa_id
+            and m.me_level>1
+            and m.pa_id=$id;
+        SQL;
         //and m.me_id<>m.pa_id
 
         $cs = TPdoConnection::opener($conf);
@@ -510,15 +513,15 @@ INSERT;
             $sub_menu = "<table width='100%'>";
         }
 
-        $sql = "select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id " .
-            "from {$this->db_prefix}menus m, {$this->db_prefix}pages p, {$this->db_prefix}dictionary d " .
-            "where m.me_level>1 " .
-            "and m.pa_id=p.pa_id " .
-            "and m.di_name=d.di_name " .
-            "and m.me_id=" . $id . " " .
-            "order by p.pa_id, m.me_level";
-
-        //echo "$sql<br>";
+        $sql = <<<SQL
+        select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id
+            from {$this->db_prefix}menus m, {$this->db_prefix}pages p, {$this->db_prefix}dictionary d
+            where m.me_level>1
+            and m.pa_id=p.pa_id
+            and m.di_id=d.di_id
+            and m.me_id=$id
+            order by p.pa_id, m.me_level
+        SQL;
 
         $cs = TPdoConnection::opener($conf);
         $stmt = $cs->query($sql);
@@ -531,19 +534,21 @@ INSERT;
             }
         }
 
-        $sql = "select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id " .
-            "from {$this->db_prefix}menus m, pages p, {$this->db_prefix}dictionary d " .
-            "where m.me_level=1 " .
-            "and m.pa_id=p.pa_id " .
-            "and m.di_name=d.di_name " .
-            "union " .
-            "select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id " .
-            "from {$this->db_prefix}menus m, {$this->db_prefix}pages p, {$this->db_prefix}dictionary d " .
-            "where m.di_name=d.di_name " .
-            "and m.me_id<>m.pa_id " .
-            "and p.pa_id=m.pa_id " .
-            "and m.pa_id=" . $id . " " .
-            "order by p.pa_id, m.me_level";
+        $sql = <<<SQL
+        select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id
+            from {$this->db_prefix}menus m, pages p, {$this->db_prefix}dictionary d
+            where m.me_level=1
+            and m.pa_id=p.pa_id
+            and m.di_id=d.di_id
+            union
+            select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id
+            from {$this->db_prefix}menus m, {$this->db_prefix}pages p, {$this->db_prefix}dictionary d
+            where m.di_id=d.di_id
+            and m.me_id<>m.pa_id
+            and p.pa_id=m.pa_id
+            and m.pa_id=$id
+            order by p.pa_id, m.me_level
+        SQL;
 
         //echo "$sql<br>";
 
@@ -608,11 +613,13 @@ INSERT;
         $title = "";
         $page = "";
         $sql = "";
-        $sql = "select d.di_name, p.pa_filename, m.me_charset, d.di_{$this->lg}_short, d.di_{$this->lg}_long " .
-            "from {$this->db_prefix}pages p, {$this->db_prefix}menus m, {$this->db_prefix}dictionary d " .
-            "where m.di_name=d.di_name " .
-            "and p.di_name=m.di_name " .
-            "and p.pa_id=$id";
+        $sql = <<<SQL
+        select d.di_name, p.pa_filename, m.me_charset, d.di_{$this->lg}_short, d.di_{$this->lg}_long
+            from {$this->db_prefix}pages p, {$this->db_prefix}menus m, {$this->db_prefix}dictionary d
+            where m.di_id=d.di_id
+            and p.di_name=d.di_name
+            and p.pa_id=$id
+        SQL;
         self::getLogger()->debug($sql, __FILE__, __LINE__);
 
         //echo $sql . "<br>";
@@ -653,11 +660,13 @@ INSERT;
         $title = "";
         $page = "";
         $sql = "";
-        $sql = "select d.di_name, p.pa_filename, m.me_charset, d.di_{$this->lg}_short, d.di_{$this->lg}_long " .
-            "from {$this->db_prefix}pages p, {$this->db_prefix}menus m, {$this->db_prefix}dictionary d " .
-            "where m.di_name=d.di_name " .
-            "and p.di_name=m.di_name " .
-            "and m.me_id=$id";
+        $sql = <<<SQL
+        select d.di_name, p.pa_filename, m.me_charset, d.di_{$this->lg}_short, d.di_{$this->lg}_long
+            from {$this->db_prefix}pages p, {$this->db_prefix}menus m, {$this->db_prefix}dictionary d
+            where m.di_id=d.di_id
+            and p.di_name=d.di_name
+            and m.me_id=$id
+        SQL;
         // self::getLogger()->debug($sql, __FILE__, __LINE__);
 
         //        echo $sql . "<br>";
@@ -699,11 +708,13 @@ INSERT;
         $title = "";
         $page = "";
         $sql = "";
-        $sql = "select m.me_id, p.pa_filename, m.me_charset, d.di_{$this->lg}_short, d.di_{$this->lg}_long " .
-            "from {$this->db_prefix}pages p, {$this->db_prefix}menus m, {$this->db_prefix}dictionary d " .
-            "where m.di_name=d.di_name " .
-            "and p.di_name=m.di_name " .
-            "and d.di_name='$di'";
+        $sql = <<<SQL
+        select m.me_id, p.pa_filename, m.me_charset, d.di_{$this->lg}_short, d.di_{$this->lg}_long
+            from {$this->db_prefix}pages p, {$this->db_prefix}menus m, {$this->db_prefix}dictionary d
+            where m.di_id=d.di_id
+            and p.di_name=d.di_name
+            and d.di_name='$di'
+        SQL;
 
         self::getLogger()->debug($sql, __FILE__, __LINE__);
 
@@ -736,10 +747,13 @@ INSERT;
     {
         self::getLogger()->dump(__FILE__ . ':' . __METHOD__ . ':' . __LINE__ . ':conf', $conf);
 
-        $sql = "select m.me_id, m.di_name ";
-        $sql .= "from {$this->db_prefix}menus m ";
-        $sql .= "where m.di_name like 'mk%' ";
-        $sql .= "order by m.me_id";
+        $sql = <<<SQL
+        select m.me_id, d.di_name 
+            from {$this->db_prefix}menus m 
+            inner join dictionary d on m.di_id=d.di_id 
+            where d.di_name like 'mk%' 
+            order by m.me_id
+        SQL;
         self::getLogger()->dump(__FILE__ . ':' . __METHOD__ . ':' . __LINE__ . ':SQL', $sql);
 
         $cs = TPdoConnection::opener($conf);
