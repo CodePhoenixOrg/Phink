@@ -31,9 +31,7 @@ class TUserComponent extends TCustomControl
     public function __construct(IObject $parent)
     {
         parent::__construct($parent);
-
         $this->clonePrimitivesFrom($parent);
-
     }
 
     public function setComponentType(string $value): void
@@ -50,9 +48,9 @@ class TUserComponent extends TCustomControl
     {
         $mvcFileNames = $this->getMvcFileNamesByTypeName($this->componentType);
 
-        // foreach ($mvcFileNames as $key => $name) {
-        //     echo $key . '::' . $name . '<br />';
-        // }
+        foreach ($mvcFileNames as $key => $name) {
+            self::getLogger()->debug('MVC FILE NAMES::' . $key . '::' . $name);
+        }
 
         $cachedFileName = $mvcFileNames['cacheFileName'];
         $controllerFileName = $mvcFileNames['controllerFileName'];
@@ -71,8 +69,6 @@ class TUserComponent extends TCustomControl
             list($controllerFileName, $fqClassName, $code) = TAutoloader::includeClass($controllerFileName, RETURN_CODE | INCLUDE_FILE);
         }
         include $controllerFileName;
-
-        self::getLogger()->debug('USER COMPONENT CONTROLLER FILE NAME::' . $controllerFileName);
         self::getLogger()->debug('USER COMPONENT CACHED FILE EXISTS::' . (file_exists($cachedFileName) ? 'TRUE' : 'FALSE'));
 
         $class = new $fqClassName($this->getParent());

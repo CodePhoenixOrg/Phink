@@ -104,10 +104,10 @@ trait TDataBinder
             //self::$logger->debug('HEAD : ' . $head);
             //self::$logger->debug('NAMES : ' . $names);
 
-            $html = str_replace('<% ' . $head . ' %>', $values[$i], $html);
-            $html = str_replace('<% ' . $head . ':index %>', $i, $html);
+            $html = str_replace('{{ ' . $head . ' }}', $values[$i], $html);
+            $html = str_replace('{{ ' . $head . ':index }}', $i, $html);
             $event = str_replace($head, "'" . $values[$i] . "'", $event);
-            $html = str_replace('<% &' . $head . ' %>', $event, $html);
+            $html = str_replace('{{ &' . $head . ' }}', $event, $html);
 
         }
 
@@ -130,10 +130,10 @@ trait TDataBinder
             }
             for ($m = 0; $m < $cols; $m++) {
                 $head = $templates[$m]['name'];
-                $html = str_replace('<% ' . $head . ' %>', $values[$m], $html);
-                $html = str_replace('<% ' . $head . ':index %>', $m, $html);
+                $html = str_replace('{{ ' . $head . ' }}', $values[$m], $html);
+                $html = str_replace('{{ ' . $head . ':index }}', $m, $html);
                 $event = str_replace($head, "'" . $values[$m] . "'", $event);
-                $html = str_replace('<% &' . $head . ' %>', $event, $html);
+                $html = str_replace('{{ &' . $head . ' }}', $event, $html);
             }
             
             

@@ -15,31 +15,38 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ */
 
 namespace Phink\Web\UI;
 
 use Phink\Core\TObject;
-use Phink\Data\TAnalyzer;
 
 class TScriptMaker extends TObject
 {
     public function __construct()
-    { }
+    {}
 
     public function makeCode(
         $conf,
         $table = "",
-        $stmt,
         $page_id = 0,
-        $indexfield = 0,
-        $secondfield = "",
-        $A_sqlFields,
-        $cs,
-        $with_frames
+        $data
     ): string {
+
+        $A_sqlFields = array_map(function ($defs) {
+            $defs = (object) json_decode($defs);
+            return $defs->fieldname;
+        }, $data);
+
+        $A_phpTypes = array_map(function ($defs) {
+            $defs = (object) json_decode($defs);
+            return $defs->phptype;
+        }, $data);
+
+        $indexfield = $A_sqlFields[0];
+        $secondfield = $A_sqlFields[1];
+
         $script = "\n";
-        //$script.="<script language=\"JavaScript\" src=\"js/pz_form_events.js\"></script>\n";
         $script = "<?php   \n";
         $script .= "\tuse Phink\Data\Client\PDO\TPdoConnection;\n";
         $script .= "\t\$cs = TPdoConnection::opener('$conf');\n";
@@ -56,10 +63,9 @@ class TScriptMaker extends TObject
         $script .= "\tif(\$event === \"onLoad\" && \$query === \"ACTION\") {\n";
         $script .= "\t\tswitch (\$action) {\n";
         $script .= "\t\tcase \"Ajouter\":\n\n";
-        //echo "$L_formFields<br>";
-        for ($i = 0; $i < sizeof($A_sqlFields); $i++) {
-            $defs = explode(',', $A_sqlFields[$i]);
-            $fieldname = $defs[0];
+        for ($i = 0; $i < count($A_sqlFields); $i++) {
+            $fieldname = $A_sqlFields[$i];
+
             if ($i === 0) {
                 $indexfield = $fieldname;
             } else {
@@ -68,9 +74,9 @@ class TScriptMaker extends TObject
         }
         $script .= "\t\tbreak;\n";
         $script .= "\t\tcase \"Modifier\":\n";
-        for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
-            $defs = explode(',', $A_sqlFields[$i]);
-            $fieldname = $defs[0];
+        for ($i = 1; $i < count($A_sqlFields); $i++) {
+            $fieldname = $A_sqlFields[$i];
+
             if ($i === 1) {
                 $script .= "\t\t\t\$sql=\"select * from \$tablename where $indexfield='$$indexfield';\";\n";
                 $script .= "\t\t\t\$stmt = \$cs->query(\$sql);\n";
@@ -85,38 +91,28 @@ class TScriptMaker extends TObject
         $script .= "\t} else if(\$event === \"onRun\" && \$query === \"ACTION\") {\n";
         $script .= "\t\tswitch (\$action) {\n";
         $script .= "\t\tcase \"Ajouter\":\n";
-        for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
-            $defs = explode(',', $A_sqlFields[$i]);
-            $fieldname = $defs[0];
+        for ($i = 1; $i < count($A_sqlFields); $i++) {
+            $fieldname = $A_sqlFields[$i];
             $script .= "\t\t\t\$$fieldname = filterPOST(\"$fieldname\");\n";
         }
         $replaces = [];
         $insertFields = [];
         $prepargs = [];
-        for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
-            $defs = explode(',', $A_sqlFields[$i]);
-            $fieldname = $defs[0];
-            $fieldtype = $stmt->typeNameToPhp($defs[2]);
+        for ($i = 1; $i < count($A_sqlFields); $i++) {
+            $fieldname = $A_sqlFields[$i];
+            $fieldtype = $A_phpTypes[$i];
             $insertFields[$i] = "\t\t\t\t$fieldname";
-            // if ($fieldtype === 'string') {
-            //     $replaces[] = "\t\t\t\$$fieldname = \$$fieldname";
-            // }
             $prepargs[] = "':$fieldname' => \$$fieldname";
         }
         $prepare = '[' . implode(', ', $prepargs) . ']';
 
-        // $script .= implode($replaces, ";\n") . ";\n";
         $script .= "\t\t\t\$sql = <<<SQL\n\t\t\tinsert into \$tablename (\n";
         $script .= implode(", \n", $insertFields) . "";
         $script .= "\n\t\t\t) values (\n";
         $insertValues = [];
-        for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
-            $defs = explode(',', $A_sqlFields[$i]);
-            $fieldname = $defs[0];
-            $fieldtype = $stmt->typeNameToPhp($defs[2]);
-            // if ($fieldtype === 'string') {
-            //     $replaces[] = "\t\t\t\$$fieldname = \$$fieldname";
-            // }
+        for ($i = 1; $i < count($A_sqlFields); $i++) {
+            $fieldname = $A_sqlFields[$i];
+            $fieldtype = $A_phpTypes[$i];
             $insertValues[$i] = "\t\t\t\t:$fieldname";
         }
         $script .= implode(", \n", $insertValues) . "\n";
@@ -125,29 +121,22 @@ class TScriptMaker extends TObject
         $script .= "\t\t\t\$stmt = \$cs->query(\$sql, $prepare);\n";
         $script .= "\t\tbreak;\n";
         $script .= "\t\tcase \"Modifier\":\n";
-        for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
-            $defs = explode(',', $A_sqlFields[$i]);
-            $fieldname = $defs[0];
+        for ($i = 1; $i < count($A_sqlFields); $i++) {
+            $fieldname = $A_sqlFields[$i];
             $script .= "\t\t\t\$$fieldname = filterPOST(\"$fieldname\");\n";
         }
         $replaces = (array) null;
         $update = [];
         $prepargs = (array) null;
         $prepare = (array) null;
-        for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
-            $defs = explode(',', $A_sqlFields[$i]);
-            $fieldname = $defs[0];
-            $fieldtype = $stmt->typeNameToPhp($defs[2]);
-
-            // if ($fieldtype=='string') {
-            //     $replaces[]="\t\t\t\$$fieldname = \$$fieldname";
-            // }
+        for ($i = 1; $i < count($A_sqlFields); $i++) {
+            $fieldname = $A_sqlFields[$i];
+            $fieldtype = $A_phpTypes[$i];
             $update[$i] = "\t\t\t\t$fieldname = :$fieldname";
             $prepargs[] = "':$fieldname' => \$$fieldname";
         }
         $prepare = '[' . implode(', ', $prepargs) . ']';
 
-        // $script .= implode($replaces, ";\n") . ";\n";
         $script .= "\t\t\t\$sql=<<<SQL\n\t\t\tupdate \$tablename set \n";
         $script .= implode(", \n", $update) . "\n";
         $script .= "\t\t\twhere $indexfield = '\$$indexfield';\n";
@@ -159,18 +148,9 @@ class TScriptMaker extends TObject
         $script .= "\t\t\t\$stmt = \$cs->query(\$sql);\n";
         $script .= "\t\tbreak;\n";
         $script .= "\t\t}\n";
-        if ($with_frames) {
-            $script .= "\t\techo \"<script language='JavaScript'>window.location.href='admin?id=$page_id&lg=$lg'</script>\";\n";
-        } elseif (!$with_frames) {
-            $script .= "\t\t\$query=\"SELECT\";\n";
-        }
+        $script .= "\t\t\$query=\"SELECT\";\n";
 
-        //$script.="\t\techo \"<script language='JavaScript'>window.location.href='page.php?id=$page_id&lg=fr'</script>\";\n";
-        // $script.="\t} else if(\$event==\"onUnload\" && \$query==\"ACTION\") {\n";
-        // $script.="\t\t\$cs=connection(DISCONNECT,\$database);\n";
-        // $script.="\t\techo \"<script language='JavaScript'>window.location.href='page.php?id=$page_id&lg=fr'</script>\";\n";
         $script .= "\t}\n";
-        // $script.="\? >\n";
 
         return $script;
     }
@@ -180,17 +160,17 @@ class TScriptMaker extends TObject
         $table = '',
         $pa_filename = '',
         $page_id = 0,
-        $indexfield = '',
-        $secondfield = '',
-        $A_sqlFields,
-        $cs,
-        $with_frames
+        $data
     ): string {
         $formname = $table . "Form";
 
-        $analyzer = new TAnalyzer;
-        $references = $analyzer->searchReferences($database, $table, $cs);
-        $A_formFields = $references["form_fields"];
+        $A_sqlFields = array_map(function ($defs) {
+            $defs = (object) json_decode($defs);
+            return $defs->fieldname;
+        }, $data);
+
+        $indexfield = $A_sqlFields[0];
+        $secondfield = $A_sqlFields[1];
 
         $script = "\n";
         $script = "<center>\n";
@@ -206,23 +186,16 @@ class TScriptMaker extends TObject
         $script .= "\t\$sr = getArgument(\"sr\");\n";
         $script .= "\t\$curl_pager = \"\";\n";
         $script .= "\t\$dialog = \"\";\n";
-        // $script.="\t\$tablename = \"$table\";\n";
         $script .= "\tif(isset(\$pc)) \$curl_pager=\"&pc=\$pc\";\n";
         $script .= "\tif(isset(\$sr)) \$curl_pager.=\"&sr=\$sr\";\n";
         $script .= "\tif(\$query === \"SELECT\") {\n";
         $script .= "\t\t\t\$sql = \"select $indexfield, $secondfield from \$tablename order by $indexfield\";\n";
         $script .= "\t\t\t\$dbgrid = \$datacontrols->createPagerDbGrid(\$tablename, \$sql, \$id, \"page.html\", \"&query=ACTION\$curl_pager\", \"\", true, true, \$dialog, array(0, 400), 15, \$grid_colors, \$cs);\n";
-        $script .= "\t\t\t//\$dbgrid = tableShadow(\$tablename, \$dbgrid);\n";
         $script .= "\t\t\techo \"<br>\".\$dbgrid;\n";
         $script .= "\t} elseif(\$query === \"ACTION\") {\n";
         $script .= "?>\n";
-        //$page_filename=getPageFilename($database, $page_id);
         $page_filename = "page.html";
-        if ($with_frames) {
-            $script .= "<form method=\"POST\" name=\"$formname\" action=\"$page_filename?id=$page_id&lg=fr\">\n";
-        } elseif (!$with_frames) {
-            $script .= "<form method=\"POST\" name=\"$formname\" action=\"page.html?id=$page_id&lg=fr\">\n";
-        }
+        $script .= "<form method=\"POST\" name=\"$formname\" action=\"page.html?id=$page_id&lg=fr\">\n";
         $script .= "\t<input type=\"hidden\" name=\"query\" value=\"ACTION\">\n";
         $script .= "\t<input type=\"hidden\" name=\"event\" value=\"onRun\">\n";
         $script .= "\t<input type=\"hidden\" name=\"pc\" value=\"<?php echo \$pc?>\">\n";
@@ -233,21 +206,71 @@ class TScriptMaker extends TObject
         $script .= "\t\t\t<td align=\"center\" valign=\"top\" bgcolor=\"<?php echo \$panel_colors[\"back_color\"]?>\">\n";
         $script .= "\t\t\t\t<table>\n";
         $inputs = "";
-        for ($i = 0; $i < sizeof($A_formFields); $i++) {
-            $inputs .= $A_formFields[$i] . "\n";
+        foreach ($data as $def) {
+            $def = json_decode($def, true);
+            $def = (object) $def;
+
+            if ($def->class == 'ref') {
+
+                $ref = (object) $def->references[0];
+
+                $options = "\t\t\t\t\t\t<?php   \$sql=\"select {$ref->keyfield}, {$ref->valuefield} from {$ref->table} order by {$ref->valuefield}\";\n";
+                $options .= "\t\t\t\t\t\t\$options = \$datacontrols->createOptionsFromQuery(\$sql, 0, 1, [], \${$ref->keyfield}, false, \$cs);\n";
+                $options .= "\t\t\t\t\t\techo \$options[\"list\"];?>\n";
+                $script .= "\t\t\t\t<tr>\n" .
+                    "\t\t\t\t\t<td>$def->fieldname</td>\n" .
+                    "\t\t\t\t\t<td>\n" .
+                    "\t\t\t\t\t\t<select name=\"{$ref->keyfield}\">\n" .
+                    "$options" .
+                    "\t\t\t\t\t\t</select>\n" .
+                    "\t\t\t\t\t</td>\n" .
+                    "\t\t\t\t</tr>";
+            }
+
+            if ($def->class == 'key') {
+                $script .= "\t\t\t\t<tr>\n";
+                $script .= "\t\t\t\t\t<td>$def->fieldname</td>\n";
+                $script .= "\t\t\t\t\t<td>\n";
+                $script .= "\t\t\t\t\t\t<?php echo $$def->fieldname?>\n";
+                $script .= "\t\t\t\t\t</td>\n";
+                $script .= "\t\t\t\t</tr>";
+            }
+            if ($def->class == 'field') {
+                if ($def->phptype == "date" || $def->phptype == "datetime" || $def->phptype == "time") {
+                    $script .= "\t\t\t\t<tr>\n";
+                    $script .= "\t\t\t\t\t<td>$def->fieldname</td>\n";
+                    $script .= "\t\t\t\t\t<td>\n";
+                    $script .= "\t\t\t\t\t\t<input type=\"text\" name=\"$def->fieldname\" size=\"$def->cols\" value=\"<?php echo (empty($$def->fieldname)) ? date(\"1970-01-01\") : $$def->fieldname; ?>\" >\n";
+                    $script .= "\t\t\t\t\t</td>\n";
+                    $script .= "\t\t\t\t</tr>";
+                    $script .= "\t\t\t\t<tr>\n";
+                } elseif ($def->phptype == "blob" || ($def->phptype == "string" && $def->fieldsize > 80)) {
+                    $script .= "\t\t\t\t<tr>\n";
+                    $script .= "\t\t\t\t\t<td>$fieldname</td>\n";
+                    $script .= "\t\t\t\t\t<td>\n";
+                    $script .= "\t\t\t\t\t\t<textarea name=\"$def->fieldname\" cols=\"80\" rows=\"$def->lines\"><?php echo $$def->fieldname?></textarea>\n";
+                    $script .= "\t\t\t\t\t</td>\n";
+                    $script .= "\t\t\t\t</tr>";
+                } else {
+                    $script .= "\t\t\t\t<tr>\n";
+                    $script .= "\t\t\t\t\t<td>$def->fieldname</td>\n";
+                    $script .= "\t\t\t\t\t<td>\n";
+                    $script .= "\t\t\t\t\t\t<input type=\"text\" name=\"$def->fieldname\" size=\"$def->cols\" value=\"<?php echo $$def->fieldname?>\">\n";
+                    $script .= "\t\t\t\t\t</td>\n";
+                    $script .= "\t\t\t\t</tr>";
+                }
+            }
+
         }
         $script .= $inputs;
-        //$script.="<tr><td align=\"center\" colspan=\"2\"><input type=\"submit\" name=\"action\" value=\"<?php echo \$action>\" onClick=\"return runForm(\"$formname\");\">\n";
 
         $script .= "\t\t\t\t\t<tr>\n";
         $script .= "\t\t\t\t\t\t<td align=\"center\" colspan=\"2\">\n";
         $script .= "\t\t\t\t\t\t\t<input type=\"submit\" name=\"action\" value=\"<?php echo \$action?>\">\n";
         $script .= "\t\t\t\t\t\t\t<?php   if(\$action!=\"Ajouter\") { ?>\n";
-        //$script.="<input type=\"submit\" name=\"action\" value=\"Supprimer\" onClick=\"return runForm(\"$formname\");\">\n";
         $script .= "\t\t\t\t\t\t\t\t<input type=\"submit\" name=\"action\" value=\"Supprimer\">\n";
         $script .= "\t\t\t\t\t\t\t<?php   } ?>\n";
         $script .= "\t\t\t\t\t\t\t<input type=\"reset\" name=\"action\" value=\"Annuler\">\n";
-        //$script.="<input type=\"submit\" name=\"action\" value=\"Retour\" onClick=\"return runForm(\"$formname\");\">\n";
         $script .= "\t\t\t\t\t\t\t<input type=\"submit\" name=\"action\" value=\"Retour\">\n";
         $script .= "\t\t\t\t\t\t</td>\n";
         $script .= "\t\t\t\t\t</tr>\n";
@@ -256,7 +279,6 @@ class TScriptMaker extends TObject
         $script .= "\t\t</tr>\n";
         $script .= "\t</table>\n";
         $script .= "</form>\n";
-        //$script.="<table><tr><td valign=\"middle\"><a href=\"javascript: history.go(-1);\"><img src=\"../img/scroll/left_0.gif\" border=\"0\">Retour</a></td></tr></table>\n";
         $script .= "<?php   \t} ?>\n";
         $script .= "</center>\n";
 

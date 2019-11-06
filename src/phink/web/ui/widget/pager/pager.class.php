@@ -90,14 +90,14 @@ class TPager extends \Phink\MVC\TPartialController
     
         $this->path = PHINK_ROOT . \Phink\Registry\TRegistry::classPath('TPager');
         $this->pagerJS = file_get_contents($this->path . 'pager.jhtml', FILE_USE_INCLUDE_PATH);
-        $this->pagerJS = str_replace('<% forApp %>', $this->forApp, $this->pagerJS);
-        $this->pagerJS = str_replace('<% forThis %>', $this->forThis, $this->pagerJS);
-        $this->pagerJS = str_replace('<% forView %>', $this->forView, $this->pagerJS);
-        $this->pagerJS = str_replace('<% forCtrl %>', $this->forCtrl, $this->pagerJS);
-        $this->pagerJS = str_replace('<% pageCount %>', $this->pageCount, $this->pagerJS);
-        $this->pagerJS = str_replace('<% pageNum %>', $this->pageNum, $this->pagerJS);
-        $this->pagerJS = str_replace('<% id %>', $this->id, $this->pagerJS);
-        $this->pagerJS = str_replace('<% onclick %>', $this->onclick, $this->pagerJS);
+        $this->pagerJS = str_replace('{{ forApp }}', $this->forApp, $this->pagerJS);
+        $this->pagerJS = str_replace('{{ forThis }}', $this->forThis, $this->pagerJS);
+        $this->pagerJS = str_replace('{{ forView }}', $this->forView, $this->pagerJS);
+        $this->pagerJS = str_replace('{{ forCtrl }}', $this->forCtrl, $this->pagerJS);
+        $this->pagerJS = str_replace('{{ pageCount }}', $this->pageCount, $this->pagerJS);
+        $this->pagerJS = str_replace('{{ pageNum }}', $this->pageNum, $this->pagerJS);
+        $this->pagerJS = str_replace('{{ id }}', $this->id, $this->pagerJS);
+        $this->pagerJS = str_replace('{{ onclick }}', $this->onclick, $this->pagerJS);
         
         $this->script = REL_RUNTIME_JS_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $this->path . $this->forThis . 'pager.js');
 

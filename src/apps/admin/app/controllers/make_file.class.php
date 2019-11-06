@@ -19,7 +19,7 @@ class TMakeFile extends TPartialController
 	// view fields
 	protected $usertable, $dbgrid, $menu, $filter, $addoption, $me_level, $bl_id,
 		$pa_filename, $extension, $basedir, $save, $autogen, $catalog, $query, $di_long,
-		$di_short, $di_name, $lg, $me_id, $pa_id, $message, $indexfield, $secondfield,
+		$di_short, $di_name, $lg, $me_id, $pa_id, $message,
 		$YES = 'Oui', $NO = 'Non';
 
 	public function beforeBinding(): void
@@ -29,6 +29,17 @@ class TMakeFile extends TPartialController
 		$this->conf = TRegistry::ini('data', 'conf');
 		$this->menus = new Menus($this->lang, $this->db_prefix);
         $this->scriptMaker = new TScriptMaker;
+
+		$form_fields = $this->getRequest()->getArgument("form_fields");
+		$field_defs = $this->getRequest()->getArgument("field_defs");
+		$data = $this->getRequest()->getArgument("data");
+		$names = $this->getRequest()->getArgument("name");
+		$dbsizes = $this->getRequest()->getArgument("dbsize");
+		$dbtypes = $this->getRequest()->getArgument("dbtype");
+		$phphtypes = $this->getRequest()->getArgument("phptype");
+		$htmltypes = $this->getRequest()->getArgument("htmltype");
+		$widths = $this->getRequest()->getArgument("width");
+		$heights = $this->getRequest()->getArgument("height");
 
 		$this->workdb = getArgument("workdb");
 		$this->userconf = getArgument("userconf");
@@ -56,10 +67,10 @@ class TMakeFile extends TPartialController
 		// $this->cs = connection(CONNECT, $userdb) or die("UserDb='$userdb'<br>");
 		$tmp_filename = 'tmp_' . $this->pa_filename;
 		$wwwroot = getWwwRoot();
-
-		$analyzer = new TAnalyzer;
-		$references = $analyzer->searchReferences($this->userdb, $this->usertable, $usercs);
-		$A_fieldDefs = $references["field_defs"];
+	
+		$A_data = array_map(function($defs) {
+			return base64_decode($defs);
+		}, $data);
 
 		$this->message = "<br>";
 
@@ -79,20 +90,6 @@ class TMakeFile extends TPartialController
 		if ($this->save === "") {
 
 			$formname = "fiche_$this->usertable";
-			$sql = "show fields from $this->usertable;";
-
-			$L_sqlFields = "";
-			$A_sqlFields = [];
-
-			$stmt = $usercs->query($sql);
-			while ($rows = $stmt->fetch()) {
-				$L_sqlFields .= $rows[0] . ",";
-			}
-
-			$L_sqlFields = substr($L_sqlFields, 0, strlen($L_sqlFields) - 1);
-			$A_sqlFields = explode(",", $L_sqlFields);
-			$this->indexfield = $A_sqlFields[0];
-			$this->secondfield = $A_sqlFields[1];
 
 			list($this->me_id, $this->pa_id) = $this->menus->getMenuAndPage($this->conf, $rel_page_filename);
 
@@ -126,10 +123,10 @@ class TMakeFile extends TPartialController
 					"Voulez-vous écraser le script actuel sachant que toutes les modifications effectuées seront perdues ?</p>\n";
 			}
 
-			$script = $this->scriptMaker->makeCode($this->userconf, $this->usertable, $stmt, $this->pa_id, $this->indexfield, $this->secondfield, $A_fieldDefs, $usercs, false);
+			$script = $this->scriptMaker->makeCode($this->userconf, $this->usertable, $this->pa_id, $A_data);
 			file_put_contents('tmp_code.php', $script);
 
-			$script = $this->scriptMaker->makePage($this->userdb, $this->usertable, $this->pa_filename, $this->pa_id, $this->indexfield, $this->secondfield, $A_sqlFields, $usercs, false);
+			$script = $this->scriptMaker->makePage($this->userdb, $this->usertable, $this->pa_filename, $this->pa_id, $A_data);
 			file_put_contents('tmp_page.php', $script);
 		
 
