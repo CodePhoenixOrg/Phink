@@ -30,8 +30,6 @@ class TScriptMaker extends TObject
         $conf,
         $table = "",
         $page_id = 0,
-        $indexfield = 0,
-        $secondfield = "",
         $data
     ): string {
 
@@ -44,6 +42,9 @@ class TScriptMaker extends TObject
             $defs = (object) json_decode($defs);
             return $defs->phptype;
         }, $data);
+
+        $indexfield = $A_sqlFields[0];
+        $secondfield = $A_sqlFields[1];
 
         $script = "\n";
         $script = "<?php   \n";
@@ -159,11 +160,17 @@ class TScriptMaker extends TObject
         $table = '',
         $pa_filename = '',
         $page_id = 0,
-        $indexfield = '',
-        $secondfield = '',
         $data
     ): string {
         $formname = $table . "Form";
+
+        $A_sqlFields = array_map(function ($defs) {
+            $defs = (object) json_decode($defs);
+            return $defs->fieldname;
+        }, $data);
+
+        $indexfield = $A_sqlFields[0];
+        $secondfield = $A_sqlFields[1];
 
         $script = "\n";
         $script = "<center>\n";

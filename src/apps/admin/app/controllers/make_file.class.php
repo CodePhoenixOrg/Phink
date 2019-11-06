@@ -19,7 +19,7 @@ class TMakeFile extends TPartialController
 	// view fields
 	protected $usertable, $dbgrid, $menu, $filter, $addoption, $me_level, $bl_id,
 		$pa_filename, $extension, $basedir, $save, $autogen, $catalog, $query, $di_long,
-		$di_short, $di_name, $lg, $me_id, $pa_id, $message, $indexfield, $secondfield,
+		$di_short, $di_name, $lg, $me_id, $pa_id, $message,
 		$YES = 'Oui', $NO = 'Non';
 
 	public function beforeBinding(): void
@@ -72,11 +72,6 @@ class TMakeFile extends TPartialController
 			return base64_decode($defs);
 		}, $data);
 
-		$relation_fields = array_map(function($defs) {
-			$defs = json_decode($defs, true);
-			return $defs['fieldtype'];
-		}, $A_data);
-
 		$this->message = "<br>";
 
 		$rel_page_filename = $this->pa_filename . $this->extension;
@@ -95,9 +90,6 @@ class TMakeFile extends TPartialController
 		if ($this->save === "") {
 
 			$formname = "fiche_$this->usertable";
-
-			$this->indexfield = $relation_fields[0];
-			$this->secondfield = $relation_fields[1];
 
 			list($this->me_id, $this->pa_id) = $this->menus->getMenuAndPage($this->conf, $rel_page_filename);
 
@@ -131,10 +123,10 @@ class TMakeFile extends TPartialController
 					"Voulez-vous écraser le script actuel sachant que toutes les modifications effectuées seront perdues ?</p>\n";
 			}
 
-			$script = $this->scriptMaker->makeCode($this->userconf, $this->usertable, $this->pa_id, $this->indexfield, $this->secondfield, $A_data);
+			$script = $this->scriptMaker->makeCode($this->userconf, $this->usertable, $this->pa_id, $A_data);
 			file_put_contents('tmp_code.php', $script);
 
-			$script = $this->scriptMaker->makePage($this->userdb, $this->usertable, $this->pa_filename, $this->pa_id, $this->indexfield, $this->secondfield, $A_data);
+			$script = $this->scriptMaker->makePage($this->userdb, $this->usertable, $this->pa_filename, $this->pa_id, $A_data);
 			file_put_contents('tmp_page.php', $script);
 		
 
