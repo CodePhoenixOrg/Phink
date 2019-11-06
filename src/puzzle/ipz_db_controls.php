@@ -279,9 +279,13 @@ class Controls extends \Puzzle\Base
         $img = 'assets/admin/img';
 
         $table = "";
-        $sql_query = strtolower(trim($sql_query));
+
+        $sql_query = trim($sql_query);
+        $sql_query = str_replace("\t", " ", $sql_query);
+        $sql_query = str_replace("\r", "", $sql_query);
+        $sql_query = str_replace("\n", "", $sql_query);
         $p = strpos($sql_query, " ");
-        $sql_clause = substr($sql_query, 0, $p);
+        $sql_clause = strtolower(substr($sql_query, 0, $p));
         //echo "SQL Clause='$sql_clause'<br>";
 
         $cs = connection(CONNECT, $userdb);
@@ -400,9 +404,8 @@ class Controls extends \Puzzle\Base
         // global $img, $pc, $lg;
         $img = 'assets/admin/img';
 
-        $sql_query = strtolower(trim($sql_query));
         $p = strpos($sql_query, " ");
-        $sql_clause = substr($sql_query, 0, $p);
+        $sql_clause = strtolower(substr($sql_query, 0, $p));
 
         //$sql_query=str_replace("\'", "'", $sql_query);
         //$sql_query=str_replace(chr(92), "", $sql_query);
@@ -696,6 +699,11 @@ class Controls extends \Puzzle\Base
         } else {
             $pc = 0;
         }
+
+        $sql = trim($sql);
+        $sql = str_replace("\t", " ", $sql);
+        $sql = str_replace("\r", " ", $sql);
+        $sql = str_replace("\n", " ", $sql);
 
         $pager_ctrl = $this->createEnhancedPagerControl($pager_link, $sql, $pager_id, $lg, $caption, $sr, $step, $pc, $curl_pager, $cs);
         $sql = $pager_ctrl["sql_query"];

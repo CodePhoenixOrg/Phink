@@ -203,8 +203,8 @@ class Menus extends Base
             self::getLogger()->debug($sql, __FILE__, __LINE__);
 
             $sql = <<<INSERT
-            insert into {$this->db_prefix}menus (di_name, me_level, me_target, pa_id)
-                values('$di_name', '$me_level', '$me_target', $pa_id)
+            insert into {$this->db_prefix}menus (di_id, me_level, me_target, pa_id)
+                values('$di_id', '$me_level', '$me_target', $pa_id)
             INSERT;
             $affected_rows += $cs->exec($sql);
             $me_id = $cs->lastInsertId();
