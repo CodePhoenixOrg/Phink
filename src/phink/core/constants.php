@@ -162,8 +162,11 @@ define('AFTERBINDING_PLACEHOLDER', '<phx:afterBindingPlaceHolder />');
 define('HTML_PLACEHOLDER', '<phx:htmlPlaceHolder />');
 define('JS_PLACEHOLDER', '<phx:jsPlaceHolder />');
 define('CSS_PLACEHOLDER', '<phx:cssPlaceHolder />');
-define('TEMPLATE_OPEN_VAR', '<%');
-define('TEMPLATE_CLOSE_VAR', '%>');
+define('ASP_OPEN_VAR', '<%');
+define('ASP_CLOSE_VAR', '%>');
+define('OPEN_VAR', '{{');
+define('CLOSE_VAR', '}}');
+
 /*
 * define('CONTROL_ADDITIONS', PHP_EOL . "\tpublic function createObjects() {" . PHP_EOL . CREATIONS_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function declareObjects() {" . PHP_EOL . ADDITIONS_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function afterBindingObjects() {" . PHP_EOL . AFTERBINDING_PLACEHOLDER . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL . "\tpublic function displayHtml() {" . PHP_EOL . "?>" . PHP_EOL . HTML_PLACEHOLDER . PHP_EOL . "<?php" . PHP_EOL . "\t}" . PHP_EOL . '}' . PHP_EOL);
 */
