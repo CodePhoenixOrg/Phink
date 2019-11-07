@@ -56,18 +56,27 @@ class TMakeScript extends TPartialController
 
 		$this->tab_ides = $this->menus->getTabIdes($this->workconf);
 
-		// if ($this->basedir == "") $this->basedir = getCurrentWwwRoot() . $lg . WEB_SEPARATOR;
-
 		$confs = TRegistry::keys('connections');
+
+		$stmt = $usercs->showTables();
+		$tables = $stmt->fetchAll();
 
 		$this->on_change = "";
 		$this->on_change_table = "";
 		$this->srvdir = $controls->create_server_directory_selector("srvdir", "myForm", $this->basedir, $this->on_change);
 		$this->srvfiles = $controls->create_server_file_selector("srvfiles", "myForm", $this->basedir, "php", 5, "srvdir", $this->on_change);
 		//$this->database_list = $datacontrols->createOptionsFromQuery("show databases", 0, 0, array(), $this->userdb, false, $workcs);
-		$this->conf_list = $datacontrols->createOptionsFromArray($confs, "", 0, 0, [$this->userconf], $this->userconf, false);
-		$this->table_list = $datacontrols->createOptionsFromQuery("show tables from $this->userdb", 0, 0, array(), $usertable, false, $workcs);
-		$sql = "select b.bl_id, d.di_fr_short from {$this->db_prefix}blocks b, {$this->db_prefix}dictionary d where b.di_name=d.di_name order by d.di_fr_short";
+		$this->conf_list = $datacontrols->createOptionsFromArray($confs, '', 0, 0, [$this->userconf], $this->userconf, false);
+		$this->table_list = $datacontrols->createOptionsFromArray($tables, '', 0, 0, [$usertable], $usertable, false);
+		$sql = <<<SQL
+		SELECT 
+			b.bl_id, d.di_{$this->lang}_short
+		FROM
+			blocks b
+				INNER JOIN
+			dictionary d ON d.di_id = b.di_id
+		ORDER BY d.di_{$this->lang}_short
+		SQL;
 		$this->block_list = $datacontrols->createOptionsFromQuery($sql, 0, 1, array(), $bl_id, false, $workcs);
 
 		//Options de menu

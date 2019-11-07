@@ -69,13 +69,11 @@ class TAnalyzer
                 $fieldFound = false;
                 $EOL = $fieldFound;
                 while (!$fieldFound && !$EOL) {
-                    $sql = "show tables from $database;";
-                    $tab_res = $cs->query($sql);
+                    $tab_res = $cs->showTables();
                     $fieldTable = '';
                     while (($tables = $tab_res->fetch()) && ($fieldTable == "")) {
                         $currentTable = $tables[0];
-                        $sql = "show fields from $currentTable;";
-                        $fld_res = $cs->query($sql);
+                        $fld_res = $cs->showFieldsFrom($currentTable);
                         $fields = $fld_res->fetch();
                         if ($fieldname == $fields[0]) {
                             $fieldTable = $currentTable;
@@ -86,8 +84,7 @@ class TAnalyzer
                     $EOL = true;
                 }
                 if ($fieldFound) {
-                    $sql = "show fields from $fieldTable";
-                    $fld_res = $cs->query($sql);
+                    $fld_res = $cs->showFieldsFrom($fieldTable);
                     $j = 0;
                     while (($fields = $fld_res->fetch()) && $j < 2) {
                         if ($j == 0) {
@@ -130,8 +127,8 @@ class TAnalyzer
             array_push($A_data, ['class' => $class,
                 'fieldname' => $fieldname,
                 'fieldsize' => $fieldsize,
-                'fieldtype' => $phptype,
-                'phptype' => $fieldtype,
+                'fieldtype' => $fieldtype,
+                'phptype' => $phptype,
                 'htmltype' => $htmltype,
                 'cols' => $cols,
                 'lines' => $lines,

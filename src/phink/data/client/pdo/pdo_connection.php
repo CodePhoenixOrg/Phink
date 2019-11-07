@@ -29,6 +29,8 @@ use Phink\Data\TServerType;
 use Phink\Data\Client\PDO\TPdoConfiguration;
 use Phink\Data\Client\PDO\TPdoDataStatement;
 use Phink\Data\TCrudQueries;
+use Phink\Data\CLient\PDO\Mapper\TPdoMySQLSchemaInfoMapper;
+use Phink\Data\CLient\PDO\Mapper\TPdoSQLiteSchemaInfoMapper;
 
 class TPdoConnectionException extends \Exception
 {
@@ -54,6 +56,7 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
     private $_dsn = '';
     private $_params = null;
     private $_statement = null;
+    private $_schemaInfoMapper = null;
 
     use TCrudQueries;
 
@@ -159,11 +162,13 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
         if ($this->_config->getDriver() == TServerType::MYSQL) {
             $this->_params = [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"];
             $this->_dsn = $this->_config->getDriver() . ':host=' . $this->_config->getHost() . ';dbname=' . $this->_config->getDatabaseName();
+            $this->_schemaInfoMapper = new TPdoMySQLSchemaInfoMapper($this->_config);
         } elseif($this->_config->getDriver() == TServerType::SQLSERVER) {
             $this->_params = [PDO::SQLSRV_ATTR_ENCODING => PDO::SQLSRV_ENCODING_SYSTEM, PDO::SQLSRV_ATTR_DIRECT_QUERY => true];
             $this->_dsn = $this->_config->getDriver() . ':Server=' . $this->_config->getHost() . ';Database=' . $this->_config->getDatabaseName(); 
         } elseif($this->_config->getDriver() == TServerType::SQLITE) {
             $this->_dsn = $this->_config->getDriver() . ':' . $this->_config->getDatabaseName(); 
+            $this->_schemaInfoMapper = new TPdoSQLiteSchemaInfoMapper($this->_config);
         }
 
     }
@@ -198,6 +203,18 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
         }
         
         return $result;
+    }
+
+    public function showTables() : ?TPdoDataStatement
+    {
+        $sql = $this->_schemaInfoMapper->getShowTablesQuery();
+        return $this->query($sql);
+    }
+
+    public function showFieldsFrom(string $table) :?TPdoDataStatement
+    {
+        $sql = $this->_schemaInfoMapper->getShowFieldsQuery($table);
+        return $this->query($sql);
     }
 
     public function exec(string $sql) : ?int
