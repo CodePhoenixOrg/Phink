@@ -6,6 +6,29 @@ use Phink\Data\CLient\PDO\Mapper\TPdoCustomDataTypesMapper;
 
 class TPdoSQLiteDataTypesMapper extends TPdoCustomDataTypesMapper
 {
+    public function getInfo($index) : ?object
+    {
+        if ($this->result === null) {
+            try {
+                $connection = new \SQLite3(
+                    $this->config->getDatabaseName()
+                );
+
+                $this->result = $connection->query($this->sql);
+            } catch (\Exception $ex) {
+                return null;
+            }
+        }
+
+        $name = $this->result->columnName($index);
+        $type = $this->result->columnType($index);
+        $len = 32768;
+
+        $this->info = (object) ['name' => $name, 'type' => $type, 'length' => $len];
+
+        return $this->info;
+    }
+
     public function setTypes() : void
     {
         $this->native_types = (array) null;
