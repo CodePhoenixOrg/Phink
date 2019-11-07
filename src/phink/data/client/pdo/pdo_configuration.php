@@ -82,10 +82,10 @@ class TPdoConfiguration extends TJsonConfiguration
 
         $this->_driver = $this->contents['driver'];
         $this->_databaseName = $this->contents['database'];
-        $this->_host = $this->contents['host'];
-        $this->_user = $this->contents['user'];
-        $this->_password = $this->contents['password'];
-        $this->_port = $this->contents['port'];
+        $this->_host = isset($this->contents['host']) ? $this->contents['host'] : '';
+        $this->_user = isset($this->contents['user']) ? $this->contents['user'] : '';
+        $this->_password = isset($this->contents['password']) ? $this->contents['password'] : '';
+        $this->_port = isset($this->contents['port']) ? $this->contents['port'] : '';
     }
 
     public function getDriver(): string
