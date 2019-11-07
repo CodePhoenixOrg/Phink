@@ -30,10 +30,10 @@ class TSubPage extends TUserComponent
 
         if (!empty($id)) {
             $title_page = $this->menus->retrievePageById($this->conf, $id, $this->lang);
-            $di = $title_page["index"];
+            $di = $title_page["id"];
         } else if (!empty($di)) {
             $title_page = $this->menus->retrievePageByDictionaryId($this->conf, $di, $this->lang);
-            $id = $title_page["index"];
+            $id = $title_page["id"];
         }
 
         self::getLogger()->debug('ID::' . $id);

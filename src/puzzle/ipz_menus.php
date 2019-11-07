@@ -40,7 +40,7 @@ class Menus extends Base
     {
         $adm_url = "";
         $cs = TPdoConnection::opener($userdb);
-        $sql = "select app_link from {$this->db_prefix}applications where di_name='modadmin'";
+        $sql = "select app_link from applications where di_name='modadmin'";
         $stmt = $cs->query($sql);
         if ($rows = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $adm_url = $rows["app_link"];
@@ -53,13 +53,13 @@ class Menus extends Base
     {
         $cs = TPdoConnection::opener($userdb);
 
-        $sql = 'delete from {$this->db_prefix}v_menus;';
+        $sql = 'delete from v_menus;';
         $cs->query($sql);
 
         $sql = <<<SQL
-        insert into {$this->db_prefix}v_menus (me_id, pa_id, me_level, di_name, me_target, pa_filename, di_fr_short, di_fr_long, di_en_short, di_en_long)
+        insert into v_menus (me_id, pa_id, me_level, di_name, me_target, pa_filename, di_fr_short, di_fr_long, di_en_short, di_en_long)
             select m.me_id, m.pa_id, m.me_level, m.di_name, m.me_target, p.pa_filename, d.di_fr_short, d.di_fr_long, d.di_en_short, d.di_en_long 
-            from {$this->db_prefix}menus m, {$this->db_prefix}pages p, {$this->db_prefix}dictionary d 
+            from menus m, pages p, dictionary d 
             where m.di_name = d.di_name 
             and p.di_name = d.di_name 
             order by m.me_id
@@ -67,7 +67,7 @@ class Menus extends Base
         //echo $sql;
         $cs->query($sql);
 
-        $sql = "select me_id as Menu, pa_id as Page, me_level as Niveau, di_name as Dictionnaire, me_target as Cible, pa_filename as Fichier, di_fr_short as 'Francais court', di_fr_long as 'Francais long', di_en_short as 'Anglais court', di_en_long as 'Anglais long' from {$this->db_prefix}v_menus";
+        $sql = "select me_id as Menu, pa_id as Page, me_level as Niveau, di_name as Dictionnaire, me_target as Cible, pa_filename as Fichier, di_fr_short as 'Francais court', di_fr_long as 'Francais long', di_en_short as 'Anglais court', di_en_long as 'Anglais long' from v_menus";
 
         //tableau_sql("menu", $sql, 0, "edit.php", "", "&database=$database", "", "", "", $cs);
         //container("menu", 50, 250, 200, 355, 16);
@@ -99,8 +99,12 @@ class Menus extends Base
     {
         $cs = TPdoConnection::opener($userdb);
         $sql = <<<SQL
-            select pa_id from {$this->db_prefix}pages 
-                where pa_filename = '$pa_filename'
+        SELECT 
+            pa_id
+        FROM
+            pages
+        WHERE
+            pa_filename = '$pa_filename'
         SQL;
         self::getLogger()->debug($sql, __FILE__, __LINE__);
         self::getLogger()->dump('LG', $this->lg);
@@ -116,9 +120,14 @@ class Menus extends Base
     {
         $cs = TPdoConnection::opener($conf);
         $sql = <<<SQL
-            select m.me_id, p.pa_id from {$this->db_prefix}menus m 
-                left outer join {$this->db_prefix}pages p on m.pa_id = p.pa_id 
-                where p.pa_filename = '$pa_filename'
+        SELECT 
+            m.me_id, p.pa_id
+        FROM
+            menus m
+                LEFT OUTER JOIN
+            pages p ON m.pa_id = p.pa_id
+        WHERE
+            p.pa_filename = '$pa_filename'
         SQL;
         self::getLogger()->debug($sql, __FILE__, __LINE__);
         $stmt = $cs->query($sql);
@@ -132,10 +141,14 @@ class Menus extends Base
     {
         $cs = TPdoConnection::opener($userdb);
         $sql = <<<SQL
-            select m.me_id, p.pa_id 
-                from {$this->db_prefix}menus m 
-                left outer join {$this->db_prefix}pages p on m.pa_id = p.pa_id 
-                where p.pa_filename = '$pa_filename'
+        SELECT 
+            m.me_id, p.pa_id
+        FROM
+            menus m
+                LEFT OUTER JOIN
+            pages p ON m.pa_id = p.pa_id
+        WHERE
+            p.pa_filename = '$pa_filename'
         SQL;
         self::getLogger()->debug($sql, __FILE__, __LINE__);
         $stmt = $cs->query($sql);
@@ -150,7 +163,7 @@ class Menus extends Base
     {
         $sql = <<<SQL
         select p.pa_filename
-            from {$this->db_prefix}pages p, {$this->db_prefix}menus m, {$this->db_prefix}dictionary d
+            from pages p, menus m, dictionary d
             where m.di_id=d.di_id
             and p.pa_id=m.pa_id
             and m.me_id=$id;
@@ -184,28 +197,34 @@ class Menus extends Base
             }
 
             $cs->beginTransaction();
-            $sql = <<<INSERT
-            insert into {$this->db_prefix}dictionary (di_name, di_fr_short, di_fr_long, di_en_short, di_en_long)
-                values($di_name', '$di_fr_short', '$di_fr_long', '$di_en_short', '$di_en_long')
-            INSERT;
+            $sql = <<<SQL
+            INSERT INTO
+                dictionary (di_name, di_fr_short, di_fr_long, di_en_short, di_en_long)
+                VALUES 
+                    ('$di_name', '$di_fr_short', '$di_fr_long', '$di_en_short', '$di_en_long')
+            SQL;
             $affected_rows = $cs->exec($sql);
             $di_id = $cs->lastInsertId();
 
             self::getLogger()->debug($sql, __FILE__, __LINE__);
 
-            $sql = <<<INSERT
-            insert into {$this->db_prefix}pages (di_name, pa_filename)
-                values('$di_name', '$pa_filename')
-            INSERT;
+            $sql = <<<SQL
+            INSERT INTO
+                pages (di_id, pa_filename)
+                VALUES
+                    ('$di_id', '$pa_filename')
+            SQL;
             $affected_rows += $cs->exec($sql);
             $pa_id = $cs->lastInsertId();
 
             self::getLogger()->debug($sql, __FILE__, __LINE__);
 
-            $sql = <<<INSERT
-            insert into {$this->db_prefix}menus (di_id, me_level, me_target, pa_id)
-                values('$di_id', '$me_level', '$me_target', $pa_id)
-            INSERT;
+            $sql = <<<SQL
+            INSERT INTO
+                menus (me_level, me_target, pa_id)
+                VALUES 
+                    ('$me_level', '$me_target', $pa_id)
+            SQL;
             $affected_rows += $cs->exec($sql);
             $me_id = $cs->lastInsertId();
 
@@ -234,22 +253,37 @@ class Menus extends Base
         $cs->beginTransaction();
 
         $sql = <<<SQL
-        update {$this->db_prefix}menus m, {$this->db_prefix}dictionary d
-        set m.di_id=d.di_id, me_level='$me_level', me_target='$me_target', pa_id=$pa_id 
-        where m.me_id=$me_id
-        and d.di_id = '$di_name';
+        UPDATE menus m
+                INNER JOIN
+            pages p ON m.pa_id = p.pa_id
+                INNER JOIN
+            dictionary d ON d.di_id = p.di_id 
+        SET 
+            m.di_id = d.di_id,
+            me_level = '$me_level',
+            me_target = '$me_target',
+            m.pa_id = $pa_id
+        WHERE
+            m.me_id = $me_id
+                AND d.di_id = '$di_name';
         SQL;
         $affected_rows = $cs->exec($sql);
 
         $sql = <<<SQL
-        update {$this->db_prefix}pages set di_name='$di_name', pa_filename='$pa_filename'
+        update pages set di_name='$di_name', pa_filename='$pa_filename'
             where pa_id=$pa_id
         SQL;
         $affected_rows += $cs->exec($sql);
 
         $sql = <<<SQL
-        update {$this->db_prefix}menus set di_fr_short='$di_fr_short', di_fr_long='$di_fr_long', di_en_short='$di_en_short', di_en_long='$di_en_long'
-        where di_name='$di_name'
+        UPDATE dictionary 
+        SET 
+            di_fr_short = '$di_fr_short',
+            di_fr_long = '$di_fr_long',
+            di_en_short = '$di_en_short',
+            di_en_long = '$di_en_long'
+        WHERE
+            di_name = '$di_name'
         SQL;
         $affected_rows += $cs->exec($sql);
 
@@ -265,19 +299,35 @@ class Menus extends Base
         $cs->beginTransaction();
 
         $sql = <<<SQL
-        delete from {$this->db_prefix}menus m
-            inner join dictionary d on m.di_id = d.di_id
-            where d.di_name='$di_name'
+        DELETE 
+        FROM
+            menus m
+                INNER JOIN
+            pages p ON m.pa_id = p.pa_id
+                INNER JOIN
+            dictionary d ON d.di_id = p.di_id
+        WHERE
+            d.di_name='$di_name'
         SQL;
         $affected_rows = $cs->exec($sql);
 
         $sql = <<<SQL
-        delete from {$this->db_prefix}pages where di_name='$di_name'
+        DELETE 
+        FROM
+            pages p 
+                INNER JOIN
+            dictionary d ON d.di_id = p.di_id
+        WHERE
+            d.di_name='$di_name'
         SQL;
         $affected_rows += $cs->exec($sql);
 
         $sql = <<<SQL
-        delete from {$this->db_prefix}dictionary where di_name='$di_name'
+        DELETE 
+        FROM
+            dictionary 
+        WHERE
+            di_name='$di_name'
         SQL;
         $affected_rows += $cs->exec($sql);
 
@@ -397,11 +447,17 @@ class Menus extends Base
         $main_menu = '';
         $sql = "";
         $sql = <<<SQL
-        select m.pa_id, m.me_level, d.di_{$this->lg}_short, d.di_name
-            from {$this->db_prefix}menus m, {$this->db_prefix}dictionary d
-            where m.di_id=d.di_id
-            and m.me_level='$level'
-            order by m.me_id
+        SELECT 
+            m.pa_id, m.me_level, d.di_{$this->lg}_short, d.di_name
+        FROM
+            menus m
+                INNER JOIN
+            pages p ON m.pa_id = p.pa_id
+                INNER JOIN
+            dictionary d ON d.di_id = p.di_id
+        WHERE
+            m.me_level='$level'
+        ORDER BY m.me_id        
         SQL;
         self::getLogger()->debug($sql, __FILE__, __LINE__);
         self::getLogger()->dump('LG', $this->lg);
@@ -411,19 +467,19 @@ class Menus extends Base
         $count = 0;
         $menu_items = [];
         while ($rows = $stmt->fetch()) {
-            $index = $rows[0];
+            $id = $rows[0];
             $level = $rows[1];
             $caption = $rows[2];
             $name = $rows[3];
             //$target=$rows[3];
             //$link=$rows[4];
 
-            #$main_menu=$main_menu . "<td bgcolor='black'><a href='admin?id=$index&lg=" . ${this->lg} . "'><span style='color:#ffffff'><b>$caption</b></span></a><span style='color:#ffffff'><b>&nbsp;|&nbsp;</b></span></td>";
-            //$menu_items[] =  "<a href='admin?id=$index&lg={$this->lg}'><span>$caption</span></a>";
-            $menu_items[] = "<a href='admin?id=$index&di=$name&lg={$this->lg}'><span>$caption</span></a>";
+            #$main_menu=$main_menu . "<td bgcolor='black'><a href='admin?id=$id&lg=" . ${this->lg} . "'><span style='color:#ffffff'><b>$caption</b></span></a><span style='color:#ffffff'><b>&nbsp;|&nbsp;</b></span></td>";
+            //$menu_items[] =  "<a href='admin?id=$id&lg={$this->lg}'><span>$caption</span></a>";
+            $menu_items[] = "<a href='admin?id=$id&di=$name&lg={$this->lg}'><span>$caption</span></a>";
 
             if ($count == 0) {
-                $default_id = $index;
+                $default_id = $id;
             }
             $count++;
         }
@@ -432,7 +488,7 @@ class Menus extends Base
 
         //$stmt->free();
 
-        return array("index" => $default_id, "menu" => $main_menu);
+        return array("id" => $default_id, "menu" => $main_menu);
     }
 
     public function createSubMenu($conf, $id = 0, $orientation)
@@ -444,20 +500,28 @@ class Menus extends Base
         }
 
         $sql = <<<SQL
-        select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id
-            from {$this->db_prefix}menus m, {$this->db_prefix}pages p, {$this->db_prefix}dictionary d
-            where m.di_id=d.di_id
-            and p.pa_id=m.pa_id
-            and m.me_id<>m.pa_id
-            and m.me_level>1
-            and m.pa_id=$id;
+        SELECT 
+            m.me_id,
+            m.me_level,
+            d.di_{$this->lg}_short,
+            m.me_target,
+            p.pa_filename,
+            p.pa_id
+        FROM
+            menus m
+                INNER JOIN
+            pages p ON m.pa_id = p.pa_id
+                INNER JOIN
+            dictionary d ON d.di_id = p.di_id AND m.me_id <> m.pa_id
+                AND m.me_level > 1
+                AND m.pa_id = $id;
         SQL;
         //and m.me_id<>m.pa_id
 
         $cs = TPdoConnection::opener($conf);
         $stmt = $cs->query($sql);
         while ($rows = $stmt->fetch()) {
-            $index = $rows[0];
+            $id = $rows[0];
             $level = $rows[1];
             $caption = $rows[2];
             $target = $rows[3];
@@ -466,10 +530,10 @@ class Menus extends Base
             if ($orientation == Menus::SUB_MENU_HORIZONTAL) {
                 switch ($level) {
                     case "2":
-                        $sub_menu .= "<a href='admin?id=$index&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
+                        $sub_menu .= "<a href='admin?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                     case "3":
-                        $sub_menu .= "<a href='$target?id=$index&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
+                        $sub_menu .= "<a href='$target?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                     case "4":
                         $sub_menu .= "<a href='admin?id=$page&lg={$this->lg}#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
@@ -479,10 +543,10 @@ class Menus extends Base
             } elseif ($orientation == Menus::SUB_MENU_VERTICAL) {
                 switch ($level) {
                     case "2":
-                        $sub_menu .= "<tr><td><a href='admin?id=$index&lg={$this->lg}'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td><a href='admin?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
                         break;
                     case "3":
-                        $sub_menu .= "<tr><td><a href='$target?id=$index&lg={$this->lg}'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td><a href='$target?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
                         break;
                     case "4":
                         $sub_menu .= "<tr><td><a href='admin?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
@@ -514,13 +578,22 @@ class Menus extends Base
         }
 
         $sql = <<<SQL
-        select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id
-            from {$this->db_prefix}menus m, {$this->db_prefix}pages p, {$this->db_prefix}dictionary d
-            where m.me_level>1
-            and m.pa_id=p.pa_id
-            and m.di_id=d.di_id
-            and m.me_id=$id
-            order by p.pa_id, m.me_level
+        SELECT 
+            m.me_id,
+            m.me_level,
+            d.di_{$this->lg}_short,
+            m.me_target,
+            p.pa_filename,
+            p.pa_id
+        FROM
+            menus m
+                INNER JOIN
+            pages p ON m.pa_id = p.pa_id
+                INNER JOIN
+            dictionary d ON d.di_id = p.di_id
+        WHERE
+            m.me_id=$id 
+        ORDER BY p.pa_id , m.me_level
         SQL;
 
         $cs = TPdoConnection::opener($conf);
@@ -535,26 +608,27 @@ class Menus extends Base
         }
 
         $sql = <<<SQL
-        select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id
-            from {$this->db_prefix}menus m, pages p, {$this->db_prefix}dictionary d
-            where m.me_level=1
-            and m.pa_id=p.pa_id
-            and m.di_id=d.di_id
-            union
-            select m.me_id, m.me_level, d.di_{$this->lg}_short, m.me_target, p.pa_filename, p.pa_id
-            from {$this->db_prefix}menus m, {$this->db_prefix}pages p, {$this->db_prefix}dictionary d
-            where m.di_id=d.di_id
-            and m.me_id<>m.pa_id
-            and p.pa_id=m.pa_id
-            and m.pa_id=$id
-            order by p.pa_id, m.me_level
+        SELECT 
+            m.me_id,
+            m.me_level,
+            d.di_{$this->lg}_short,
+            m.me_target,
+            p.pa_filename,
+            p.pa_id
+        FROM
+            menus m
+                INNER JOIN
+            pages p ON m.pa_id = p.pa_id
+                INNER JOIN
+            dictionary d ON d.di_id = p.di_id 
+        ORDER BY p.pa_id , m.me_level
         SQL;
 
         //echo "$sql<br>";
 
         $stmt = $cs->query($sql);
         while ($rows = $stmt->fetch()) {
-            $index = $rows[0];
+            $id = $rows[0];
             $level = $rows[1];
             $caption = $rows[2];
             $target = $rows[3];
@@ -563,13 +637,13 @@ class Menus extends Base
             if ($orientation == Menus::SUB_MENU_HORIZONTAL) {
                 switch ($level) {
                     case "1":
-                        $sub_menu .= "<a href='admin?id=$index&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
+                        $sub_menu .= "<a href='admin?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                     case "2":
-                        $sub_menu .= "<a href='admin?id=$index&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
+                        $sub_menu .= "<a href='admin?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                     case "3":
-                        $sub_menu .= "<a href='$target?id=$index&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
+                        $sub_menu .= "<a href='$target?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                     case "4":
                         $sub_menu .= "<a href='admin?id=$page&lg={$this->lg}#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
@@ -579,13 +653,13 @@ class Menus extends Base
             } elseif ($orientation == Menus::SUB_MENU_VERTICAL) {
                 switch ($level) {
                     case "1":
-                        $sub_menu .= "<tr><td><a href='admin?id=$index&lg={$this->lg}'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td><a href='admin?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
                         break;
                     case "2":
-                        $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='admin?id=$index&lg={$this->lg}'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='admin?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
                         break;
                     case "3":
-                        $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='$target?id=$index&lg={$this->lg}'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='$target?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
                         break;
                     case "4":
                         $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='admin?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
@@ -614,11 +688,19 @@ class Menus extends Base
         $page = "";
         $sql = "";
         $sql = <<<SQL
-        select d.di_name, p.pa_filename, m.me_charset, d.di_{$this->lg}_short, d.di_{$this->lg}_long
-            from {$this->db_prefix}pages p, {$this->db_prefix}menus m, {$this->db_prefix}dictionary d
-            where m.di_id=d.di_id
-            and p.di_name=d.di_name
-            and p.pa_id=$id
+        SELECT 
+            d.di_name,
+            p.pa_filename, 
+            d.di_{$this->lg}_short, 
+            d.di_{$this->lg}_long
+        FROM
+            menus m
+                INNER JOIN
+            pages p ON m.pa_id = p.pa_id
+                INNER JOIN
+            dictionary d ON d.di_id = p.di_id
+        WHERE
+            p.pa_id = $id
         SQL;
         self::getLogger()->debug($sql, __FILE__, __LINE__);
 
@@ -627,10 +709,9 @@ class Menus extends Base
         $cs = TPdoConnection::opener($conf);
         $stmt = $cs->query($sql);
         $rows = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $index = $rows["di_name"];
+        $id = $rows["di_name"];
         $page = $rows["pa_filename"];
         $title = $rows["di_" . $this->lg . "_long"];
-        $charset = $rows["me_charset"];
         if ($title == "") {
             $title = $rows["di_" . $this->lg . "_short"];
         }
@@ -643,7 +724,7 @@ class Menus extends Base
             $page = substr($page, 0, $p);
         }
 
-        $title_page = array("index" => $index, "title" => $title, "page" => $page, "request" => $request, "charset" => $charset);
+        $title_page = array("id" => $id, "title" => $title, "page" => $page, "request" => $request, "charset" => 'utf-8');
 
         /*
         $filename=${this->lg}."/".$page;
@@ -661,11 +742,19 @@ class Menus extends Base
         $page = "";
         $sql = "";
         $sql = <<<SQL
-        select d.di_name, p.pa_filename, m.me_charset, d.di_{$this->lg}_short, d.di_{$this->lg}_long
-            from {$this->db_prefix}pages p, {$this->db_prefix}menus m, {$this->db_prefix}dictionary d
-            where m.di_id=d.di_id
-            and p.di_name=d.di_name
-            and m.me_id=$id
+        SELECT 
+            d.di_name,
+            p.pa_filename,
+            d.di_{$this->lg}_short,
+            d.di_{$this->lg}_long
+        FROM
+            menus m
+                INNER JOIN
+            pages p ON m.pa_id = p.pa_id
+                INNER JOIN
+            dictionary d ON d.di_id = p.di_id
+        WHERE
+            m.me_id=$id
         SQL;
         // self::getLogger()->debug($sql, __FILE__, __LINE__);
 
@@ -674,7 +763,7 @@ class Menus extends Base
         $cs = TPdoConnection::opener($conf);
         $stmt = $cs->query($sql);
         $rows = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $index = $rows["di_name"];
+        $id = $rows["di_name"];
         $page = $rows["pa_filename"];
         $title = $rows["di_" . $this->lg . "_long"];
         $charset = $rows["me_charset"];
@@ -691,7 +780,7 @@ class Menus extends Base
             $page = substr($page, 0, $p);
         }
 
-        $title_page = array("index" => $index, "title" => $title, "page" => $page, "request" => $request, "charset" => $charset);
+        $title_page = array("id" => $id, "title" => $title, "page" => $page, "request" => $request, "charset" => $charset);
 
         /*
         $filename=${this->lg}."/".$page;
@@ -709,11 +798,16 @@ class Menus extends Base
         $page = "";
         $sql = "";
         $sql = <<<SQL
-        select m.me_id, p.pa_filename, m.me_charset, d.di_{$this->lg}_short, d.di_{$this->lg}_long
-            from {$this->db_prefix}pages p, {$this->db_prefix}menus m, {$this->db_prefix}dictionary d
-            where m.di_id=d.di_id
-            and p.di_name=d.di_name
-            and d.di_name='$di'
+        SELECT 
+            m.me_id, p.pa_filename, d.di_{$this->lg}_short, d.di_{$this->lg}_long
+        FROM
+            menus m
+                INNER JOIN
+            pages p ON m.pa_id = p.pa_id
+                INNER JOIN
+            dictionary d ON d.di_id = p.di_id
+        WHERE
+            d.di_name='$di'
         SQL;
 
         self::getLogger()->debug($sql, __FILE__, __LINE__);
@@ -721,9 +815,8 @@ class Menus extends Base
         $cs = TPdoConnection::opener($conf);
         $stmt = $cs->query($sql);
         $rows = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $index = $rows["me_id"];
+        $id = $rows["me_id"];
         $page = empty($rows["pa_filename"]) ? "#none" : $rows["pa_filename"];
-        $charset = $rows["me_charset"];
         $title = $rows["di_" . $this->lg . "_long"];
         if ($title == "") {
             $title = $rows["di_" . $this->lg . "_short"];
@@ -738,7 +831,7 @@ class Menus extends Base
             $page = substr($page, 0, $p);
         }
 
-        $title_page = array("index" => $index, "title" => $title, "page" => $page, "request" => $request, "charset" => $charset);
+        $title_page = array("id" => $id, "title" => $title, "page" => $page, "request" => $request, "charset" => 'utf-8');
 
         return $title_page;
     }
@@ -748,11 +841,17 @@ class Menus extends Base
         self::getLogger()->dump(__FILE__ . ':' . __METHOD__ . ':' . __LINE__ . ':conf', $conf);
 
         $sql = <<<SQL
-        select m.me_id, d.di_name 
-            from {$this->db_prefix}menus m 
-            inner join dictionary d on m.di_id=d.di_id 
-            where d.di_name like 'mk%' 
-            order by m.me_id
+        SELECT 
+            m.me_id, d.di_name
+        FROM
+            menus m
+                INNER JOIN
+            pages p ON m.pa_id = p.pa_id
+                INNER JOIN
+            dictionary d ON d.di_id = p.di_id
+        WHERE
+            d.di_name LIKE 'mk%'
+        ORDER BY m.me_id
         SQL;
         self::getLogger()->dump(__FILE__ . ':' . __METHOD__ . ':' . __LINE__ . ':SQL', $sql);
 
