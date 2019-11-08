@@ -87,9 +87,8 @@ class TQbeWindow extends TPartialController
     {
         $data = '';
 
-        //$sql = $this->getRequest()->getArgument('sql');
         $cs = TPdoConnection::opener('niduslite_conf');
-        $sql = base64_decode($sql);
+        $sql = urldecode($sql);
 
         self::getLogger()->sql($sql);
         $stmt = $cs->query($sql);

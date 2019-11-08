@@ -63,7 +63,7 @@ Phink.DOM.ready(function () {
             }
             document.querySelector('#sendQuery').onclick = function () {
                 var sql = document.querySelector("#query").value;
-                sql = btoa(sql);
+                sql = encodeURIComponent(sql);
                 qbeMain.testQuery(sql);
             }
 
