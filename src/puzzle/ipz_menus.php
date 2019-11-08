@@ -195,15 +195,15 @@ class Menus extends Base
             if (empty($me_target)) {
                 $me_target = "page";
             }
-
-            $cs->beginTransaction();
+            $affected_rows = 0;
             $sql = <<<SQL
             INSERT INTO
                 dictionary (di_name, di_fr_short, di_fr_long, di_en_short, di_en_long)
                 VALUES 
                     ('$di_name', '$di_fr_short', '$di_fr_long', '$di_en_short', '$di_en_long')
             SQL;
-            $affected_rows = $cs->exec($sql);
+            $cs->beginTransaction();
+            $affected_rows += (int) $cs->exec($sql);
             $di_id = $cs->lastInsertId();
 
             self::getLogger()->debug($sql, __FILE__, __LINE__);
@@ -214,7 +214,7 @@ class Menus extends Base
                 VALUES
                     ('$di_id', '$pa_filename')
             SQL;
-            $affected_rows += $cs->exec($sql);
+            $affected_rows += (int) $cs->exec($sql);
             $pa_id = $cs->lastInsertId();
 
             self::getLogger()->debug($sql, __FILE__, __LINE__);
@@ -225,7 +225,7 @@ class Menus extends Base
                 VALUES 
                     ('$me_level', '$me_target', $pa_id)
             SQL;
-            $affected_rows += $cs->exec($sql);
+            $affected_rows += (int) $cs->exec($sql);
             $me_id = $cs->lastInsertId();
 
             self::getLogger()->debug($sql, __FILE__, __LINE__);
