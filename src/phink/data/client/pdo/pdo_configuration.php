@@ -82,6 +82,9 @@ class TPdoConfiguration extends TJsonConfiguration
 
         $this->_driver = $this->contents['driver'];
         $this->_databaseName = $this->contents['database'];
+        if($this->_driver == TServerType::SQLITE) {
+            $this->_databaseName = APP_DATA . $this->_databaseName;
+        }
         $this->_host = isset($this->contents['host']) ? $this->contents['host'] : '';
         $this->_user = isset($this->contents['user']) ? $this->contents['user'] : '';
         $this->_password = isset($this->contents['password']) ? $this->contents['password'] : '';

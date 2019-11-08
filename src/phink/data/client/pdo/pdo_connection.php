@@ -176,8 +176,8 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
     public function query(string $sql = '', ?array $params = null): ?TPdoDataStatement
     {
         $statement = null;
-        $result = false;
-
+        $result = null;
+        $error = null;
         try {
             if($params != null) {
                 $statement = $this->_state->prepare($sql);
@@ -197,9 +197,17 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
                 throw new \PDOException($this->_state->errorInfo()[2], $this->_state->errorInfo()[1], null);
             }
 
-            $result = new TPdoDataStatement($statement, $this, $sql);
         } catch (\Exception | \PDOException $ex) {
+            self::getLogger()->sql($sql);
+            if(\is_array($params)) {
+                self::getLogger()->dump('SQL ERROR ON ' . $sql . ' WITH PARAMS', $params);
+            }
             self::getLogger()->error($ex);
+            $error = $ex;
+            $statement = null;
+
+        } finally {
+            $result = new TPdoDataStatement($statement, $this, $sql, $error);
         }
         
         return $result;
@@ -217,7 +225,7 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
         return $this->query($sql);
     }
 
-    public function exec(string $sql) : ?int
+    public function exec(string $sql) : string
     {
         return $this->_state->exec($sql);
     }

@@ -51,11 +51,15 @@ class TPdoDataStatement extends TObject implements IDataStatement
     private $_native_connection = null;
     private $_sql = '';
     private $_driver;
+    private $_exception = null;
+    private $_hasException = false;
 
-    public function __construct(\PDOStatement $statement, TPdoConnection $connection = null, $sql = '')
+    public function __construct(?\PDOStatement $statement, TPdoConnection $connection = null, $sql = '', ?\PDOException $error = null)
     {
         $this->_statement = $statement;
         $this->_sql = $sql;
+        $this->_exception = $error;
+        $this->_hasException = ($error instanceof \PDOException);
 
         if($connection !== null) {
             $this->_connection = $connection;
@@ -64,6 +68,16 @@ class TPdoDataStatement extends TObject implements IDataStatement
             $this->_driver = $this->_config->getDriver();
             $this->_setTypesMapper();
         } 
+    }
+
+    public function hasException() : bool
+    {
+        return $this->_hasException;
+    }
+
+    public function getException() : ?\PDOException
+    {
+        return $this->_exception;
     }
 
     public function getValue($i) : array
@@ -105,7 +119,7 @@ class TPdoDataStatement extends TObject implements IDataStatement
         if(!isset($this->_fieldCount)) {
             try {
                 $this->_fieldCount = $this->_statement->columnCount();
-            } catch (\PDOException $ex) {
+            } catch (\Exception | \PDOException $ex) {
                 if(isset($this->_values[0])) {
                     $this->_fieldCount = count($this->_values[0]);
                 } else {
@@ -122,7 +136,7 @@ class TPdoDataStatement extends TObject implements IDataStatement
         if(!isset($this->_rowCount)) {
             try {
                 $this->_rowCount = $this->_statement->rowCount();
-            } catch (\PDOException $ex) {
+            } catch (\Exception | \PDOException $ex) {
                 if(is_array($this->_values)) {
                     $this->_rowCount = count($this->_values);
                 } else {
