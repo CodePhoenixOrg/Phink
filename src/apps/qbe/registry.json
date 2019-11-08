@@ -1,0 +1,14 @@
+{
+    "classes": [
+        {
+            "TQbeWindow": {
+                "alias": "qbe",
+                "path": "@/qbe/",
+                "namespace": "Phink\\Apps\\QBE",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+        }
+    ]
+}
