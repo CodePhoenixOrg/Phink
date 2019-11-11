@@ -35,20 +35,29 @@ class TAnalyzer
         $A_fields = [];
 
         $i = 0;
-        $sql = "select * from $table limit 0,1;";
-        $stmt = $cs->query($sql);
+        // $sql = "select * from $table limit 0,1;";
+        // $stmt = $cs->query($sql);
+        $schemaInfo = $cs->getSchemaInfo();
+        $schemaInfo->setQuery($table);
+        $k = $schemaInfo->getFieldCount();
 
         // $rows=$stmt->fetch();
         // $k=sizeof($rows)/2;
 
-        $k = $stmt->getFieldCount();
+        //$k = $stmt->getFieldCount();
 
         while ($i < $k) {
-            $fieldname = $stmt->getFieldName($i);
-            $fieldtype = $stmt->getFieldType($i);
-            $fieldsize = $stmt->getFieldLen($i);
-            $phptype = $stmt->typeNumToPhp($fieldtype);
-            $fieldtype = $stmt->typeNumToName($fieldtype);
+            $info = $schemaInfo->getInfo($i);
+            $fieldname = $info->name;
+            $fieldtype = $info->type;
+            $fieldsize = $info->length;
+            // $fieldname = $stmt->getFieldName($i);
+            // $fieldtype = $stmt->getFieldType($i);
+            // $fieldsize = $stmt->getFieldLen($i);
+            // $phptype = $stmt->typeNumToPhp($fieldtype);
+            // $fieldtype = $stmt->typeNumToName($fieldtype);
+            $phptype = $schemaInfo->typeNameToPhp($fieldtype);
+            // $fieldtype = $schemaInfo->typeNumToName($fieldtype);
             $htmltype = '';
             $class = '';
             $references = [];

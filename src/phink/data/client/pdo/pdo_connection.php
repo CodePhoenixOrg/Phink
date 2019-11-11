@@ -29,8 +29,7 @@ use Phink\Data\TServerType;
 use Phink\Data\Client\PDO\TPdoConfiguration;
 use Phink\Data\Client\PDO\TPdoDataStatement;
 use Phink\Data\TCrudQueries;
-use Phink\Data\CLient\PDO\Mapper\TPdoMySQLSchemaInfoMapper;
-use Phink\Data\CLient\PDO\Mapper\TPdoSQLiteSchemaInfoMapper;
+use Phink\Data\CLient\PDO\Mapper\TCustomPdoSchemaInfoMapper;
 
 class TPdoConnectionException extends \Exception
 {
@@ -92,6 +91,11 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
         return $result;
     }
 
+    public function getSchemaInfo() : TCustomPdoSchemaInfoMapper
+    {
+        return $this->_schemaInfoMapper;
+    }
+    
     public function getDriver() : string
     {
         return $this->_config->getDriver();
@@ -162,15 +166,13 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
         if ($this->_config->getDriver() == TServerType::MYSQL) {
             $this->_params = [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"];
             $this->_dsn = $this->_config->getDriver() . ':host=' . $this->_config->getHost() . ';dbname=' . $this->_config->getDatabaseName();
-            $this->_schemaInfoMapper = new TPdoMySQLSchemaInfoMapper($this->_config);
         } elseif($this->_config->getDriver() == TServerType::SQLSERVER) {
             $this->_params = [PDO::SQLSRV_ATTR_ENCODING => PDO::SQLSRV_ENCODING_SYSTEM, PDO::SQLSRV_ATTR_DIRECT_QUERY => true];
             $this->_dsn = $this->_config->getDriver() . ':Server=' . $this->_config->getHost() . ';Database=' . $this->_config->getDatabaseName(); 
         } elseif($this->_config->getDriver() == TServerType::SQLITE) {
             $this->_dsn = $this->_config->getDriver() . ':' . $this->_config->getDatabaseName(); 
-            $this->_schemaInfoMapper = new TPdoSQLiteSchemaInfoMapper($this->_config);
         }
-
+        $this->_schemaInfoMapper = TCustomPdoSchemaInfoMapper::builder($this->_config);
     }
     
     public function query(string $sql = '', ?array $params = null): ?TPdoDataStatement
@@ -193,7 +195,7 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
         } catch (\Exception | \PDOException $ex) {
             self::getLogger()->sql($sql);
             if(\is_array($params)) {
-                self::getLogger()->dump('SQL ERROR ON ' . $sql . ' WITH PARAMS', $params);
+                self::getLogger()->sql('WITH PARAMS ' . print_r($params, true));
             }
             self::getLogger()->error($ex);
             $error = $ex;

@@ -27,8 +27,7 @@ use Phink\Data\TServerType;
 use Phink\Data\IDataStatement;
 use Phink\Data\Client\PDO\TPdoConfiguration;
 use Phink\Data\Client\PDO\TPdoConnection;
-use Phink\Data\CLient\PDO\Mapper\TPdoMySQLDataTypesMapper;
-use Phink\Data\CLient\PDO\Mapper\TPdoSQLiteDataTypesMapper;
+use Phink\Data\CLient\PDO\Mapper\TCustomPdoSchemaInfoMapper;
 
 use PDOStatement;
 
@@ -45,7 +44,7 @@ class TPdoDataStatement extends TObject implements IDataStatement
     private $_rowCount;
     private $_meta = array();
     private $_colNames = [];
-    private $_typesMapper = null;
+    private $_schemaInfo = null;
     private $_config = null;
     private $_connection = null;
     private $_native_connection = null;
@@ -54,7 +53,7 @@ class TPdoDataStatement extends TObject implements IDataStatement
     private $_exception = null;
     private $_hasException = false;
 
-    public function __construct(?\PDOStatement $statement, TPdoConnection $connection = null, $sql = '', ?\PDOException $error = null)
+    public function __construct(?\PDOStatement $statement, ?TPdoConnection $connection = null, ?string $sql = null, ?\PDOException $error = null)
     {
         $this->_statement = $statement;
         $this->_sql = $sql;
@@ -66,7 +65,10 @@ class TPdoDataStatement extends TObject implements IDataStatement
             $this->_native_connection = $connection->getState();
             $this->_config = $connection->getConfiguration();
             $this->_driver = $this->_config->getDriver();
-            $this->_setTypesMapper();
+            $this->_schemaInfo = $connection->getSchemaInfo();
+            if($sql !== null) {
+                $this->_schemaInfo->setQuery($sql);
+            }
         } 
     }
 
@@ -165,8 +167,8 @@ class TPdoDataStatement extends TObject implements IDataStatement
     {
         $name = '';
 
-        if ($this->_typesMapper !== null) {
-            $info = $this->_typesMapper->getInfo($i);
+        if ($this->_schemaInfo !== null) {
+            $info = $this->_schemaInfo->getInfo($i);
             $name = $info->name;
         } else {
             if (!isset($this->_meta[$i])) {
@@ -182,8 +184,8 @@ class TPdoDataStatement extends TObject implements IDataStatement
     {
         $type = '';
 
-        if ($this->_typesMapper !== null) {
-            $info = $this->_typesMapper->getInfo($i);
+        if ($this->_schemaInfo !== null) {
+            $info = $this->_schemaInfo->getInfo($i);
             $type = $info->type;
         } else {
             if (!isset($this->_meta[$i])) {
@@ -199,8 +201,8 @@ class TPdoDataStatement extends TObject implements IDataStatement
     {
         $len = 0;
 
-        if ($this->_typesMapper !== null) {
-            $info = $this->_typesMapper->getInfo($i);
+        if ($this->_schemaInfo !== null) {
+            $info = $this->_schemaInfo->getInfo($i);
             $len = $info->length;
         } else {
             if (!isset($this->_meta[$i])) {
@@ -214,26 +216,16 @@ class TPdoDataStatement extends TObject implements IDataStatement
 
     public function typeNumToName(int $type) : string
     {
-        return $this->_typesMapper->typeNumToName($type);
+        return $this->_schemaInfo->typeNumToName($type);
     }
 
     public function typeNameToPhp(string $type) : string
     {
-        return $this->_typesMapper->typeNameToPhp($type);
+        return $this->_schemaInfo->typeNameToPhp($type);
     }
 
     public function typeNumToPhp(int $type) : string 
     {
-        return $this->_typesMapper->typeNumToPhp($type);
-    }
-
-    private function _setTypesMapper() : void
-    {
-        if ($this->_driver === TServerType::MYSQL) {
-            $this->_typesMapper = new TPdoMySQLDataTypesMapper($this->_config, $this->_sql);
-        }
-        if ($this->_driver === TServerType::SQLITE) {
-            $this->_typesMapper = new TPdoSQLiteDataTypesMapper($this->_config, $this->_sql);
-        }
-    }    
+        return $this->_schemaInfo->typeNumToPhp($type);
+    } 
 }
