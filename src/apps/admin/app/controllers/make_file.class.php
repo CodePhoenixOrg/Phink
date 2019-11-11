@@ -5,7 +5,7 @@ use Phink\MVC\TPartialController;
 use Phink\Registry\TRegistry;
 use Phink\Data\Client\PDO\TPdoConnection;
 use Phink\Data\TAnalyzer;
-use Phink\Web\UI\TScriptMaker;
+use Phink\Web\UI\TMvcScriptMaker;
 use Phink\Log\TLog;
 use Puzzle\Menus;
 use Puzzle\Controls;
@@ -28,7 +28,7 @@ class TMakeFile extends TPartialController
         $this->db_prefix = TRegistry::ini('data', 'db_prefix');
 		$this->conf = TRegistry::ini('data', 'conf');
 		$this->menus = new Menus($this->lang, $this->db_prefix);
-        $this->scriptMaker = new TScriptMaker;
+        $this->scriptMaker = new TMvcScriptMaker;
 
 		$form_fields = $this->getRequest()->getArgument("form_fields");
 		$field_defs = $this->getRequest()->getArgument("field_defs");
