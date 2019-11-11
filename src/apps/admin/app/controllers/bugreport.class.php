@@ -8,7 +8,7 @@ use Phink\Registry\TRegistry;
 use Puzzle\Data\Controls as DataControls;
 use Puzzle\Menus;
 
-class Bugreport extends TPartialController
+class TBugReport extends TPartialController
 {
 
     // tools

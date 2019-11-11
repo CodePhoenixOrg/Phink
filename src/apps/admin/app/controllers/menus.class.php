@@ -8,7 +8,7 @@ use Phink\Registry\TRegistry;
 use Puzzle\Data\Controls as DataControls;
 use Puzzle\Menus;
 
-class Menus extends TPartialController
+class TMenus extends TPartialController
 {
 
     // tools
@@ -35,8 +35,8 @@ class Menus extends TPartialController
         $this->action = getArgument('action', 'Ajouter');
         $this->id = getArgument('id', -1);
         $fieldname = getArgument('me_id');
-        if($event === 'onLoad' && $query === 'ACTION') {
-            switch ($action) {
+        if($event === 'onLoad' && $this->query === 'ACTION') {
+            switch ($this->action) {
             case 'Ajouter':
                 $this->me_id = '';
                 $this->me_level = '';
@@ -55,8 +55,8 @@ class Menus extends TPartialController
                 $this->bl_id = $rows['bl_id'];;
             break;
             }
-        } else if($event === 'onRun' && $query === 'ACTION') {
-            switch ($action) {
+        } else if($event === 'onRun' && $this->query === 'ACTION') {
+            switch ($this->action) {
             case 'Ajouter':
                 $this->me_id = filterPOST['me_id'];
                 $this->me_level = filterPOST['me_level'];
@@ -92,16 +92,16 @@ class Menus extends TPartialController
                     me_target = :me_target
                     pa_id = :pa_id
                     bl_id = :bl_id
-                where me_id = '$me_id';
+                where me_id = '$this->me_id';
                 SQL;
                 $stmt = $this->cs->query($sql, [':me_level' => $this->me_level, ':me_target' => $this->me_target, ':pa_id' => $this->pa_id, ':bl_id' => $this->bl_id]);
             break;
             case 'Supprimer':
-                $sql = "delete from menus where me_id='$me_id'";
+                $sql = "delete from menus where me_id='$this->me_id'";
                 $stmt = $this->cs->query($sql);
             break;
             }
-            $query='SELECT';
+            $this->query='SELECT';
         }
     }
 }

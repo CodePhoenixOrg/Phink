@@ -8,7 +8,7 @@ use Phink\Registry\TRegistry;
 use Puzzle\Data\Controls as DataControls;
 use Puzzle\Menus;
 
-class Changelog extends TPartialController
+class TChangelog extends TPartialController
 {
 
     // tools
@@ -35,8 +35,8 @@ class Changelog extends TPartialController
         $this->action = getArgument('action', 'Ajouter');
         $this->id = getArgument('id', -1);
         $fieldname = getArgument('cl_id');
-        if($event === 'onLoad' && $query === 'ACTION') {
-            switch ($action) {
+        if($event === 'onLoad' && $this->query === 'ACTION') {
+            switch ($this->action) {
             case 'Ajouter':
                 $this->cl_id = '';
                 $this->cl_title = '';
@@ -59,8 +59,8 @@ class Changelog extends TPartialController
                 $this->usr_id = $rows['usr_id'];;
             break;
             }
-        } else if($event === 'onRun' && $query === 'ACTION') {
-            switch ($action) {
+        } else if($event === 'onRun' && $this->query === 'ACTION') {
+            switch ($this->action) {
             case 'Ajouter':
                 $this->cl_id = filterPOST['cl_id'];
                 $this->cl_title = filterPOST['cl_title'];
@@ -106,16 +106,16 @@ class Changelog extends TPartialController
                     cl_time = :cl_time
                     app_id = :app_id
                     usr_id = :usr_id
-                where cl_id = '$cl_id';
+                where cl_id = '$this->cl_id';
                 SQL;
                 $stmt = $this->cs->query($sql, [':cl_title' => $this->cl_title, ':cl_text' => $this->cl_text, ':cl_date' => $this->cl_date, ':cl_time' => $this->cl_time, ':app_id' => $this->app_id, ':usr_id' => $this->usr_id]);
             break;
             case 'Supprimer':
-                $sql = "delete from changelog where cl_id='$cl_id'";
+                $sql = "delete from changelog where cl_id='$this->cl_id'";
                 $stmt = $this->cs->query($sql);
             break;
             }
-            $query='SELECT';
+            $this->query='SELECT';
         }
     }
 }

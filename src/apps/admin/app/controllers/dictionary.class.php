@@ -8,7 +8,7 @@ use Phink\Registry\TRegistry;
 use Puzzle\Data\Controls as DataControls;
 use Puzzle\Menus;
 
-class Dictionary extends TPartialController
+class TDictionary extends TPartialController
 {
 
     // tools

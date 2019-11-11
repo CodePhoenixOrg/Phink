@@ -40,10 +40,10 @@ class TSubPage extends TUserComponent
         self::getLogger()->debug('DI::' . $di);
         self::getLogger()->dump('PAGE iNFO::', $title_page);
 
-        $page = SITE_ROOT . $this->getDirName() . DIRECTORY_SEPARATOR . APP_DIR . 'pages' . DIRECTORY_SEPARATOR . $title_page["page"];
-        if(!\file_exists($page)) {
+        // $page = SITE_ROOT . $this->getDirName() . DIRECTORY_SEPARATOR . APP_DIR . 'pages' . DIRECTORY_SEPARATOR . $title_page["page"];
+        // if(!\file_exists($page)) {
             $page = DOCUMENT_ROOT . $this->lang . DIRECTORY_SEPARATOR . $title_page["page"];
-        }
+        // }
 
         if(\file_exists($page)) {
             include $page;
