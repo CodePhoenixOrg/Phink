@@ -5,7 +5,7 @@ namespace Phink\Data\CLient\PDO\Mapper;
 class TPdoSQLiteSchemaInfoMapper extends TCustomPdoSchemaInfoMapper
 {
 
-    public function getInfo($index) : ?object
+    public function getInfo($index): ?object
     {
         $name = '';
         $type = '';
@@ -15,7 +15,7 @@ class TPdoSQLiteSchemaInfoMapper extends TCustomPdoSchemaInfoMapper
             $this->config->getDatabaseName()
         );
 
-        if($this->columnNames === null && $this->isQueryATable()) {
+        if ($this->columnNames === null && $this->isQueryATable()) {
             $this->columnNames = [];
             $this->columnTypes = [];
             $table = $this->getQuery();
@@ -27,61 +27,65 @@ class TPdoSQLiteSchemaInfoMapper extends TCustomPdoSchemaInfoMapper
 
             $names = [];
             $types = [];
-            while($row = $this->result->fetchArray()) {
+            while ($row = $this->result->fetchArray()) {
                 array_push($this->columnNames, $row[1]);
                 array_push($this->columnTypes, $row[2]);
             }
         }
 
-        if($this->columnTypes !== null) {
+        if ($this->columnTypes !== null) {
             $name = $this->columnNames[$index];
             $type = $this->columnTypes[$index];
             $len = 1024;
-    
+
         }
 
-        if($name == '' && !$this->isQueryATable()) {
+        if ($name == '' && !$this->isQueryATable()) {
 
-            $sql = $this->getQuery();
-   
-            $this->result = $connection->query($sql);
-            // $columns = $this->result->fetchArray();
-            // $columnsCount = count($columns);
-            
-            // $sql = str_replace("\n", " ", $this->sql);
-            // $sql = str_replace("\r", " ", $sql);
-            // $sql = strtolower($sql);
-            // $from = \strpos($sql, 'from');
-            // $query = \substr($sql, $from - 1);
+            try {
 
-            // $columnsTypeofArray = array_map(function($columnName) {
-            //     return "typeof(" . $columnName . ")";
-            // }, $columns );
+                $sql = $this->getQuery();
 
-            // $columnsTypeof = join(', ', $columnsTypeofArray);
-            // $sql = 'select ' . $columnsTypeof . $query;
-            // self::getLogger()->sql($sql);
-            // $this->result = $connection->query($query);
-            // $columnsTypes = $this->result->fetchArray();
-            // $type = $columnsTypes[$index];            
+                $this->result = $connection->query($sql);
+                // $columns = $this->result->fetchArray();
+                // $columnsCount = count($columns);
 
-            $name = $this->result->columnName($index);
-            $type = $this->result->columnType($index);
-            $len = 32768;
+                // $sql = str_replace("\n", " ", $this->sql);
+                // $sql = str_replace("\r", " ", $sql);
+                // $sql = strtolower($sql);
+                // $from = \strpos($sql, 'from');
+                // $query = \substr($sql, $from - 1);
 
-            $errno = $connection->lastErrorCode();
-            if($errno > 0) {
-                throw new \PDOException($errno, $connection->lastErrorMsg(), null);
+                // $columnsTypeofArray = array_map(function($columnName) {
+                //     return "typeof(" . $columnName . ")";
+                // }, $columns );
+
+                // $columnsTypeof = join(', ', $columnsTypeofArray);
+                // $sql = 'select ' . $columnsTypeof . $query;
+                // self::getLogger()->sql($sql);
+                // $this->result = $connection->query($query);
+                // $columnsTypes = $this->result->fetchArray();
+                // $type = $columnsTypes[$index];
+
+                $name = $this->result->columnName($index);
+                $type = $this->result->columnType($index);
+                $len = 32768;
+            } catch (\PDOException $ex) {
+                $errno = $connection->lastErrorCode();
+                if ($errno > 0) {
+                    throw new \PDOException($connection->lastErrorMsg(), (int) $errno, $ex);
+                }
+
             }
-        }
 
+        }
 
         $this->info = (object) ['name' => $name, 'type' => $type, 'length' => $len];
 
         return $this->info;
     }
 
-    public function setTypes() : void
+    public function setTypes(): void
     {
         $this->native_types = (array) null;
         $this->native2php_assoc = (array) null;
@@ -92,13 +96,13 @@ class TPdoSQLiteSchemaInfoMapper extends TCustomPdoSchemaInfoMapper
         $this->native_types[3] = "BLOB";
         $this->native_types[4] = "REAL";
         $this->native_types[5] = "NUMERIC";
-        
+
         $this->native2php_assoc["INTEGER"] = "int";
         $this->native2php_assoc["TEXT"] = "string";
         $this->native2php_assoc["BLOB"] = "blob";
         $this->native2php_assoc["REAL"] = "float";
         $this->native2php_assoc["NUMERIC"] = "float";
-        
+
         $this->native2php_num[1] = "int";
         $this->native2php_num[2] = "string";
         $this->native2php_num[3] = "blob";
@@ -106,22 +110,22 @@ class TPdoSQLiteSchemaInfoMapper extends TCustomPdoSchemaInfoMapper
         $this->native2php_num[5] = "float";
     }
 
-    public function getShowTablesQuery() : string
+    public function getShowTablesQuery(): string
     {
         $sql = <<<SQL
-        SELECT 
+        SELECT
             name
-        FROM 
-            sqlite_master 
-        WHERE 
-            type ='table' AND 
+        FROM
+            sqlite_master
+        WHERE
+            type ='table' AND
             name NOT LIKE 'sqlite_%';
         SQL;
 
         return $sql;
     }
 
-    public function getShowFieldsQuery(?string $table) : string
+    public function getShowFieldsQuery(?string $table): string
     {
         $sql = <<<SQL
             SELECT name FROM PRAGMA_TABLE_INFO('{$table}');
@@ -130,7 +134,7 @@ class TPdoSQLiteSchemaInfoMapper extends TCustomPdoSchemaInfoMapper
         return $sql;
     }
 
-    public function getFieldCount() : int
+    public function getFieldCount(): int
     {
         $result = 0;
 
@@ -138,11 +142,11 @@ class TPdoSQLiteSchemaInfoMapper extends TCustomPdoSchemaInfoMapper
             $this->config->getDatabaseName()
         );
 
-        if($this->isQueryATable()) {
+        if ($this->isQueryATable()) {
             $sql = $this->getShowFieldsQuery($this->getQuery());
             $stmt = $connection->query($sql);
             $count = 0;
-            while($row = $stmt->fetchArray()) {
+            while ($row = $stmt->fetchArray()) {
                 $count++;
             }
             $result = $count;
@@ -151,4 +155,3 @@ class TPdoSQLiteSchemaInfoMapper extends TCustomPdoSchemaInfoMapper
         return $result;
     }
 }
-

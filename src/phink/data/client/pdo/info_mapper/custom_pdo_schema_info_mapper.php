@@ -32,14 +32,23 @@ abstract class TCustomPdoSchemaInfoMapper implements IPdoSchemaInfoMapper
         $this->setTypes();
     }
 
-    public static function builder(TPdoConfiguration $config): IPdoSchemaInfoMapper
+    public static function builder(TPdoConfiguration $config): TCustomPdoSchemaInfoMapper
     {
-        if ($config->getDriver() == TServerType::MYSQL) {
-            return new TPdoMySQLSchemaInfoMapper($config);
-        }
+        $result = null;
 
-        if ($config->getDriver() == TServerType::SQLITE) {
-            return new TPdoSQLiteSchemaInfoMapper($config);
+        try {
+            if ($config->getDriver() == TServerType::MYSQL) {
+                $result = new TPdoMySQLSchemaInfoMapper($config);
+            }
+
+            if ($config->getDriver() == TServerType::SQLITE) {
+                $result = new TPdoSQLiteSchemaInfoMapper($config);
+            }
+        } catch(\PDOException $ex) {
+            self::getLogger()->error($ex);
+            $result = null;
+        } finally {
+            return $result;
         }
     }
 
