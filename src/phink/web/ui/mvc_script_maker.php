@@ -141,8 +141,8 @@ class TMvcScriptMaker extends TObject
                 \$this->action = getArgument('action', 'Ajouter');
                 \$this->id = getArgument('id', -1);
                 \$fieldname = getArgument('$indexfield');
-                if(\$event === 'onLoad' && \$query === 'ACTION') {
-                    switch (\$action) {
+                if(\$event === 'onLoad' && \$this->query === 'ACTION') {
+                    switch (\$this->action) {
                     case 'Ajouter':
         $blankValues
                         break;
@@ -153,8 +153,8 @@ class TMvcScriptMaker extends TObject
         $selectValues;
                     break;
                     }
-                } else if(\$event === 'onRun' && \$query === 'ACTION') {
-                    switch (\$action) {
+                } else if(\$event === 'onRun' && \$this->query === 'ACTION') {
+                    switch (\$this->action) {
                     case 'Ajouter':
         $insertFilterPost;
                         \$sql = <<<SQL
@@ -171,16 +171,16 @@ class TMvcScriptMaker extends TObject
                         \$sql=<<<SQL
                         update $table set
         $updateParams
-                        where $indexfield = '\$$indexfield';
+                        where $indexfield = '\$this->$indexfield';
                         SQL;
                         \$stmt = \$this->cs->query(\$sql, $prepareUpdate);
                     break;
                     case 'Supprimer':
-                        \$sql = "delete from $table where $indexfield='\$$indexfield'";
+                        \$sql = "delete from $table where $indexfield='\$this->$indexfield'";
                         \$stmt = \$this->cs->query(\$sql);
                     break;
                     }
-                    \$query='SELECT';
+                    \$this->query='SELECT';
                 }
             }
         }
@@ -216,21 +216,21 @@ class TMvcScriptMaker extends TObject
         \$dialog = "";
         if(isset(\$pc)) \$curl_pager="&pc=\$pc";
         if(isset(\$sr)) \$curl_pager.="&sr=\$sr";
-        if(\$query === "SELECT") {
+        if(\$this->query === "SELECT") {
             \$sql = "select $indexfield, $secondfield from $table order by $indexfield";
-            \$dbgrid = \$datacontrols->createPagerDbGrid($table, \$sql, \$id, "page.html", "&query=ACTION\$curl_pager", "", true, true, \$dialog, array(0, 400), 15, \$grid_colors, \$this->cs);
+            \$dbgrid = \$this->datacontrols->createPagerDbGrid('$table', \$sql, \$id, "page.html", "&query=ACTION\$curl_pager", "", true, true, \$dialog, [0, 400], 15, \$this->grid_colors, \$this->cs);
             echo "<br>".\$dbgrid;
-        } elseif(\$query === "ACTION") {
+        } elseif(\$this->query === "ACTION") {
         ?>
         <form method="POST" name="$formname" action="page.html?id=$page_id&lg=fr">
         <input type="hidden" name="query" value="ACTION">
         <input type="hidden" name="event" value="onRun">
         <input type="hidden" name="pc" value="<?php echo \$pc?>">
         <input type="hidden" name="sr" value="<?php echo \$sr?>">
-        <input type="hidden" name="$indexfield" value="<?php echo $$indexfield?>">
-        <table border="1" bordercolor="{$this->panel_colors->border_color}?>" cellpadding="0" cellspacing="0" witdh="100%" height="1">
+        <input type="hidden" name="$indexfield" value="<?php echo \$this->$indexfield?>">
+        <table border="1" bordercolor="<?php echo \$this->panel_colors->border_color?>" cellpadding="0" cellspacing="0" witdh="100%" height="1">
         <tr>
-            <td align="center" valign="top" bgcolor="{$this->panel_colors->back_color}">
+            <td align="center" valign="top" bgcolor="<?php echo \$this->panel_colors->back_color?>">
                 <table>
 
         SCRIPT;
@@ -244,7 +244,7 @@ class TMvcScriptMaker extends TObject
                 $script .= <<< SCRIPT
                             <?php
                             \$sql="select {$ref->keyfield}, {$ref->valuefield} from {$ref->table} order by {$ref->valuefield}";
-                            \$options = \$datacontrols->createOptionsFromQuery(\$sql, 0, 1, [], \$this->{$ref->keyfield}, false, \$this->cs);
+                            \$options = \$this->datacontrols->createOptionsFromQuery(\$sql, 0, 1, [], \$this->{$ref->keyfield}, false, \$this->cs);
                             ?>
                             <tr>
                                 <td>$def->fieldname</td>
@@ -308,8 +308,8 @@ class TMvcScriptMaker extends TObject
         $script .= <<<SCRIPT
                     <tr>
                         <td align="center" colspan="2">
-                            <input type="submit" name="action" value="<?php echo \$action?>">
-                            <?php   if(\$action!="Ajouter") { ?>
+                            <input type="submit" name="action" value="<?php echo \$this->action?>">
+                            <?php   if(\$this->action!="Ajouter") { ?>
                             <input type="submit" name="action" value="Supprimer">
                             <?php   } ?>
                             <input type="reset" name="action" value="Annuler">
@@ -323,6 +323,7 @@ class TMvcScriptMaker extends TObject
         </form>
         <?php
         }
+        ?>
         SCRIPT;
 
         $script = str_replace("\t", "    ", $script);
