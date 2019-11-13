@@ -527,6 +527,14 @@ class Controls extends \Puzzle\Base
 
         Dessine un tableau dont les informations sont le result d'une requête SQL passée à $sql. Les parametres $page_link et $image_link sont utilisés pour la premiere colonne. Si $image_link est vide, la valeur affichée est celle du champ d'index.
          */
+
+
+        $stmt = $cs->query($sql);
+
+        if ($stmt->hasException()) {
+            return $stmt->getException()->getMessage();
+        }
+
         $lg = getArgument("lg", "fr");
         $pc = getArgument("pc");
         $sr = getArgument("sr");

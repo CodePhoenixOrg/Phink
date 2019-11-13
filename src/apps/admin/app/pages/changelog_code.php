@@ -1,6 +1,6 @@
 <?php   
 	use Phink\Data\Client\PDO\TPdoConnection;
-	$cs = TPdoConnection::opener('webfactory_conf');
+	$cs = TPdoConnection::opener('niduslite_conf');
 	$query = getArgument("query", "SELECT");
 	$event = getArgument("event", "onLoad");
 	$action = getArgument("action", "Ajouter");

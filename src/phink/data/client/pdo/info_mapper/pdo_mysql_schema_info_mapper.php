@@ -2,11 +2,9 @@
 
 namespace Phink\Data\CLient\PDO\Mapper;
 
-use Phink\Data\CLient\PDO\Mapper\TPdoCustomDataTypesMapper;
-
-class TPdoMySQLDataTypesMapper extends TPdoCustomDataTypesMapper
+class TPdoMySQLSchemaInfoMapper extends TCustomPdoSchemaInfoMapper
 {
-    public function getInfo($index) : ?object
+    public function getInfo($index): ?object
     {
         if ($this->result === null) {
             try {
@@ -29,7 +27,7 @@ class TPdoMySQLDataTypesMapper extends TPdoCustomDataTypesMapper
         return $this->info;
     }
 
-    public function setTypes() : void
+    public function setTypes(): void
     {
         $this->native_types = (array) null;
         $this->native2php_assoc = (array) null;
@@ -52,7 +50,7 @@ class TPdoMySQLDataTypesMapper extends TPdoCustomDataTypesMapper
         $this->native_types[252] = "BLOB";
         $this->native_types[253] = "VARCHAR";
         $this->native_types[254] = "CHAR";
-        
+
         $this->native2php_assoc["TINYINT"] = "int";
         $this->native2php_assoc["SMALLINT"] = "int";
         $this->native2php_assoc["INT"] = "int";
@@ -70,7 +68,7 @@ class TPdoMySQLDataTypesMapper extends TPdoCustomDataTypesMapper
         $this->native2php_assoc["BLOB"] = "blob";
         $this->native2php_assoc["VARCHAR"] = "string";
         $this->native2php_assoc["CHAR"] = "char";
-        
+
         $this->native2php_num[1] = "int";
         $this->native2php_num[2] = "int";
         $this->native2php_num[3] = "int";
@@ -89,4 +87,25 @@ class TPdoMySQLDataTypesMapper extends TPdoCustomDataTypesMapper
         $this->native2php_num[253] = "string";
         $this->native2php_num[254] = "string";
     }
+
+    public function getShowTablesQuery(): string
+    {
+        $sql = <<<SQL
+        show tables from {$this->config->getDatabaseName()};
+        SQL;
+
+        return $sql;
+    }
+
+    public function getShowFieldsQuery(?string $table): string
+    {
+        $sql = <<<SQL
+        show fields from $table;
+        SQL;
+
+        return $sql;
+    }
+    
+    public function getFieldCount() : int
+    {}
 }

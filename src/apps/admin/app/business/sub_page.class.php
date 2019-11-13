@@ -30,20 +30,20 @@ class TSubPage extends TUserComponent
 
         if (!empty($id)) {
             $title_page = $this->menus->retrievePageById($this->conf, $id, $this->lang);
-            $di = $title_page["index"];
+            $di = $title_page["id"];
         } else if (!empty($di)) {
             $title_page = $this->menus->retrievePageByDictionaryId($this->conf, $di, $this->lang);
-            $id = $title_page["index"];
+            $id = $title_page["id"];
         }
 
         self::getLogger()->debug('ID::' . $id);
         self::getLogger()->debug('DI::' . $di);
         self::getLogger()->dump('PAGE iNFO::', $title_page);
 
-        $page = SITE_ROOT . $this->getDirName() . DIRECTORY_SEPARATOR . APP_DIR . 'pages' . DIRECTORY_SEPARATOR . $title_page["page"];
-        if(!\file_exists($page)) {
+        // $page = SITE_ROOT . $this->getDirName() . DIRECTORY_SEPARATOR . APP_DIR . 'pages' . DIRECTORY_SEPARATOR . $title_page["page"];
+        // if(!\file_exists($page)) {
             $page = DOCUMENT_ROOT . $this->lang . DIRECTORY_SEPARATOR . $title_page["page"];
-        }
+        // }
 
         if(\file_exists($page)) {
             include $page;

@@ -1,0 +1,50 @@
+:root {
+    --back-color: black;
+    --fore-color: greenyellow;
+}
+
+.theme * {
+    font-family: 'PT Mono', monospace;
+    font-size: 10pt;
+    font-weight: 400;
+    background-color: var(--back-color);
+    color: var(--fore-color);
+}
+
+.ibm-pc {
+    color: greenyellow;
+    background-color: black;
+}
+
+.amstrad-cpc {
+    color: yellow;
+    background-color: blue;
+}
+
+.solaris {
+    color: darkblue;
+    background-color: antiquewhite;
+}
+
+#basics {
+    float: left;
+    position: relative;
+}
+
+#themes {
+    float: right;
+    position: relative;
+}
+
+#logo {
+    clear: both;
+}
+
+.clear {
+    clear: both;
+}
+
+.float {
+    float: left;
+    position: relative;
+}

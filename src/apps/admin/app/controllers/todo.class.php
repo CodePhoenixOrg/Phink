@@ -16,7 +16,7 @@ class TTodo extends TPartialController
     
     // view fields
     protected $td_title, $td_text, $td_priority, $td_expiry, $td_status, 
-        $td_date, $mbr_id, $mbr_id2, $action;
+        $td_date, $usr_id, $usr_id2, $action;
 
     public function beforeBinding(): void 
     {
@@ -29,7 +29,7 @@ class TTodo extends TPartialController
         $this->grid_colors = (object)TRegistry::ini('grid_colors');
         $this->panel_colors = (object)TRegistry::ini('panel_colors');
     
-        $this->cs = TPdoConnection::opener('webfactory_conf');
+        $this->cs = TPdoConnection::opener('niduslite_conf');
         $this->query = getArgument("query", "SELECT");
         $event = getArgument("event", "onLoad");
         $this->action = getArgument("action", "Ajouter");
@@ -43,7 +43,7 @@ class TTodo extends TPartialController
 
         $tablename = "todo";
         $this->td_id = getArgument("td_id");
-        $this->mbr_id2 = getArgument("mbr_id2");
+        $this->usr_id2 = getArgument("usr_id2");
         if($event === "onLoad" && $this->query === "ACTION") {
             switch ($this->action) {
             case "Ajouter":
@@ -54,8 +54,8 @@ class TTodo extends TPartialController
                 $this->td_expiry="";
                 $this->td_status="";
                 $this->td_date="";
-                $this->mbr_id="";
-                $this->mbr_id2="";
+                $this->usr_id="";
+                $this->usr_id2="";
             break;
             case "Modifier":
                 $sql="select * from $tablename where td_id='$this->td_id';";
@@ -67,8 +67,8 @@ class TTodo extends TPartialController
                 $this->td_expiry = $rows["td_expiry"];
                 $this->td_status = $rows["td_status"];
                 $this->td_date = $rows["td_date"];
-                $this->mbr_id = $rows["mbr_id"];
-                $this->mbr_id2 = $rows["mbr_id2"];
+                $this->usr_id = $rows["usr_id"];
+                $this->usr_id2 = $rows["usr_id2"];
             break;
             }
         } else if($event === "onRun" && $this->query === "ACTION") {
@@ -80,8 +80,8 @@ class TTodo extends TPartialController
                 $this->td_expiry = filterPOST("td_expiry");
                 $this->td_status = filterPOST("td_status");
                 $this->td_date = filterPOST("td_date");
-                $this->mbr_id = filterPOST("mbr_id");
-                $this->mbr_id2 = filterPOST("mbr_id2");
+                $this->usr_id = filterPOST("usr_id");
+                $this->usr_id2 = filterPOST("usr_id2");
                 $sql = <<<SQL
                 insert into $tablename (
                     td_title, 
@@ -90,8 +90,8 @@ class TTodo extends TPartialController
                     td_expiry, 
                     td_status, 
                     td_date, 
-                    mbr_id,
-                    mbr_id2
+                    usr_id,
+                    usr_id2
                 ) values (
                     :td_title, 
                     :td_text, 
@@ -99,12 +99,12 @@ class TTodo extends TPartialController
                     :td_expiry, 
                     :td_status, 
                     :td_date, 
-                    :mbr_id,
-                    :mbr_id2
+                    :usr_id,
+                    :usr_id2
                 )
     SQL;
                 $stmt = $this->cs->prepare($sql);
-                $stmt->execute([':td_title' => $this->td_title, ':td_text' => $this->td_text, ':td_priority' => $this->td_priority, ':td_expiry' => $this->td_expiry, ':td_status' => $this->td_status, ':td_date' => $this->td_date, ':mbr_id' => $this->mbr_id, ':mbr_id2' => $this->mbr_id2]);
+                $stmt->execute([':td_title' => $this->td_title, ':td_text' => $this->td_text, ':td_priority' => $this->td_priority, ':td_expiry' => $this->td_expiry, ':td_status' => $this->td_status, ':td_date' => $this->td_date, ':usr_id' => $this->usr_id, ':usr_id2' => $this->usr_id2]);
             break;
             case "Modifier":
                 $this->td_title = filterPOST("td_title");
@@ -113,8 +113,8 @@ class TTodo extends TPartialController
                 $this->td_expiry = filterPOST("td_expiry");
                 $this->td_status = filterPOST("td_status");
                 $this->td_date = filterPOST("td_date");
-                $this->mbr_id = filterPOST("mbr_id");
-                $this->mbr_id2 = filterPOST("mbr_id2");
+                $this->usr_id = filterPOST("usr_id");
+                $this->usr_id2 = filterPOST("usr_id2");
                 $sql=<<<SQL
                 update $tablename set 
                     td_title = :td_title, 
@@ -123,12 +123,12 @@ class TTodo extends TPartialController
                     td_expiry = :td_expiry, 
                     td_status = :td_status, 
                     td_date = :td_date, 
-                    mbr_id = :mbr_id,
-                    mbr_id2 = :mbr_id2
+                    usr_id = :usr_id,
+                    usr_id2 = :usr_id2
                 where td_id = '{$this->td_id}';
     SQL;
                 $stmt = $this->cs->prepare($sql);
-                $stmt->execute([':td_title' => $this->td_title, ':td_text' => $this->td_text, ':td_priority' => $this->td_priority, ':td_expiry' => $this->td_expiry, ':td_status' => $this->td_status, ':td_date' => $this->td_date, ':mbr_id' => $this->mbr_id, ':mbr_id2' => $this->mbr_id2]);
+                $stmt->execute([':td_title' => $this->td_title, ':td_text' => $this->td_text, ':td_priority' => $this->td_priority, ':td_expiry' => $this->td_expiry, ':td_status' => $this->td_status, ':td_date' => $this->td_date, ':usr_id' => $this->usr_id, ':usr_id2' => $this->usr_id2]);
             break;
             case "Supprimer":
                 $sql = "delete from $tablename where td_id='$this->td_id'";

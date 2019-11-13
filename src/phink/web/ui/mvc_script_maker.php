@@ -15,164 +15,180 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ */
 
 namespace Phink\Web\UI;
 
 use Phink\Core\TObject;
-use Phink\Data\TAnalyzer;
 
 class TMvcScriptMaker extends TObject
 {
     public function __construct()
-    { }
+    {}
 
     public function makeCode(
         $conf,
         $table = "",
-        $stmt,
         $page_id = 0,
-        $indexfield = 0,
-        $secondfield = "",
-        $A_sqlFields,
-        $cs,
-        $with_frames
+        $data
     ): string {
-        $script = "\n";
-        //$script.="<script language=\"JavaScript\" src=\"js/pz_form_events.js\"></script>\n";
-        $script = "<?php   \n";
-        $script .= "\tuse Phink\Data\Client\PDO\TPdoConnection;\n";
-        $script .= "\t\$cs = TPdoConnection::opener('$conf');\n";
-        $script .= "\t\$query = getArgument(\"query\", \"SELECT\");\n";
-        $script .= "\t\$event = getArgument(\"event\", \"onLoad\");\n";
-        $script .= "\t\$action = getArgument(\"action\", \"Ajouter\");\n";
-        $script .= "\t\$lg = getArgument(\"lg\", \"fr\");\n";
-        $script .= "\t\$id = getArgument(\"id\");\n";
-        $script .= "\t\$di = getArgument(\"di\");\n";
-        $script .= "\t\$tablename = \"$table\";\n";
-        $defs = explode(',', $A_sqlFields[0]);
-        $fieldname = $defs[0];
-        $script .= "\t$$fieldname = getArgument(\"$fieldname\");\n";
-        $script .= "\tif(\$event === \"onLoad\" && \$query === \"ACTION\") {\n";
-        $script .= "\t\tswitch (\$action) {\n";
-        $script .= "\t\tcase \"Ajouter\":\n\n";
-        //echo "$L_formFields<br>";
-        for ($i = 0; $i < sizeof($A_sqlFields); $i++) {
-            $defs = explode(',', $A_sqlFields[$i]);
-            $fieldname = $defs[0];
-            if ($i === 0) {
-                $indexfield = $fieldname;
-            } else {
-                $script .= "\t\t\t\$$fieldname=\"\";\n";
-            }
-        }
-        $script .= "\t\tbreak;\n";
-        $script .= "\t\tcase \"Modifier\":\n";
-        for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
-            $defs = explode(',', $A_sqlFields[$i]);
-            $fieldname = $defs[0];
-            if ($i === 1) {
-                $script .= "\t\t\t\$sql=\"select * from \$tablename where $indexfield='$$indexfield';\";\n";
-                $script .= "\t\t\t\$stmt = \$cs->query(\$sql);\n";
-                $script .= "\t\t\t\$rows = \$stmt->fetch(PDO::FETCH_ASSOC);\n";
-                $script .= "\t\t\t\$$fieldname = \$rows[\"$fieldname\"];\n";
-            } else {
-                $script .= "\t\t\t\$$fieldname = \$rows[\"$fieldname\"];\n";
-            }
-        }
-        $script .= "\t\tbreak;\n";
-        $script .= "\t\t}\n";
-        $script .= "\t} else if(\$event === \"onRun\" && \$query === \"ACTION\") {\n";
-        $script .= "\t\tswitch (\$action) {\n";
-        $script .= "\t\tcase \"Ajouter\":\n";
-        for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
-            $defs = explode(',', $A_sqlFields[$i]);
-            $fieldname = $defs[0];
-            $script .= "\t\t\t\$$fieldname = filterPOST(\"$fieldname\");\n";
-        }
-        $replaces = [];
-        $insertFields = [];
+
+        $classname = \ucfirst($table);
+        $A_sqlFields = array_map(function ($defs) {
+            $defs = (object) json_decode($defs);
+            return $defs->fieldname;
+        }, $data);
+
+        $A_phpTypes = array_map(function ($defs) {
+            $defs = (object) json_decode($defs);
+            return $defs->phptype;
+        }, $data);
+
+        $indexfield = $A_sqlFields[0];
+        $secondfield = $A_sqlFields[1];
+
+        $protectedArray = array_map(function ($fieldname) {
+            return "$$fieldname";
+        }, $A_sqlFields);
+        $protecteds = join(', ', $protectedArray) . ';';
+
+        $blankValuesArray = array_map(function ($fieldname) {
+            return "\t\t\t\t\$this->$fieldname = '';";
+        }, $A_sqlFields);
+        $blankValues = join("\n", $blankValuesArray);
+
+        $selectValuesArray = array_map(function ($fieldname) {
+            return "\t\t\t\t\$this->$fieldname = \$rows['$fieldname'];";
+        }, $A_sqlFields);
+        $selectValues = join("\n", $selectValuesArray);
+
+        $insertFilterPostArray = array_map(function ($fieldname) {
+            return "\t\t\t\t\$this->$fieldname = filterPOST['$fieldname'];";
+        }, $A_sqlFields);
+        $insertFilterPost = join("\n", $insertFilterPostArray);
+
+        $insertFieldsArray = array_map(function ($fieldname) {
+            return "\t\t\t\t\t$$fieldname";
+        }, $A_sqlFields);
+        $insertFields = join(',' . "\n", $insertFieldsArray);
+
+        $insertValuesArray = array_map(function ($fieldname) {
+            return "\t\t\t\t\t:$fieldname";
+        }, $A_sqlFields);
+        $insertValues = join(',' . "\n", $insertValuesArray);
+
+        $updateFilterPostArray = array_map(function ($fieldname) {
+            return "\t\t\t\t\$this->$fieldname = filterPOST['$fieldname'];";
+        }, $A_sqlFields);
+        $updateFilterPost = join("\n", $updateFilterPostArray);
+
+        $insertParamsArray = [];
         $prepargs = [];
-        for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
-            $defs = explode(',', $A_sqlFields[$i]);
-            $fieldname = $defs[0];
-            $fieldtype = $stmt->typeNameToPhp($defs[2]);
-            $insertFields[$i] = "\t\t\t\t$fieldname";
-            // if ($fieldtype === 'string') {
-            //     $replaces[] = "\t\t\t\$$fieldname = \$$fieldname";
-            // }
-            $prepargs[] = "':$fieldname' => \$$fieldname";
+        for ($i = 1; $i < count($A_sqlFields); $i++) {
+            $fieldname = $A_sqlFields[$i];
+            $fieldtype = $A_phpTypes[$i];
+            $insertParamsArray[$i] = "\t\t\t\t\t$fieldname";
+            $prepargs[] = "':$fieldname' => \$this->$fieldname";
         }
-        $prepare = '[' . implode(', ', $prepargs) . ']';
+        $prepareInsert = '[' . implode(', ', $prepargs) . ']';
+        $insertParams = join("\n", $insertParamsArray);
 
-        // $script .= implode($replaces, ";\n") . ";\n";
-        $script .= "\t\t\t\$sql = <<<SQL\n\t\t\tinsert into \$tablename (\n";
-        $script .= implode(", \n", $insertFields) . "";
-        $script .= "\n\t\t\t) values (\n";
-        $insertValues = [];
-        for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
-            $defs = explode(',', $A_sqlFields[$i]);
-            $fieldname = $defs[0];
-            $fieldtype = $stmt->typeNameToPhp($defs[2]);
-            // if ($fieldtype === 'string') {
-            //     $replaces[] = "\t\t\t\$$fieldname = \$$fieldname";
-            // }
-            $insertValues[$i] = "\t\t\t\t:$fieldname";
+        $updateParamsArray = [];
+        $prepargs = [];
+        $prepareUpdate = [];
+        for ($i = 1; $i < count($A_sqlFields); $i++) {
+            $fieldname = $A_sqlFields[$i];
+            $updateParamsArray[$i] = "\t\t\t\t\t$fieldname = :$fieldname";
+            $prepargs[] = "':$fieldname' => \$this->$fieldname";
         }
-        $script .= implode(", \n", $insertValues) . "\n";
-        $script .= "\t\t\t)\n";
-        $script .= "SQL;\n";
-        $script .= "\t\t\t\$stmt = \$cs->query(\$sql, $prepare);\n";
-        $script .= "\t\tbreak;\n";
-        $script .= "\t\tcase \"Modifier\":\n";
-        for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
-            $defs = explode(',', $A_sqlFields[$i]);
-            $fieldname = $defs[0];
-            $script .= "\t\t\t\$$fieldname = filterPOST(\"$fieldname\");\n";
+        $prepareUpdate = '[' . implode(', ', $prepargs) . ']';
+        $updateParams = join("\n", $updateParamsArray);
+
+        $script = <<< SCRIPT
+        namespace Phink\Apps\Admin;
+
+        use PDO;
+        use Phink\Data\Client\PDO\TPdoConnection;
+        use Phink\MVC\TPartialController;
+        use Phink\Registry\TRegistry;
+        use Puzzle\Data\Controls as DataControls;
+        use Puzzle\Menus;
+
+        class $classname extends TPartialController
+        {
+
+            // tools
+            protected \$id, \$cs, \$datacontrols, \$conf, \$lang, \$db_prefix, \$query,
+                \$page_colors, \$grid_colors, \$panel_colors, \$action;
+
+            // view fields
+            protected $protecteds
+
+            public function beforeBinding(): void
+            {
+                \$this->lang = TRegistry::ini('application', 'lang');
+                \$this->db_prefix = TRegistry::ini('data', 'db_prefix');
+                \$this->conf = TRegistry::ini('data', 'conf');
+                \$this->datacontrols = new DataControls(\$this->lang, \$this->db_prefix);
+                \$this->menus = new Menus(\$this->lang, \$this->db_prefix);
+                \$this->page_colors = (object)TRegistry::ini('page_colors');
+                \$this->grid_colors = (object)TRegistry::ini('grid_colors');
+                \$this->panel_colors = (object)TRegistry::ini('panel_colors');
+
+                \$this->cs = TPdoConnection::opener('niduslite_conf');
+                \$this->query = getArgument('query', 'SELECT');
+                \$event = getArgument('event', 'onLoad');
+                \$this->action = getArgument('action', 'Ajouter');
+                \$this->id = getArgument('id', -1);
+                \$fieldname = getArgument('$indexfield');
+                if(\$event === 'onLoad' && \$this->query === 'ACTION') {
+                    switch (\$this->action) {
+                    case 'Ajouter':
+        $blankValues
+                        break;
+                    case 'Modifier':
+                        \$sql="select * from $table where $indexfield='\$this->$indexfield';";
+                        \$stmt = \$this->cs->query(\$sql);
+                        \$rows = \$stmt->fetch(PDO::FETCH_ASSOC);
+        $selectValues;
+                    break;
+                    }
+                } else if(\$event === 'onRun' && \$this->query === 'ACTION') {
+                    switch (\$this->action) {
+                    case 'Ajouter':
+        $insertFilterPost;
+                        \$sql = <<<SQL
+                        insert into $table (
+        $insertFields
+                        ) values (
+        $insertValues
+                        )
+                        SQL;
+                       \$stmt = \$this->cs->query(\$sql, $prepareInsert);
+                    break;
+                    case 'Modifier':
+        $updateFilterPost
+                        \$sql=<<<SQL
+                        update $table set
+        $updateParams
+                        where $indexfield = '\$this->$indexfield';
+                        SQL;
+                        \$stmt = \$this->cs->query(\$sql, $prepareUpdate);
+                    break;
+                    case 'Supprimer':
+                        \$sql = "delete from $table where $indexfield='\$this->$indexfield'";
+                        \$stmt = \$this->cs->query(\$sql);
+                    break;
+                    }
+                    \$this->query='SELECT';
+                }
+            }
         }
-        $replaces = (array) null;
-        $update = [];
-        $prepargs = (array) null;
-        $prepare = (array) null;
-        for ($i = 1; $i < sizeof($A_sqlFields); $i++) {
-            $defs = explode(',', $A_sqlFields[$i]);
-            $fieldname = $defs[0];
-            $fieldtype = $stmt->typeNameToPhp($defs[2]);
+        SCRIPT;
 
-            // if ($fieldtype=='string') {
-            //     $replaces[]="\t\t\t\$$fieldname = \$$fieldname";
-            // }
-            $update[$i] = "\t\t\t\t$fieldname = :$fieldname";
-            $prepargs[] = "':$fieldname' => \$$fieldname";
-        }
-        $prepare = '[' . implode(', ', $prepargs) . ']';
+        $script = str_replace("\t", "    ", $script);
 
-        // $script .= implode($replaces, ";\n") . ";\n";
-        $script .= "\t\t\t\$sql=<<<SQL\n\t\t\tupdate \$tablename set \n";
-        $script .= implode(", \n", $update) . "\n";
-        $script .= "\t\t\twhere $indexfield = '\$$indexfield';\n";
-        $script .= "SQL;\n";
-        $script .= "\t\t\t\$stmt = \$cs->query(\$sql, $prepare);\n";
-        $script .= "\t\tbreak;\n";
-        $script .= "\t\tcase \"Supprimer\":\n";
-        $script .= "\t\t\t\$sql = \"delete from \$tablename where $indexfield='\$$indexfield'\";\n";
-        $script .= "\t\t\t\$stmt = \$cs->query(\$sql);\n";
-        $script .= "\t\tbreak;\n";
-        $script .= "\t\t}\n";
-        if ($with_frames) {
-            $script .= "\t\techo \"<script language='JavaScript'>window.location.href='admin?id=$page_id&lg=$lg'</script>\";\n";
-        } elseif (!$with_frames) {
-            $script .= "\t\t\$query=\"SELECT\";\n";
-        }
-
-        //$script.="\t\techo \"<script language='JavaScript'>window.location.href='page.php?id=$page_id&lg=fr'</script>\";\n";
-        // $script.="\t} else if(\$event==\"onUnload\" && \$query==\"ACTION\") {\n";
-        // $script.="\t\t\$cs=connection(DISCONNECT,\$database);\n";
-        // $script.="\t\techo \"<script language='JavaScript'>window.location.href='page.php?id=$page_id&lg=fr'</script>\";\n";
-        $script .= "\t}\n";
-        // $script.="\? >\n";
-
-        return $script;
+        return '<?php' . "\n" . $script;
     }
 
     public function makePage(
@@ -180,86 +196,138 @@ class TMvcScriptMaker extends TObject
         $table = '',
         $pa_filename = '',
         $page_id = 0,
-        $indexfield = '',
-        $secondfield = '',
-        $A_sqlFields,
-        $cs,
-        $with_frames
+        $data
     ): string {
         $formname = $table . "Form";
 
-        $analyzer = new TAnalyzer;
-        $references = $analyzer->searchReferences($database, $table, $cs);
-        $A_formFields = $references["form_fields"];
+        $A_sqlFields = array_map(function ($defs) {
+            $defs = (object) json_decode($defs);
+            return $defs->fieldname;
+        }, $data);
 
-        $script = "\n";
-        $script = "<center>\n";
-        $script .= "<?php   \n";
-        $script .= "\tinclude(\"" . $pa_filename . "_code.php\");\n";
-        $script .= "\tuse \\Puzzle\\Data\\Controls as DataControls;\n";
-        $script .= "\tuse \\Phink\\Registry\\TRegistry;\n";
-        $script .= "\t\$db_prefix = TRegistry::ini(\"data\", \"db_prefix\");\n";
-        $script .= "\t\$datacontrols = new DataControls(\$lg, \$db_prefix);\n";
-        $script .= "\t\$grid_colors = TRegistry::ini(\"grid_colors\");\n";
-        $script .= "\t\$panel_colors = TRegistry::ini(\"panel_colors\");\n";
-        $script .= "\t\$pc = getArgument(\"pc\");\n";
-        $script .= "\t\$sr = getArgument(\"sr\");\n";
-        $script .= "\t\$curl_pager = \"\";\n";
-        $script .= "\t\$dialog = \"\";\n";
-        // $script.="\t\$tablename = \"$table\";\n";
-        $script .= "\tif(isset(\$pc)) \$curl_pager=\"&pc=\$pc\";\n";
-        $script .= "\tif(isset(\$sr)) \$curl_pager.=\"&sr=\$sr\";\n";
-        $script .= "\tif(\$query === \"SELECT\") {\n";
-        $script .= "\t\t\t\$sql = \"select $indexfield, $secondfield from \$tablename order by $indexfield\";\n";
-        $script .= "\t\t\t\$dbgrid = \$datacontrols->createPagerDbGrid(\$tablename, \$sql, \$id, \"page.html\", \"&query=ACTION\$curl_pager\", \"\", true, true, \$dialog, array(0, 400), 15, \$grid_colors, \$cs);\n";
-        $script .= "\t\t\t//\$dbgrid = tableShadow(\$tablename, \$dbgrid);\n";
-        $script .= "\t\t\techo \"<br>\".\$dbgrid;\n";
-        $script .= "\t} elseif(\$query === \"ACTION\") {\n";
-        $script .= "?>\n";
-        //$page_filename=getPageFilename($database, $page_id);
+        $indexfield = $A_sqlFields[0];
+        $secondfield = $A_sqlFields[1];
         $page_filename = "page.html";
-        if ($with_frames) {
-            $script .= "<form method=\"POST\" name=\"$formname\" action=\"$page_filename?id=$page_id&lg=fr\">\n";
-        } elseif (!$with_frames) {
-            $script .= "<form method=\"POST\" name=\"$formname\" action=\"page.html?id=$page_id&lg=fr\">\n";
-        }
-        $script .= "\t<input type=\"hidden\" name=\"query\" value=\"ACTION\">\n";
-        $script .= "\t<input type=\"hidden\" name=\"event\" value=\"onRun\">\n";
-        $script .= "\t<input type=\"hidden\" name=\"pc\" value=\"<?php echo \$pc?>\">\n";
-        $script .= "\t<input type=\"hidden\" name=\"sr\" value=\"<?php echo \$sr?>\">\n";
-        $script .= "\t<input type=\"hidden\" name=\"$indexfield\" value=\"<?php echo $$indexfield?>\">\n";
-        $script .= "\t<table border=\"1\" bordercolor=\"<?php echo \$panel_colors[\"border_color\"]?>\" cellpadding=\"0\" cellspacing=\"0\" witdh=\"100%\" height=\"1\">\n";
-        $script .= "\t\t<tr>\n";
-        $script .= "\t\t\t<td align=\"center\" valign=\"top\" bgcolor=\"<?php echo \$panel_colors[\"back_color\"]?>\">\n";
-        $script .= "\t\t\t\t<table>\n";
-        $inputs = "";
-        for ($i = 0; $i < sizeof($A_formFields); $i++) {
-            $inputs .= $A_formFields[$i] . "\n";
-        }
-        $script .= $inputs;
-        //$script.="<tr><td align=\"center\" colspan=\"2\"><input type=\"submit\" name=\"action\" value=\"<?php echo \$action>\" onClick=\"return runForm(\"$formname\");\">\n";
 
-        $script .= "\t\t\t\t\t<tr>\n";
-        $script .= "\t\t\t\t\t\t<td align=\"center\" colspan=\"2\">\n";
-        $script .= "\t\t\t\t\t\t\t<input type=\"submit\" name=\"action\" value=\"<?php echo \$action?>\">\n";
-        $script .= "\t\t\t\t\t\t\t<?php   if(\$action!=\"Ajouter\") { ?>\n";
-        //$script.="<input type=\"submit\" name=\"action\" value=\"Supprimer\" onClick=\"return runForm(\"$formname\");\">\n";
-        $script .= "\t\t\t\t\t\t\t\t<input type=\"submit\" name=\"action\" value=\"Supprimer\">\n";
-        $script .= "\t\t\t\t\t\t\t<?php   } ?>\n";
-        $script .= "\t\t\t\t\t\t\t<input type=\"reset\" name=\"action\" value=\"Annuler\">\n";
-        //$script.="<input type=\"submit\" name=\"action\" value=\"Retour\" onClick=\"return runForm(\"$formname\");\">\n";
-        $script .= "\t\t\t\t\t\t\t<input type=\"submit\" name=\"action\" value=\"Retour\">\n";
-        $script .= "\t\t\t\t\t\t</td>\n";
-        $script .= "\t\t\t\t\t</tr>\n";
-        $script .= "\t\t\t\t</table>\n";
-        $script .= "\t\t\t</td>\n";
-        $script .= "\t\t</tr>\n";
-        $script .= "\t</table>\n";
-        $script .= "</form>\n";
-        //$script.="<table><tr><td valign=\"middle\"><a href=\"javascript: history.go(-1);\"><img src=\"../img/scroll/left_0.gif\" border=\"0\">Retour</a></td></tr></table>\n";
-        $script .= "<?php   \t} ?>\n";
-        $script .= "</center>\n";
+        $script = <<< SCRIPT
+        \$pc = getArgument("pc");
+        \$sr = getArgument("sr");
+        \$curl_pager = "";
+        \$dialog = "";
+        if(isset(\$pc)) \$curl_pager="&pc=\$pc";
+        if(isset(\$sr)) \$curl_pager.="&sr=\$sr";
+        if(\$this->query === "SELECT") {
+            \$sql = "select $indexfield, $secondfield from $table order by $indexfield";
+            \$dbgrid = \$this->datacontrols->createPagerDbGrid('$table', \$sql, \$id, "page.html", "&query=ACTION\$curl_pager", "", true, true, \$dialog, [0, 400], 15, \$this->grid_colors, \$this->cs);
+            echo "<br>".\$dbgrid;
+        } elseif(\$this->query === "ACTION") {
+        ?>
+        <form method="POST" name="$formname" action="page.html?id=$page_id&lg=fr">
+        <input type="hidden" name="query" value="ACTION">
+        <input type="hidden" name="event" value="onRun">
+        <input type="hidden" name="pc" value="<?php echo \$pc?>">
+        <input type="hidden" name="sr" value="<?php echo \$sr?>">
+        <input type="hidden" name="$indexfield" value="<?php echo \$this->$indexfield?>">
+        <table border="1" bordercolor="<?php echo \$this->panel_colors->border_color?>" cellpadding="0" cellspacing="0" witdh="100%" height="1">
+        <tr>
+            <td align="center" valign="top" bgcolor="<?php echo \$this->panel_colors->back_color?>">
+                <table>
 
-        return $script;
+        SCRIPT;
+        foreach ($data as $def) {
+            $def = json_decode($def, true);
+            $def = (object) $def;
+
+            if ($def->class == 'ref') {
+
+                $ref = (object) $def->references[0];
+                $script .= <<< SCRIPT
+                            <?php
+                            \$sql="select {$ref->keyfield}, {$ref->valuefield} from {$ref->table} order by {$ref->valuefield}";
+                            \$options = \$this->datacontrols->createOptionsFromQuery(\$sql, 0, 1, [], \$this->{$ref->keyfield}, false, \$this->cs);
+                            ?>
+                            <tr>
+                                <td>$def->fieldname</td>
+                                <td>
+                                    <select name="{$ref->keyfield}">
+                                    <?php echo \$options["list"]; ?>
+                                    </select>
+                                </td>
+                            </tr>
+
+                SCRIPT;
+            }
+
+            if ($def->class == 'key') {
+                $script .= <<< SCRIPT
+                            <tr>
+                                <td>$def->fieldname</td>
+                                <td>
+                                    <?php echo \$this->$def->fieldname?>
+                                </td>
+                            </tr>
+
+                SCRIPT;
+            }
+            if ($def->class == 'field') {
+                if ($def->phptype == "date" || $def->phptype == "datetime" || $def->phptype == "time") {
+                    $script .= <<< SCRIPT
+                                <tr>
+                                    <td>$def->fieldname</td>
+                                    <td>
+                                        <input type="text" name="$def->fieldname" size="$def->cols" value="<?php echo (empty(\$this->{$def->fieldname})) ? date("1970-01-01") : \$this->{$def->fieldname}; ?>" >
+                                    </td>
+                                </tr>
+
+                    SCRIPT;
+                } elseif ($def->phptype == "blob" || ($def->phptype == "string" && $def->fieldsize > 80)) {
+                    $script .= <<< SCRIPT
+                                <tr>
+                                    <td>$def->fieldname</td>
+                                    <td>
+                                        <textarea name="$def->fieldname" cols="80" rows="$def->lines"><?php echo \$this->$def->fieldname?></textarea>
+                                    </td>
+                                </tr>
+
+                    SCRIPT;
+                } else {
+                    $script .= <<< SCRIPT
+                                <tr>
+                                    <td>$def->fieldname</td>
+                                    <td>
+                                        <input type="text" name="$def->fieldname" size="$def->cols" value="<?php echo \$this->$def->fieldname?>">
+                                    </td>
+                                </tr>
+
+                    SCRIPT;
+                }
+            }
+
+        }
+
+        $script .= <<<SCRIPT
+                    <tr>
+                        <td align="center" colspan="2">
+                            <input type="submit" name="action" value="<?php echo \$this->action?>">
+                            <?php   if(\$this->action!="Ajouter") { ?>
+                            <input type="submit" name="action" value="Supprimer">
+                            <?php   } ?>
+                            <input type="reset" name="action" value="Annuler">
+                            <input type="submit" name="action" value="Retour">
+                        </td>
+                    </tr>
+                </table>
+                </td>
+            </tr>
+        </table>
+        </form>
+        <?php
+        }
+        ?>
+        SCRIPT;
+
+        $script = str_replace("\t", "    ", $script);
+
+        return '<?php' . "\n" . $script;
     }
 }

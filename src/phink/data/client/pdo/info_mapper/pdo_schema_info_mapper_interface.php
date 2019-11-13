@@ -2,7 +2,7 @@
 
 namespace Phink\Data\CLient\PDO\Mapper;
 
-interface IPdoDataTypesMapper
+interface IPdoSchemaInfoMapper
 {
     public function setTypes() : void;
 
@@ -13,4 +13,10 @@ interface IPdoDataTypesMapper
     public function typeNameToPhp(string $type) : string;
     
     public function typeNumToPhp(int $type) : string;
+    
+    public function getShowTablesQuery() : string;
+
+    public function getShowFieldsQuery(?string $table) : string;
+    
+    public function getFieldCount() : int;
 }
