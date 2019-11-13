@@ -26,7 +26,7 @@ class JsBuilder
 
         // $srcdir = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'bower_components' . DIRECTORY_SEPARATOR . 'phinkjs' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR;
         // $srcdir = SRC_ROOT . 'web' . DIRECTORY_SEPARATOR . 'bower_components' . DIRECTORY_SEPARATOR . 'phinkjs' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR;
-        $srcdir = Core::PUZZLEJS_ROOT;
+        $srcdir = PUZZLEJS_ROOT;
 
         $js_filename = DOCUMENT_ROOT . 'puzzle.js';
 
