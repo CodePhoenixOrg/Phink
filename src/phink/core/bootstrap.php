@@ -24,7 +24,7 @@ use Phink\Utils\TFileUtils;
 abstract class TBootstrap extends TStaticObject
 {
 
-    use TiniLoader;
+    use TIniLoader;
 
     private $_path = '';
 
@@ -60,7 +60,7 @@ abstract class TBootstrap extends TStaticObject
     {
         $assets = $this->_path . 'assets';
 
-        if(!\file_exists($assets)) {
+        if (!\file_exists($assets)) {
             return false;
         }
 
@@ -68,27 +68,27 @@ abstract class TBootstrap extends TStaticObject
         self::getLogger()->dump('ASSETS TREE AT ' . $assets, $tree);
 
         $currentDir = pathinfo($this->_path, PATHINFO_BASENAME);
-        
-        if(!\file_exists(DOCUMENT_ROOT . 'assets')) {
+
+        if (!\file_exists(DOCUMENT_ROOT . 'assets')) {
             mkdir(DOCUMENT_ROOT . 'assets', 0755);
         }
 
         $destDir = DOCUMENT_ROOT . 'assets' . DIRECTORY_SEPARATOR . $currentDir;
 
-        if(!\file_exists($destDir)) {
+        if (!\file_exists($destDir)) {
             mkdir($destDir, 0755);
         }
 
-        if(\file_exists($destDir)) {
+        if (\file_exists($destDir)) {
 
-            foreach($tree as $filePath) {
+            foreach ($tree as $filePath) {
                 $path = pathinfo($filePath, PATHINFO_DIRNAME);
-                
-                if(!\file_exists($destDir . $path)) {
+
+                if (!\file_exists($destDir . $path)) {
                     mkdir($destDir . $path, 0755, true);
                 }
 
-                if(!\file_exists($destDir . $filePath)) {
+                if (!\file_exists($destDir . $filePath)) {
                     copy($assets . $filePath, $destDir . $filePath);
                 }
             }
