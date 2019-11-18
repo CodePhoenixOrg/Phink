@@ -1,8 +1,8 @@
 <?php
 
-namespace Phink\Data\CLient\PDO\Mapper;
+namespace Phink\Data\CLient\PDO\SchemaInfo;
 
-class TPdoMySQLSchemaInfoMapper extends TCustomPdoSchemaInfoMapper
+class TPdoMySQLSchemaInfo extends TCustomPdoSchemaInfo
 {
     public function getInfo($index): ?object
     {

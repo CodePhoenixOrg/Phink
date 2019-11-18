@@ -27,7 +27,7 @@ use Phink\Data\TServerType;
 use Phink\Data\IDataStatement;
 use Phink\Data\Client\PDO\TPdoConfiguration;
 use Phink\Data\Client\PDO\TPdoConnection;
-use Phink\Data\CLient\PDO\Mapper\TCustomPdoSchemaInfoMapper;
+use Phink\Data\CLient\PDO\SchemaInfo\TCustomPdoSchemaInfo;
 
 use PDOStatement;
 

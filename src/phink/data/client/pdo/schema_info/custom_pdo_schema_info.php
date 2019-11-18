@@ -1,11 +1,11 @@
 <?php
 
-namespace Phink\Data\CLient\PDO\Mapper;
+namespace Phink\Data\CLient\PDO\SchemaInfo;
 
 use Phink\Data\Client\PDO\TPdoConfiguration;
 use Phink\Data\TServerType;
 
-abstract class TCustomPdoSchemaInfoMapper implements IPdoSchemaInfoMapper
+abstract class TCustomPdoSchemaInfo implements IPdoSchemaInfo
 {
     protected $config = null;
     protected $driver = '';
@@ -32,17 +32,17 @@ abstract class TCustomPdoSchemaInfoMapper implements IPdoSchemaInfoMapper
         $this->setTypes();
     }
 
-    public static function builder(TPdoConfiguration $config): TCustomPdoSchemaInfoMapper
+    public static function builder(TPdoConfiguration $config): TCustomPdoSchemaInfo
     {
         $result = null;
 
         try {
             if ($config->getDriver() == TServerType::MYSQL) {
-                $result = new TPdoMySQLSchemaInfoMapper($config);
+                $result = new TPdoMySQLSchemaInfo($config);
             }
 
             if ($config->getDriver() == TServerType::SQLITE) {
-                $result = new TPdoSQLiteSchemaInfoMapper($config);
+                $result = new TPdoSQLiteSchemaInfo($config);
             }
         } catch(\PDOException $ex) {
             self::getLogger()->error($ex);

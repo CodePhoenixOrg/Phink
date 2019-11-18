@@ -29,7 +29,7 @@ use Phink\Data\TServerType;
 use Phink\Data\Client\PDO\TPdoConfiguration;
 use Phink\Data\Client\PDO\TPdoDataStatement;
 use Phink\Data\TCrudQueries;
-use Phink\Data\CLient\PDO\Mapper\TCustomPdoSchemaInfoMapper;
+use Phink\Data\CLient\PDO\SchemaInfo\TCustomPdoSchemaInfo;
 
 class TPdoConnectionException extends \Exception
 {
@@ -55,7 +55,7 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
     private $_dsn = '';
     private $_params = null;
     private $_statement = null;
-    private $_schemaInfoMapper = null;
+    private $_SchemaInfo = null;
 
     use TCrudQueries;
 
@@ -91,9 +91,9 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
         return $result;
     }
 
-    public function getSchemaInfo() : TCustomPdoSchemaInfoMapper
+    public function getSchemaInfo() : TCustomPdoSchemaInfo
     {
-        return $this->_schemaInfoMapper;
+        return $this->_SchemaInfo;
     }
     
     public function getDriver() : string
@@ -172,7 +172,7 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
         } elseif($this->_config->getDriver() == TServerType::SQLITE) {
             $this->_dsn = $this->_config->getDriver() . ':' . $this->_config->getDatabaseName(); 
         }
-        $this->_schemaInfoMapper = TCustomPdoSchemaInfoMapper::builder($this->_config);
+        $this->_SchemaInfo = TCustomPdoSchemaInfo::builder($this->_config);
     }
     
     public function query(string $sql = '', ?array $params = null): ?TPdoDataStatement
@@ -210,13 +210,13 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
 
     public function showTables() : ?TPdoDataStatement
     {
-        $sql = $this->_schemaInfoMapper->getShowTablesQuery();
+        $sql = $this->_SchemaInfo->getShowTablesQuery();
         return $this->query($sql);
     }
 
     public function showFieldsFrom(string $table) :?TPdoDataStatement
     {
-        $sql = $this->_schemaInfoMapper->getShowFieldsQuery($table);
+        $sql = $this->_SchemaInfo->getShowFieldsQuery($table);
         return $this->query($sql);
     }
 

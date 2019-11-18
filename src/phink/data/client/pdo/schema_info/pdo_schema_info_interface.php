@@ -1,8 +1,8 @@
 <?php
 
-namespace Phink\Data\CLient\PDO\Mapper;
+namespace Phink\Data\CLient\PDO\SchemaInfo;
 
-interface IPdoSchemaInfoMapper
+interface IPdoSchemaInfo
 {
     public function setTypes() : void;
 
