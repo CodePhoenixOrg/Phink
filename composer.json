@@ -29,8 +29,8 @@
             "src/puzzle/ipz_connection.php"
         ],
         "psr-4": {
-            "Phink\\" : "",
-            "Puzzle\\" : ""        
+            "Phink\\": "",
+            "Puzzle\\": ""
         },
         "files": [
             "src/phink/core/constants.php",
@@ -55,5 +55,13 @@
     },
     "include-path": [
         "src"
+    ],
+    "scripts": {
+        "post-install-cmd": [
+            "cd src/apps/egg/src;php app.php --make-phar"
+        ]
+    },
+    "bin": [
+        "src/apps/egg/build/egg"
     ]
 }
