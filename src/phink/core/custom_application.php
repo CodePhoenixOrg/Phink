@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 namespace Phink\Core;
 
 //$single_server = array(
@@ -31,14 +30,14 @@ namespace Phink\Core;
  * @author david
  */
 
-use Phink\Core\TObject;
-use Phink\Cache\TCache;
 use Phink\Auth\TAuthentication;
+use Phink\Cache\TCache;
+use Phink\Core\TObject;
 use Phink\Registry\TRegistry;
 
 abstract class TCustomApplication extends TObject
 {
-    use \Phink\Core\TIniLoader;
+    use TIniLoader;
 
     //put your code here
     const DEBUG_MODE = 'DEBUG';
@@ -66,7 +65,7 @@ abstract class TCustomApplication extends TObject
     }
 
     protected function execute(): void
-    { }
+    {}
 
     protected function ignite(): void
     {
@@ -137,7 +136,7 @@ abstract class TCustomApplication extends TObject
                 }
             }
         );
-        
+
         $this->setCommand(
             'constants',
             '',
@@ -264,7 +263,7 @@ abstract class TCustomApplication extends TObject
             if (!$exist) {
                 return;
             }
-            
+
             $this->appName = TRegistry::read('application', 'name');
             $this->appTitle = TRegistry::read('application', 'title');
 
@@ -274,13 +273,13 @@ abstract class TCustomApplication extends TObject
     }
 
     public static function write($string, ...$params): void
-    { }
+    {}
 
     public static function writeLine($string, ...$params): void
-    { }
+    {}
 
     public static function writeException(\Throwable $ex, $file = null, $line = null): void
-    { }
+    {}
 
     public function help(): void
     {
@@ -293,7 +292,7 @@ abstract class TCustomApplication extends TObject
     {
         return $this->appName;
     }
-    
+
     public function getTitle(): string
     {
         return $this->appTitle;
@@ -309,7 +308,7 @@ abstract class TCustomApplication extends TObject
         $this->commands[$long] = [
             'short' => $short,
             'definition' => $definition,
-            'callback' => $callback
+            'callback' => $callback,
         ];
 
         if ($short !== '') {
@@ -353,7 +352,7 @@ abstract class TCustomApplication extends TObject
     public static function setExecutionMode($myExecutionMode): void
     {
         if (!$myExecutionMode) {
-            $myExecutionMode = (APP_IS_WEB) ?  'debug' : 'prod';
+            $myExecutionMode = (APP_IS_WEB) ? 'debug' : 'prod';
         }
 
         $prod = ($myExecutionMode == 'prod');

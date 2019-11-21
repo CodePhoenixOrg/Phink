@@ -61,8 +61,8 @@ class TMakeFinal extends TPartialController
 		$this->basedir = str_replace('./', "/", $this->basedir);
 		$this->basedir = str_replace('//', "/", $this->basedir);
 
-		$root_code_filename = $this->wwwroot . $this->basedir . $this->pa_filename . '_code' . $this->extension;
-		$root_page_filename = $this->wwwroot . $this->basedir . $this->pa_filename . $this->extension;
+		$root_code_filename = $this->wwwroot . $this->basedir . $this->pa_filename . CLASS_EXTENSION;
+		$root_page_filename = $this->wwwroot . $this->basedir . $this->pa_filename . PREHTML_EXTENSION;
 
 		$script_exists = file_exists($this->rel_page_filename);
 		$this->script_exists_tostring = $script_exists ? $this->YES : $this->NO;

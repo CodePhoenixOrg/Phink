@@ -53,18 +53,18 @@ class Page extends TController
 
         $this->sub_menu = $this->menus->createSubMenu($this->conf, 1, Menus::SUB_MENU_HORIZONTAL);
         $this->toplinks = $this->main_menu["menu"];
-        $default_id = $this->main_menu["index"];
+        $default_id = $this->main_menu["id"];
         self::getLogger()->dump('TOP LINKS', $this->toplinks);
         self::getLogger()->dump('SUB MENU', $this->sub_menu);
         self::getLogger()->dump('PAGE ID', $default_id);
         
         if ($di !== '') {
             $title_page = $this->menus->retrievePageByDictionaryId($this->conf, $di, $this->lang);
-            $id = $title_page["index"];
+            $id = $title_page["id"];
         } else {
             // $title_page = retrievePageByMenuId($conf, $id, $this->lang);
             $title_page = $this->menus->retrievePageById($this->conf, $id, $this->lang);
-            $di = $title_page["index"];
+            $di = $title_page["id"];
         }
 
         $this->title = $title_page["title"];

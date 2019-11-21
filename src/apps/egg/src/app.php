@@ -16,11 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+namespace Phink\Apps\Egg;
+
+use Phink\Data\TDataAccess;
 
 include (\Phar::running() !== '') ? 'phink_library.php' : '../../../phink/phink_library.php';
 include 'lib.php';
 
-class Egg extends \Phink\UI\TConsoleApplication implements \Phink\UI\IPhar {
+class App extends \Phink\UI\TConsoleApplication implements \Phink\UI\IPhar {
 
     /**
      * Application starter
@@ -29,7 +32,7 @@ class Egg extends \Phink\UI\TConsoleApplication implements \Phink\UI\IPhar {
      * @param int $argc Count the number of these arguments
      */
     public static function main($args_v, $args_c) {
-        (new Egg($args_v, $args_c));
+        (new App($args_v, $args_c));
     }
 
     /**
@@ -96,4 +99,4 @@ class Egg extends \Phink\UI\TConsoleApplication implements \Phink\UI\IPhar {
    
 }
  
-Egg::main($argv, $argc);
+App::main($argv, $argc);

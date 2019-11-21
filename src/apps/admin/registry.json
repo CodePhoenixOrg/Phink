@@ -41,6 +41,46 @@
                 "canRender": true,
                 "isAutoloaded": false
             }
+            , "TMenus": {
+                "alias": "menus",
+                "path": "@/admin/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+            , "TPages": {
+                "alias": "pages",
+                "path": "@/admin/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+            , "TDictionary": {
+                "alias": "dictionary",
+                "path": "@/admin/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+            , "TChangeLog": {
+                "alias": "changelog",
+                "path": "@/admin/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+            , "TBugReport": {
+                "alias": "bugreport",
+                "path": "@/admin/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
             , "TTodo": {
                 "alias": "todo",
                 "path": "@/admin/",

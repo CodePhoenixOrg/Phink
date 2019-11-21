@@ -29,6 +29,7 @@ use Phink\Data\TServerType;
 use Phink\Data\Client\PDO\TPdoConfiguration;
 use Phink\Data\Client\PDO\TPdoDataStatement;
 use Phink\Data\TCrudQueries;
+use Phink\Data\CLient\PDO\SchemaInfo\TCustomPdoSchemaInfo;
 
 class TPdoConnectionException extends \Exception
 {
@@ -54,6 +55,7 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
     private $_dsn = '';
     private $_params = null;
     private $_statement = null;
+    private $_SchemaInfo = null;
 
     use TCrudQueries;
 
@@ -89,6 +91,11 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
         return $result;
     }
 
+    public function getSchemaInfo() : TCustomPdoSchemaInfo
+    {
+        return $this->_SchemaInfo;
+    }
+    
     public function getDriver() : string
     {
         return $this->_config->getDriver();
@@ -165,25 +172,18 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
         } elseif($this->_config->getDriver() == TServerType::SQLITE) {
             $this->_dsn = $this->_config->getDriver() . ':' . $this->_config->getDatabaseName(); 
         }
-
+        $this->_SchemaInfo = TCustomPdoSchemaInfo::builder($this->_config);
     }
     
     public function query(string $sql = '', ?array $params = null): ?TPdoDataStatement
     {
         $statement = null;
-        $result = false;
-
+        $result = null;
+        $error = null;
         try {
             if($params != null) {
                 $statement = $this->_state->prepare($sql);
                 $statement->execute($params);
-
-                $debugSQL = $sql;
-                foreach($params as $field => $value) {
-                    $debugSQL = str_replace($field, "'$value'", $debugSQL);
-                }
-
-                self::getLogger()->sql($debugSQL);
             } else {
                 $statement = $this->_state->query($sql);
             }
@@ -192,15 +192,35 @@ class TPdoConnection extends TConfiguration implements ISqlConnection
                 throw new \PDOException($this->_state->errorInfo()[2], $this->_state->errorInfo()[1], null);
             }
 
-            $result = new TPdoDataStatement($statement, $this, $sql);
         } catch (\Exception | \PDOException $ex) {
+            self::getLogger()->sql($sql);
+            if(\is_array($params)) {
+                self::getLogger()->sql('WITH PARAMS ' . print_r($params, true));
+            }
             self::getLogger()->error($ex);
+            $error = $ex;
+            $statement = null;
+
+        } finally {
+            $result = new TPdoDataStatement($statement, $this, $sql, $error);
         }
         
         return $result;
     }
 
-    public function exec(string $sql) : ?int
+    public function showTables() : ?TPdoDataStatement
+    {
+        $sql = $this->_SchemaInfo->getShowTablesQuery();
+        return $this->query($sql);
+    }
+
+    public function showFieldsFrom(string $table) :?TPdoDataStatement
+    {
+        $sql = $this->_SchemaInfo->getShowFieldsQuery($table);
+        return $this->query($sql);
+    }
+
+    public function exec(string $sql) : string
     {
         return $this->_state->exec($sql);
     }

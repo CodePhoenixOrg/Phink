@@ -16,9 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class PhinkLibrary {
+class PhinkLibrary
+{
 
-    public static function mount() {
+    public static function mount()
+    {
 
         $filenames = [
             'core/constants.php',
@@ -28,6 +30,7 @@ class PhinkLibrary {
             'registry/registry.php',
             'autoloader.php',
             'core/object.php',
+            'core/ini_loader.php',
             'cache/cache.php',
             'css/css_builder.php',
             'js/js_builder.php',
@@ -80,10 +83,10 @@ class PhinkLibrary {
             'data/client/rest/rest_configuration.php',
             'data/client/rest/rest_connection.php',
             'data/client/rest/rest_data_statement.php',
-            'data/client/pdo/types_mapper/pdo_data_types_mapper_interface.php',
-            'data/client/pdo/types_mapper/pdo_custom_data_types_mapper.php',
-            'data/client/pdo/types_mapper/pdo_mysql_data_types_mapper.php',
-            'data/client/pdo/types_mapper/pdo_sqlite_data_types_mapper.php',
+            'data/client/pdo/schema_info/pdo_schema_info_interface.php',
+            'data/client/pdo/schema_info/custom_pdo_schema_info.php',
+            'data/client/pdo/schema_info/pdo_mysql_schema_info.php',
+            'data/client/pdo/schema_info/pdo_sqlite_schema_info.php',
             'data/client/pdo/pdo_configuration.php',
             'data/client/pdo/pdo_connection.php',
             'data/client/pdo/pdo_data_statement.php',
@@ -111,10 +114,10 @@ class PhinkLibrary {
             'web/ui/plugin/accordion.php',
             'web/ui/plugin_renderer.php',
             'web/ui/widget/plugin/plugin.class.php',
-            'web/ui/widget/plugin/plugin_child.php'
+            'web/ui/widget/plugin/plugin_child.php',
         ];
 
-        if(Phar::running() != '') {
+        if (Phar::running() != '') {
             foreach ($filenames as $filename) {
                 include pathinfo($filename, PATHINFO_BASENAME);
             }
@@ -122,7 +125,7 @@ class PhinkLibrary {
             foreach ($filenames as $filename) {
                 include __DIR__ . "/" . $filename;
             }
-        }          
+        }
     }
 }
 
