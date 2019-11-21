@@ -16,7 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+namespace Phink\Apps\Egg;
 
+use Phink\Core\TObject;
 use Phink\Data\Client\PDO\TPdoConfiguration;
 use Phink\Data\Client\PDO\TPdoConnection;
 use Phink\Data\ISqlConnection;
@@ -24,7 +26,7 @@ use Phink\Data\TAnalyzer;
 use Phink\UI\TConsoleApplication;
 use Phink\Web\UI\TScriptMaker;
 
-class EggLib extends Phink\Core\TObject
+class EggLib extends TObject
 {
     protected $connection = null;
     /**
@@ -51,7 +53,6 @@ class EggLib extends Phink\Core\TObject
         'media',
         'media/images',
         'runtime',
-        'runtime/js',
         'themes',
         'tmp',
         'tools',
