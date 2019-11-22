@@ -26,14 +26,6 @@ class JsBuilder {
 
         $js_filename = $destdir . '_3rdparty.js';
 
-        $path = explode(DIRECTORY_SEPARATOR, __DIR__);
-        array_pop($path);
-        if(strstr(__DIR__, 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink')) {
-            array_pop($path);
-            array_pop($path);
-        }
-        $vendor = implode(DIRECTORY_SEPARATOR, $path) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR;
-        
         $srcdir = SITE_ROOT . 'vendor' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR;
         
         $js_content = '';
