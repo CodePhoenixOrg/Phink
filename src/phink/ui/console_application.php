@@ -158,7 +158,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             '',
             'Display the running application source directory.',
             function () {
-                $this->writeLine($this->getApplicationDirectory());
+                $this->writeLine($this->getDirectory());
             }
         );
 
@@ -222,7 +222,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         $isFound = false;
         $result = null;
         $callback = null;
-        
+
         foreach ($this->commands as $long => $cmd) {
             $short = $cmd['short'];
             $callback = $cmd['callback'];
