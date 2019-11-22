@@ -6,3 +6,4 @@ vendor
 xdebug*
 php_error*
 src/apps/egg/build/egg
+bin/*

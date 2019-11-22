@@ -14,28 +14,28 @@
     ],
     "autoload": {
         "classmap": [
-            "src/phink/",
-            "src/puzzle/"
+            "framework/phink/",
+            "framework/puzzle/"
         ],
         "exclude-from-classmap": [
-            "src/phink/phink_library.php",
-            "src/puzzle/ipuzzle_library.php",
-            "src/puzzle/ipz_db.php",
-            "src/puzzle/ipz_dico.php",
-            "src/puzzle/ipz_pdf.php",
-            "src/puzzle/ipz_init.php",
-            "src/puzzle/ipz_empty_file.php",
-            "src/puzzle/ipz_calendar.php",
-            "src/puzzle/ipz_connection.php"
+            "framework/phink/phink_library.php",
+            "framework/puzzle/ipuzzle_library.php",
+            "framework/puzzle/ipz_db.php",
+            "framework/puzzle/ipz_dico.php",
+            "framework/puzzle/ipz_pdf.php",
+            "framework/puzzle/ipz_init.php",
+            "framework/puzzle/ipz_empty_file.php",
+            "framework/puzzle/ipz_calendar.php",
+            "framework/puzzle/ipz_connection.php"
         ],
         "psr-4": {
             "Phink\\": "",
             "Puzzle\\": ""
         },
         "files": [
-            "src/phink/core/constants.php",
-            "src/puzzle/ipz_misc.php",
-            "src/puzzle/ipz_constants.php"
+            "framework/phink/core/constants.php",
+            "framework/puzzle/ipz_misc.php",
+            "framework/puzzle/ipz_constants.php"
         ]
     },
     "require": {
@@ -48,20 +48,15 @@
         "components/bootstrap": "=3.3.5",
         "components/bootstrap-default": "=3.3.5"
     },
-    "require-dev": {
-        "phpunit/phpunit": "4.3.*",
-        "php-coveralls/php-coveralls": "^1.0",
-        "squizlabs/php_codesniffer": "^3.2"
-    },
     "include-path": [
-        "src"
+        "framework"
     ],
     "scripts": {
         "post-install-cmd": [
-            "cd src/apps/egg/src;php app.php --make-phar"
+            "cd framework/apps/egg/src;php app.php --make-phar; cd ../../../..;mv framework/apps/egg/build/egg bin/"
         ]
     },
     "bin": [
-        "src/apps/egg/build/egg"
+        "framework/apps/egg/build/egg"
     ]
 }
