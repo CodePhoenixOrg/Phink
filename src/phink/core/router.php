@@ -79,8 +79,6 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
                 $routes = $methods[$method];
                 $url = REQUEST_URI;
                 foreach ($routes as $key => $value) {
-                    // $key = str_replace('?', '\?', $key);
-                    // $key = str_replace("/", "\/", $key);
                     $matches = \preg_replace('@' . $key . '@', $value, $url);
 
                     if ($matches === $url) {
@@ -149,7 +147,7 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
             $routesArray['web'] = [];
             $routesArray['web']['get'] = [];
             $routesArray['web']['post'] = [];
-            $routesArray['web']['get']["^/$"] = "@/welcome/home.phtml";
+            $routesArray['web']['get']["^/$"] = "@/welcome/app/views/home.phtml";
         }
 
         $routesArray['web']['get']["^/console$"] = "@/console/app/views/console.phtml";
@@ -157,7 +155,7 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
         $routesArray['web']['get']["^/console/([a-z-]+)$"] = "@/console/app/views/console.phtml?console=$1";
         $routesArray['web']['get']["^/console/([a-z-]+)/([a-z-]+)$"] = "@/console/app/views/console.phtml?console=$1&arg=$2";
         $routesArray['web']['post']["^/console$"] = "@/console/app/views/console_window.phtml";
-        $routesArray['web']['get']["^/tuto/$"] = "@/tuto/index.phtml";
+        $routesArray['web']['get']["^/tuto/$"] = "@/tuto/app/views/index.phtml";
         $routesArray['web']['get']["^/admin$"] = "@/admin/app/views/page.phtml?di=mkmain";
         $routesArray['web']['get']["^/admin(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
         $routesArray['web']['post']["^/admin(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
