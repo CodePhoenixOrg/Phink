@@ -5,6 +5,7 @@ namespace Phink\Apps\QBE;
 
 use Phink\MVC\TController;
 use Phink\Registry\TRegistry;
+use Phink\Data\TDataAccess;
 
 class Qbe extends TController
 {
@@ -16,6 +17,8 @@ class Qbe extends TController
 
     public function load() : void 
     {
+        TDataAccess::getNidusLiteDB();
+
         $this->qbeName = $this->getApplication()->getName();
         $this->qbeTitle = $this->getApplication()->getTitle() . " QBE";
         $cookies = $this->getApplication()->getCookie($this->qbeName);
