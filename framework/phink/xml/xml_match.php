@@ -17,10 +17,6 @@
  */
 
 namespace Phink\Xml;
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 use Phink\Core\TObject;
 
@@ -57,7 +53,7 @@ class TXmlMatch extends TObject
         $this->_start = $array['startsAt'];
         $this->_end = $array['endsAt'];
         $this->_depth = $array['depth'];
-        $this->_closer = (isset($array['closer'])) ? $array['closer'] : NULL;
+        $this->_closer = (isset($array['closer'])) ? $array['closer'] : null;
         $this->_childName = $array['childName'];
         $this->_properties = $array['properties'];
         $this->_method = $array['method'];
@@ -67,8 +63,6 @@ class TXmlMatch extends TObject
             $this->_end = $this->_closer['endsAt'];
         }
     }
-
-
 
     public function getParentId(): int
     {
