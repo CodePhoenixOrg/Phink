@@ -8,6 +8,14 @@
                 "hasTemplate": true,
                 "canRender": true,
                 "isAutoloaded": false
+            },
+            "TQbeGrid": {
+                "alias": "qbe_grid",
+                "path": "@/qbe/",
+                "namespace": "Phink\\Apps\\QBE",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
             }
         }
     ]
