@@ -15,18 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
- namespace Phink\Data\UI;
 
+namespace Phink\Data\UI;
+
+use Phink\Data\IDataStatement;
 /**
  * Description of adatatag
  *
  * @author david
  */
-trait TDataTag {
+trait TDataTag
+{
     protected $statement;
 
-    protected function assocArrayByAttribute(array $array, $attribute)
+    protected function arrayProperty(array $array, string $attribute)
     {
         $result = array();
 
@@ -39,33 +41,36 @@ trait TDataTag {
         }
 
         return $result;
-    }    
-    
-    protected function getControls(array $objectList)
+    }
+
+    protected function getControls(array $objectList): ?array
     {
-        $result = array();
+        $result = null;
         $c = count($objectList);
-        for($i = 0; $i < $c; $i++) {
+        if ($c > 0) {
+            $result = [];
+        }
+        for ($i = 0; $i < $c; $i++) {
             $object = $objectList[$i];
             $template = $object->getProperties();
             array_push($result, $template);
         }
-        
+
         return $result;
     }
 
-    public function getStatement()
+    public function getStatement(): ?IDataStatement
     {
         return $this->statement;
     }
-    public function setStatement(\Phink\Data\IDataStatement $value)
+    public function setStatement(?IDataStatement $value): void
     {
         $this->statement = $value;
     }
 
-    public function dataBind()
+    public function dataBind(): void
     {
-        if(isset($this->statement)) {
+        if (isset($this->statement)) {
             $this->render();
         }
     }
