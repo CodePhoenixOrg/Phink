@@ -53,8 +53,7 @@ class TDataAccess
     public static function getNidusLiteDB() : ?TPdoConnection
     {
 
-        $databaseName = PHINK_APPS_ROOT . 'common' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'niduslite.db';
-        $sql = PHINK_APPS_ROOT . 'common' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'niduslite.sql';
+        $databaseName = APP_DATA . 'niduslite.db';
         $isFound = (file_exists($databaseName));
 
         $sqlConfig = new TPdoConfiguration(TServerType::SQLITE, $databaseName);
@@ -63,7 +62,11 @@ class TDataAccess
         $connection->open();
         
         if(!$isFound) {
-            $connection->exec($sql);
+            $sqlFilename = PHINK_APPS_ROOT . 'common' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'niduslite.sql';
+            if(\file_exists($sqlFilename)) {
+                $sql = \file_get_contents($sqlFilename);
+                $connection->exec($sql);
+            }
         }
 
         return $connection;
