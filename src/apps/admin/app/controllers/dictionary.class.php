@@ -74,14 +74,14 @@ class TDictionary extends TPartialController
                 $this->di_ru_long = filterPOST['di_ru_long'];;
                 $sql = <<<SQL
                 insert into dictionary (
-                    $di_id,
-                    $di_name,
-                    $di_fr_short,
-                    $di_fr_long,
-                    $di_en_short,
-                    $di_en_long,
-                    $di_ru_short,
-                    $di_ru_long
+                    di_id,
+                    di_name,
+                    di_fr_short,
+                    di_fr_long,
+                    di_en_short,
+                    di_en_long,
+                    di_ru_short,
+                    di_ru_long
                 ) values (
                     :di_id,
                     :di_name,

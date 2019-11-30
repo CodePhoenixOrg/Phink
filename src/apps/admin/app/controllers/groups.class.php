@@ -89,19 +89,19 @@ class TGroups extends TPartialController
                 $this->grp_users_priv = filterPOST['grp_users_priv'];;
                 $sql = <<<SQL
                 insert into groups (
-                    $this->grp_id,
-                    $this->grp_name,
-                    $this->grp_members_priv,
-                    $this->grp_menu_priv,
-                    $this->grp_page_priv,
-                    $this->grp_news_priv,
-                    $this->grp_items_priv,
-                    $this->grp_database_priv,
-                    $this->grp_images_priv,
-                    $this->grp_calendar_priv,
-                    $this->grp_newsletter_priv,
-                    $this->grp_forum_priv,
-                    $this->grp_users_priv
+                    grp_id,
+                    grp_name,
+                    grp_members_priv,
+                    grp_menu_priv,
+                    grp_page_priv,
+                    grp_news_priv,
+                    grp_items_priv,
+                    grp_database_priv,
+                    grp_images_priv,
+                    grp_calendar_priv,
+                    grp_newsletter_priv,
+                    grp_forum_priv,
+                    grp_users_priv
                 ) values (
                     :grp_id,
                     :grp_name,

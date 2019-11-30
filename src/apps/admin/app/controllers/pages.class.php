@@ -71,13 +71,13 @@ class TPages extends TPartialController
                 $this->app_id = filterPOST['app_id'];;
                 $sql = <<<SQL
                 insert into pages (
-                    $this->pa_id,
-                    $this->pa_filename,
-                    $this->pa_directory,
-                    $this->pa_url,
-                    $this->di_id,
-                    $this->ft_id,
-                    $this->app_id
+                    pa_id,
+                    pa_filename,
+                    pa_directory,
+                    pa_url,
+                    di_id,
+                    ft_id,
+                    app_id
                 ) values (
                     :pa_id,
                     :pa_filename,

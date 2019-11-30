@@ -7,7 +7,7 @@ if(isset($pc)) $curl_pager="&pc=$pc";
 if(isset($sr)) $curl_pager.="&sr=$sr";
 if($this->query === "SELECT") {
     $sql = "select me_id, me_level from menus order by me_id";
-    $dbgrid = $this->datacontrols->createPagerDbGrid('menus', $sql, $id, "page.html", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 400], 15, $this->grid_colors, $this->cs);
+    $dbgrid = $this->datacontrols->createPagerDbGrid('menus', $sql, $this->id, "page.html", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 400], 15, $this->grid_colors, $this->cs);
     echo "<br>".$dbgrid;
 } elseif($this->query === "ACTION") {
 ?>

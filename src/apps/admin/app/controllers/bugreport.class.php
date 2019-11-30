@@ -77,15 +77,15 @@ class TBugreport extends TPartialController
                 $this->app_id = filterPOST['app_id'];;
                 $sql = <<<SQL
                 insert into bugreport (
-                    $this->br_id,
-                    $this->br_title,
-                    $this->br_text,
-                    $this->br_importance,
-                    $this->br_date,
-                    $this->br_time,
-                    $this->bs_id,
-                    $this->usr_id,
-                    $this->app_id
+                    br_id,
+                    br_title,
+                    br_text,
+                    br_importance,
+                    br_date,
+                    br_time,
+                    bs_id,
+                    usr_id,
+                    app_id
                 ) values (
                     :br_id,
                     :br_title,

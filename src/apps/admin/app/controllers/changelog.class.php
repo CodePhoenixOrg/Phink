@@ -71,13 +71,13 @@ class TChangelog extends TPartialController
                 $this->usr_id = filterPOST['usr_id'];;
                 $sql = <<<SQL
                 insert into changelog (
-                    $this->cl_id,
-                    $this->cl_title,
-                    $this->cl_text,
-                    $this->cl_date,
-                    $this->cl_time,
-                    $this->app_id,
-                    $this->usr_id
+                    cl_id,
+                    cl_title,
+                    cl_text,
+                    cl_date,
+                    cl_time,
+                    app_id,
+                    usr_id
                 ) values (
                     :cl_id,
                     :cl_title,
