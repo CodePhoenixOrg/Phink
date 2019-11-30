@@ -5,21 +5,21 @@ $curl_pager = "";
 $dialog = "";
 if(isset($pc)) $curl_pager="&pc=$pc";
 if(isset($sr)) $curl_pager.="&sr=$sr";
-if($query === "SELECT") {
+if($this->query === "SELECT") {
     $sql = "select br_id, br_title from bugreport order by br_id";
-    $dbgrid = $datacontrols->createPagerDbGrid(bugreport, $sql, $id, "page.html", "&query=ACTION$curl_pager", "", true, true, $dialog, array(0, 400), 15, $grid_colors, $this->cs);
+    $dbgrid = $this->datacontrols->createPagerDbGrid('bugreport', $sql, $this->id, "page.html", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 400], 15, $this->grid_colors, $this->cs);
     echo "<br>".$dbgrid;
-} elseif($query === "ACTION") {
+} elseif($this->query === "ACTION") {
 ?>
 <form method="POST" name="bugreportForm" action="page.html?id=26&lg=fr">
 <input type="hidden" name="query" value="ACTION">
 <input type="hidden" name="event" value="onRun">
 <input type="hidden" name="pc" value="<?php echo $pc?>">
 <input type="hidden" name="sr" value="<?php echo $sr?>">
-<input type="hidden" name="br_id" value="<?php echo $br_id?>">
-<table border="1" bordercolor="?>" cellpadding="0" cellspacing="0" witdh="100%" height="1">
+<input type="hidden" name="br_id" value="<?php echo $this->br_id?>">
+<table border="1" bordercolor="<?php echo $this->panel_colors->border_color?>" cellpadding="0" cellspacing="0" witdh="100%" height="1">
 <tr>
-    <td align="center" valign="top" bgcolor="">
+    <td align="center" valign="top" bgcolor="<?php echo $this->panel_colors->back_color?>">
         <table>
             <tr>
                 <td>br_id</td>
@@ -59,7 +59,7 @@ if($query === "SELECT") {
             </tr>
             <?php
             $sql="select bs_id, bs_status from _bug_status order by bs_status";
-            $options = $datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->bs_id, false, $this->cs);
+            $options = $this->datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->bs_id, false, $this->cs);
             ?>
             <tr>
                 <td>bs_id</td>
@@ -71,7 +71,7 @@ if($query === "SELECT") {
             </tr>
             <?php
             $sql="select usr_id, app_id from __user_app order by app_id";
-            $options = $datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->usr_id, false, $this->cs);
+            $options = $this->datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->usr_id, false, $this->cs);
             ?>
             <tr>
                 <td>usr_id</td>
@@ -83,7 +83,7 @@ if($query === "SELECT") {
             </tr>
             <?php
             $sql="select app_id, doc_id from __app_document order by doc_id";
-            $options = $datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->app_id, false, $this->cs);
+            $options = $this->datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->app_id, false, $this->cs);
             ?>
             <tr>
                 <td>app_id</td>
@@ -95,8 +95,8 @@ if($query === "SELECT") {
             </tr>
             <tr>
                 <td align="center" colspan="2">
-                    <input type="submit" name="action" value="<?php echo $action?>">
-                    <?php   if($action!="Ajouter") { ?>
+                    <input type="submit" name="action" value="<?php echo $this->action?>">
+                    <?php   if($this->action!="Ajouter") { ?>
                     <input type="submit" name="action" value="Supprimer">
                     <?php   } ?>
                     <input type="reset" name="action" value="Annuler">
@@ -110,3 +110,4 @@ if($query === "SELECT") {
 </form>
 <?php
 }
+?>

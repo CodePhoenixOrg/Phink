@@ -11,7 +11,7 @@ use PDO;
 class TTodo extends TPartialController
 {
 	// tools
-    protected $id, $cs, $datacontrols, $conf, $lang, $db_prefix, $query,
+    protected $id, $cs, $atacontrols, $conf, $lang, $db_prefix, $query,
         $page_colors, $grid_colors, $panel_colors;
     
     // view fields

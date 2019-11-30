@@ -41,7 +41,7 @@ class TMakeScript extends TPartialController
 		$usertable = getArgument('usertable');
 		// $this->pa_filename = getArgument('pa_filename', $usertable);
 		$this->pa_filename = $usertable;
-		$query = getArgument('query', 'MENU');
+		$this->query = getArgument('query', 'MENU');
 		$bl_id = getArgument('bl_id', 0);
 
 		$datacontrols = new DataControls($lg, $this->db_prefix);

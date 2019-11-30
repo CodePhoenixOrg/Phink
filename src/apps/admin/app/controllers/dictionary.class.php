@@ -35,8 +35,8 @@ class TDictionary extends TPartialController
         $this->action = getArgument('action', 'Ajouter');
         $this->id = getArgument('id', -1);
         $fieldname = getArgument('di_id');
-        if($event === 'onLoad' && $query === 'ACTION') {
-            switch ($action) {
+        if($event === 'onLoad' && $this->query === 'ACTION') {
+            switch ($this->action) {
             case 'Ajouter':
                 $this->di_id = '';
                 $this->di_name = '';
@@ -61,8 +61,8 @@ class TDictionary extends TPartialController
                 $this->di_ru_long = $rows['di_ru_long'];;
             break;
             }
-        } else if($event === 'onRun' && $query === 'ACTION') {
-            switch ($action) {
+        } else if($event === 'onRun' && $this->query === 'ACTION') {
+            switch ($this->action) {
             case 'Ajouter':
                 $this->di_id = filterPOST['di_id'];
                 $this->di_name = filterPOST['di_name'];
@@ -113,16 +113,16 @@ class TDictionary extends TPartialController
                     di_en_long = :di_en_long
                     di_ru_short = :di_ru_short
                     di_ru_long = :di_ru_long
-                where di_id = '$di_id';
+                where di_id = '$this->di_id';
                 SQL;
                 $stmt = $this->cs->query($sql, [':di_name' => $this->di_name, ':di_fr_short' => $this->di_fr_short, ':di_fr_long' => $this->di_fr_long, ':di_en_short' => $this->di_en_short, ':di_en_long' => $this->di_en_long, ':di_ru_short' => $this->di_ru_short, ':di_ru_long' => $this->di_ru_long]);
             break;
             case 'Supprimer':
-                $sql = "delete from dictionary where di_id='$di_id'";
+                $sql = "delete from dictionary where di_id='$this->di_id'";
                 $stmt = $this->cs->query($sql);
             break;
             }
-            $query='SELECT';
+            $this->query='SELECT';
         }
     }
 }

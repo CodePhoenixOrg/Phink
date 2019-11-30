@@ -57,24 +57,40 @@
                 "canRender": true,
                 "isAutoloaded": false
             }
+            , "TBlocks": {
+                "alias": "blocks",
+                "path": "@/admin/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            } 
             , "TDictionary": {
-                "alias": "dictionary",
+                "alias": "dictiona",
                 "path": "@/admin/",
                 "namespace": "Phink\\Apps\\Admin",
                 "hasTemplate": true,
                 "canRender": true,
                 "isAutoloaded": false
             }
-            , "TChangeLog": {
-                "alias": "changelog",
+            , "TChangelog": {
+                "alias": "changelo",
                 "path": "@/admin/",
                 "namespace": "Phink\\Apps\\Admin",
                 "hasTemplate": true,
                 "canRender": true,
                 "isAutoloaded": false
             }
-            , "TBugReport": {
-                "alias": "bugreport",
+            , "TGroups": {
+                "alias": "groups",
+                "path": "@/admin/",
+                "namespace": "Phink\\Apps\\Admin",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+            , "TBugreport": {
+                "alias": "bugrepor",
                 "path": "@/admin/",
                 "namespace": "Phink\\Apps\\Admin",
                 "hasTemplate": true,

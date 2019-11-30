@@ -8,7 +8,7 @@ use Phink\Registry\TRegistry;
 use Puzzle\Data\Controls as DataControls;
 use Puzzle\Menus;
 
-class TBugReport extends TPartialController
+class TBugreport extends TPartialController
 {
 
     // tools
@@ -35,8 +35,8 @@ class TBugReport extends TPartialController
         $this->action = getArgument('action', 'Ajouter');
         $this->id = getArgument('id', -1);
         $fieldname = getArgument('br_id');
-        if($event === 'onLoad' && $query === 'ACTION') {
-            switch ($action) {
+        if($event === 'onLoad' && $this->query === 'ACTION') {
+            switch ($this->action) {
             case 'Ajouter':
                 $this->br_id = '';
                 $this->br_title = '';
@@ -63,8 +63,8 @@ class TBugReport extends TPartialController
                 $this->app_id = $rows['app_id'];;
             break;
             }
-        } else if($event === 'onRun' && $query === 'ACTION') {
-            switch ($action) {
+        } else if($event === 'onRun' && $this->query === 'ACTION') {
+            switch ($this->action) {
             case 'Ajouter':
                 $this->br_id = filterPOST['br_id'];
                 $this->br_title = filterPOST['br_title'];
@@ -77,15 +77,15 @@ class TBugReport extends TPartialController
                 $this->app_id = filterPOST['app_id'];;
                 $sql = <<<SQL
                 insert into bugreport (
-                    $br_id,
-                    $br_title,
-                    $br_text,
-                    $br_importance,
-                    $br_date,
-                    $br_time,
-                    $bs_id,
-                    $usr_id,
-                    $app_id
+                    $this->br_id,
+                    $this->br_title,
+                    $this->br_text,
+                    $this->br_importance,
+                    $this->br_date,
+                    $this->br_time,
+                    $this->bs_id,
+                    $this->usr_id,
+                    $this->app_id
                 ) values (
                     :br_id,
                     :br_title,
@@ -120,16 +120,16 @@ class TBugReport extends TPartialController
                     bs_id = :bs_id
                     usr_id = :usr_id
                     app_id = :app_id
-                where br_id = '$br_id';
+                where br_id = '$this->br_id';
                 SQL;
                 $stmt = $this->cs->query($sql, [':br_title' => $this->br_title, ':br_text' => $this->br_text, ':br_importance' => $this->br_importance, ':br_date' => $this->br_date, ':br_time' => $this->br_time, ':bs_id' => $this->bs_id, ':usr_id' => $this->usr_id, ':app_id' => $this->app_id]);
             break;
             case 'Supprimer':
-                $sql = "delete from bugreport where br_id='$br_id'";
+                $sql = "delete from bugreport where br_id='$this->br_id'";
                 $stmt = $this->cs->query($sql);
             break;
             }
-            $query='SELECT';
+            $this->query='SELECT';
         }
     }
 }

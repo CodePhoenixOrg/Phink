@@ -65,11 +65,11 @@ class TMenus extends TPartialController
                 $this->bl_id = filterPOST['bl_id'];;
                 $sql = <<<SQL
                 insert into menus (
-                    $me_id,
-                    $me_level,
-                    $me_target,
-                    $pa_id,
-                    $bl_id
+                    $this->me_id,
+                    $this->me_level,
+                    $this->me_target,
+                    $this->pa_id,
+                    $this->bl_id
                 ) values (
                     :me_id,
                     :me_level,

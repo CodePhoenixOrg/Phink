@@ -62,10 +62,10 @@ class TBlocks extends TPartialController
                 $this->di_id = filterPOST['di_id'];;
                 $sql = <<<SQL
                 insert into blocks (
-                    $bl_id,
-                    $bl_column,
-                    $bt_id,
-                    $di_id
+                    $this->bl_id,
+                    $this->bl_column,
+                    $this->bt_id,
+                    $this->di_id
                 ) values (
                     :bl_id,
                     :bl_column,
