@@ -68,7 +68,7 @@ class TMvcScriptMaker extends TObject
         $insertFilterPost = join("\n", $insertFilterPostArray);
 
         $insertFieldsArray = array_map(function ($fieldname) {
-            return "\t\t\t\t\t$$fieldname";
+            return "\t\t\t\t\t$fieldname";
         }, $A_sqlFields);
         $insertFields = join(',' . "\n", $insertFieldsArray);
 
