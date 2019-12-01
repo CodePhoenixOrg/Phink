@@ -118,7 +118,7 @@ class TMvcScriptMaker extends TObject
         {
 
             // tools
-            protected \$id, \$cs, \$datacontrols, \$conf, \$lang, \$db_prefix, \$query,
+            protected \$page_id, \$cs, \$datacontrols, \$conf, \$lang, \$db_prefix, \$query,
                 \$page_colors, \$grid_colors, \$panel_colors, \$action;
 
             // view fields
@@ -139,8 +139,8 @@ class TMvcScriptMaker extends TObject
                 \$this->query = getArgument('query', 'SELECT');
                 \$event = getArgument('event', 'onLoad');
                 \$this->action = getArgument('action', 'Ajouter');
-                \$this->id = getArgument('id', -1);
-                \$fieldname = getArgument('$indexfield');
+                \$this->page_id = getArgument('id', -1);
+                \$this->$indexfield = getArgument('$indexfield');
                 if(\$event === 'onLoad' && \$this->query === 'ACTION') {
                     switch (\$this->action) {
                     case 'Ajouter':
@@ -218,7 +218,7 @@ class TMvcScriptMaker extends TObject
         if(isset(\$sr)) \$curl_pager.="&sr=\$sr";
         if(\$this->query === "SELECT") {
             \$sql = "select $indexfield, $secondfield from $table order by $indexfield";
-            \$dbgrid = \$this->datacontrols->createPagerDbGrid('$table', \$sql, \$id, "page.html", "&query=ACTION\$curl_pager", "", true, true, \$dialog, [0, 400], 15, \$this->grid_colors, \$this->cs);
+            \$dbgrid = \$this->datacontrols->createPagerDbGrid('$table', \$sql, \$this->page_id, "page.html", "&query=ACTION\$curl_pager", "", true, true, \$dialog, [0, 400], 15, \$this->grid_colors, \$this->cs);
             echo "<br>".\$dbgrid;
         } elseif(\$this->query === "ACTION") {
         ?>
