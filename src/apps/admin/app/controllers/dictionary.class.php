@@ -12,7 +12,7 @@ class TDictionary extends TPartialController
 {
 
     // tools
-    protected $id, $cs, $datacontrols, $conf, $lang, $db_prefix, $query,
+    protected $page_id, $cs, $datacontrols, $conf, $lang, $db_prefix, $query,
         $page_colors, $grid_colors, $panel_colors, $action;
 
     // view fields
@@ -33,8 +33,8 @@ class TDictionary extends TPartialController
         $this->query = getArgument('query', 'SELECT');
         $event = getArgument('event', 'onLoad');
         $this->action = getArgument('action', 'Ajouter');
-        $this->id = getArgument('id', -1);
-        $fieldname = getArgument('di_id');
+        $this->page_id = getArgument('id', -1);
+        $this->di_id = getArgument('di_id');
         if($event === 'onLoad' && $this->query === 'ACTION') {
             switch ($this->action) {
             case 'Ajouter':
@@ -48,7 +48,8 @@ class TDictionary extends TPartialController
                 $this->di_ru_long = '';
                 break;
             case 'Modifier':
-                $sql="select * from dictionary where di_id='$this->di_id';";
+                $sql="select * from dictionary where di_id={$this->di_id};";
+                self::getLogger()->sql($sql);
                 $stmt = $this->cs->query($sql);
                 $rows = $stmt->fetch(PDO::FETCH_ASSOC);
                 $this->di_id = $rows['di_id'];
@@ -113,12 +114,12 @@ class TDictionary extends TPartialController
                     di_en_long = :di_en_long
                     di_ru_short = :di_ru_short
                     di_ru_long = :di_ru_long
-                where di_id = '$this->di_id';
+                where di_id = {$this->di_id};
                 SQL;
                 $stmt = $this->cs->query($sql, [':di_name' => $this->di_name, ':di_fr_short' => $this->di_fr_short, ':di_fr_long' => $this->di_fr_long, ':di_en_short' => $this->di_en_short, ':di_en_long' => $this->di_en_long, ':di_ru_short' => $this->di_ru_short, ':di_ru_long' => $this->di_ru_long]);
             break;
             case 'Supprimer':
-                $sql = "delete from dictionary where di_id='$this->di_id'";
+                $sql = "delete from dictionary where di_id={$this->di_id}";
                 $stmt = $this->cs->query($sql);
             break;
             }

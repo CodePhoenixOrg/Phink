@@ -12,7 +12,7 @@ class TPages extends TPartialController
 {
 
     // tools
-    protected $id, $cs, $datacontrols, $conf, $lang, $db_prefix, $query,
+    protected $page_id, $cs, $datacontrols, $conf, $lang, $db_prefix, $query,
         $page_colors, $grid_colors, $panel_colors, $action;
 
     // view fields
@@ -33,8 +33,8 @@ class TPages extends TPartialController
         $this->query = getArgument('query', 'SELECT');
         $event = getArgument('event', 'onLoad');
         $this->action = getArgument('action', 'Ajouter');
-        $this->id = getArgument('id', -1);
-        $fieldname = getArgument('pa_id');
+        $this->page_id = getArgument('id', -1);
+        $this->pa_id = getArgument('pa_id');
         if($event === 'onLoad' && $this->query === 'ACTION') {
             switch ($this->action) {
             case 'Ajouter':
@@ -47,7 +47,7 @@ class TPages extends TPartialController
                 $this->app_id = '';
                 break;
             case 'Modifier':
-                $sql="select * from pages where pa_id='$this->pa_id';";
+                $sql="select * from pages where pa_id={$this->pa_id};";
                 $stmt = $this->cs->query($sql);
                 $rows = $stmt->fetch(PDO::FETCH_ASSOC);
                 $this->pa_id = $rows['pa_id'];
@@ -106,12 +106,12 @@ class TPages extends TPartialController
                     di_id = :di_id
                     ft_id = :ft_id
                     app_id = :app_id
-                where pa_id = '$this->pa_id';
+                where pa_id = {$this->pa_id};
                 SQL;
                 $stmt = $this->cs->query($sql, [':pa_filename' => $this->pa_filename, ':pa_directory' => $this->pa_directory, ':pa_url' => $this->pa_url, ':di_id' => $this->di_id, ':ft_id' => $this->ft_id, ':app_id' => $this->app_id]);
             break;
             case 'Supprimer':
-                $sql = "delete from pages where pa_id='$this->pa_id'";
+                $sql = "delete from pages where pa_id={$this->pa_id}";
                 $stmt = $this->cs->query($sql);
             break;
             }

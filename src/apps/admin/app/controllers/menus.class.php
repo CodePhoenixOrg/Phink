@@ -12,7 +12,7 @@ class TMenus extends TPartialController
 {
 
     // tools
-    protected $id, $cs, $datacontrols, $conf, $lang, $db_prefix, $query,
+    protected $page_id, $cs, $datacontrols, $conf, $lang, $db_prefix, $query,
         $page_colors, $grid_colors, $panel_colors, $action;
 
     // view fields
@@ -33,8 +33,8 @@ class TMenus extends TPartialController
         $this->query = getArgument('query', 'SELECT');
         $event = getArgument('event', 'onLoad');
         $this->action = getArgument('action', 'Ajouter');
-        $this->id = getArgument('id', -1);
-        $fieldname = getArgument('me_id');
+        $this->page_id = getArgument('id', -1);
+        $this->me_id = getArgument('me_id');
         if($event === 'onLoad' && $this->query === 'ACTION') {
             switch ($this->action) {
             case 'Ajouter':
@@ -45,7 +45,7 @@ class TMenus extends TPartialController
                 $this->bl_id = '';
                 break;
             case 'Modifier':
-                $sql="select * from menus where me_id='$this->me_id';";
+                $sql="select * from menus where me_id={$this->me_id};";
                 $stmt = $this->cs->query($sql);
                 $rows = $stmt->fetch(PDO::FETCH_ASSOC);
                 $this->me_id = $rows['me_id'];
@@ -92,12 +92,12 @@ class TMenus extends TPartialController
                     me_target = :me_target
                     pa_id = :pa_id
                     bl_id = :bl_id
-                where me_id = '$this->me_id';
+                where me_id = {$this->me_id};
                 SQL;
                 $stmt = $this->cs->query($sql, [':me_level' => $this->me_level, ':me_target' => $this->me_target, ':pa_id' => $this->pa_id, ':bl_id' => $this->bl_id]);
             break;
             case 'Supprimer':
-                $sql = "delete from menus where me_id='$this->me_id'";
+                $sql = "delete from menus where me_id={$this->me_id}";
                 $stmt = $this->cs->query($sql);
             break;
             }

@@ -12,7 +12,7 @@ class TBugreport extends TPartialController
 {
 
     // tools
-    protected $id, $cs, $datacontrols, $conf, $lang, $db_prefix, $query,
+    protected $page_id, $cs, $datacontrols, $conf, $lang, $db_prefix, $query,
         $page_colors, $grid_colors, $panel_colors, $action;
 
     // view fields
@@ -33,8 +33,8 @@ class TBugreport extends TPartialController
         $this->query = getArgument('query', 'SELECT');
         $event = getArgument('event', 'onLoad');
         $this->action = getArgument('action', 'Ajouter');
-        $this->id = getArgument('id', -1);
-        $fieldname = getArgument('br_id');
+        $this->page_id = getArgument('id', -1);
+        $this->br_id = getArgument('br_id');
         if($event === 'onLoad' && $this->query === 'ACTION') {
             switch ($this->action) {
             case 'Ajouter':
@@ -49,7 +49,7 @@ class TBugreport extends TPartialController
                 $this->app_id = '';
                 break;
             case 'Modifier':
-                $sql="select * from bugreport where br_id='$this->br_id';";
+                $sql="select * from bugreport where br_id={$this->br_id};";
                 $stmt = $this->cs->query($sql);
                 $rows = $stmt->fetch(PDO::FETCH_ASSOC);
                 $this->br_id = $rows['br_id'];
@@ -120,12 +120,12 @@ class TBugreport extends TPartialController
                     bs_id = :bs_id
                     usr_id = :usr_id
                     app_id = :app_id
-                where br_id = '$this->br_id';
+                where br_id = {$this->br_id};
                 SQL;
                 $stmt = $this->cs->query($sql, [':br_title' => $this->br_title, ':br_text' => $this->br_text, ':br_importance' => $this->br_importance, ':br_date' => $this->br_date, ':br_time' => $this->br_time, ':bs_id' => $this->bs_id, ':usr_id' => $this->usr_id, ':app_id' => $this->app_id]);
             break;
             case 'Supprimer':
-                $sql = "delete from bugreport where br_id='$this->br_id'";
+                $sql = "delete from bugreport where br_id={$this->br_id}";
                 $stmt = $this->cs->query($sql);
             break;
             }
