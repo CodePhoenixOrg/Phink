@@ -102,7 +102,7 @@ class TMvcScriptMaker extends TObject
             $prepargs[] = "':$fieldname' => \$this->$fieldname";
         }
         $prepareUpdate = '[' . implode(', ', $prepargs) . ']';
-        $updateParams = join("\n", $updateParamsArray);
+        $updateParams = join(',' . "\n", $updateParamsArray);
 
         $script = <<< SCRIPT
         namespace Phink\Apps\Admin;
@@ -180,7 +180,7 @@ class TMvcScriptMaker extends TObject
                         \$stmt = \$this->cs->query(\$sql);
                     break;
                     }
-                    \$this->query='SELECT';
+                    \$this->query = 'SELECT';
                 }
             }
         }
@@ -243,7 +243,7 @@ class TMvcScriptMaker extends TObject
                 $ref = (object) $def->references[0];
                 $script .= <<< SCRIPT
                             <?php
-                            \$sql="select {$ref->keyfield}, {$ref->valuefield} from {$ref->table} order by {$ref->valuefield}";
+                            \$sql = "select {$ref->keyfield}, {$ref->valuefield} from {$ref->table} order by {$ref->valuefield}";
                             \$options = \$this->datacontrols->createOptionsFromQuery(\$sql, 0, 1, [], \$this->{$ref->keyfield}, false, \$this->cs);
                             ?>
                             <tr>
@@ -309,7 +309,7 @@ class TMvcScriptMaker extends TObject
                     <tr>
                         <td align="center" colspan="2">
                             <input type="submit" name="action" value="<?php echo \$this->action?>">
-                            <?php   if(\$this->action!="Ajouter") { ?>
+                            <?php   if(\$this->action != "Ajouter") { ?>
                             <input type="submit" name="action" value="Supprimer">
                             <?php   } ?>
                             <input type="reset" name="action" value="Annuler">

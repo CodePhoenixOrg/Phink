@@ -48,7 +48,7 @@ class TDictionary extends TPartialController
                 $this->di_ru_long = '';
                 break;
             case 'Modifier':
-                $sql="select * from dictionary where di_id={$this->di_id};";
+                $sql = "select * from dictionary where di_id={$this->di_id};";
                 self::getLogger()->sql($sql);
                 $stmt = $this->cs->query($sql);
                 $rows = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -65,14 +65,14 @@ class TDictionary extends TPartialController
         } else if($event === 'onRun' && $this->query === 'ACTION') {
             switch ($this->action) {
             case 'Ajouter':
-                $this->di_id = filterPOST['di_id'];
-                $this->di_name = filterPOST['di_name'];
-                $this->di_fr_short = filterPOST['di_fr_short'];
-                $this->di_fr_long = filterPOST['di_fr_long'];
-                $this->di_en_short = filterPOST['di_en_short'];
-                $this->di_en_long = filterPOST['di_en_long'];
-                $this->di_ru_short = filterPOST['di_ru_short'];
-                $this->di_ru_long = filterPOST['di_ru_long'];;
+                $this->di_id = filterPOST('di_id');
+                $this->di_name = filterPOST('di_name');
+                $this->di_fr_short = filterPOST('di_fr_short');
+                $this->di_fr_long = filterPOST('di_fr_long');
+                $this->di_en_short = filterPOST('di_en_short');
+                $this->di_en_long = filterPOST('di_en_long');
+                $this->di_ru_short = filterPOST('di_ru_short');
+                $this->di_ru_long = filterPOST('di_ru_long');;
                 $sql = <<<SQL
                 insert into dictionary (
                     di_id,
@@ -97,22 +97,22 @@ class TDictionary extends TPartialController
                $stmt = $this->cs->query($sql, [':di_name' => $this->di_name, ':di_fr_short' => $this->di_fr_short, ':di_fr_long' => $this->di_fr_long, ':di_en_short' => $this->di_en_short, ':di_en_long' => $this->di_en_long, ':di_ru_short' => $this->di_ru_short, ':di_ru_long' => $this->di_ru_long]);
             break;
             case 'Modifier':
-                $this->di_id = filterPOST['di_id'];
-                $this->di_name = filterPOST['di_name'];
-                $this->di_fr_short = filterPOST['di_fr_short'];
-                $this->di_fr_long = filterPOST['di_fr_long'];
-                $this->di_en_short = filterPOST['di_en_short'];
-                $this->di_en_long = filterPOST['di_en_long'];
-                $this->di_ru_short = filterPOST['di_ru_short'];
-                $this->di_ru_long = filterPOST['di_ru_long'];
-                $sql=<<<SQL
+                $this->di_id = filterPOST('di_id');
+                $this->di_name = filterPOST('di_name');
+                $this->di_fr_short = filterPOST('di_fr_short');
+                $this->di_fr_long = filterPOST('di_fr_long');
+                $this->di_en_short = filterPOST('di_en_short');
+                $this->di_en_long = filterPOST('di_en_long');
+                $this->di_ru_short = filterPOST('di_ru_short');
+                $this->di_ru_long = filterPOST('di_ru_long');
+                $sql = <<<SQL
                 update dictionary set
-                    di_name = :di_name
-                    di_fr_short = :di_fr_short
-                    di_fr_long = :di_fr_long
-                    di_en_short = :di_en_short
-                    di_en_long = :di_en_long
-                    di_ru_short = :di_ru_short
+                    di_name = :di_name,
+                    di_fr_short = :di_fr_short,
+                    di_fr_long = :di_fr_long,
+                    di_en_short = :di_en_short,
+                    di_en_long = :di_en_long,
+                    di_ru_short = :di_ru_short,
                     di_ru_long = :di_ru_long
                 where di_id = {$this->di_id};
                 SQL;
@@ -123,7 +123,7 @@ class TDictionary extends TPartialController
                 $stmt = $this->cs->query($sql);
             break;
             }
-            $this->query='SELECT';
+            $this->query = 'SELECT';
         }
     }
 }

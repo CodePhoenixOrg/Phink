@@ -34,7 +34,7 @@ if($this->query === "SELECT") {
                 </td>
             </tr>
             <?php
-            $sql="select bt_id, bt_type from _block_type order by bt_type";
+            $sql = "select bt_id, bt_type from _block_type order by bt_type";
             $options = $this->datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->bt_id, false, $this->cs);
             ?>
             <tr>
@@ -46,7 +46,7 @@ if($this->query === "SELECT") {
                 </td>
             </tr>
             <?php
-            $sql="select di_id, di_name from dictionary order by di_name";
+            $sql = "select di_id, di_name from dictionary order by di_name";
             $options = $this->datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->di_id, false, $this->cs);
             ?>
             <tr>

@@ -47,7 +47,7 @@ class TChangelog extends TPartialController
                 $this->usr_id = '';
                 break;
             case 'Modifier':
-                $sql="select * from changelog where cl_id={$this->cl_id};";
+                $sql = "select * from changelog where cl_id={$this->cl_id};";
                 $stmt = $this->cs->query($sql);
                 $rows = $stmt->fetch(PDO::FETCH_ASSOC);
                 $this->cl_id = $rows['cl_id'];
@@ -62,13 +62,13 @@ class TChangelog extends TPartialController
         } else if($event === 'onRun' && $this->query === 'ACTION') {
             switch ($this->action) {
             case 'Ajouter':
-                $this->cl_id = filterPOST['cl_id'];
-                $this->cl_title = filterPOST['cl_title'];
-                $this->cl_text = filterPOST['cl_text'];
-                $this->cl_date = filterPOST['cl_date'];
-                $this->cl_time = filterPOST['cl_time'];
-                $this->app_id = filterPOST['app_id'];
-                $this->usr_id = filterPOST['usr_id'];;
+                $this->cl_id = filterPOST('cl_id');
+                $this->cl_title = filterPOST('cl_title');
+                $this->cl_text = filterPOST('cl_text');
+                $this->cl_date = filterPOST('cl_date');
+                $this->cl_time = filterPOST('cl_time');
+                $this->app_id = filterPOST('app_id');
+                $this->usr_id = filterPOST('usr_id');;
                 $sql = <<<SQL
                 insert into changelog (
                     cl_id,
@@ -91,20 +91,20 @@ class TChangelog extends TPartialController
                $stmt = $this->cs->query($sql, [':cl_title' => $this->cl_title, ':cl_text' => $this->cl_text, ':cl_date' => $this->cl_date, ':cl_time' => $this->cl_time, ':app_id' => $this->app_id, ':usr_id' => $this->usr_id]);
             break;
             case 'Modifier':
-                $this->cl_id = filterPOST['cl_id'];
-                $this->cl_title = filterPOST['cl_title'];
-                $this->cl_text = filterPOST['cl_text'];
-                $this->cl_date = filterPOST['cl_date'];
-                $this->cl_time = filterPOST['cl_time'];
-                $this->app_id = filterPOST['app_id'];
-                $this->usr_id = filterPOST['usr_id'];
-                $sql=<<<SQL
+                $this->cl_id = filterPOST('cl_id');
+                $this->cl_title = filterPOST('cl_title');
+                $this->cl_text = filterPOST('cl_text');
+                $this->cl_date = filterPOST('cl_date');
+                $this->cl_time = filterPOST('cl_time');
+                $this->app_id = filterPOST('app_id');
+                $this->usr_id = filterPOST('usr_id');
+                $sql = <<<SQL
                 update changelog set
-                    cl_title = :cl_title
-                    cl_text = :cl_text
-                    cl_date = :cl_date
-                    cl_time = :cl_time
-                    app_id = :app_id
+                    cl_title = :cl_title,
+                    cl_text = :cl_text,
+                    cl_date = :cl_date,
+                    cl_time = :cl_time,
+                    app_id = :app_id,
                     usr_id = :usr_id
                 where cl_id = {$this->cl_id};
                 SQL;
@@ -115,7 +115,7 @@ class TChangelog extends TPartialController
                 $stmt = $this->cs->query($sql);
             break;
             }
-            $this->query='SELECT';
+            $this->query = 'SELECT';
         }
     }
 }

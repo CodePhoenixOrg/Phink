@@ -40,7 +40,7 @@ if($this->query === "SELECT") {
                 </td>
             </tr>
             <?php
-            $sql="select pa_id, bl_id from __page_block order by bl_id";
+            $sql = "select pa_id, bl_id from __page_block order by bl_id";
             $options = $this->datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->pa_id, false, $this->cs);
             ?>
             <tr>
@@ -52,7 +52,7 @@ if($this->query === "SELECT") {
                 </td>
             </tr>
             <?php
-            $sql="select bl_id, bl_column from blocks order by bl_column";
+            $sql = "select bl_id, bl_column from blocks order by bl_column";
             $options = $this->datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->bl_id, false, $this->cs);
             ?>
             <tr>

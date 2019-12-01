@@ -54,7 +54,7 @@
 						<td>Demandée par</td>
 						<td>
 							<select name='usr_id'>
-							<?php   $sql='select mbr_id, mbr_name from members order by mbr_name';
+							<?php   $sql = 'select mbr_id, mbr_name from members order by mbr_name';
 							$options = $this->datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->usr_id, false, $this->cs);
 							echo $options["list"];?>
 							</select>
@@ -64,7 +64,7 @@
 						<td>Réalisée par</td>
 						<td>
 							<select name='usr_id2'>
-							<?php   $sql='select mbr_id, mbr_name from members order by mbr_name';
+							<?php   $sql = 'select mbr_id, mbr_name from members order by mbr_name';
 							$options = $this->datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->usr_id2, false, $this->cs);
 							echo $options["list"];?>
 							</select>

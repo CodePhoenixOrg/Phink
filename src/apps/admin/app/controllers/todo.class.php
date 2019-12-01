@@ -58,7 +58,7 @@ class TTodo extends TPartialController
                 $this->usr_id2="";
             break;
             case "Modifier":
-                $sql="select * from $tablename where td_id='$this->td_id';";
+                $sql = "select * from $tablename where td_id='$this->td_id';";
                 $stmt = $this->cs->query($sql);
                 $rows = $stmt->fetch(PDO::FETCH_ASSOC);
                 $this->td_title = $rows["td_title"];
@@ -115,7 +115,7 @@ class TTodo extends TPartialController
                 $this->td_date = filterPOST("td_date");
                 $this->usr_id = filterPOST("usr_id");
                 $this->usr_id2 = filterPOST("usr_id2");
-                $sql=<<<SQL
+                $sql = <<<SQL
                 update $tablename set 
                     td_title = :td_title, 
                     td_text = :td_text, 

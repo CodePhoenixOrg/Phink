@@ -45,7 +45,7 @@ class TMenus extends TPartialController
                 $this->bl_id = '';
                 break;
             case 'Modifier':
-                $sql="select * from menus where me_id={$this->me_id};";
+                $sql = "select * from menus where me_id={$this->me_id};";
                 $stmt = $this->cs->query($sql);
                 $rows = $stmt->fetch(PDO::FETCH_ASSOC);
                 $this->me_id = $rows['me_id'];
@@ -58,11 +58,11 @@ class TMenus extends TPartialController
         } else if($event === 'onRun' && $this->query === 'ACTION') {
             switch ($this->action) {
             case 'Ajouter':
-                $this->me_id = filterPOST['me_id'];
-                $this->me_level = filterPOST['me_level'];
-                $this->me_target = filterPOST['me_target'];
-                $this->pa_id = filterPOST['pa_id'];
-                $this->bl_id = filterPOST['bl_id'];;
+                $this->me_id = filterPOST('me_id');
+                $this->me_level = filterPOST('me_level');
+                $this->me_target = filterPOST('me_target');
+                $this->pa_id = filterPOST('pa_id');
+                $this->bl_id = filterPOST('bl_id');;
                 $sql = <<<SQL
                 insert into menus (
                     me_id,
@@ -81,16 +81,16 @@ class TMenus extends TPartialController
                $stmt = $this->cs->query($sql, [':me_level' => $this->me_level, ':me_target' => $this->me_target, ':pa_id' => $this->pa_id, ':bl_id' => $this->bl_id]);
             break;
             case 'Modifier':
-                $this->me_id = filterPOST['me_id'];
-                $this->me_level = filterPOST['me_level'];
-                $this->me_target = filterPOST['me_target'];
-                $this->pa_id = filterPOST['pa_id'];
-                $this->bl_id = filterPOST['bl_id'];
-                $sql=<<<SQL
+                $this->me_id = filterPOST('me_id');
+                $this->me_level = filterPOST('me_level');
+                $this->me_target = filterPOST('me_target');
+                $this->pa_id = filterPOST('pa_id');
+                $this->bl_id = filterPOST('bl_id');
+                $sql = <<<SQL
                 update menus set
-                    me_level = :me_level
-                    me_target = :me_target
-                    pa_id = :pa_id
+                    me_level = :me_level,
+                    me_target = :me_target,
+                    pa_id = :pa_id,
                     bl_id = :bl_id
                 where me_id = {$this->me_id};
                 SQL;
@@ -101,7 +101,7 @@ class TMenus extends TPartialController
                 $stmt = $this->cs->query($sql);
             break;
             }
-            $this->query='SELECT';
+            $this->query = 'SELECT';
         }
     }
 }

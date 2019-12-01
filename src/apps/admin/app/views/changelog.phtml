@@ -52,7 +52,7 @@ if($this->query === "SELECT") {
                 </td>
             </tr>
             <?php
-            $sql="select app_id, doc_id from __app_document order by doc_id";
+            $sql = "select app_id, doc_id from __app_document order by doc_id";
             $options = $this->datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->app_id, false, $this->cs);
             ?>
             <tr>
@@ -64,7 +64,7 @@ if($this->query === "SELECT") {
                 </td>
             </tr>
             <?php
-            $sql="select usr_id, app_id from __user_app order by app_id";
+            $sql = "select usr_id, app_id from __user_app order by app_id";
             $options = $this->datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->usr_id, false, $this->cs);
             ?>
             <tr>
