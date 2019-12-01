@@ -38,14 +38,14 @@ class Page extends TController
     
         $_SESSION["javascript"] = "";
 
-        $id = getArgument("id", 1);
+        $page_id = getArgument("id", 1);
         $di = getArgument("di");
 
         $this->menus = new Menus($this->lang, $this->db_prefix);
         $design = new Design;
 
-        if($id == 1) {
-            $id = $this->menus->getPageId($this->conf, "mkmain.php");
+        if($page_id == 1) {
+            $page_id = $this->menus->getPageId($this->conf, "mkmain.php");
         }
 
         $this->main_menu = $this->menus->createMainMenu($this->conf, 1);
@@ -60,10 +60,10 @@ class Page extends TController
         
         if ($di !== '') {
             $title_page = $this->menus->retrievePageByDictionaryId($this->conf, $di, $this->lang);
-            $id = $title_page["id"];
+            $page_id = $title_page["id"];
         } else {
-            // $title_page = retrievePageByMenuId($conf, $id, $this->lang);
-            $title_page = $this->menus->retrievePageById($this->conf, $id, $this->lang);
+            // $title_page = retrievePageByMenuId($conf, $page_id, $this->lang);
+            $title_page = $this->menus->retrievePageById($this->conf, $page_id, $this->lang);
             $di = $title_page["id"];
         }
 
