@@ -63,7 +63,7 @@ class TMvcScriptMaker extends TObject
         $selectValues = join("\n", $selectValuesArray);
 
         $insertFilterPostArray = array_map(function ($fieldname) {
-            return "\t\t\t\t\$this->$fieldname = filterPOST['$fieldname'];";
+            return "\t\t\t\t\$this->$fieldname = filterPOST('$fieldname');";
         }, $A_sqlFields);
         $insertFilterPost = join("\n", $insertFilterPostArray);
 
@@ -78,7 +78,7 @@ class TMvcScriptMaker extends TObject
         $insertValues = join(',' . "\n", $insertValuesArray);
 
         $updateFilterPostArray = array_map(function ($fieldname) {
-            return "\t\t\t\t\$this->$fieldname = filterPOST['$fieldname'];";
+            return "\t\t\t\t\$this->$fieldname = filterPOST('$fieldname');";
         }, $A_sqlFields);
         $updateFilterPost = join("\n", $updateFilterPostArray);
 
