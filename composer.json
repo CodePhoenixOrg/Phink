@@ -15,6 +15,7 @@
     "autoload": {
         "classmap": [
             "src/phink/",
+            "src/widgets/",
             "src/puzzle/"
         ],
         "exclude-from-classmap": [

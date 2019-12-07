@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- namespace Phink\Web\UI\Widget\Pager;
+ namespace Phink\Widgets\Pager;
 
 class TPager extends \Phink\MVC\TPartialController
 {
@@ -82,7 +82,6 @@ class TPager extends \Phink\MVC\TPartialController
 
         $this->forCtrl = $this->parent->getViewName();
         $this->forApp = $this->getApplication()->getName();
-
     
         $this->pageNum = (int) (!$this->pageNum) ? 1 : $this->pageNum;
         

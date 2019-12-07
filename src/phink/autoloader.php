@@ -291,10 +291,13 @@ class TAutoloader extends TStaticObject
 
         if ($info !== null) {
             $viewName = self::innerClassNameToFilename($className);
+            $path = PHINK_VENDOR_LIB . $info->path;
+
             if ($info->path[0] == '@') {
                 $path = str_replace("@" . DIRECTORY_SEPARATOR, PHINK_VENDOR_APPS, $info->path);
-            } else {
-                $path = PHINK_VENDOR_LIB . $info->path;
+            }
+            if ($info->path[0] == '~') {
+                $path = str_replace("~" . DIRECTORY_SEPARATOR, PHINK_VENDOR_WIDGETS, $info->path);
             }
             // $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . $ctrl->getId()) . CLASS_EXTENSION;
             $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR  . $viewName) . CLASS_EXTENSION;
