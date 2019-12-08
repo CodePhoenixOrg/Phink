@@ -40,18 +40,18 @@ class TRegistry extends TStaticObject
             return true;
         }
 
-        // self::write(
-        //     'classes',
-        //     'TPager',
-        //     [
-        //         'alias' => 'pager',
-        //         'path' => '~/pager' . DIRECTORY_SEPARATOR,
-        //         'namespace' => ROOT_NAMESPACE . '\Widgets\Pager',
-        //         'hasTemplate' => true,
-        //         'canRender' => true,
-        //         'isAutoloaded' => true
-        //     ]
-        // );
+        self::write(
+            'classes',
+            'TPager',
+            [
+                'alias' => 'pager',
+                'path' => '~/pager' . DIRECTORY_SEPARATOR,
+                'namespace' => ROOT_NAMESPACE . '\Widgets\Pager',
+                'hasTemplate' => true,
+                'canRender' => true,
+                'isAutoloaded' => true
+            ]
+        );
         self::write(
             'classes',
             'TPluginRenderer',
