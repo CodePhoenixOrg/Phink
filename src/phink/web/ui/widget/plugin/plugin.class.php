@@ -18,7 +18,7 @@
 
 namespace Phink\Web\UI\Widget\Plugin;
 
-class TPlugin extends \Phink\Web\UI\TPluginRenderer
+class TPlugin extends TPluginRenderer
 {
     use \Phink\Data\UI\TDataTag;
 

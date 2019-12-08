@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- namespace Phink\Web\UI;
+ namespace Phink\Web\UI\Widget\Plugin;
 
 /**
  * Description of tgrid
