@@ -45,8 +45,8 @@ class TRegistry extends TStaticObject
             'TPager',
             [
                 'alias' => 'pager',
-                'path' => 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'pager' . DIRECTORY_SEPARATOR,
-                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Pager',
+                'path' => '~/pager' . DIRECTORY_SEPARATOR,
+                'namespace' => ROOT_NAMESPACE . '\Widgets\Pager',
                 'hasTemplate' => true,
                 'canRender' => true,
                 'isAutoloaded' => true

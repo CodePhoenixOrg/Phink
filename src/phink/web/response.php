@@ -59,7 +59,7 @@ class TResponse implements \JsonSerializable
 
     public function addScript(string $filename) : void
     {
-        array_push($this->scriptsList, $filename);
+        array_unshift($this->scriptsList, $filename);
     }
 
 //    public function getScripts()

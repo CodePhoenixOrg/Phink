@@ -91,12 +91,12 @@ class TAutoloader extends TStaticObject
 
     public static function cacheJsFilenameFromView($viewName)
     {
-        return REL_RUNTIME_JS_DIR . strtolower('app_controllers_' . $viewName . JS_EXTENSION);
+        return REL_RUNTIME_JS_DIR . strtolower('javascript_' . $viewName . JS_EXTENSION);
     }
 
     public static function cacheCssFilenameFromView($viewName)
     {
-        return REL_RUNTIME_CSS_DIR . strtolower('app_controllers_' . $viewName . CSS_EXTENSION);
+        return REL_RUNTIME_CSS_DIR . strtolower('stylesheet_' . $viewName . CSS_EXTENSION);
     }
 
     public static function cachePath($filepath)
@@ -129,7 +129,12 @@ class TAutoloader extends TStaticObject
     {
         $className = ucfirst($viewName);
         $filename = $info->path . 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR  . \Phink\TAutoloader::innerClassNameToFilename($viewName) . CLASS_EXTENSION;
-        $filename = \str_replace("@/", PHINK_APPS_ROOT, $filename);
+        if($filename[0] == '@') {
+            $filename = \str_replace('@/', PHINK_APPS_ROOT, $filename);
+        }
+        if($filename[0] == '~') {
+            $filename = \str_replace('~/', PHINK_WIDGETS_ROOT, $filename);
+        }
         //self::getLogger()->debug('INCLUDE INNER PARTIAL CONTROLLER : ' . $filename, __FILE__, __LINE__);
 
         $code = file_get_contents($filename, FILE_USE_INCLUDE_PATH);
@@ -291,10 +296,13 @@ class TAutoloader extends TStaticObject
 
         if ($info !== null) {
             $viewName = self::innerClassNameToFilename($className);
+            $path = PHINK_VENDOR_LIB . $info->path;
+
             if ($info->path[0] == '@') {
                 $path = str_replace("@" . DIRECTORY_SEPARATOR, PHINK_VENDOR_APPS, $info->path);
-            } else {
-                $path = PHINK_VENDOR_LIB . $info->path;
+            }
+            if ($info->path[0] == '~') {
+                $path = str_replace("~" . DIRECTORY_SEPARATOR, PHINK_VENDOR_WIDGETS, $info->path);
             }
             // $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . $ctrl->getId()) . CLASS_EXTENSION;
             $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR  . $viewName) . CLASS_EXTENSION;
