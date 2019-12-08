@@ -16,6 +16,7 @@
         "classmap": [
             "src/phink/",
             "src/widgets/",
+            "src/plugins/",
             "src/puzzle/"
         ],
         "exclude-from-classmap": [

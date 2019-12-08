@@ -60,7 +60,7 @@ abstract class TPluginRenderer extends \Phink\MVC\TPartialController
             $this->rows = count($this->data['values']);
         }
         
-        $pluginClass = '\Phink\Web\UI\Plugin\T' . ucfirst($this->getPattern());
+        $pluginClass = '\Phink\Plugins\T' . ucfirst($this->getPattern());
         $plugin = new $pluginClass($this);
         $plugin->setCss($this->css);
         $plugin->setContent($this->content);
