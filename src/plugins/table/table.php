@@ -21,12 +21,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phink\Web\UI\Plugin;
+namespace Phink\Plugins\Table;
+
+use \Phink\Web\UI\Plugin\TCustomPlugin;
 
 /**
- * Description of newPHPClass
+ * Description of TTable
  *
- * @author Akades
+ * @author David
  */
 class TTable extends TCustomPlugin
 {

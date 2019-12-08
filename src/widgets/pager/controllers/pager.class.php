@@ -83,15 +83,14 @@ class TPager extends \Phink\MVC\TPartialController
 
         $this->forView = ($this->getMotherView() !== null) ? $this->getMotherView()->getViewName() : $this->parent->getViewName();
         $this->forCtrl = $this->parent->getViewName();
-        $this->forApp = TRegistry::ini('application', 'name');
+        $this->forApp = $this->getApplication()->getName();
 
         $this->pageNum = (int) (!$this->pageNum) ? 1 : $this->pageNum;
         $this->pageCount = ($forControl) ? $forControl->getRowCount(): $this->pageNum;
     
-        $this->path = TRegistry::classPath('TPager');
-        $this->path = \str_replace("~/", PHINK_WIDGETS_ROOT, $this->path);
+        $this->path = TRegistry::widgetPath('TPager');
 
-        $this->pagerJS = file_get_contents($this->path . '/views/pager.jhtml', FILE_USE_INCLUDE_PATH);
+        $this->pagerJS = file_get_contents($this->path . '/views/pager.jhtml');
         $this->pagerJS = str_replace('{{ forApp }}', $this->forApp, $this->pagerJS);
         $this->pagerJS = str_replace('{{ forThis }}', $this->forThis, $this->pagerJS);
         $this->pagerJS = str_replace('{{ forView }}', $this->forView, $this->pagerJS);

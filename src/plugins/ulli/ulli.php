@@ -16,54 +16,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-namespace Phink\Web\UI\Plugin;
+namespace Phink\Plugins\Ulli;
 
+use \Phink\Web\UI\Plugin\TCustomPlugin;
 use \Phink\Web\UI\Widget\Plugin\TPlugin;
 
 /**
- * Description of newPHPClass
+ * Description of TUlli
  *
  * @author David
  */
-class TOlli extends TCustomPlugin
+class TUlli extends TCustomPlugin
 {
+    
     //put your code here
     public function render()
     {
-        $noTHead = false; 
-
+        $noTHead = false;
+        $elements = $this->elements;
+        $css = $this->css ? ' class="' . $this->css . '"' : '';
+        
         $result = "\n";
-        $tbody = $elements[0]->getOpening() . "\n";
+        $tbody = str_replace('%s', $css, $elements[0]->getOpening()) . "\n";
         $body = $this->data['values'];
         $names = $this->data['names'];
-        $oldValue = array();
-        for($i = 0; $i < $this->rows; $i++) {
+        $oldValue = array_fill(0, $this->rows, '&nbsp;');
+        for ($i = 0; $i < $this->rows; $i++) {
+            $css = '';
 
             // $row = (isset($body[$i])) ? json_decode($body[$i]) : array_fill(0, $this->columns, '&nbsp;');
             $row = (isset($body[$i])) ? $body[$i] : array_fill(0, $this->columns, '&nbsp;');
             $typeId0 = 'id="' . $this->getId() .  $elements[1]->getType() . ($i) . '"';
-            $tbody .= str_replace('%s', $typeId0, $elements[1]->getOpening()) . "\n";
-            for($j = 0; $j < $this->columns; $j++) {
+            $tbody .= str_replace('%s', $typeId0 . $css, $elements[1]->getOpening()) . "\n";
+            for ($j = 0; $j < $this->columns; $j++) {
                 $k = $i * $this->columns + $j;
                 
                 $dataIndex = array_keys($names, $this->templates[$j]['name'])[0];
                 $noTHead = !empty($this->templates[$j]['content']) && $this->templates[$j]['enabled'] == 1;
 
                 $html = $row[$dataIndex];
-                if($noTHead) {
+                if ($noTHead) {
                     $html = TPlugin::applyTemplate($this->templates, $names, $row, $j);
                 }
-
                 if (isset($row[$j]) && isset($this->templates[$j]) && isset($oldValue[$j])) {
                     if ($this->templates[$j]['enabled'] == 1 && $row[$j] != $oldValue[$j]) {
-                        $typeId1 = 'id="' . $this->getId() .  $elements[2]->getType() . $k . '"';
-                        $tbody .= str_replace('%s', $typeId1, $elements[2]->getOpening()) . $html . $elements[2]->getClosing() . "\n";
+                        $tbody .= str_replace('%s', '', $elements[2]->getOpening()) . $html . $elements[2]->getClosing() . "\n";
                     }
                 }
                 $oldValue[$j] = $row[$j];
