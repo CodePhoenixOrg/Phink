@@ -18,10 +18,11 @@
  
 namespace Phink\Plugins\Ulli;
 
+use \Phink\Web\UI\Plugin\TCustomPlugin;
 use \Phink\Web\UI\Widget\Plugin\TPlugin;
 
 /**
- * Description of newPHPClass
+ * Description of TUlli
  *
  * @author David
  */

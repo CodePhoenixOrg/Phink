@@ -23,10 +23,12 @@
  */
 namespace Phink\Plugins\Table;
 
+use \Phink\Web\UI\Plugin\TCustomPlugin;
+
 /**
- * Description of newPHPClass
+ * Description of TTable
  *
- * @author Akades
+ * @author David
  */
 class TTable extends TCustomPlugin
 {

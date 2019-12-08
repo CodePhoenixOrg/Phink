@@ -18,6 +18,7 @@
 
 namespace Phink\Plugins\Grid;
 
+use \Phink\Web\UI\Plugin\TCustomPlugin;
 use \Phink\Web\UI\Widget\Plugin\TPlugin;
 
 /**
