@@ -22,7 +22,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phink\Web\UI\Plugin;
+namespace Phink\Plugins\Olli;
 
 use \Phink\Web\UI\Widget\Plugin\TPlugin;
 

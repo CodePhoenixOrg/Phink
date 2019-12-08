@@ -15,24 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-namespace Phink\Web\UI\Plugin;
+
+namespace Phink\Plugins\Grid;
 
 use \Phink\Web\UI\Widget\Plugin\TPlugin;
 
 /**
- * Description of TCustomPlugin
+ * Description of TGrid
  *
  * @author David
  */
-class TList extends TCustomPlugin
+class TGrid extends TCustomPlugin
 {
     public function render()
     {
         $result = "\n";
 
         $elements = $this->elements;
-        
+
         $tbody = '';
         $level = 0;
         $boundIndex = 0;
@@ -48,71 +48,73 @@ class TList extends TCustomPlugin
         $bindablesCount = 0;
         $firstBindableIndex = -1;
         $lastBindableIndex = -1;
-        
-        for($k = 0; $k < $templateNum; $k++) {
-            for($j = 0; $j < $this->columns; $j++) {
-                if($this->templates[$k]['name'] == $this->data['names'][$j]) {
+
+        for ($k = 0; $k < $templateNum; $k++) {
+            for ($j = 0; $j < $this->columns; $j++) {
+                if ($this->templates[$k]['name'] == $this->data['names'][$j]) {
                     $this->templates[$k]['index'] = $j;
-                    if($this->templates[$k]['enabled'] == 1) {
+                    if ($this->templates[$k]['enabled'] == 1) {
                         $bindablesCount++;
-                        if($firstBindableIndex == -1) $firstBindableIndex = $j;
+                        if ($firstBindableIndex == -1) {
+                            $firstBindableIndex = $j;
+                        }
+
                         $lastBindableIndex = $j;
                     }
                 }
             }
         }
-                        
-        for($i = 0; $i < $this->rows; $i++) {
-            // $row = (isset($body[$i])) ? json_decode($body[$i]) : array_fill(0, $this->columns, '&nbsp;');
+
+        for ($i = 0; $i < $this->rows; $i++) {
             $row = (isset($body[$i])) ? $body[$i] : array_fill(0, $this->columns, '&nbsp;');
-            for($j = 0; $j < $templateNum; $j++) {
-                 if($j == 0) {
+            for ($j = 0; $j < $templateNum; $j++) {
+                if ($j == 0) {
                     $level = 0;
                     $boundIndex = 0;
                 }
-                if($this->templates[$j]['enabled'] != 1) continue;
+                if ($this->templates[$j]['enabled'] != 1) {
+                    continue;
+                }
+
                 $index = $this->templates[$j]['index'];
                 $canBind = $row[$index] != $oldValue[$j];
-                if(!$canBind) {
+                if (!$canBind) {
                     $bound[$boundIndex] = $canBind;
                     $oldLevel = $level;
                     $oldValue[$j] = $row[$index];
                     $boundIndex++;
                     continue;
                 }
-                $level = (($index == $firstBindableIndex) ? 0 : (($index == $lastBindableIndex) ? 2 : 1))    ;  
-                
+                $level = (($index == $firstBindableIndex) ? 0 : (($index == $lastBindableIndex) ? 2 : 1));
+
                 $dataIndex = array_keys($names, $this->templates[$j]['name'])[0];
                 $noTHead = !empty($this->templates[$j]['content']) && $this->templates[$j]['enabled'] == 1;
-                // self::$logger->debug('HTML TEMPLATE CONTENT : <pre>[' . PHP_EOL . htmlentities($this->templates[$j]['content']) . PHP_EOL . '...]</pre>');
 
                 $html = $row[$dataIndex];
-                if($noTHead) {
+                if ($noTHead) {
                     $html = TPlugin::applyTemplate($this->templates, $names, $row, $j);
                 }
 
-                if($level === 0) {
-                    if($i > 0) {
-                        for($l = 1; $l < $bindablesCount; $l++) {
+                if ($level === 0) {
+                    if ($i > 0) {
+                        for ($l = 1; $l < $bindablesCount; $l++) {
                             $tbody .= $elements[2]->getClosing() . "\n" . $elements[0]->getClosing() . "\n";
-                        } 
+                        }
                         $oldValue = array_fill(0, $this->columns, '!#');
                     }
                     $tbody .= str_replace('%s', 'blue', $elements[0]->getOpening()) . "\n";
                     $tbody .= $elements[1]->getOpening() . $html . $elements[1]->getClosing() . "\n";
                     $tbody .= $elements[2]->getOpening();
-                }
-                elseif($level === 1) { //&& $level < $lastBindableIndex
-                    if($i > 0 && !$bound[$boundIndex - 1]) {
+                } elseif ($level === 1) { //&& $level < $lastBindableIndex
+                    if ($i > 0 && !$bound[$boundIndex - 1]) {
                         $tbody .= $elements[2]->getClosing() . "\n" . $elements[0]->getClosing() . "\n";
-                    } 
+                    }
                     $tbody .= str_replace('%s', 'odd', $elements[0]->getOpening()) . "\n";
                     $tbody .= $elements[1]->getOpening() . $html . $elements[1]->getClosing() . "\n";
                     $tbody .= $elements[2]->getOpening();
-                }
-                elseif($level === 2) {
+                } elseif ($level === 2) {
                     $tbody .= str_replace('%s', '', $elements[2]->getOpening()) . $html . $elements[2]->getClosing() . "\n";
-                }                
+                }
                 $bound[$boundIndex] = $canBind;
                 $oldLevel = $level;
                 $boundIndex++;
@@ -125,7 +127,7 @@ class TList extends TCustomPlugin
         $tbody .= $elements[0]->getClosing() . "\n";
 
         $result .= $tbody;
-        
+
         return $result;
     }
 }

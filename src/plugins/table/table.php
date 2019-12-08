@@ -21,7 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-namespace Phink\Web\UI\Plugin;
+namespace Phink\Plugins\Table;
 
 /**
  * Description of newPHPClass
