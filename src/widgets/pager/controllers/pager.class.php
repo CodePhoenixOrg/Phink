@@ -16,7 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- namespace Phink\Web\UI\Widget\Pager;
+namespace Phink\Widgets\Pager;
+
+use Phink\TAutoloader;
+use Phink\Registry\TRegistry;
 
 class TPager extends \Phink\MVC\TPartialController
 {
@@ -79,17 +82,15 @@ class TPager extends \Phink\MVC\TPartialController
         $forControl = $this->parent->getChildById($this->forThis);
 
         $this->forView = ($this->getMotherView() !== null) ? $this->getMotherView()->getViewName() : $this->parent->getViewName();
-
         $this->forCtrl = $this->parent->getViewName();
         $this->forApp = $this->getApplication()->getName();
 
-    
         $this->pageNum = (int) (!$this->pageNum) ? 1 : $this->pageNum;
-        
         $this->pageCount = ($forControl) ? $forControl->getRowCount(): $this->pageNum;
     
-        $this->path = PHINK_ROOT . \Phink\Registry\TRegistry::classPath('TPager');
-        $this->pagerJS = file_get_contents($this->path . 'pager.jhtml', FILE_USE_INCLUDE_PATH);
+        $this->path = TRegistry::widgetPath('TPager');
+
+        $this->pagerJS = file_get_contents($this->path . '/views/pager.jhtml');
         $this->pagerJS = str_replace('{{ forApp }}', $this->forApp, $this->pagerJS);
         $this->pagerJS = str_replace('{{ forThis }}', $this->forThis, $this->pagerJS);
         $this->pagerJS = str_replace('{{ forView }}', $this->forView, $this->pagerJS);
@@ -99,8 +100,8 @@ class TPager extends \Phink\MVC\TPartialController
         $this->pagerJS = str_replace('{{ id }}', $this->id, $this->pagerJS);
         $this->pagerJS = str_replace('{{ onclick }}', $this->onclick, $this->pagerJS);
         
-        $this->script = REL_RUNTIME_JS_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $this->path . $this->forThis . 'pager.js');
-
+        $this->script = TAutoloader::cacheJsFilenameFromView($this->forThis . 'pager');
+        $this->response->addScript($this->script);
         file_put_contents($this->script, $this->pagerJS);
     }
 }

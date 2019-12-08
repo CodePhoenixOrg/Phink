@@ -12,7 +12,7 @@ class TPages extends TPartialController
 {
 
     // tools
-    protected $id, $cs, $datacontrols, $conf, $lang, $db_prefix, $query,
+    protected $page_id, $cs, $datacontrols, $conf, $lang, $db_prefix, $query,
         $page_colors, $grid_colors, $panel_colors, $action;
 
     // view fields
@@ -33,10 +33,10 @@ class TPages extends TPartialController
         $this->query = getArgument('query', 'SELECT');
         $event = getArgument('event', 'onLoad');
         $this->action = getArgument('action', 'Ajouter');
-        $this->id = getArgument('id', -1);
-        $fieldname = getArgument('pa_id');
-        if($event === 'onLoad' && $query === 'ACTION') {
-            switch ($action) {
+        $this->page_id = getArgument('id', -1);
+        $this->pa_id = getArgument('pa_id');
+        if($event === 'onLoad' && $this->query === 'ACTION') {
+            switch ($this->action) {
             case 'Ajouter':
                 $this->pa_id = '';
                 $this->pa_filename = '';
@@ -47,7 +47,7 @@ class TPages extends TPartialController
                 $this->app_id = '';
                 break;
             case 'Modifier':
-                $sql="select * from pages where pa_id='$this->pa_id';";
+                $sql = "select * from pages where pa_id={$this->pa_id};";
                 $stmt = $this->cs->query($sql);
                 $rows = $stmt->fetch(PDO::FETCH_ASSOC);
                 $this->pa_id = $rows['pa_id'];
@@ -59,25 +59,25 @@ class TPages extends TPartialController
                 $this->app_id = $rows['app_id'];;
             break;
             }
-        } else if($event === 'onRun' && $query === 'ACTION') {
-            switch ($action) {
+        } else if($event === 'onRun' && $this->query === 'ACTION') {
+            switch ($this->action) {
             case 'Ajouter':
-                $this->pa_id = filterPOST['pa_id'];
-                $this->pa_filename = filterPOST['pa_filename'];
-                $this->pa_directory = filterPOST['pa_directory'];
-                $this->pa_url = filterPOST['pa_url'];
-                $this->di_id = filterPOST['di_id'];
-                $this->ft_id = filterPOST['ft_id'];
-                $this->app_id = filterPOST['app_id'];;
+                $this->pa_id = filterPOST('pa_id');
+                $this->pa_filename = filterPOST('pa_filename');
+                $this->pa_directory = filterPOST('pa_directory');
+                $this->pa_url = filterPOST('pa_url');
+                $this->di_id = filterPOST('di_id');
+                $this->ft_id = filterPOST('ft_id');
+                $this->app_id = filterPOST('app_id');;
                 $sql = <<<SQL
                 insert into pages (
-                    $pa_id,
-                    $pa_filename,
-                    $pa_directory,
-                    $pa_url,
-                    $di_id,
-                    $ft_id,
-                    $app_id
+                    pa_id,
+                    pa_filename,
+                    pa_directory,
+                    pa_url,
+                    di_id,
+                    ft_id,
+                    app_id
                 ) values (
                     :pa_id,
                     :pa_filename,
@@ -91,31 +91,31 @@ class TPages extends TPartialController
                $stmt = $this->cs->query($sql, [':pa_filename' => $this->pa_filename, ':pa_directory' => $this->pa_directory, ':pa_url' => $this->pa_url, ':di_id' => $this->di_id, ':ft_id' => $this->ft_id, ':app_id' => $this->app_id]);
             break;
             case 'Modifier':
-                $this->pa_id = filterPOST['pa_id'];
-                $this->pa_filename = filterPOST['pa_filename'];
-                $this->pa_directory = filterPOST['pa_directory'];
-                $this->pa_url = filterPOST['pa_url'];
-                $this->di_id = filterPOST['di_id'];
-                $this->ft_id = filterPOST['ft_id'];
-                $this->app_id = filterPOST['app_id'];
-                $sql=<<<SQL
+                $this->pa_id = filterPOST('pa_id');
+                $this->pa_filename = filterPOST('pa_filename');
+                $this->pa_directory = filterPOST('pa_directory');
+                $this->pa_url = filterPOST('pa_url');
+                $this->di_id = filterPOST('di_id');
+                $this->ft_id = filterPOST('ft_id');
+                $this->app_id = filterPOST('app_id');
+                $sql = <<<SQL
                 update pages set
-                    pa_filename = :pa_filename
-                    pa_directory = :pa_directory
-                    pa_url = :pa_url
-                    di_id = :di_id
-                    ft_id = :ft_id
+                    pa_filename = :pa_filename,
+                    pa_directory = :pa_directory,
+                    pa_url = :pa_url,
+                    di_id = :di_id,
+                    ft_id = :ft_id,
                     app_id = :app_id
-                where pa_id = '$pa_id';
+                where pa_id = {$this->pa_id};
                 SQL;
                 $stmt = $this->cs->query($sql, [':pa_filename' => $this->pa_filename, ':pa_directory' => $this->pa_directory, ':pa_url' => $this->pa_url, ':di_id' => $this->di_id, ':ft_id' => $this->ft_id, ':app_id' => $this->app_id]);
             break;
             case 'Supprimer':
-                $sql = "delete from pages where pa_id='$pa_id'";
+                $sql = "delete from pages where pa_id={$this->pa_id}";
                 $stmt = $this->cs->query($sql);
             break;
             }
-            $query='SELECT';
+            $this->query = 'SELECT';
         }
     }
 }

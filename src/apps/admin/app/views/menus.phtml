@@ -6,8 +6,29 @@ $dialog = "";
 if(isset($pc)) $curl_pager="&pc=$pc";
 if(isset($sr)) $curl_pager.="&sr=$sr";
 if($this->query === "SELECT") {
-    $sql = "select me_id, me_level from menus order by me_id";
-    $dbgrid = $datacontrols->createPagerDbGrid(menus, $sql, $id, "page.html", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 400], 15, $this->grid_colors, $this->cs);
+    $sql = <<<SQL
+		SELECT
+			me_id,
+			d.di_fr_short AS 'Entrée',
+			CASE
+				WHEN me_level = '0' THEN 'Caché'
+				WHEN me_level = '1' THEN 'Principal'
+				WHEN me_level = '2' THEN 'Latéral'
+			END AS Niveau,
+			bd.di_fr_short AS Bloc
+		FROM
+			menus m
+				INNER JOIN
+			pages p ON m.pa_id = p.pa_id
+				INNER JOIN
+			dictionary d ON d.di_id = p.di_id
+				LEFT JOIN
+			blocks b ON m.bl_id = b.bl_id
+				LEFT OUTER JOIN
+			dictionary bd ON bd.di_id = b.di_id
+		ORDER BY d.di_fr_short
+		SQL;
+    $dbgrid = $this->datacontrols->createPagerDbGrid('menus', $sql, $this->page_id, "page.html", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 400], 15, $this->grid_colors, $this->cs);
     echo "<br>".$dbgrid;
 } elseif($this->query === "ACTION") {
 ?>
@@ -40,8 +61,8 @@ if($this->query === "SELECT") {
                 </td>
             </tr>
             <?php
-            $sql="select pa_id, bl_id from __page_block order by bl_id";
-            $options = $datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->pa_id, false, $this->cs);
+            $sql = "select pa_id, bl_id from __page_block order by bl_id";
+            $options = $this->datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->pa_id, false, $this->cs);
             ?>
             <tr>
                 <td>pa_id</td>
@@ -52,8 +73,8 @@ if($this->query === "SELECT") {
                 </td>
             </tr>
             <?php
-            $sql="select bl_id, bl_column from blocks order by bl_column";
-            $options = $datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->bl_id, false, $this->cs);
+            $sql = "select bl_id, bl_column from blocks order by bl_column";
+            $options = $this->datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->bl_id, false, $this->cs);
             ?>
             <tr>
                 <td>bl_id</td>
@@ -80,3 +101,4 @@ if($this->query === "SELECT") {
 </form>
 <?php
 }
+?>

@@ -25,18 +25,18 @@ class TSubPage extends TUserComponent
 
     public function render(): void
     {
-        $id = $this->getQueryParameters('id');
+        $page_id = $this->getQueryParameters('id');
         $di = $this->getQueryParameters('di');
 
-        if (!empty($id)) {
-            $title_page = $this->menus->retrievePageById($this->conf, $id, $this->lang);
+        if (!empty($page_id)) {
+            $title_page = $this->menus->retrievePageById($this->conf, $page_id, $this->lang);
             $di = $title_page["id"];
         } else if (!empty($di)) {
             $title_page = $this->menus->retrievePageByDictionaryId($this->conf, $di, $this->lang);
-            $id = $title_page["id"];
+            $page_id = $title_page["id"];
         }
 
-        self::getLogger()->debug('ID::' . $id);
+        self::getLogger()->debug('ID::' . $page_id);
         self::getLogger()->debug('DI::' . $di);
         self::getLogger()->dump('PAGE iNFO::', $title_page);
 

@@ -11,7 +11,7 @@ use PDO;
 class TTodo extends TPartialController
 {
 	// tools
-    protected $id, $cs, $datacontrols, $conf, $lang, $db_prefix, $query,
+    protected $page_id, $cs, $atacontrols, $conf, $lang, $db_prefix, $query,
         $page_colors, $grid_colors, $panel_colors;
     
     // view fields
@@ -33,12 +33,12 @@ class TTodo extends TPartialController
         $this->query = getArgument("query", "SELECT");
         $event = getArgument("event", "onLoad");
         $this->action = getArgument("action", "Ajouter");
-        $this->id = getArgument("id", -1);
-        $di = getArgument("di", "todo");
+        $this->page_id = getArgument("id", -1);
+        $this->td_id = getArgument("di", "todo");
 
-        if($this->id === -1) {
-            $title_page = $this->menus->retrievePageByDictionaryId($this->conf, $di, $this->lang);
-            $this->id = $title_page["index"];
+        if($this->page_id === -1) {
+            $title_page = $this->menus->retrievePageByDictionaryId($this->conf, $this->td_id, $this->lang);
+            $this->page_id = $title_page["index"];
         }
 
         $tablename = "todo";
@@ -58,7 +58,7 @@ class TTodo extends TPartialController
                 $this->usr_id2="";
             break;
             case "Modifier":
-                $sql="select * from $tablename where td_id='$this->td_id';";
+                $sql = "select * from $tablename where td_id='$this->td_id';";
                 $stmt = $this->cs->query($sql);
                 $rows = $stmt->fetch(PDO::FETCH_ASSOC);
                 $this->td_title = $rows["td_title"];
@@ -115,7 +115,7 @@ class TTodo extends TPartialController
                 $this->td_date = filterPOST("td_date");
                 $this->usr_id = filterPOST("usr_id");
                 $this->usr_id2 = filterPOST("usr_id2");
-                $sql=<<<SQL
+                $sql = <<<SQL
                 update $tablename set 
                     td_title = :td_title, 
                     td_text = :td_text, 
@@ -125,7 +125,7 @@ class TTodo extends TPartialController
                     td_date = :td_date, 
                     usr_id = :usr_id,
                     usr_id2 = :usr_id2
-                where td_id = '{$this->td_id}';
+                where td_id = {$this->td_id};
     SQL;
                 $stmt = $this->cs->prepare($sql);
                 $stmt->execute([':td_title' => $this->td_title, ':td_text' => $this->td_text, ':td_priority' => $this->td_priority, ':td_expiry' => $this->td_expiry, ':td_status' => $this->td_status, ':td_date' => $this->td_date, ':usr_id' => $this->usr_id, ':usr_id2' => $this->usr_id2]);

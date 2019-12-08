@@ -1,0 +1,14 @@
+{
+    "classes": [
+        {
+            "TPager": {
+                "alias": "pager",
+                "path": "~/pager/",
+                "namespace": "Phink\\Widgets\\Pager",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": true
+            }
+        }
+    ]
+}

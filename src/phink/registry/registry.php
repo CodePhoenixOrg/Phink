@@ -40,18 +40,8 @@ class TRegistry extends TStaticObject
             return true;
         }
 
-        self::write(
-            'classes',
-            'TPager',
-            [
-                'alias' => 'pager',
-                'path' => 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'widget' . DIRECTORY_SEPARATOR . 'pager' . DIRECTORY_SEPARATOR,
-                'namespace' => ROOT_NAMESPACE . '\Web\UI\Widget\Pager',
-                'hasTemplate' => true,
-                'canRender' => true,
-                'isAutoloaded' => true
-            ]
-        );
+        self::importClasses(PHINK_VENDOR_WIDGETS);
+
         self::write(
             'classes',
             'TPluginRenderer',
@@ -162,6 +152,14 @@ class TRegistry extends TStaticObject
 
             $result = (object) $result;
         }
+
+        return $result;
+    }
+
+    public static function widgetPath($className): string
+    {
+        $result = TRegistry::classPath($className);
+        $result = \str_replace("~/", PHINK_WIDGETS_ROOT, $result);
 
         return $result;
     }

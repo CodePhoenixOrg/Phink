@@ -19,7 +19,7 @@
 			$sql = <<<SQL
 			select td.td_id, '<b>' || td.td_title || '</b><br>' || td.td_text || '<br>' as `T&acirc;ches`, mb.mbr_name as 'R&eacute;al.', td.td_status as '&Eacute;tat', td.td_priority as 'Priorit&eacute;', td.td_expiry as '&Eacute;ch&eacute;ance' from todo as td left outer join members as mb on td.usr_id2=mb.mbr_id order by td.td_status, td.td_expiry, td.td_priority desc
 			SQL;
-			$dbgrid = $this->datacontrols->createPagerDbGrid("tâches", $sql, $this->id, "page.html", "&query=ACTION$curl_pager", "", true, true, $dialog, array(0, 450), 15, $this->grid_colors, $this->cs);
+			$dbgrid = $this->datacontrols->createPagerDbGrid("tâches", $sql, $this->page_id, "page.html", "&query=ACTION$curl_pager", "", true, true, $dialog, array(0, 450), 15, $this->grid_colors, $this->cs);
 				//$dbgrid = tableShadow($tablename, $dbgrid);
 			echo "<br>".$dbgrid;
 	} elseif($this->query === "ACTION") {
@@ -54,7 +54,7 @@
 						<td>Demandée par</td>
 						<td>
 							<select name='usr_id'>
-							<?php   $sql='select mbr_id, mbr_name from members order by mbr_name';
+							<?php   $sql = 'select mbr_id, mbr_name from members order by mbr_name';
 							$options = $this->datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->usr_id, false, $this->cs);
 							echo $options["list"];?>
 							</select>
@@ -64,7 +64,7 @@
 						<td>Réalisée par</td>
 						<td>
 							<select name='usr_id2'>
-							<?php   $sql='select mbr_id, mbr_name from members order by mbr_name';
+							<?php   $sql = 'select mbr_id, mbr_name from members order by mbr_name';
 							$options = $this->datacontrols->createOptionsFromQuery($sql, 0, 1, [], $this->usr_id2, false, $this->cs);
 							echo $options["list"];?>
 							</select>
