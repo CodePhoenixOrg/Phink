@@ -15,84 +15,85 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
- namespace Phink\Web\UI;
+
+namespace Phink\Web\UI;
 
 /**
  * Description of THtmlPattern
  *
  * @author david
  */
-trait THtmlPattern {
+trait THtmlPattern
+{
     //put your code here
     protected $elements = [];
     protected $pattern = '';
 
-    public function getElements() : array
+    public function getElements(): array
     {
-        if(count($this->elements) == 0) {
+        if (count($this->elements) == 0) {
             $this->_getElements();
         }
         return $this->elements;
     }
-    public function setElements(array $value) : void
+    public function setElements(array $value): void
     {
         $this->elements = $value;
     }
 
-    public function getPattern() : string
+    public function getPattern(): string
     {
         return $this->pattern;
     }
-    public function setPattern(string $value) : void
+    public function setPattern(string $value): void
     {
         $this->pattern = $value;
     }
-    
-    public function getPatternName() : string
+
+    public function getPatternElements(): string
     {
-        return 'web' . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'html' . PATTERN_EXTENSION;
+        return PHINK_PLUGINS_ROOT . $this->pattern . DIRECTORY_SEPARATOR . $this->pattern . PREHTML_EXTENSION;
     }
 
-    private function _getElements() : void
+    private function _getElements(): void
     {
         $type = $this->getType();
         $path = ROOT_PATH . \Phink\Registry\TRegistry::classPath($type);
-        
-        $jsonName = RUNTIME_JS_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . strtolower($type) . '.json');
-        if(file_exists($jsonName)) {
+
+        $patternElements = $this->getPatternElements();
+
+        $jsonName = RUNTIME_JS_DIR . 'pattern_' . $this->pattern . JSON_EXTENSION;
+        if (file_exists($jsonName)) {
             $json = file_get_contents($jsonName);
             $this->elements = unserialize($json);
             return;
         }
 
-        $patternName = $this->getPatternName();
-        
-        //self::$logger->dump('PATTERN NAME', $patternName);
-        $contents = file_get_contents(PHINK_ROOT . $patternName, FILE_USE_INCLUDE_PATH);
-        
+        //self::$logger->dump('PATTERN NAME', $patternElements);
+        $contents = file_get_contents($patternElements);
+
         $doc = new \Phink\Xml\TXmlDocument($contents);
         $doc->matchAll();
         $elements = $doc->getList();
 
         foreach ($elements as $element) {
-            
+
             $key = $element['properties']['id'];
-            if(!isset($this->elements[$key])) {
+            if (!isset($this->elements[$key])) {
                 $this->elements[$key] = array();
             }
-            
+
             array_push($this->elements[$key]
                 , new THtmlElement($element['id']
                     , $element['properties']['pattern']
                     , $element['properties']['rule'])
-                );
+            );
         }
 
         $jsonElements = serialize($this->elements);
 
         file_put_contents($jsonName, $jsonElements);
-        
+
     }
 
 }

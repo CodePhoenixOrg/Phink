@@ -1,0 +1,6 @@
+<phx:element id="table" pattern="<table %s >{} </table>" rule="/<table (.*)[^>]>(.*)[^<]<\/table>/U" />
+<phx:element id="table" pattern="<thead >{} </thead>" rule="/<thead (.*)[^>]>(.*)[^<]<\/thead>/U" />
+<phx:element id="table" pattern="<tbody >{} </tbody>" rule="/<tbody (.*)[^>]>(.*)[^<]<\/tbody>/U" />
+<phx:element id="table" pattern="<tr %s >{} </tr>" rule="/<tr (.*)[^>]>/U" />
+<phx:element id="table" pattern="<th %s >{} </th>" rule="/<th >(&nbsp;)[^<]<\/th>/U" />
+<phx:element id="table" pattern="<td %s >{} </td>" rule="/<td >(&nbsp;)[^<]<\/td>/U" />
