@@ -155,7 +155,6 @@ define('PARTIAL_CONTROL', 'TPartialControl');
 define('CLASS_EXTENSION', '.class.php');
 define('HTML_EXTENSION', '.html');
 define('PREHTML_EXTENSION', '.phtml');
-define('PATTERN_EXTENSION', '.pattern' . PREHTML_EXTENSION);
 define('JS_EXTENSION', '.js');
 define('JSON_EXTENSION', '.json');
 define('CSS_EXTENSION', '.css');
