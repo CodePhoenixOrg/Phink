@@ -135,32 +135,36 @@ class TModel extends TObject implements IModel
 
     public function save(): bool
     {
-        $result = false;
-        
-        if(!$this->isDirty) return $result;
-        
-        if($result = TConnector::beginTransaction()) {
-        
-            if($this->isFromDB) {
-                $result = $this->update();
-            } else {
-                $result = $this->insert();
-            }
-
-            if($result === true && (TApplication::isProd() || TApplication::isTest())) {
-                $commit = TConnector::commit();
-                $result = $commit || $result;
-            } else {
-                $rollback = TConnector::rollback();
-                $result = $rollback || $result;
-            }
-        }
-        
-        $this->isFromDB = true;
-        $this->isDirty = false;
-        
-        return $result;
+        return false;
     }
+    // public function save(): bool
+    // {
+    //     $result = false;
+        
+    //     if(!$this->isDirty) return $result;
+        
+    //     if($result = TConnector::beginTransaction()) {
+        
+    //         if($this->isFromDB) {
+    //             $result = $this->update();
+    //         } else {
+    //             $result = $this->insert();
+    //         }
+
+    //         if($result === true && (TApplication::isProd() || TApplication::isTest())) {
+    //             $commit = TConnector::commit();
+    //             $result = $commit || $result;
+    //         } else {
+    //             $rollback = TConnector::rollback();
+    //             $result = $rollback || $result;
+    //         }
+    //     }
+        
+    //     $this->isFromDB = true;
+    //     $this->isDirty = false;
+        
+    //     return $result;
+    // }
     
     
 }
