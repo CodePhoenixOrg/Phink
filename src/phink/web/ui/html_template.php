@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 namespace Phink\Web\UI;
- 
-class THtmlTemplate extends \Phink\Core\TObject 
-    implements \JsonSerializable
+
+class THtmlTemplate extends \Phink\Core\TObject implements \JsonSerializable
 {
     use \Phink\Web\UI\THtmlControl;
-    
-    public function jsonSerialize() {
+
+    public function jsonSerialize()
+    {
         return serialize($this);
     }
 }
