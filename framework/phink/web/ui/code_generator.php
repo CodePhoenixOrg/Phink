@@ -111,15 +111,15 @@ trait TCodeGenerator
                     self::$logger->dump('FULL_QUALIFIED_CLASS_NAME: ', $fqcn);
                     
                     if (file_exists(DOCUMENT_ROOT . $fullJsCachePath)) {
-                        $view->getResponse()->addScript($fullJsCachePath);
+                        $view->getResponse()->addScriptFirst($fullJsCachePath);
                     }
                     if (file_exists(SRC_ROOT . $fullJsClassPath)) {
                         copy (SRC_ROOT . $fullJsClassPath, DOCUMENT_ROOT . $fullJsCachePath);
-                        $view->getResponse()->addScript($fullJsCachePath);
+                        $view->getResponse()->addScriptFirst($fullJsCachePath);
                     }
                     if (file_exists(SITE_ROOT . $fullJsClassPath)) {
                         copy (SITE_ROOT . $fullJsClassPath, DOCUMENT_ROOT . $fullJsCachePath);
-                        $view->getResponse()->addScript($fullJsCachePath);
+                        $view->getResponse()->addScriptFirst($fullJsCachePath);
                     }
                     TRegistry::setCode($fullClassPath, $code);
                 }

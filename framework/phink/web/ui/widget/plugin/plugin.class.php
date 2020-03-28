@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
- namespace Phink\Web\UI\Widget\Plugin;
 
-class TPlugin extends \Phink\Web\UI\TPluginRenderer
+namespace Phink\Web\UI\Widget\Plugin;
+
+class TPlugin extends TPluginRenderer
 {
     use \Phink\Data\UI\TDataTag;
-    
+
     private $_children = [];
     private $_rowCount;
     private $_pageNum;
@@ -29,57 +29,57 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
     protected $contents = null;
     protected $hasChildren = false;
 
-    public function getChildren() : ?array
+    public function getChildren(): ?array
     {
         return $this->_children;
     }
-    public function setChildren(array $value) : void
+    public function setChildren(array $value): void
     {
         $this->_children = $value;
     }
-    
-    public function getChildrenCount() : int
+
+    public function getChildrenCount(): int
     {
         return $this->_childrenCount;
     }
-    
-    public function getRowCount() : int
+
+    public function getRowCount(): int
     {
         return $this->_rowCount;
     }
-    public function setRowCount(int $value) : void
+    public function setRowCount(int $value): void
     {
         $this->_rowCount = $value;
     }
-    
-    public function getPageNum() : int
+
+    public function getPageNum(): int
     {
         return $this->_pageNum;
     }
-    public function setPageNum(int $value) : void
+    public function setPageNum(int $value): void
     {
         $this->_pageNum = $value;
     }
 
-    public function init() : void
+    public function init(): void
     {
-        $childrenCount = count($this->_children);
-        $this->hasChildren = $childrenCount > 0;
+        $this->_childrenCount = count($this->_children);
+        $this->hasChildren = $this->_childrenCount > 0;
 
         if ($this->hasChildren) {
             $this->templates = $this->getControls($this->_children);
             $id = $this->getParent()->getId();
-            
+
             $json = json_encode($this->templates);
             $templateFilename = RUNTIME_JS_DIR . $id . '_template.json';
             file_put_contents($templateFilename, $json);
-            
-            $this->_children = $this->assocArrayByAttribute($this->_children, 'name');
+
+            $this->_children = $this->arrayProperty($this->_children, 'name');
             $this->_childrenCount = count($this->_children);
         } else {
             $this->_childrenCount = $this->statement->getFieldCount();
         }
-        
+
         $this->_rowCount = $this->pageCountByDefault($this->_rowCount);
     }
 
@@ -96,41 +96,45 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
     //     $this->addChild($this);
     // }
 
-    public static function getGridData($id, \Phink\Data\IDataStatement $stmt, $rowsPerPage = 1) : array
+    public static function getGridData($id, ?\Phink\Data\IDataStatement $stmt, $rowsPerPage = 1): array
     {
+
+        $fieldCount = 0;
+        $names = [];
+        $values = [];
+        $templates = [];
+
         $templateFilename = RUNTIME_JS_DIR . $id . '_template.json';
-        $templates = '';
         if (file_exists($templateFilename)) {
             $templates = json_decode(file_get_contents($templateFilename));
         }
-        
+
         $elementsFilename = RUNTIME_JS_DIR . $id . '_elements.json';
         $elements = '';
         if (file_exists($elementsFilename)) {
             $elements = json_decode(file_get_contents($elementsFilename));
         }
-        
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        $names = [];
-        $values = [];
-        $fieldCount = 0;
+        if ($stmt !== null) {
 
-        $rowCount = count($rows);
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        if($rowCount > 0) {
-            $names = array_keys($rows[0]);
-            $fieldCount = count($names);
-        }
+            $rowCount = count($rows);
 
-        foreach ($rows as $row) {
-            $row = array_values($row);
-            // array_push($values, json_encode($row));
-            array_push($values, $row);
-        }
-        for ($k = $rowCount; $k < $rowsPerPage; $k++) {
-            // array_push($values, json_encode(array_fill(0, $fieldCount, '&nbsp;')));
-            array_push($values, array_fill(0, $fieldCount, '&nbsp;'));
+            if ($rowCount > 0) {
+                $names = array_keys($rows[0]);
+                $fieldCount = count($names);
+            }
+
+            foreach ($rows as $row) {
+                $row = array_values($row);
+                // array_push($values, json_encode($row));
+                array_push($values, $row);
+            }
+            for ($k = $rowCount; $k < $rowsPerPage; $k++) {
+                // array_push($values, json_encode(array_fill(0, $fieldCount, '&nbsp;')));
+                array_push($values, array_fill(0, $fieldCount, '&nbsp;'));
+            }
         }
 
         $result = [
@@ -138,33 +142,33 @@ class TPlugin extends \Phink\Web\UI\TPluginRenderer
             , 'rows' => $rowsPerPage
             , 'names' => $names
             , 'values' => $values
-            , 'templates' => $templates
+            , 'templates' => $templates,
         ];
-        
+
         if (isset($elements)) {
             $result['elements'] = $elements;
         }
-        
+
         return $result;
     }
-    
-    public function getData() : void
+
+    public function getData(): void
     {
         $this->data = self::getGridData($this->getParent()->getViewName(), $this->statement, $this->_rowCount);
         $this->response->setData('data', $this->data);
     }
-    
-    public function renderHtml() : void
+
+    public function renderHtml(): void
     {
         $this->data = self::getGridData($this->getParent()->getViewName(), $this->statement, $this->_rowCount);
-    
+
         $id = $this->getParent()->getViewName();
         $scriptFilename = $id . '_data.js';
         $json = json_encode($this->data);
         file_put_contents(RUNTIME_JS_DIR . $scriptFilename, 'var ' . $id . 'Data = ' . $json . ';');
         file_put_contents(RUNTIME_JS_DIR . $id . '_data.json', $json);
-        
-        $this->response->addScript(REL_RUNTIME_JS_DIR . $scriptFilename);
+
+        $this->response->addJSObject(REL_RUNTIME_JS_DIR . $scriptFilename);
 
         parent::renderHtml();
 

@@ -46,6 +46,27 @@ Phink.DOM.ready(function () {
                     document.querySelector("#recordset pre").innerHTML = data.result;
                 });
             }
+            , getData: function (count, index, anchor) {
+                var query = document.querySelector("#query").value;
+                query = encodeURIComponent(query);
+
+                this.getJSON('grid-result.html'
+                    , {
+                        'action': "getData"
+                        , 'pagecount': count
+                        , 'pagenum': index
+                        , 'query': query
+                    }
+                    , function (data) {
+                        Phink.Web.UI.Table.create().bind('#grid', data.grid, function () {
+                            $(anchor).html(index);
+                        });
+    
+                    }
+                );
+    
+                return false;
+            }
         })
         .onload(function () {
             qbeMain = this;
@@ -64,7 +85,25 @@ Phink.DOM.ready(function () {
             document.querySelector('#sendQuery').onclick = function () {
                 var sql = document.querySelector("#query").value;
                 sql = encodeURIComponent(sql);
-                qbeMain.testQuery(sql);
+                //qbeMain.testQuery(sql);
+                var count = 20;
+                var index = 1;
+                var anchor = '#grid';
+
+                qbeMain.getJSON('qbe-grid.html'
+                , {
+                    'action': "getData"
+                    , 'pagecount': count
+                    , 'pagenum': index
+                    , 'query': sql
+                }
+                , function (data) {
+                    Phink.Web.UI.Table.create().bind('#grid', data.grid, function () {
+                        //document.querySelector('#grid').innerHTML(index);
+                    });
+
+                }
+            );
             }
 
         });

@@ -12,7 +12,7 @@ class TDictionary extends TPartialController
 {
 
     // tools
-    protected $id, $cs, $datacontrols, $conf, $lang, $db_prefix, $query,
+    protected $page_id, $cs, $datacontrols, $conf, $lang, $db_prefix, $query,
         $page_colors, $grid_colors, $panel_colors, $action;
 
     // view fields
@@ -33,10 +33,10 @@ class TDictionary extends TPartialController
         $this->query = getArgument('query', 'SELECT');
         $event = getArgument('event', 'onLoad');
         $this->action = getArgument('action', 'Ajouter');
-        $this->id = getArgument('id', -1);
-        $fieldname = getArgument('di_id');
-        if($event === 'onLoad' && $query === 'ACTION') {
-            switch ($action) {
+        $this->page_id = getArgument('id', -1);
+        $this->di_id = getArgument('di_id');
+        if($event === 'onLoad' && $this->query === 'ACTION') {
+            switch ($this->action) {
             case 'Ajouter':
                 $this->di_id = '';
                 $this->di_name = '';
@@ -48,7 +48,8 @@ class TDictionary extends TPartialController
                 $this->di_ru_long = '';
                 break;
             case 'Modifier':
-                $sql="select * from dictionary where di_id='$this->di_id';";
+                $sql = "select * from dictionary where di_id={$this->di_id};";
+                self::getLogger()->sql($sql);
                 $stmt = $this->cs->query($sql);
                 $rows = $stmt->fetch(PDO::FETCH_ASSOC);
                 $this->di_id = $rows['di_id'];
@@ -61,27 +62,27 @@ class TDictionary extends TPartialController
                 $this->di_ru_long = $rows['di_ru_long'];;
             break;
             }
-        } else if($event === 'onRun' && $query === 'ACTION') {
-            switch ($action) {
+        } else if($event === 'onRun' && $this->query === 'ACTION') {
+            switch ($this->action) {
             case 'Ajouter':
-                $this->di_id = filterPOST['di_id'];
-                $this->di_name = filterPOST['di_name'];
-                $this->di_fr_short = filterPOST['di_fr_short'];
-                $this->di_fr_long = filterPOST['di_fr_long'];
-                $this->di_en_short = filterPOST['di_en_short'];
-                $this->di_en_long = filterPOST['di_en_long'];
-                $this->di_ru_short = filterPOST['di_ru_short'];
-                $this->di_ru_long = filterPOST['di_ru_long'];;
+                $this->di_id = filterPOST('di_id');
+                $this->di_name = filterPOST('di_name');
+                $this->di_fr_short = filterPOST('di_fr_short');
+                $this->di_fr_long = filterPOST('di_fr_long');
+                $this->di_en_short = filterPOST('di_en_short');
+                $this->di_en_long = filterPOST('di_en_long');
+                $this->di_ru_short = filterPOST('di_ru_short');
+                $this->di_ru_long = filterPOST('di_ru_long');;
                 $sql = <<<SQL
                 insert into dictionary (
-                    $di_id,
-                    $di_name,
-                    $di_fr_short,
-                    $di_fr_long,
-                    $di_en_short,
-                    $di_en_long,
-                    $di_ru_short,
-                    $di_ru_long
+                    di_id,
+                    di_name,
+                    di_fr_short,
+                    di_fr_long,
+                    di_en_short,
+                    di_en_long,
+                    di_ru_short,
+                    di_ru_long
                 ) values (
                     :di_id,
                     :di_name,
@@ -96,33 +97,33 @@ class TDictionary extends TPartialController
                $stmt = $this->cs->query($sql, [':di_name' => $this->di_name, ':di_fr_short' => $this->di_fr_short, ':di_fr_long' => $this->di_fr_long, ':di_en_short' => $this->di_en_short, ':di_en_long' => $this->di_en_long, ':di_ru_short' => $this->di_ru_short, ':di_ru_long' => $this->di_ru_long]);
             break;
             case 'Modifier':
-                $this->di_id = filterPOST['di_id'];
-                $this->di_name = filterPOST['di_name'];
-                $this->di_fr_short = filterPOST['di_fr_short'];
-                $this->di_fr_long = filterPOST['di_fr_long'];
-                $this->di_en_short = filterPOST['di_en_short'];
-                $this->di_en_long = filterPOST['di_en_long'];
-                $this->di_ru_short = filterPOST['di_ru_short'];
-                $this->di_ru_long = filterPOST['di_ru_long'];
-                $sql=<<<SQL
+                $this->di_id = filterPOST('di_id');
+                $this->di_name = filterPOST('di_name');
+                $this->di_fr_short = filterPOST('di_fr_short');
+                $this->di_fr_long = filterPOST('di_fr_long');
+                $this->di_en_short = filterPOST('di_en_short');
+                $this->di_en_long = filterPOST('di_en_long');
+                $this->di_ru_short = filterPOST('di_ru_short');
+                $this->di_ru_long = filterPOST('di_ru_long');
+                $sql = <<<SQL
                 update dictionary set
-                    di_name = :di_name
-                    di_fr_short = :di_fr_short
-                    di_fr_long = :di_fr_long
-                    di_en_short = :di_en_short
-                    di_en_long = :di_en_long
-                    di_ru_short = :di_ru_short
+                    di_name = :di_name,
+                    di_fr_short = :di_fr_short,
+                    di_fr_long = :di_fr_long,
+                    di_en_short = :di_en_short,
+                    di_en_long = :di_en_long,
+                    di_ru_short = :di_ru_short,
                     di_ru_long = :di_ru_long
-                where di_id = '$di_id';
+                where di_id = {$this->di_id};
                 SQL;
                 $stmt = $this->cs->query($sql, [':di_name' => $this->di_name, ':di_fr_short' => $this->di_fr_short, ':di_fr_long' => $this->di_fr_long, ':di_en_short' => $this->di_en_short, ':di_en_long' => $this->di_en_long, ':di_ru_short' => $this->di_ru_short, ':di_ru_long' => $this->di_ru_long]);
             break;
             case 'Supprimer':
-                $sql = "delete from dictionary where di_id='$di_id'";
+                $sql = "delete from dictionary where di_id={$this->di_id}";
                 $stmt = $this->cs->query($sql);
             break;
             }
-            $query='SELECT';
+            $this->query = 'SELECT';
         }
     }
 }

@@ -16,14 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- namespace Phink\Web\UI;
+namespace Phink\Web\UI\Widget\Plugin;
+
+use Phink\Web\UI\Widget\TWidget;
 
 /**
  * Description of tgrid
  *
  * @author david
  */
-abstract class TPluginRenderer extends \Phink\MVC\TPartialController
+abstract class TPluginRenderer extends TWidget
 {
     use \Phink\Web\UI\THtmlPattern;
     use \Phink\Data\UI\TDataBinder;
@@ -60,7 +62,8 @@ abstract class TPluginRenderer extends \Phink\MVC\TPartialController
             $this->rows = count($this->data['values']);
         }
         
-        $pluginClass = '\Phink\Web\UI\Plugin\T' . ucfirst($this->getPattern());
+        $pattern = ucfirst($this->getPattern());
+        $pluginClass = '\Phink\Plugins\\' . $pattern . '\T' . $pattern;
         $plugin = new $pluginClass($this);
         $plugin->setCss($this->css);
         $plugin->setContent($this->content);

@@ -290,6 +290,10 @@ abstract class TCustomApplication extends TObject
 
     public function getName(): string
     {
+        if(empty($this->appName) || $this->appName == 'app') {
+            $this->appName = TRegistry::ini('application', 'name');
+        }
+
         return $this->appName;
     }
 

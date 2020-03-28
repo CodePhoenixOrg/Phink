@@ -15,17 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
- namespace Phink\MVC;
+
+namespace Phink\MVC;
 
 /**
  * Description of Collection
  *
  * @author david
  */
-use Phink\Core\TObject;
 
-interface ICollection {
+use Phink\Core\TObject;
+use Phink\MVC\TApplication;
+
+interface ICollection
+{
 
     public function add($object);
     public function set($object, $index);
@@ -33,12 +36,11 @@ interface ICollection {
     public function remove($object);
     public function contains($object);
     public function count();
-
 }
 
 abstract class TCollection extends TModel implements \Iterator
 {
-        //put your code here
+    //put your code here
     protected $innerList = array();
     private $_count = NULL;
 
@@ -46,8 +48,8 @@ abstract class TCollection extends TModel implements \Iterator
     {
         parent::__construct($parent);
     }
-    
-    
+
+
     public function setCollection(array $collection = array())
     {
         $this->innerList = $collection;
@@ -57,7 +59,7 @@ abstract class TCollection extends TModel implements \Iterator
     // DEBUT
     public function rewind()
     {
-            $this->position = 0;
+        $this->position = 0;
     }
 
     public function current()
@@ -81,11 +83,11 @@ abstract class TCollection extends TModel implements \Iterator
     }
     // M�thodes de l'interface Iterator
     // FIN
-    
-    
+
+
     public function count()
     {
-        if($this->_count == NULL) {
+        if ($this->_count == NULL) {
             $this->_count = count($this->innerList);
         }
         return $this->_count;
@@ -104,16 +106,16 @@ abstract class TCollection extends TModel implements \Iterator
         return $this->_count - 1;
     }
 
-//    public function addAt(TObject $object, $index)
-//    {
-//        $current = array();
-//        $current[0] = $object;
-//        $current[1] = $this->innerList[$index];
-//
-//        array_splice($this->innerList, $index, $current);
-//        $this->_count = count($this->innerList);
-//        $this->setDirty();
-//    }
+    //    public function addAt(TObject $object, $index)
+    //    {
+    //        $current = array();
+    //        $current[0] = $object;
+    //        $current[1] = $this->innerList[$index];
+    //
+    //        array_splice($this->innerList, $index, $current);
+    //        $this->_count = count($this->innerList);
+    //        $this->setDirty();
+    //    }
 
     public function set(TObject $object, $index)
     {
@@ -121,12 +123,12 @@ abstract class TCollection extends TModel implements \Iterator
         $this->setDirty();
     }
 
-//    public function remove(TObject $object)
-//    {
-//        if($index = $this->contains($object)) {
-//            $this->removeAt($index);
-//        }
-//    }
+    //    public function remove(TObject $object)
+    //    {
+    //        if($index = $this->contains($object)) {
+    //            $this->removeAt($index);
+    //        }
+    //    }
 
     public function removeAt($index)
     {
@@ -144,7 +146,7 @@ abstract class TCollection extends TModel implements \Iterator
 
     public function clear()
     {
-        for($i = $this->_count - 1; $i > -1; $i--) {
+        for ($i = $this->_count - 1; $i > -1; $i--) {
             unset($this->innerList[$i]);
         }
     }
@@ -157,109 +159,109 @@ abstract class TCollection extends TModel implements \Iterator
     public function toString()
     {
         $result = '';
-        for($i = 0; $i < $this->count(); $i++) {
+        for ($i = 0; $i < $this->count(); $i++) {
             $result .= $this->innerList[$i] . "\n";
         }
 
         return $result;
     }
-    
-    public function getSelectQuery()
+
+    public function getSelectQuery(): ?object
     {
-        return false;
+        return null;
     }
 
-    public function getInsertQuery()
+    public function getInsertQuery(): ?object
     {
-        return false;
+        return null;
     }
 
-    public function getUpdateQuery()
+    public function getUpdateQuery(): ?object
     {
-        return false;
+        return null;
     }
 
-    public function getDeleteQuery()
+    public function getDeleteQuery(): ?object
     {
-        return false;
+        return null;
     }
 
     public function select()
     {
         return false;
     }
-    
+
     public function insert()
     {
         $result = false;
         $this->checkDirty();
-        if(!$this->isDirty) return $result;
-        if($this->isFromDB) return $result;
+        if (!$this->isDirty) return $result;
+        if ($this->isFromDB) return $result;
 
-        if($result = TConnector::beginTransaction($this->setTransaction)) {
-        
-            foreach($this as $item) {
+        if ($result = TConnector::beginTransaction($this->setTransaction)) {
+
+            foreach ($this as $item) {
                 $item->setIndex($this->position);
                 $insert = $item->insert();
                 $result = $insert && $result;
-                if($result === false) {
+                if ($result === false) {
                     $rollback = TConnector::rollback();
                     $result = $rollback && $result;
                     break;
                 }
             }
 
-            if($result === true) {
-                if(TApplication::isProd() || TApplication::isTest()) {
+            if ($result === true) {
+                if (TApplication::isProd() || TApplication::isTest()) {
                     $commit = TConnector::commit();
                 } else {
                     $commit = TConnector::rollback();
                 }
-                
+
                 $result = $commit && $result;
             }
         }
-        
+
         $this->setFromDB();
         $this->isDirty = false;
-        
+
         return $result;
     }
-    
+
     public function update()
     {
         $result = false;
         $this->checkDirty();
-        if(!$this->isDirty) return $result;
-        if(!$this->isFromDB) return $result;
-             
-        if($result = TConnector::beginTransaction($this->setTransaction)) {
-        
-            foreach($this as $item) {
-                
+        if (!$this->isDirty) return $result;
+        if (!$this->isFromDB) return $result;
+
+        if ($result = TConnector::beginTransaction($this->setTransaction)) {
+
+            foreach ($this as $item) {
+
                 $update = $item->update();
                 $result = $update && $result;
-                if($result === false) {
+                if ($result === false) {
                     $rollback = TConnector::rollback();
                     $result = $rollback && $result;
                     break;
                 }
             }
 
-            if($result === true) {
-                if(TApplication::isProd() || TApplication::isTest()) {
+            if ($result === true) {
+                if (TApplication::isProd() || TApplication::isTest()) {
                     $commit = TConnector::commit();
                 } else {
                     $commit = TConnector::rollback();
                 }
-                
+
                 $result = $commit && $result;
             }
         }
-        
+
         $this->setFromDB();
         $this->isDirty = false;
-        
+
         return $result;
     }
 
@@ -272,27 +274,25 @@ abstract class TCollection extends TModel implements \Iterator
     public function checkDirty()
     {
         foreach ($this as $child) {
-            if($child->isDirty()) {
+            if ($child->isDirty()) {
                 $this->setDirty();
                 break;
             }
         }
     }
-    
+
     public function convertToWincaramy()
     {
-        foreach($this as $item) {
+        foreach ($this as $item) {
             $item->setWincaramy(true);
         }
-        
+
         $this->insert();
-        
-        foreach($this as $item) {
+
+        foreach ($this as $item) {
             $item->setWincaramy(false);
         }
-        
+
         $this->update();
     }
 }
-
-?>

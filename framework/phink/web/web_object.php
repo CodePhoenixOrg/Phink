@@ -262,10 +262,12 @@ trait TWebObject
 
     public function getQueryParameters(string $param = null)
     {
-        if (!isset($this->parameters[$param])) return false;
+        if (!isset($this->parameters[$param])) {
+            return false;
+        }
 
         $value = $this->parameters[$param];
-        
+
         return $this->filterParameter($value);
     }
 
@@ -273,7 +275,7 @@ trait TWebObject
     {
         $result = filter_var($param, FILTER_SANITIZE_ENCODED);
         $result = html_entity_decode($result, ENT_QUOTES);
-        
+
         return $result;
     }
 
@@ -303,7 +305,7 @@ trait TWebObject
         }
 
         if (empty($className)) {
-            $requestUriParts = explode('/', $REQUEST_URI);
+            $requestUriParts = explode('/', REQUEST_URI);
             $this->viewName = array_pop($requestUriParts);
             $viewNameParts = explode('.', $this->viewName);
             $this->viewName = array_shift($viewNameParts);
@@ -390,6 +392,13 @@ trait TWebObject
                     $this->cssFileName = $path . 'views' . DIRECTORY_SEPARATOR . $this->viewName . CSS_EXTENSION;
                     $this->viewFileName = $path . 'views' . DIRECTORY_SEPARATOR . $this->viewName . PREHTML_EXTENSION;
 
+                } else if ($info->path[0] == '~') {
+                    $path = str_replace("~" . DIRECTORY_SEPARATOR, PHINK_VENDOR_WIDGETS, $info->path) . DIRECTORY_SEPARATOR;
+                    $this->controllerFileName = $path . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
+                    $this->jsControllerFileName = $path . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
+                    $this->cssFileName = $path . 'views' . DIRECTORY_SEPARATOR . $this->viewName . CSS_EXTENSION;
+                    $this->viewFileName = $path . 'views' . DIRECTORY_SEPARATOR . $this->viewName . PREHTML_EXTENSION;
+
                 } else {
                     $this->viewName = \Phink\TAutoloader::innerClassNameToFilename($this->className);
 
@@ -423,7 +432,7 @@ trait TWebObject
         if ($info === null) {
             $viewName = TAutoloader::userClassNameToFilename($typeName);
         }
-        
+
         if ($typeName === null) {
             $actionName = (isset($_REQUEST['action'])) ? $_REQUEST['action'] : '';
         }
@@ -479,7 +488,7 @@ trait TWebObject
             'controllerFileName' => $controllerFileName,
             'jsControllerFileName' => $jsControllerFileName,
             'cssFileName' => $cssFileName,
-            'cacheFileName' => $cacheFileName
+            'cacheFileName' => $cacheFileName,
         ];
 
     }

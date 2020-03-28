@@ -17,11 +17,11 @@
  */
 
 /*
-Possible regex to replace the strpos based method stuff
-$re = '/(<phx:element.[^>]+?[^\/]>)(.*?)(<\/phx:element>)|(<phx:.+?>)|(<\/phx:\w+>)/is';
-preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+    Possible regex to replace the strpos based method stuff
+    $re = '/(<phx:element.[^>]+?[^\/]>)(.*?)(<\/phx:element>)|(<phx:.+?>)|(<\/phx:\w+>)/is';
+    preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
 
- */
+*/
 
 namespace Phink\Xml;
 
@@ -215,7 +215,7 @@ class TXmlDocument extends TObject
         $openQuotePos = strpos($text, QUOTE, $openElementPos);
         $closeQuotePos = strpos($text, QUOTE, $openQuotePos + 1);
         $lastCloseQuotePos = $closeQuotePos;
-        $closeElementPos = strpos($text, CLOSE_TAG, $lastCloseQuotePos);
+        $closeElementPos =  strpos($text, CLOSE_TAG, $lastCloseQuotePos);
         while ($openQuotePos > -1 && $closeQuotePos < $closeElementPos) {
             $key = substr($text, $spacePos + 1, $equalPos - $spacePos - 1);
             $value = substr($text, $openQuotePos + 1, $closeQuotePos - $openQuotePos - 1);
@@ -226,15 +226,15 @@ class TXmlDocument extends TObject
             $equalPos = strpos($text, '=', $spacePos);
             $openQuotePos = strpos($text, QUOTE, $closeQuotePos + 1);
             $closeQuotePos = strpos($text, QUOTE, $openQuotePos + 1);
-            $closeElementPos = strpos($text, CLOSE_TAG, $lastCloseQuotePos);
+            $closeElementPos =  strpos($text, CLOSE_TAG, $lastCloseQuotePos);
             if ($openQuotePos < $closeElementPos && $closeQuotePos > $closeElementPos) {
-                $closeElementPos = strpos($text, CLOSE_TAG, $closeQuotePos);
+                $closeElementPos =  strpos($text, CLOSE_TAG, $closeQuotePos);
             }
         }
         if ($lastCloseQuotePos > -1) {
-            $closeElementPos = strpos($text, CLOSE_TAG, $lastCloseQuotePos);
+            $closeElementPos =  strpos($text, CLOSE_TAG, $lastCloseQuotePos);
         } else {
-            $closeElementPos = strpos($text, CLOSE_TAG, $openElementPos);
+            $closeElementPos =  strpos($text, CLOSE_TAG, $openElementPos);
         }
 
         return [$openElementPos, $closeElementPos, $properties];
@@ -253,10 +253,7 @@ class TXmlDocument extends TObject
 
         $text = $this->_text;
 
-        $result = $this->_parse($tag, $text, $cursor);
-        $openElementPos = $result[0];
-        $closeElementPos = $result[1];
-        $properties = $result[2];
+        list($openElementPos, $closeElementPos, $properties) = $this->_parse($tag, $text, $cursor);
 
         $parentId[0] = -1;
 
@@ -268,6 +265,9 @@ class TXmlDocument extends TObject
             $firstName = $this->elementName($s, $cursor);
 
             $arr = explode(':', $firstName);
+
+            // self::getLogger()->debug('XML_MATCHALL::FIRSTNAME::' . $firstName);
+            // self::getLogger()->debug('ARR::1::EXISTS::' . (isset($arr[1]) ? 'true' : 'false'));
 
             if ($arr[1] == 'eof') {
                 break;
@@ -288,10 +288,10 @@ class TXmlDocument extends TObject
             $this->_list[$i]['parentId'] = $parentId[$depth];
 
             $p = strpos($s, STR_SPACE);
-            // if ($p == strlen($firstName) + 1 && $closeElementPos > $p) {
-            //     $attributes = trim(substr($s, $p + 1, strlen($s) - $p - 3));
-            //     $this->_list[$i]['properties'] = TStringUtils::parameterStringToArray($attributes);
-            // }
+            //            if ($p == strlen($firstName) + 1 && $closeElementPos > $p) {
+            //                $attributes = trim(substr($s, $p + 1, strlen($s) - $p - 3));
+            //                $this->_list[$i]['properties'] = TStringUtils::parameterStringToArray($attributes);
+            //            }
 
             $this->_list[$i]['properties'] = $properties;
 
@@ -311,7 +311,7 @@ class TXmlDocument extends TObject
 
                     $this->_list[$pId]['closer'] = $this->_list[$i];
                     unset($this->_list[$i]);
-                } elseif ($s[1] == QUEST_MARK) {} elseif ($s[strlen($s) - 2] == TERMINATOR) {} elseif ($s[1] == SKIP_MARK) {} else {
+                } elseif ($s[1] == QUEST_MARK) { } elseif ($s[strlen($s) - 2] == TERMINATOR) { } elseif ($s[1] == SKIP_MARK) { } else {
                     $sa = explode(':', $secondName);
                     if (isset($sa[1])) {
                         $this->_list[$i]['childName'] = $sa[1];
@@ -322,11 +322,8 @@ class TXmlDocument extends TObject
                     unset($parentId[$depth]);
                 }
             }
+            list($openElementPos, $closeElementPos, $properties) = $this->_parse($tag, $text, $cursor);
 
-            $result = $this->_parse($tag, $text, $cursor);
-            $openElementPos = $result[0];
-            $closeElementPos = $result[1];
-            $properties = $result[2];
             $cursor = $openElementPos;
 
             $i++;

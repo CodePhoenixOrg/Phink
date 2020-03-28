@@ -35,6 +35,7 @@ class TResponse implements \JsonSerializable
     private $_data = array();
     private $_token = '';
     protected $scriptsList = [];
+    protected $jsoList = [];
 
     public function redirect($url, $code = 301, $override = true) : void
     {
@@ -57,9 +58,19 @@ class TResponse implements \JsonSerializable
         return $this->_data;
     }
 
+    public function addJSObject(string $filename) : void
+    {
+        array_push($this->jsoList, $filename);
+    }
+
     public function addScript(string $filename) : void
     {
         array_push($this->scriptsList, $filename);
+    }
+    
+    public function addScriptFirst(string $filename) : void
+    {
+        array_unshift($this->scriptsList, $filename);
     }
 
 //    public function getScripts()
@@ -148,6 +159,9 @@ class TResponse implements \JsonSerializable
         
         if(count($this->scriptsList)) {
             $this->_data['scripts'] = $this->scriptsList;
+        }
+        if(count($this->jsoList)) {
+            $this->_data['jso'] = $this->jsoList;
         }
 
         if($code === 200) {

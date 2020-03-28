@@ -113,7 +113,7 @@ abstract class TCustomCachedControl extends TCustomControl
             if (!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
                 copy(SRC_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
             }
-            $this->response->addScript($cacheJsFilename);
+            $this->response->addScriptFirst($cacheJsFilename);
         }
         $this->response->setData('view', $html);
     }

@@ -55,21 +55,24 @@ if (APP_IS_WEB) {
 
     if (substr(DOCUMENT_ROOT, -4) === 'web/') {
         define('SRC_ROOT', substr(DOCUMENT_ROOT, 0, -4));
-        define('SITE_ROOT', SRC_ROOT);
-
     } else {
         define('SRC_ROOT', DOCUMENT_ROOT);
-        define('SITE_ROOT', DOCUMENT_ROOT);
     }
+    define('SITE_ROOT', substr(SRC_ROOT, 0, -4));
 
     $appname = pathinfo(SRC_ROOT, PATHINFO_FILENAME);
     define('APP_NAME', $appname);
 
+    // define('PHINK_VENDOR_SRC', 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR);
     define('PHINK_VENDOR_SRC', 'framework' . DIRECTORY_SEPARATOR);
     define('PHINK_VENDOR_LIB', PHINK_VENDOR_SRC . 'phink' . DIRECTORY_SEPARATOR);
+    define('PHINK_VENDOR_WIDGETS', PHINK_VENDOR_SRC . 'widgets' . DIRECTORY_SEPARATOR);
+    define('PHINK_VENDOR_PLUGINS', PHINK_VENDOR_SRC . 'plugins' . DIRECTORY_SEPARATOR);
     define('PHINK_VENDOR_APPS', PHINK_VENDOR_SRC . 'apps' . DIRECTORY_SEPARATOR);
     define('PHINKJS_VENDOR', 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phinkjs' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR);
     define('PHINK_ROOT', SITE_ROOT . PHINK_VENDOR_LIB);
+    define('PHINK_WIDGETS_ROOT', SITE_ROOT . PHINK_VENDOR_WIDGETS);
+    define('PHINK_PLUGINS_ROOT', SITE_ROOT . PHINK_VENDOR_PLUGINS);
     define('PHINK_APPS_ROOT', SITE_ROOT . PHINK_VENDOR_APPS);
     define('PHINKJS_ROOT', SITE_ROOT . PHINKJS_VENDOR);
 
@@ -153,7 +156,6 @@ define('PARTIAL_CONTROL', 'TPartialControl');
 define('CLASS_EXTENSION', '.class.php');
 define('HTML_EXTENSION', '.html');
 define('PREHTML_EXTENSION', '.phtml');
-define('PATTERN_EXTENSION', '.pattern' . PREHTML_EXTENSION);
 define('JS_EXTENSION', '.js');
 define('JSON_EXTENSION', '.json');
 define('CSS_EXTENSION', '.css');
