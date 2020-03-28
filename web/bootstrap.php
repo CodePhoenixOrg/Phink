@@ -1,5 +1,2 @@
 <?php
-
-// include 'phink/phink_library.php';
-// include dirname(__DIR__).'/../vendor/phink/phink/src/phink/phink_library.php';
-include '../vendor/autoload.php';
+include '../framework/phink/phink_library.php';
