@@ -53,7 +53,7 @@
     ],
     "scripts": {
         "post-install-cmd": [
-            "cd framework/apps/egg/src;php app.php --make-phar; cd ../../../..;mv framework/apps/egg/build/egg bin/"
+            "mkdir bin;cd framework/apps/egg/src;php app.php --make-phar; cd ../../../..;mv framework/apps/egg/build/egg bin/"
         ]
     },
     "bin": [
