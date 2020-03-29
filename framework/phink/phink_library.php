@@ -132,6 +132,7 @@ class PhinkLibrary
             'rest/rest_application.php',
             'rest/rest_controller.php',
             'rest/rest_router.php',
+            'core/bootstrap.php',
         ];
 
         if (Phar::running() != '') {
