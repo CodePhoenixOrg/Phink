@@ -19,6 +19,8 @@
 namespace Phink\Web\UI\Widget;
 
 use \Phink\MVC\TPartialController;
+use Phink\Data\IDataStatement;
+
 /**
  * Description of TWidget
  *
@@ -35,7 +37,7 @@ abstract class TWidget extends TPartialController
     protected $forCtrl;
     protected $forApp;
 
-    public function setStatement($value) : void
+    public function setStatement(?IDataStatement $value) : void
     {
         $this->statement = $value;
     }

@@ -55,7 +55,6 @@ class PhinkLibrary
             'data/ui/data_analyser.php',
             'data/ui/data_binder.php',
             'data/ui/data_tag.php',
-            'data/ui/php_error_log',
             'data/ui/select.php',
             'data/client/pdo/pdo_configuration.php',
             'data/client/pdo/pdo_connection.php',
