@@ -86,7 +86,12 @@ class TRequest extends \Phink\Core\TObject
         }
 
         $result = [
-            "$method $uri HTTP/1.0", "Content-Type:text/html; charset=UTF-8", "Accept:text/html, */*; q=0.01", "Cache-Control: no-cache", "Pragma: no-cache", "User-Agent: $ua"
+            // "$method $uri HTTP/1.0",
+            "Content-Type:text/html; charset=UTF-8",
+            "Accept:text/html, */*; q=0.01",
+            "Cache-Control: no-cache",
+            "Pragma: no-cache",
+            "User-Agent: $ua"
         ];
 
         if (HTTP_ORIGIN !== '') {
@@ -131,10 +136,14 @@ class TRequest extends \Phink\Core\TObject
         }
 
         $result = [
-            "POST " . $page . " HTTP/1.0", "Content-Type:application/x-www-form-urlencoded; charset=UTF-8", "Accept:application/json, text/javascript, request/view, */*; q=0.01", "Cache-Control: no-cache", "Pragma: no-cache"
+            "POST " . $page . " HTTP/1.0",
+            "Content-Type:application/x-www-form-urlencoded; charset=UTF-8",
+            "Accept:application/json, text/javascript, request/view, */*; q=0.01",
+            "Cache-Control: no-cache",
+            "Pragma: no-cache",
             //            , "Cookie:PHPSESSID=$cookie"
             //            , "Host:$host"
-            , "User-Agent:$ua"
+            "User-Agent:$ua"
         ];
 
         if (HTTP_ORIGIN !== '') {
@@ -171,10 +180,10 @@ class TRequest extends \Phink\Core\TObject
             $certpath = 'ca-bundle.crt';
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $request['uri']);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
             //            curl_setopt($ch, CURLOPT_CAINFO, $certpath);
             //            curl_setopt($ch, CURLOPT_CAPATH, $certpath);
             if (count($request['header']) > 0) {
@@ -185,7 +194,7 @@ class TRequest extends \Phink\Core\TObject
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $queryString);
             }
-            curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+            curl_setopt($ch, CURLINFO_HEADER_OUT, 1);
 
             $html = curl_exec($ch);
             $error = curl_error($ch);
@@ -223,17 +232,17 @@ class TRequest extends \Phink\Core\TObject
 
         foreach ($this->_subRequests as $name => $request) {
             $ch = curl_init($request['uri']);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLINFO_HEADER_OUT, 1);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
             //            curl_setopt($ch, CURLOPT_CAINFO, $certpath);
             //            curl_setopt($ch, CURLOPT_CAPATH, $certpath);
             if (is_array($request['data'])) {
                 $queryString = http_build_query($request['data']);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $request['header']);
-                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $queryString);
             }
             curl_multi_add_handle($mh, $ch);
@@ -313,7 +322,7 @@ class TRequest extends \Phink\Core\TObject
         // mysql_escape_string
         if (isset($_POST[$arg])) {
             $result = filter_input(INPUT_POST, $arg, FILTER_SANITIZE_STRING);
-            if(is_array($_POST[$arg])) {
+            if (is_array($_POST[$arg])) {
                 $result = filter_input(INPUT_POST, $arg, FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
             }
             return $result;
@@ -380,7 +389,7 @@ class TRequest extends \Phink\Core\TObject
         TRegistry::write('contents', $name, $content);
     }
 
-    public function getRegisteredContents($name): \mixed
+    public function getRegisteredContents($name)
     {
         return TRegistry::read('contents', $name);
     }

@@ -305,7 +305,7 @@ trait TWebObject
         }
 
         if (empty($className)) {
-            $requestUriParts = explode('/', $REQUEST_URI);
+            $requestUriParts = explode('/', REQUEST_URI);
             $this->viewName = array_pop($requestUriParts);
             $viewNameParts = explode('.', $this->viewName);
             $this->viewName = array_shift($viewNameParts);

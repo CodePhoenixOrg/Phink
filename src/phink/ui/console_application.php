@@ -47,7 +47,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
 
         $path = explode(DIRECTORY_SEPARATOR, $this->appDirectory);
         $scriptDir = $this->appDirectory . '..' . DIRECTORY_SEPARATOR;
-        $srcDir = $scriptDir . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
+        $srcDir = $scriptDir . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
         $srcDir = realpath($srcDir) . DIRECTORY_SEPARATOR;
         $siteDir = $srcDir . '..' . DIRECTORY_SEPARATOR;
         $siteDir = realpath($siteDir) . DIRECTORY_SEPARATOR;
@@ -57,7 +57,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         array_pop($path);
         $this->appName = array_pop($path);
 
-        if (\Phar::running() !== '') {
+        if (APP_IS_PHAR) {
             $this->appName = pathinfo($argv[0])['filename'];
             $this->appDirectory = str_replace('phar://', '', $scriptDir);
         }

@@ -29,34 +29,28 @@ use Phink\Core\TObject;
 class TConfigElement extends TObject
 {
 
-    private $_id = '';
     private $_name = '';
     private $_value = '';
     private $_type = '';
 
     public function __construct($id, $name, $value)
     {
-        $this->_id = $id;
+        $this->id = $id;
         $this->_name = $name;
         $this->_value = $value;
     }
 
-    public function getId()
-    {
-        return $this->_id;
-    }
-
-    public function getName()
+    public function getName(): string
     {
         return $this->_name;
     }
 
-    public function getValue()
+    public function getValue(): string
     {
         return $this->_value;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return $this->_type;
     }

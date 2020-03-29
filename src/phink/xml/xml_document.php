@@ -253,10 +253,7 @@ class TXmlDocument extends TObject
 
         $text = $this->_text;
 
-        $result = $this->_parse($tag, $text, $cursor);
-        $openElementPos = $result[0];
-        $closeElementPos = $result[1];
-        $properties = $result[2];
+        list($openElementPos, $closeElementPos, $properties) = $this->_parse($tag, $text, $cursor);
 
         $parentId[0] = -1;
 
@@ -268,6 +265,9 @@ class TXmlDocument extends TObject
             $firstName = $this->elementName($s, $cursor);
 
             $arr = explode(':', $firstName);
+
+            // self::getLogger()->debug('XML_MATCHALL::FIRSTNAME::' . $firstName);
+            // self::getLogger()->debug('ARR::1::EXISTS::' . (isset($arr[1]) ? 'true' : 'false'));
 
             if ($arr[1] == 'eof') {
                 break;
@@ -322,11 +322,8 @@ class TXmlDocument extends TObject
                     unset($parentId[$depth]);
                 }
             }
+            list($openElementPos, $closeElementPos, $properties) = $this->_parse($tag, $text, $cursor);
 
-            $result = $this->_parse($tag, $text, $cursor);
-            $openElementPos = $result[0];
-            $closeElementPos = $result[1];
-            $properties = $result[2];
             $cursor = $openElementPos;
 
             $i++;
