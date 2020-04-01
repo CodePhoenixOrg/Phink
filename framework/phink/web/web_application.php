@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
- 
+
+
 namespace Phink\Web;
 
 //require_once 'phink/core/application.php';
@@ -25,6 +25,7 @@ namespace Phink\Web;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 use Phink\TAutoloader;
 use Phink\Auth\TAuthentication;
 use Phink\Core\TRouter;
@@ -42,7 +43,7 @@ use \Phink\Core\TCustomApplication;
 class TWebApplication extends TCustomApplication implements IHttpTransport, IWebObject
 {
     use \Phink\Web\TWebObject;
-    
+
     protected $params = '';
     protected static $instance = null;
 
@@ -56,8 +57,8 @@ class TWebApplication extends TCustomApplication implements IHttpTransport, IWeb
         $this->authentication = new TAuthentication();
         $this->request = new TRequest();
         $this->response = new TResponse();
-        
-        if(class_exists('Twig\Environment')) {
+
+        if (class_exists('Twig\Environment')) {
             $loader = new \Twig\Loader\FilesystemLoader(VIEW_ROOT);
             $this->twigEnvironment = new \Twig\Environment($loader, [
                 'cache' => CACHE_DIR,
@@ -65,11 +66,12 @@ class TWebApplication extends TCustomApplication implements IHttpTransport, IWeb
         }
     }
 
-    public function getCookie(string $name): ?array {
+    public function getCookie(string $name): ?array
+    {
         return isset(COOKIE[$name]) ? COOKIE[$name] : null;
     }
 
-    public function execute() : void
+    public function execute(): void
     {
         // foreach ($this->commands as $long => $param) {
         //     $short = $param['short'];
@@ -93,36 +95,37 @@ class TWebApplication extends TCustomApplication implements IHttpTransport, IWeb
         // }
     }
 
-    public static function mediaPath() : string
+    public static function mediaPath(): string
     {
         return SERVER_ROOT . '/media/';
     }
 
-    public static function themePath() : string
+    public static function themePath(): string
     {
         return SERVER_ROOT . '/themes/';
     }
 
-    public static function imagePath() : string
+    public static function imagePath(): string
     {
         return self::mediaPath() . 'images';
     }
-    
-    public static function create(...$params) : void
+
+    public static function create(...$params): void
     {
         session_start();
         self::$instance = new TWebApplication();
         self::$instance->run($params);
     }
 
-    public static function getInstance() : TWebApplication
+    public static function getInstance(): TWebApplication
     {
         return self::$instance;
     }
 
-    protected function displayConstants() : array
+    protected function displayConstants(): array
     {
         $constants = [];
+        $constants['REWRITE_BASE'] = REWRITE_BASE;
         $constants['DOCUMENT_ROOT'] = DOCUMENT_ROOT;
         $constants['HTTP_PROTOCOL'] = HTTP_PROTOCOL;
         $constants['SRC_ROOT'] = SRC_ROOT;
@@ -172,7 +175,7 @@ class TWebApplication extends TCustomApplication implements IHttpTransport, IWeb
         return $constants;
     }
 
-    public function run(...$params) : bool
+    public function run(...$params): bool
     {
         $result = true;
 
@@ -197,7 +200,7 @@ class TWebApplication extends TCustomApplication implements IHttpTransport, IWeb
         }
 
         $this->params = $params;
-        
+
         $router = new \Phink\Core\TRouter($this);
         $reqtype = $router->match();
 
@@ -228,53 +231,52 @@ class TWebApplication extends TCustomApplication implements IHttpTransport, IWeb
     {
         $result = false;
         // We get the current token ...
-//        $token = $this->request->getToken();
+        //        $token = $this->request->getToken();
         $token = TRequest::getQueryStrinng('token');
-//        if(!is_string($token) && !isset($_SESSION['USER'])) {
-//            $token = '#!';
-//            $token = TCrypto::generateToken('');
-//        }
+        //        if(!is_string($token) && !isset($_SESSION['USER'])) {
+        //            $token = '#!';
+        //            $token = TCrypto::generateToken('');
+        //        }
 
         self::getLogger()->debug("TRANSLATED ROUTE::" . $router->getPath());
         self::getLogger()->debug("TRANSLATED SRC ROUTE::" . SRC_ROOT . $router->getPath());
         self::getLogger()->debug("TRANSLATED PHINK ROUTE::" . SITE_ROOT . $router->getPath());
-   
-        if ((is_string($token) 
-        || (file_exists(SRC_ROOT . $router->getPath()) || file_exists(SITE_ROOT . $router->getPath())))
+
+        if ((is_string($token)
+                || (file_exists(SRC_ROOT . $router->getPath()) || file_exists(SITE_ROOT . $router->getPath())))
             && $router->isFound()
         ) {
             // We renew the token
             // ... we'll try to match the user with this token and alternatively get a new token
             // so that it can no longer be used
             $token = $this->authentication->renewToken($token);
-//        $result = TAuthentication::getPermissionByToken($token);
+            //        $result = TAuthentication::getPermissionByToken($token);
             // we place the new token in the response
             $this->response->setToken($token);
             $result = true;
         } else {
             $this->response->setReturn(404);
-//            $this->response->redirect(SERVER_ROOT . MAIN_PAGE);
             $result = false;
         }
-        
+
         return $result;
     }
 
-    public static function write($string, ...$params) : void
+    public static function write($string, ...$params): void
     {
         $result = self::_write($string, $params);
         TRegistry::write('console', 'buffer', $result);
         self::getLogger()->debug($result);
     }
-    
-    public static function writeLine($string, ...$params) : void
+
+    public static function writeLine($string, ...$params): void
     {
         $result = self::_write($string, $params);
         TRegistry::write('console', 'buffer', $result);
         self::getLogger()->debug($result . PHP_EOL);
     }
 
-    public static function writeException(\Throwable $ex, $file = null, $line = null) : void
+    public static function writeException(\Throwable $ex, $file = null, $line = null): void
     {
         self::getLogger()->error($ex, $file, $line);
     }

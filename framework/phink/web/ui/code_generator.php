@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 namespace Phink\Web\UI;
 
 use Phink\Registry\TRegistry;
@@ -48,11 +48,11 @@ trait TCodeGenerator
 
         $childName = [];
         $childrenIndex = [];
-        
+
         // $doc->getLogger()->debug('DOC LIST');
         // $doc->getLogger()->debug($docList);
-//        array_push($creations, []);
-        
+        //        array_push($creations, []);
+
         $isFirst = true;
         foreach ($docList as $control) {
             if (in_array($control['name'], ['page', 'echo', 'exec', 'type']) || $control['method'] == 'render') {
@@ -94,7 +94,7 @@ trait TCodeGenerator
                 if ($info) {
                     if (!$info->isAutoloaded) {
                         array_push($requires, '\\Phink\\TAutoloader::import($this, "' . $className . '");');
-//                        array_push($requires, '$this->import("' . $className . '");');
+                        //                        array_push($requires, '$this->import("' . $className . '");');
                     }
                     $fqcn = $info->namespace . '\\' . $className;
                 } elseif ($className !== 'this') {
@@ -104,26 +104,26 @@ trait TCodeGenerator
                     $fullJsCachePath = TAutoloader::cacheJsFilenameFromView($viewName);
                     array_push($requires, '\\Phink\\TAutoloader::import($this, "' . $className . '");');
 
-                    self::$logger->dump('FULL_CLASS_PATH', $fullClassPath);
+                    self::getLogger()->dump('FULL_CLASS_PATH', $fullClassPath);
 
                     list($file, $fqcn, $code) = TAutoloader::includeClass($fullClassPath, RETURN_CODE);
-                    
-                    self::$logger->dump('FULL_QUALIFIED_CLASS_NAME: ', $fqcn);
-                    
+
+                    self::getLogger()->dump('FULL_QUALIFIED_CLASS_NAME: ', $fqcn);
+
                     if (file_exists(DOCUMENT_ROOT . $fullJsCachePath)) {
                         $view->getResponse()->addScriptFirst($fullJsCachePath);
                     }
                     if (file_exists(SRC_ROOT . $fullJsClassPath)) {
-                        copy (SRC_ROOT . $fullJsClassPath, DOCUMENT_ROOT . $fullJsCachePath);
+                        copy(SRC_ROOT . $fullJsClassPath, DOCUMENT_ROOT . $fullJsCachePath);
                         $view->getResponse()->addScriptFirst($fullJsCachePath);
                     }
                     if (file_exists(SITE_ROOT . $fullJsClassPath)) {
-                        copy (SITE_ROOT . $fullJsClassPath, DOCUMENT_ROOT . $fullJsCachePath);
+                        copy(SITE_ROOT . $fullJsClassPath, DOCUMENT_ROOT . $fullJsCachePath);
                         $view->getResponse()->addScriptFirst($fullJsCachePath);
                     }
                     TRegistry::setCode($fullClassPath, $code);
                 }
-            
+
                 $canRender = ($info && $info->canRender || !$info);
                 $notThis = ($className != 'this');
                 $serialize = $canRender && $notThis;
@@ -134,7 +134,7 @@ trait TCodeGenerator
                 }
 
                 $thisControl = '$this' . (($notThis) ? '->' . $controlId . $index : '');
-                
+
                 $creations[$j] = [];
                 $additions[$j] = [];
                 $afterBinding[$j] = [];
@@ -142,8 +142,8 @@ trait TCodeGenerator
                     array_push($creations[$j], '$this->setId("' . $this->getViewName() . '"); ');
                     $isFirst = false;
                 }
-        
-                foreach ($properties as $key=>$value) {
+
+                foreach ($properties as $key => $value) {
                     if ($key == 'id') {
                         if ($serialize) {
                             array_push($creations[$j], 'if(!' . $thisControl . ' = \Phink\Core\TObject::wakeUp("' . $value . '")) {');
@@ -153,7 +153,7 @@ trait TCodeGenerator
                         }
 
                         array_push($creations[$j], $thisControl . '->set' . ucfirst($key) . '("' . $value . '"); ');
-                        
+
                         if ($serialize) {
                             array_push($creations[$j], '}');
                             array_push($additions[$j], 'if(' . $thisControl . ' && !' . $thisControl . '->isAwake()) {');
@@ -169,16 +169,16 @@ trait TCodeGenerator
                         $member = $sa[1];
                         if ($sa[0] == 'var') {
                             //if($key == 'for') {
-//                                    array_push($afterBinding[$j], $thisControl . '->set' . ucfirst($key) . '($this->' . $member . '); ');
-//                                } else {
+                            //                                    array_push($afterBinding[$j], $thisControl . '->set' . ucfirst($key) . '($this->' . $member . '); ');
+                            //                                } else {
                             array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '($this->' . $member . '); ');
-//                                }
+                            //                                }
                         } elseif ($sa[0] == 'prop') {
                             array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '($this->get' . ucfirst($member) . '()); ');
                         }
                         continue;
                     }
-                    if(!empty(strstr($value, '!#base64#'))) {
+                    if (!empty(strstr($value, '!#base64#'))) {
                         $plaintext = substr($value, 9);
                         $plaintext = \base64_decode($plaintext);
                         array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '(<<<PLAIN_TEXT' . PHP_EOL . $plaintext . PHP_EOL . 'PLAIN_TEXT' . PHP_EOL . '); ');
@@ -196,13 +196,13 @@ trait TCodeGenerator
                     array_push($additions[$j], '} ');
                 }
                 array_push($additions[$j], '$this->addChild(' . $thisControl . ');');
-                
+
                 $creations[$j] = implode(PHP_EOL, $creations[$j]);
                 $additions[$j] = implode(PHP_EOL, $additions[$j]);
                 $afterBinding[$j] = implode(PHP_EOL, $afterBinding[$j]);
             }
 
-            
+
             $method = $docList[$j]['method'];
             if ((TRegistry::classInfo($method)  && TRegistry::classCanRender($method)) || !TRegistry::classInfo($method)) {
                 $doc->fieldValue($j, 'method', 'render');
@@ -223,7 +223,7 @@ trait TCodeGenerator
             }
             $objectCreation .= $creations[$matchIndex] . PHP_EOL;
         }
-        
+
         $objectAdditions = PHP_EOL;
         foreach ($matches as $matchIndex) {
             if (!isset($additions[$matchIndex])) {
@@ -239,10 +239,10 @@ trait TCodeGenerator
             }
             $objectAfterBiding .= $afterBinding[$matchIndex] . PHP_EOL;
         }
-        
-        return (object)['creations' => $objectCreation, 'additions' => $objectAdditions, 'afterBinding' => $objectAfterBiding];
+
+        return (object) ['creations' => $objectCreation, 'additions' => $objectAdditions, 'afterBinding' => $objectAfterBiding];
     }
-    
+
     public function writeHTML(TXmlDocument $doc, TCustomView $view)
     {
         $motherView = $view->getMotherView();
@@ -257,7 +257,7 @@ trait TCodeGenerator
 
             $tag = $match->getMethod();
             $name = $match->getName();
-            
+
             if ($tag != 'echo' && $tag != 'exec' && $tag != 'render') {
                 continue;
             }
@@ -266,6 +266,7 @@ trait TCodeGenerator
             $class = $match->properties('class');
             $id = $match->properties('id');
 
+            $const = $match->properties('const');
             $var = $match->properties('var');
             $prop = $match->properties('prop');
             $stmt = $match->properties('stmt');
@@ -279,7 +280,9 @@ trait TCodeGenerator
                 $type = $type . '::' . (($tag == 'exec') ? '' : '$');
             }
 
-            if ($tag == 'echo' && $var) {
+            if ($tag == 'echo' && $const) {
+                $declare = '<?php echo ' . $const . '; ?>';
+            } elseif ($tag == 'echo' && $var) {
                 $declare = '<?php echo ' . $type . $var . '; ?>';
             } elseif ($tag == 'echo' && $prop) {
                 $declare = '<?php echo ' . $type . 'get' . ucfirst($prop) . '(); ?>';

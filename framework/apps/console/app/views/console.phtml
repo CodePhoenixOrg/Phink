@@ -10,9 +10,9 @@
 
     <!-- <link href="/css/_3rdparty.css" rel="stylesheet"> -->
     <!-- <link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet"> -->
-    <script type="text/javascript" 
-            data-depends="/js/_3rdparty.js" 
-            src="/phink.js">
+    <script data-rewritebase="<phx:echo const="REWRITE_BASE" />"
+            data-depends="<phx:echo const="REWRITE_BASE" />js/_3rdparty.js" 
+            src="<phx:echo const="REWRITE_BASE" />phink.js">
     </script>
 
 </head>
@@ -51,7 +51,7 @@
     <phx:TConsoleWindow id="console0" />
     <script>
         var con = null;
-        var conHost = window.location.hostname;
+        var conHost = window.location.hostname + '<phx:echo const="REWRITE_BASE" />';
         var conName = '<phx:echo var="consoleName" />'
         document.querySelector(':root').style.setProperty('--back-color', '<phx:echo var="themeBackColor" />');
         document.querySelector(':root').style.setProperty('--fore-color', '<phx:echo var="themeForeColor" />');

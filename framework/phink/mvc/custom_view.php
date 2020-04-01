@@ -241,7 +241,7 @@ abstract class TCustomView extends TCustomControl
                 copy(SRC_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
             }
             // \Phink\Utils\TFileUtils::webPath($this->getCssFileName())
-            $scripts = "<script src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheJsFilename . "'></script>" . PHP_EOL;
+            $scripts = "<script src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . REWRITE_BASE . $cacheJsFilename . "'></script>" . PHP_EOL;
         }
         if (file_exists(SITE_ROOT . $this->getJsControllerFileName())) {
             $cacheJsFilename = TAutoloader::cacheJsFilenameFromView($this->getViewName());
@@ -251,7 +251,7 @@ abstract class TCustomView extends TCustomControl
 
             }
             // \Phink\Utils\TFileUtils::webPath($this->getCssFileName())
-            $scripts = "<script src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheJsFilename . "'></script>" . PHP_EOL;
+            $scripts = "<script src='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . REWRITE_BASE . $cacheJsFilename . "'></script>" . PHP_EOL;
         }
 
         return $scripts;
@@ -270,7 +270,7 @@ abstract class TCustomView extends TCustomControl
             }
             //\Phink\Utils\TFileUtils::webPath($this->getCssFileName()
             // $scripts .= "<script>Phink.Web.Object.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "');</script>" . PHP_EOL;
-            $head = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "' />" . PHP_EOL;
+            $head = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . REWRITE_BASE . $cacheCssFilename . "' />" . PHP_EOL;
         }
         if (file_exists(SITE_ROOT . $this->getCssFileName()) && $this->getType() == 'TView') {
             $cacheCssFilename = TAutoloader::cacheCssFilenameFromView($this->getViewName());
@@ -279,7 +279,7 @@ abstract class TCustomView extends TCustomControl
             }
             //\Phink\Utils\TFileUtils::webPath($this->getCssFileName()
             // $scripts .= "<script>Phink.Web.Object.getCSS('" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "');</script>" . PHP_EOL;
-            $head = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . WEB_SEPARATOR . $cacheCssFilename . "' />" . PHP_EOL;
+            $head = "<link rel='stylesheet' href='" . ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . REWRITE_BASE . $cacheCssFilename . "' />" . PHP_EOL;
         }
 
         return $head;

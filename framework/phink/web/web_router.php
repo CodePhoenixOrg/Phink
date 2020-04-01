@@ -22,6 +22,7 @@ use Phink\Core\TRouter;
 use Phink\Registry\TRegistry;
 use Phink\TAutoloader;
 use Phink\MVC\TView;
+
 /**
  * Description of router
  *
@@ -36,7 +37,6 @@ class TWebRouter extends TRouter
         $this->clonePrimitivesFrom($parent);
 
         $this->translation = $parent->getTranslation();
-
     }
 
     public function translate(): bool
@@ -74,17 +74,17 @@ class TWebRouter extends TRouter
     public function dispatch(): bool
     {
 
-        if($this->componentIsInternal) {
+        if ($this->componentIsInternal) {
             $dir = SITE_ROOT . $this->dirName . DIRECTORY_SEPARATOR;
 
             self::getLogger()->debug('BOOTSTRAP PATH::' . $dir . 'bootstrap' . CLASS_EXTENSION);
 
-            if(file_exists($dir . 'bootstrap' . CLASS_EXTENSION)) {
+            if (file_exists($dir . 'bootstrap' . CLASS_EXTENSION)) {
                 list($namespace, $className, $classText) = TAutoloader::getClassDefinition($dir . 'bootstrap' . CLASS_EXTENSION);
                 include $dir . 'bootstrap' . CLASS_EXTENSION;
-    
+
                 $bootstrapClass = $namespace . '\\'  . $className;
-    
+
                 $bootstrap = new $bootstrapClass($dir);
                 $bootstrap->start();
             }
@@ -97,7 +97,7 @@ class TWebRouter extends TRouter
             return true;
         }
 
-//        $modelClass = ($include = TAutoloader::includeModelByName($this->viewName)) ? $include['type'] : DEFALT_MODEL;
+        //        $modelClass = ($include = TAutoloader::includeModelByName($this->viewName)) ? $include['type'] : DEFALT_MODEL;
         //        include $include['file'];
         //        $model = new $modelClass();
         $include = $this->includeController();
@@ -116,16 +116,17 @@ class TWebRouter extends TRouter
 
     public function setNamespace(): void
     {
-        if (strstr(SERVER_NAME, 'localhost')) {
-            $this->namespace = CUSTOM_NAMESPACE;
-        } else {
-            $sa = explode('.', SERVER_NAME);
+        $sa = explode('.', SERVER_NAME);
+        if(count($sa) == 0) {
+            $sa = [SERVER_NAME];
+        }
+        if(count($sa) > 1 ) {
             array_pop($sa);
             if (count($sa) == 2) {
                 array_shift($sa);
             }
-            $this->namespace = str_replace('-', '_', ucfirst($sa[0]));
         }
+        $this->namespace = str_replace('-', '_', ucfirst($sa[0]));
         $this->namespace .= '\\Controllers';
     }
 
@@ -152,5 +153,4 @@ class TWebRouter extends TRouter
 
         return [$file, $type, $code];
     }
-
 }

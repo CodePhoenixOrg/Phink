@@ -20,8 +20,7 @@ namespace Phink;
 
 use Phink\Core\TStaticObject;
 use Phink\Registry\TRegistry;
-use Phink\JavaScript\PhinkBuilder;
-use Phink\Core\IObject;
+use Phink\Web\UI\TCustomCachedControl;
 
 class TAutoloader extends TStaticObject
 {
@@ -358,7 +357,7 @@ class TAutoloader extends TStaticObject
         return true;
     }
 
-    public static function loadCachedFile(Web\IWebObject $parent): IObject
+    public static function loadCachedFile(Web\IWebObject $parent): TCustomCachedControl
     {
         self::getLogger()->dump('PARENT OBJECT', $parent->getType());
         self::getLogger()->dump('PARENT OBJECT', $parent->getClassName());

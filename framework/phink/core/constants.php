@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 namespace Phink\Core;
 
 define('WEB_SEPARATOR', '/');
@@ -29,16 +29,36 @@ define('APP_IS_WEB', ($document_root !== ''));
 define('APP_IS_PHAR', (\Phar::running() !== ''));
 define('ROOT_NAMESPACE', 'Phink');
 define('ROOT_PATH', 'phink');
-
+// define('DOCUMENT_SCRIPT', $_SERVER['SCRIPT_FILENAME']);
 if (APP_IS_WEB) {
     define('BR', "<br />");
+
     if (PHP_OS == 'WINNT') {
-        $document_root = str_replace('\\\\', '\\', $document_root) . '\\';
-    } elseif (PHP_OS == 'Linux') {
-        $document_root = $document_root . '/';
-    } else {
-        $document_root = $document_root . '/';
+        $document_root = str_replace('\\\\', '\\', $document_root);
     }
+
+    if (substr($document_root, -4) !== 'web/') {
+        $document_root = pathinfo($_SERVER['SCRIPT_FILENAME'], PATHINFO_DIRNAME);
+    }
+
+    define('DOCUMENT_ROOT', $document_root . DIRECTORY_SEPARATOR);
+    define('SRC_ROOT', substr(DOCUMENT_ROOT, 0, -4));
+
+    $rewrite_base = '/';
+    if ($htaccess = file_get_contents(DOCUMENT_ROOT . '.htaccess')) {
+
+        $htaccess = strtolower($htaccess);
+        $htaccess = str_replace(PHP_EOL, ';', $htaccess);
+        $ps = strpos($htaccess, 'rewritebase');
+        if ($ps > -1) {
+            $ps += 11;
+            $pe = strpos($htaccess, ';', $ps);
+            $rewrite_base = substr($htaccess, $ps, $pe - $ps);
+            $rewrite_base = trim($rewrite_base);
+        }
+    }
+    define('REWRITE_BASE', $rewrite_base);
+
     $scheme = 'http';
     if (strstr($_SERVER['SERVER_SOFTWARE'], 'IIS')) {
         $scheme = ($_SERVER['HTTPS'] == 'off') ? 'http' : 'https';
@@ -49,18 +69,11 @@ if (APP_IS_WEB) {
     } elseif (strstr($_SERVER['SERVER_SOFTWARE'], 'nginx')) {
         $scheme = strstr($_SERVER['SERVER_PROTOCOL'], 'HTPPS') ? 'https' : 'http';
     }
-    
-    define('DOCUMENT_ROOT', $document_root);
-    define('HTTP_PROTOCOL', $scheme);
 
-    if (substr(DOCUMENT_ROOT, -4) === 'web/') {
-        define('SRC_ROOT', substr(DOCUMENT_ROOT, 0, -4));
-    } else {
-        define('SRC_ROOT', DOCUMENT_ROOT);
-    }
+    define('HTTP_PROTOCOL', $scheme);
     define('SITE_ROOT', substr(SRC_ROOT, 0, -4));
 
-    $appname = pathinfo(SRC_ROOT, PATHINFO_FILENAME);
+    $appname = pathinfo(SITE_ROOT, PATHINFO_FILENAME);
     define('APP_NAME', $appname);
 
     // define('PHINK_VENDOR_SRC', 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR);
@@ -86,7 +99,7 @@ if (APP_IS_WEB) {
     define('PUZZLEJS_ROOT', SITE_ROOT . PUZZLEJS_VENDOR);
 
     define('APP_DIR', 'app' . DIRECTORY_SEPARATOR);
-    
+
     define('APP_ROOT', SRC_ROOT . APP_DIR);
     define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
     define('MODEL_ROOT', APP_ROOT . 'models' . DIRECTORY_SEPARATOR);
@@ -102,9 +115,9 @@ if (APP_IS_WEB) {
     define('RUNTIME_JS_DIR', DOCUMENT_ROOT . REL_RUNTIME_JS_DIR);
     define('RUNTIME_CSS_DIR', DOCUMENT_ROOT . REL_RUNTIME_CSS_DIR);
     define('CACHE_DIR', SRC_ROOT . 'cache' . DIRECTORY_SEPARATOR);
-    
+
     define('LOG_PATH', SRC_ROOT . 'logs' . DIRECTORY_SEPARATOR);
-    
+
     define('PAGE_NUMBER', 'pagen');
     define('PAGE_COUNT', 'pagec');
     define('PAGE_NUMBER_DEFAULT', 1);
@@ -141,9 +154,6 @@ if (APP_IS_WEB) {
     define('DEFAULT_PARTIAL_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TPartialController');
     define('DEFAULT_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TControl');
     define('DEFAULT_PARTIAL_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TPartialControl');
-
-
-
 } else {
     define('DOCUMENT_ROOT', '');
     define('LOG_PATH', './logs/');
@@ -200,4 +210,3 @@ $appname = '';
 //     $appname = array_pop($apppath);
 //     $appname = strtolower(array_pop($apppath));
 // }
-
