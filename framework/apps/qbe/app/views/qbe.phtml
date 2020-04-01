@@ -11,8 +11,8 @@
     <!-- <link href="/css/_3rdparty.css" rel="stylesheet"> -->
     <!-- <link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet"> -->
     <script type="text/javascript" 
-            data-depends="/js/_3rdparty.js" 
-            src="/phink.js">
+            data-depends="js/_3rdparty.js" 
+            src="<phx:echo const="REWRITE_BASE" />phink.js">
     </script>
 
 </head>
@@ -48,7 +48,7 @@
     <phx:TQbeWindow id="qbe0" />
     <script>
         var qbe = null;
-        var qbeHost = window.location.hostname;
+        var qbeHost = window.location.hostname + '<phx:echo const="REWRITE_BASE" />';
         var qbeName = '<phx:echo var="qbeName" />'
         document.querySelector(':root').style.setProperty('--back-color', '<phx:echo var="themeBackColor" />');
         document.querySelector(':root').style.setProperty('--fore-color', '<phx:echo var="themeForeColor" />');
