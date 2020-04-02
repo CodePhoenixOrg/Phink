@@ -45,17 +45,8 @@ if (APP_IS_WEB) {
     define('SRC_ROOT', substr(DOCUMENT_ROOT, 0, -4));
 
     $rewrite_base = '/';
-    if ($htaccess = file_get_contents(DOCUMENT_ROOT . '.htaccess')) {
-
-        $htaccess = strtolower($htaccess);
-        $htaccess = str_replace(PHP_EOL, ';', $htaccess);
-        $ps = strpos($htaccess, 'rewritebase');
-        if ($ps > -1) {
-            $ps += 11;
-            $pe = strpos($htaccess, ';', $ps);
-            $rewrite_base = substr($htaccess, $ps, $pe - $ps);
-            $rewrite_base = trim($rewrite_base);
-        }
+    if ($rewrite_base = file_get_contents(SRC_ROOT . 'config' . DIRECTORY_SEPARATOR . 'rewrite_base')) {
+        $rewrite_base = trim($rewrite_base);
     }
     define('REWRITE_BASE', $rewrite_base);
 

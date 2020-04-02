@@ -184,19 +184,15 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
     private function _translateRoutes(array &$routes, $rewritebase) : void
     {
         foreach($routes as $type => $methods) {
-            
             // type = rest / web
             // methods = get / post / put / delete
-
             foreach ($methods as $method => $entry) {
-
                 foreach($entry as $route => $rule) {
                     unset($routes[$type][$method][$route]);
                     $route = str_replace('^/', '^' . $rewritebase, $route);
                     $routes[$type][$method][$route] = $rule;
                 }
             }
-
         }
     } 
 

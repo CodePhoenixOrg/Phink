@@ -13,3 +13,4 @@ puzzle.js
 *builder.lock
 _3rdparty*
 *.db
+index.php
