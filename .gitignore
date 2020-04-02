@@ -14,3 +14,6 @@ puzzle.js
 _3rdparty*
 *.db
 index.php
+images
+rewrite_base
+.htaccess

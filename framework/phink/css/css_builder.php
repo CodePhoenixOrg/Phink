@@ -105,6 +105,9 @@ class CssBuilder {
             $filename = str_replace("/", DIRECTORY_SEPARATOR, $filename);
             $imagePath = explode(DIRECTORY_SEPARATOR, $filename);
             $image = array_pop($imagePath);
+            if(!file_exists($destdir . 'images')) {
+                mkdir($destdir . 'images', 0755, false);
+            }
             copy($srcdir . $filename, $destdir . 'images' . DIRECTORY_SEPARATOR . $image);
         }
 
@@ -119,6 +122,9 @@ class CssBuilder {
             $filename = str_replace("/", DIRECTORY_SEPARATOR, $filename);
             $fontPath = explode(DIRECTORY_SEPARATOR, $filename);
             $font = array_pop($fontPath);
+            if(!file_exists(DOCUMENT_ROOT . 'fonts')) {
+                mkdir(DOCUMENT_ROOT . 'fonts', 0755, false);
+            }
             copy($srcdir . $filename, DOCUMENT_ROOT . 'fonts' . DIRECTORY_SEPARATOR . $font);
         }        
 
