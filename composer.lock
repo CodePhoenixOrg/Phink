@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9b26dec96faadea66cd8c9b0a9e15f3e",
+    "content-hash": "ad7f7128ee0c3c5778de8f303d21b929",
     "packages": [
         {
             "name": "components/bootstrap",
@@ -290,44 +290,6 @@
             "time": "2016-09-16T05:47:55+00:00"
         },
         {
-            "name": "phink/phinkjs",
-            "version": "dev-develop",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/CodePhoenixOrg/PhinkJS.git",
-                "reference": "dbbaa5de4cb5fd8ef44b84c77678e3e3bc96dc4e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/CodePhoenixOrg/PhinkJS/zipball/dbbaa5de4cb5fd8ef44b84c77678e3e3bc96dc4e",
-                "reference": "dbbaa5de4cb5fd8ef44b84c77678e3e3bc96dc4e",
-                "shasum": ""
-            },
-            "require": {
-                "components/bootstrap": "=3.3.5",
-                "components/bootstrap-default": "=3.3.5",
-                "components/font-awesome": "=4.7.0",
-                "components/jquery": ">=1.9.1",
-                "components/jqueryui": ">=1.12.1"
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0+"
-            ],
-            "authors": [
-                {
-                    "name": "David Blanchard",
-                    "email": "dblanchard1@bbox.fr",
-                    "homepage": "https://code-phoenix.org",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Client and server side Javascript framework",
-            "homepage": "https://phink.org",
-            "time": "2020-04-01T20:01:56+00:00"
-        },
-        {
             "name": "symfony/polyfill-ctype",
             "version": "v1.15.0",
             "source": {
@@ -513,9 +475,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "phink/phinkjs": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
