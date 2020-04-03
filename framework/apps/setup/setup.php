@@ -2,8 +2,7 @@
 
 namespace Phink;
 
-use Phink\JavaScript\PhinkBuilder;
-use Phink\Utils\TZip;
+use Phink\Log\TLog;
 use Phink\Web\TCurl;
 
 class Setup
@@ -28,34 +27,46 @@ class Setup
 
     public function installPhinkJS(): bool
     {
-        $filename = 'phinkjs.tar.gz';
-        $tarfilename = 'phinkjs.tar';
+        $ok = false;
 
-        $filepath = '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'framework'  . DIRECTORY_SEPARATOR;
+        try {
 
+            $filename = 'phinkjs.tar.gz';
+            $tarfilename = 'phinkjs.tar';
 
-        if (file_exists($tarfilename)) {
-            unlink($tarfilename);
+            $filepath = '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'framework'  . DIRECTORY_SEPARATOR;
+
+            if (file_exists($tarfilename)) {
+                unlink($tarfilename);
+            }
+
+            $curl = new TCurl();
+            $result = $curl->request('https://github.com/CodePhoenixOrg/PhinkJS/archive/master.tar.gz');
+            $ok = false !== file_put_contents($filename, $result->content);
+
+            $p = new \PharData($filename);
+            $p->decompress();
+
+            if (file_exists($filename)) {
+                unlink($filename);
+            }
+
+            $phar = new \PharData($tarfilename);
+            $phar->extractTo($filepath);
+
+            if (file_exists($tarfilename)) {
+                unlink($tarfilename);
+            }
+
+            chdir($filepath);
+
+            $ok = $ok && rename('PhinkJS-master', 'phinkjs');
+            
+        } catch (\Exception $ex) {
+            $ok = false;
+            $log = TLog::create();
+            $log->error($ex);
         }
-
-        $curl = new TCurl();
-        $result = $curl->request('https://github.com/CodePhoenixOrg/PhinkJS/archive/master.tar.gz');
-        file_put_contents($filename, $result->content);
-
-        $p = new \PharData($filename);
-        $p->decompress(); // creates files.tar
-
-        unlink($filename);
-
-        // unarchive from the tar
-        $phar = new \PharData($tarfilename);
-        $phar->extractTo($filepath);
-
-        chdir($filepath);
-
-        $ok = rename('PhinkJS-master', 'phinkjs');
-
-        unlink($tarfilename);
 
         return $ok;
     }
