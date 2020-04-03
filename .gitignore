@@ -19,3 +19,4 @@ rewrite_base
 .htaccess
 fonts
 assets
+framework/phinkjs

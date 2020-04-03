@@ -28,15 +28,34 @@ class Setup
 
     public function installPhinkJS(): bool
     {
-        $zipname = 'phinkjs.zip';
+        $filename = 'phinkjs.tar.gz';
+        $tarfilename = 'phinkjs.tar';
+
+        $filepath = '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'framework'  . DIRECTORY_SEPARATOR;
+
+
+        if (file_exists($tarfilename)) {
+            unlink($tarfilename);
+        }
+
         $curl = new TCurl();
-        $result = $curl->request('https://github.com/CodePhoenixOrg/PhinkJS/archive/master.zip');
-        file_put_contents('framework'  . DIRECTORY_SEPARATOR . $zipname, $result->content);
-        $zip = new TZip();
-        $zip->inflate($zipname, false, false, true);
-        chdir('framework');
-        $ok = rename('phinkjs-master', 'phinkjs');
-        unlink($zipname);
+        $result = $curl->request('https://github.com/CodePhoenixOrg/PhinkJS/archive/master.tar.gz');
+        file_put_contents($filename, $result->content);
+
+        $p = new \PharData($filename);
+        $p->decompress(); // creates files.tar
+
+        unlink($filename);
+
+        // unarchive from the tar
+        $phar = new \PharData($tarfilename);
+        $phar->extractTo($filepath);
+
+        chdir($filepath);
+
+        $ok = rename('PhinkJS-master', 'phinkjs');
+
+        unlink($tarfilename);
 
         return $ok;
     }

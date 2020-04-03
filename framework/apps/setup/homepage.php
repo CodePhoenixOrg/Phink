@@ -84,7 +84,7 @@ class SetupPage
     public function displayHtml(): void
     {
 ?>
-        <html lang="en">
+        <html>
 
         <head>
             <meta charset="utf-8" />
@@ -260,7 +260,6 @@ class SetupPage
                     }
                 );
 
-
                 PhinkSetup.ajax(PhinkSetup.URL, {
                         "action": "js"
                     },
@@ -268,7 +267,6 @@ class SetupPage
                         PhinkSetup.operationState(2, data.error);
                     }
                 );
-
 
                 PhinkSetup.ajax(PhinkSetup.URL, {
                         "action": "index"

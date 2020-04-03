@@ -24,7 +24,7 @@ namespace Phink\Web;
  *
  * @author dpjb
  */
-class TCurl extends \Phink\Core\TStaticObject {
+class TCurl {
     //put your code here
     
     public function request($uri, $header = [], $data = []) : object
