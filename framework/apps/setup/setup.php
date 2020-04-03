@@ -3,28 +3,45 @@
 namespace Phink;
 
 use Phink\JavaScript\PhinkBuilder;
+use Phink\Utils\TZip;
+use Phink\Web\TCurl;
 
 class Setup
 {
 
     private $_rewriteBase = '/';
 
-    public static function run(): void
+    public static function create(): Setup
     {
-        new Setup();
+        return new Setup();
     }
 
     public function __construct()
     {
         $this->_rewriteBase =  pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME) . DIRECTORY_SEPARATOR;
-
-        $this->_fixRewritBase();
-        $this->_makeIndex();
-
-        header('Location: ' . $this->_rewriteBase);
     }
 
-    private function _fixRewritBase(): void
+    public function getRewriteBase(): string
+    {
+        return $this->_rewriteBase;
+    }
+
+    public function installPhinkJS(): bool
+    {
+        $zipname = 'phinkjs.zip';
+        $curl = new TCurl();
+        $result = $curl->request('https://github.com/CodePhoenixOrg/PhinkJS/archive/master.zip');
+        file_put_contents('framework'  . DIRECTORY_SEPARATOR . $zipname, $result->content);
+        $zip = new TZip();
+        $zip->inflate($zipname, false, false, true);
+        chdir('framework');
+        $ok = rename('phinkjs-master', 'phinkjs');
+        unlink($zipname);
+
+        return $ok;
+    }
+
+    public function fixRewritBase(): bool
     {
         if (($htaccess = file_get_contents('.htaccess')) && file_exists('bootstrap.php')) {
             $htaccess = str_replace(PHP_EOL, ';', $htaccess);
@@ -40,13 +57,15 @@ class Setup
                 $htaccess = str_replace($rewriteBaseEntry, $rewriteBaseKey . ' ' . $this->_rewriteBase, $htaccess);
                 $htaccess = str_replace(';', PHP_EOL, $htaccess);
 
-                file_put_contents('.htaccess', $htaccess);
-                file_put_contents('..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'rewrite_base', $this->_rewriteBase);
+                $ok = false !== file_put_contents('.htaccess', $htaccess);
+                $ok = $ok && false !== file_put_contents('..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'rewrite_base', $this->_rewriteBase);
+
+                return $ok;
             }
         }
     }
 
-    private function _makeIndex(): void
+    public function makeIndex(): bool
     {
         $index = <<<INDEX
         <?php
@@ -56,6 +75,6 @@ class Setup
     
         INDEX;
 
-        file_put_contents('index.php', $index);
+        return false !== file_put_contents('index.php', $index);
     }
 }

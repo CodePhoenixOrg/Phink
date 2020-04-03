@@ -328,7 +328,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         if (file_exists($filename)) {
             self::writeLine('Inflating Phink master archive');
             $zip = new \Phink\Utils\TZip();
-            $zip->deflat($filename);
+            $zip->inflate($filename);
         }
 
         if (file_exists($master)) {
