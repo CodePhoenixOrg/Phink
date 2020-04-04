@@ -48,6 +48,7 @@ if (APP_IS_WEB) {
     if ($rewrite_base = file_get_contents(SRC_ROOT . 'config' . DIRECTORY_SEPARATOR . 'rewrite_base')) {
         $rewrite_base = trim($rewrite_base);
     }
+
     define('REWRITE_BASE', $rewrite_base);
 
     $scheme = 'http';
