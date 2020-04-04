@@ -9,6 +9,6 @@ services:
     volumes:
      - ./src:/src
      - ./vendor:/vendor
-     
+     - ./framework:/framework
 
 
