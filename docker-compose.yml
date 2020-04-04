@@ -1,0 +1,14 @@
+version: "3.0"
+services:
+  php:
+    build: ./docker
+    image: lap:phink
+    ports:
+     - '8080:80'
+     - '8443:443'
+    volumes:
+     - ./src:/src
+     - ./vendor:/vendor
+     
+
+
