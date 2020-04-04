@@ -99,7 +99,7 @@ input[type="radio"] {
 }
 
 
-input:matches([type="password"], [type="search"]) {
+input[type="password"], [type="search"] {
     -webkit-appearance: textfield;
     color: text;
     background-color: -apple-system-control-background;
@@ -126,7 +126,7 @@ input:matches([type="password"], [type="search"]) {
     cursor: auto;
 }
 
-input:matches([type="radio"], [type="checkbox"]) {
+input[type="radio"], [type="checkbox"] {
     padding-top: initial;
     padding-right: initial;
     padding-bottom: initial;
@@ -144,6 +144,8 @@ input:matches([type="radio"], [type="checkbox"]) {
     border-left-color: initial;
     border-left-style: initial;
     border-left-width: initial;
+    margin: 4px 4px 4px 4px !important;
+    line-height: normal;
 }
 
 input,
@@ -240,9 +242,4 @@ select {
     border-style: solid;
     border-color: rgb(166, 166, 166);
     border-image: initial;
-}
-
-input[type="radio"], input[type="checkbox"] {
-    margin: 4px 4px 4px 4px !important;
-    line-height: normal;
 }
