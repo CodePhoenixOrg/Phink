@@ -7,7 +7,6 @@ use Phink\Web\TCurl;
 
 class Setup
 {
-
     private $_rewriteBase = '/';
 
     public static function create(): Setup
@@ -61,7 +60,6 @@ class Setup
             chdir($filepath);
 
             $ok = $ok && rename('PhinkJS-master', 'phinkjs');
-            
         } catch (\Exception $ex) {
             $ok = false;
             $log = TLog::create();
@@ -98,12 +96,12 @@ class Setup
     public function makeIndex(): bool
     {
         $index = <<<INDEX
-        <?php
-        include 'bootstrap.php';
-        
-        Phink\Web\TWebApplication::create();
-    
-        INDEX;
+<?php
+include 'bootstrap.php';
+
+Phink\Web\TWebApplication::create();
+
+INDEX;
 
         return false !== file_put_contents('index.php', $index);
     }

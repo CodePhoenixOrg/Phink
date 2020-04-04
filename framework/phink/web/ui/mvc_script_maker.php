@@ -105,86 +105,86 @@ class TMvcScriptMaker extends TObject
         $updateParams = join(',' . "\n", $updateParamsArray);
 
         $script = <<< SCRIPT
-        namespace Phink\Apps\Admin;
+namespace Phink\Apps\Admin;
 
-        use PDO;
-        use Phink\Data\Client\PDO\TPdoConnection;
-        use Phink\MVC\TPartialController;
-        use Phink\Registry\TRegistry;
-        use Puzzle\Data\Controls as DataControls;
-        use Puzzle\Menus;
+use PDO;
+use Phink\Data\Client\PDO\TPdoConnection;
+use Phink\MVC\TPartialController;
+use Phink\Registry\TRegistry;
+use Puzzle\Data\Controls as DataControls;
+use Puzzle\Menus;
 
-        class $classname extends TPartialController
-        {
+class $classname extends TPartialController
+{
 
-            // tools
-            protected \$page_id, \$cs, \$datacontrols, \$conf, \$lang, \$db_prefix, \$query,
-                \$page_colors, \$grid_colors, \$panel_colors, \$action;
+    // tools
+    protected \$page_id, \$cs, \$datacontrols, \$conf, \$lang, \$db_prefix, \$query,
+        \$page_colors, \$grid_colors, \$panel_colors, \$action;
 
-            // view fields
-            protected $protecteds
+    // view fields
+    protected $protecteds
 
-            public function beforeBinding(): void
-            {
-                \$this->lang = TRegistry::ini('application', 'lang');
-                \$this->db_prefix = TRegistry::ini('data', 'db_prefix');
-                \$this->conf = TRegistry::ini('data', 'conf');
-                \$this->datacontrols = new DataControls(\$this->lang, \$this->db_prefix);
-                \$this->menus = new Menus(\$this->lang, \$this->db_prefix);
-                \$this->page_colors = (object)TRegistry::ini('page_colors');
-                \$this->grid_colors = (object)TRegistry::ini('grid_colors');
-                \$this->panel_colors = (object)TRegistry::ini('panel_colors');
+    public function beforeBinding(): void
+    {
+        \$this->lang = TRegistry::ini('application', 'lang');
+        \$this->db_prefix = TRegistry::ini('data', 'db_prefix');
+        \$this->conf = TRegistry::ini('data', 'conf');
+        \$this->datacontrols = new DataControls(\$this->lang, \$this->db_prefix);
+        \$this->menus = new Menus(\$this->lang, \$this->db_prefix);
+        \$this->page_colors = (object)TRegistry::ini('page_colors');
+        \$this->grid_colors = (object)TRegistry::ini('grid_colors');
+        \$this->panel_colors = (object)TRegistry::ini('panel_colors');
 
-                \$this->cs = TPdoConnection::opener('niduslite_conf');
-                \$this->query = getArgument('query', 'SELECT');
-                \$event = getArgument('event', 'onLoad');
-                \$this->action = getArgument('action', 'Ajouter');
-                \$this->page_id = getArgument('id', -1);
-                \$this->$indexfield = getArgument('$indexfield');
-                if(\$event === 'onLoad' && \$this->query === 'ACTION') {
-                    switch (\$this->action) {
-                    case 'Ajouter':
-        $blankValues
-                        break;
-                    case 'Modifier':
-                        \$sql="select * from $table where $indexfield='\$this->$indexfield';";
-                        \$stmt = \$this->cs->query(\$sql);
-                        \$rows = \$stmt->fetch(PDO::FETCH_ASSOC);
-        $selectValues;
-                    break;
-                    }
-                } else if(\$event === 'onRun' && \$this->query === 'ACTION') {
-                    switch (\$this->action) {
-                    case 'Ajouter':
-        $insertFilterPost;
-                        \$sql = <<<SQL
-                        insert into $table (
-        $insertFields
-                        ) values (
-        $insertValues
-                        )
-                        SQL;
-                       \$stmt = \$this->cs->query(\$sql, $prepareInsert);
-                    break;
-                    case 'Modifier':
-        $updateFilterPost
-                        \$sql=<<<SQL
-                        update $table set
-        $updateParams
-                        where $indexfield = '\$this->$indexfield';
-                        SQL;
-                        \$stmt = \$this->cs->query(\$sql, $prepareUpdate);
-                    break;
-                    case 'Supprimer':
-                        \$sql = "delete from $table where $indexfield='\$this->$indexfield'";
-                        \$stmt = \$this->cs->query(\$sql);
-                    break;
-                    }
-                    \$this->query = 'SELECT';
-                }
+        \$this->cs = TPdoConnection::opener('niduslite_conf');
+        \$this->query = getArgument('query', 'SELECT');
+        \$event = getArgument('event', 'onLoad');
+        \$this->action = getArgument('action', 'Ajouter');
+        \$this->page_id = getArgument('id', -1);
+        \$this->$indexfield = getArgument('$indexfield');
+        if(\$event === 'onLoad' && \$this->query === 'ACTION') {
+            switch (\$this->action) {
+            case 'Ajouter':
+$blankValues
+                break;
+            case 'Modifier':
+                \$sql="select * from $table where $indexfield='\$this->$indexfield';";
+                \$stmt = \$this->cs->query(\$sql);
+                \$rows = \$stmt->fetch(PDO::FETCH_ASSOC);
+$selectValues;
+            break;
             }
+        } else if(\$event === 'onRun' && \$this->query === 'ACTION') {
+            switch (\$this->action) {
+            case 'Ajouter':
+$insertFilterPost;
+                \$sql = <<<SQL
+insert into $table (
+$insertFields
+) values (
+$insertValues
+)
+SQL;
+                \$stmt = \$this->cs->query(\$sql, $prepareInsert);
+            break;
+            case 'Modifier':
+$updateFilterPost
+                \$sql=<<<SQL
+update $table set
+$updateParams
+where $indexfield = '\$this->$indexfield';
+SQL;
+                \$stmt = \$this->cs->query(\$sql, $prepareUpdate);
+            break;
+            case 'Supprimer':
+                \$sql = "delete from $table where $indexfield='\$this->$indexfield'";
+                \$stmt = \$this->cs->query(\$sql);
+            break;
+            }
+            \$this->query = 'SELECT';
         }
-        SCRIPT;
+    }
+}
+SCRIPT;
 
         $script = str_replace("\t", "    ", $script);
 
@@ -210,30 +210,30 @@ class TMvcScriptMaker extends TObject
         $page_filename = "page.html";
 
         $script = <<< SCRIPT
-        \$pc = getArgument("pc");
-        \$sr = getArgument("sr");
-        \$curl_pager = "";
-        \$dialog = "";
-        if(isset(\$pc)) \$curl_pager="&pc=\$pc";
-        if(isset(\$sr)) \$curl_pager.="&sr=\$sr";
-        if(\$this->query === "SELECT") {
-            \$sql = "select $indexfield, $secondfield from $table order by $indexfield";
-            \$dbgrid = \$this->datacontrols->createPagerDbGrid('$table', \$sql, \$this->page_id, "page.html", "&query=ACTION\$curl_pager", "", true, true, \$dialog, [0, 400], 15, \$this->grid_colors, \$this->cs);
-            echo "<br>".\$dbgrid;
-        } elseif(\$this->query === "ACTION") {
-        ?>
-        <form method="POST" name="$formname" action="page.html?id=$page_id&lg=fr">
-        <input type="hidden" name="query" value="ACTION">
-        <input type="hidden" name="event" value="onRun">
-        <input type="hidden" name="pc" value="<?php echo \$pc?>">
-        <input type="hidden" name="sr" value="<?php echo \$sr?>">
-        <input type="hidden" name="$indexfield" value="<?php echo \$this->$indexfield?>">
-        <table border="1" bordercolor="<?php echo \$this->panel_colors->border_color?>" cellpadding="0" cellspacing="0" witdh="100%" height="1">
-        <tr>
-            <td align="center" valign="top" bgcolor="<?php echo \$this->panel_colors->back_color?>">
-                <table>
+\$pc = getArgument("pc");
+\$sr = getArgument("sr");
+\$curl_pager = "";
+\$dialog = "";
+if(isset(\$pc)) \$curl_pager="&pc=\$pc";
+if(isset(\$sr)) \$curl_pager.="&sr=\$sr";
+if(\$this->query === "SELECT") {
+    \$sql = "select $indexfield, $secondfield from $table order by $indexfield";
+    \$dbgrid = \$this->datacontrols->createPagerDbGrid('$table', \$sql, \$this->page_id, "page.html", "&query=ACTION\$curl_pager", "", true, true, \$dialog, [0, 400], 15, \$this->grid_colors, \$this->cs);
+    echo "<br>".\$dbgrid;
+} elseif(\$this->query === "ACTION") {
+?>
+<form method="POST" name="$formname" action="page.html?id=$page_id&lg=fr">
+<input type="hidden" name="query" value="ACTION">
+<input type="hidden" name="event" value="onRun">
+<input type="hidden" name="pc" value="<?php echo \$pc?>">
+<input type="hidden" name="sr" value="<?php echo \$sr?>">
+<input type="hidden" name="$indexfield" value="<?php echo \$this->$indexfield?>">
+<table border="1" bordercolor="<?php echo \$this->panel_colors->border_color?>" cellpadding="0" cellspacing="0" witdh="100%" height="1">
+<tr>
+    <td align="center" valign="top" bgcolor="<?php echo \$this->panel_colors->back_color?>">
+        <table>
 
-        SCRIPT;
+SCRIPT;
         foreach ($data as $def) {
             $def = json_decode($def, true);
             $def = (object) $def;
@@ -242,89 +242,89 @@ class TMvcScriptMaker extends TObject
 
                 $ref = (object) $def->references[0];
                 $script .= <<< SCRIPT
-                            <?php
-                            \$sql = "select {$ref->keyfield}, {$ref->valuefield} from {$ref->table} order by {$ref->valuefield}";
-                            \$options = \$this->datacontrols->createOptionsFromQuery(\$sql, 0, 1, [], \$this->{$ref->keyfield}, false, \$this->cs);
-                            ?>
-                            <tr>
-                                <td>$def->fieldname</td>
-                                <td>
-                                    <select name="{$ref->keyfield}">
-                                    <?php echo \$options["list"]; ?>
-                                    </select>
-                                </td>
-                            </tr>
+            <?php
+            \$sql = "select {$ref->keyfield}, {$ref->valuefield} from {$ref->table} order by {$ref->valuefield}";
+            \$options = \$this->datacontrols->createOptionsFromQuery(\$sql, 0, 1, [], \$this->{$ref->keyfield}, false, \$this->cs);
+            ?>
+            <tr>
+                <td>$def->fieldname</td>
+                <td>
+                    <select name="{$ref->keyfield}">
+                    <?php echo \$options["list"]; ?>
+                    </select>
+                </td>
+            </tr>
 
-                SCRIPT;
+SCRIPT;
             }
 
             if ($def->class == 'key') {
-                $script .= <<< SCRIPT
-                            <tr>
-                                <td>$def->fieldname</td>
-                                <td>
-                                    <?php echo \$this->$def->fieldname?>
-                                </td>
-                            </tr>
+            $script .= <<< SCRIPT
+            <tr>
+                <td>$def->fieldname</td>
+                <td>
+                    <?php echo \$this->$def->fieldname?>
+                </td>
+            </tr>
 
-                SCRIPT;
+SCRIPT;
             }
             if ($def->class == 'field') {
                 if ($def->phptype == "date" || $def->phptype == "datetime" || $def->phptype == "time") {
                     $script .= <<< SCRIPT
-                                <tr>
-                                    <td>$def->fieldname</td>
-                                    <td>
-                                        <input type="text" name="$def->fieldname" size="$def->cols" value="<?php echo (empty(\$this->{$def->fieldname})) ? date("1970-01-01") : \$this->{$def->fieldname}; ?>" >
-                                    </td>
-                                </tr>
+            <tr>
+                <td>$def->fieldname</td>
+                <td>
+                    <input type="text" name="$def->fieldname" size="$def->cols" value="<?php echo (empty(\$this->{$def->fieldname})) ? date("1970-01-01") : \$this->{$def->fieldname}; ?>" >
+                </td>
+            </tr>
 
-                    SCRIPT;
+SCRIPT;
                 } elseif ($def->phptype == "blob" || ($def->phptype == "string" && $def->fieldsize > 80)) {
                     $script .= <<< SCRIPT
-                                <tr>
-                                    <td>$def->fieldname</td>
-                                    <td>
-                                        <textarea name="$def->fieldname" cols="80" rows="$def->lines"><?php echo \$this->$def->fieldname?></textarea>
-                                    </td>
-                                </tr>
+            <tr>
+                <td>$def->fieldname</td>
+                <td>
+                    <textarea name="$def->fieldname" cols="80" rows="$def->lines"><?php echo \$this->$def->fieldname?></textarea>
+                </td>
+            </tr>
 
-                    SCRIPT;
+SCRIPT;
                 } else {
                     $script .= <<< SCRIPT
-                                <tr>
-                                    <td>$def->fieldname</td>
-                                    <td>
-                                        <input type="text" name="$def->fieldname" size="$def->cols" value="<?php echo \$this->$def->fieldname?>">
-                                    </td>
-                                </tr>
+            <tr>
+                <td>$def->fieldname</td>
+                <td>
+                    <input type="text" name="$def->fieldname" size="$def->cols" value="<?php echo \$this->$def->fieldname?>">
+                </td>
+            </tr>
 
-                    SCRIPT;
+SCRIPT;
                 }
             }
 
         }
 
         $script .= <<<SCRIPT
-                    <tr>
-                        <td align="center" colspan="2">
-                            <input type="submit" name="action" value="<?php echo \$this->action?>">
-                            <?php   if(\$this->action != "Ajouter") { ?>
-                            <input type="submit" name="action" value="Supprimer">
-                            <?php   } ?>
-                            <input type="reset" name="action" value="Annuler">
-                            <input type="submit" name="action" value="Retour">
-                        </td>
-                    </tr>
-                </table>
+            <tr>
+                <td align="center" colspan="2">
+                    <input type="submit" name="action" value="<?php echo \$this->action?>">
+                    <?php   if(\$this->action != "Ajouter") { ?>
+                    <input type="submit" name="action" value="Supprimer">
+                    <?php   } ?>
+                    <input type="reset" name="action" value="Annuler">
+                    <input type="submit" name="action" value="Retour">
                 </td>
             </tr>
         </table>
-        </form>
-        <?php
-        }
-        ?>
-        SCRIPT;
+        </td>
+    </tr>
+</table>
+</form>
+<?php
+}
+?>
+SCRIPT;
 
         $script = str_replace("\t", "    ", $script);
 

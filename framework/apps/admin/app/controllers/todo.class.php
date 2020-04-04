@@ -102,7 +102,7 @@ class TTodo extends TPartialController
                     :usr_id,
                     :usr_id2
                 )
-    SQL;
+SQL;
                 $stmt = $this->cs->prepare($sql);
                 $stmt->execute([':td_title' => $this->td_title, ':td_text' => $this->td_text, ':td_priority' => $this->td_priority, ':td_expiry' => $this->td_expiry, ':td_status' => $this->td_status, ':td_date' => $this->td_date, ':usr_id' => $this->usr_id, ':usr_id2' => $this->usr_id2]);
             break;
@@ -126,7 +126,7 @@ class TTodo extends TPartialController
                     usr_id = :usr_id,
                     usr_id2 = :usr_id2
                 where td_id = {$this->td_id};
-    SQL;
+SQL;
                 $stmt = $this->cs->prepare($sql);
                 $stmt->execute([':td_title' => $this->td_title, ':td_text' => $this->td_text, ':td_priority' => $this->td_priority, ':td_expiry' => $this->td_expiry, ':td_status' => $this->td_status, ':td_date' => $this->td_date, ':usr_id' => $this->usr_id, ':usr_id2' => $this->usr_id2]);
             break;

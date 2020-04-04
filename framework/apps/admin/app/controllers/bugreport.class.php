@@ -97,7 +97,7 @@ class TBugreport extends TPartialController
                     :usr_id,
                     :app_id
                 )
-                SQL;
+SQL;
                $stmt = $this->cs->query($sql, [':br_title' => $this->br_title, ':br_text' => $this->br_text, ':br_importance' => $this->br_importance, ':br_date' => $this->br_date, ':br_time' => $this->br_time, ':bs_id' => $this->bs_id, ':usr_id' => $this->usr_id, ':app_id' => $this->app_id]);
             break;
             case 'Modifier':
@@ -121,7 +121,7 @@ class TBugreport extends TPartialController
                     usr_id = :usr_id,
                     app_id = :app_id
                 where br_id = {$this->br_id};
-                SQL;
+SQL;
                 $stmt = $this->cs->query($sql, [':br_title' => $this->br_title, ':br_text' => $this->br_text, ':br_importance' => $this->br_importance, ':br_date' => $this->br_date, ':br_time' => $this->br_time, ':bs_id' => $this->bs_id, ':usr_id' => $this->usr_id, ':app_id' => $this->app_id]);
             break;
             case 'Supprimer':

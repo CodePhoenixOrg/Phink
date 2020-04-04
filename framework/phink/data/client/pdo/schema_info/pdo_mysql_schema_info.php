@@ -92,7 +92,7 @@ class TPdoMySQLSchemaInfo extends TCustomPdoSchemaInfo
     {
         $sql = <<<SQL
         show tables from {$this->config->getDatabaseName()};
-        SQL;
+SQL;
 
         return $sql;
     }
@@ -101,7 +101,7 @@ class TPdoMySQLSchemaInfo extends TCustomPdoSchemaInfo
     {
         $sql = <<<SQL
         show fields from $table;
-        SQL;
+SQL;
 
         return $sql;
     }

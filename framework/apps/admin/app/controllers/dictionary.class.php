@@ -93,7 +93,7 @@ class TDictionary extends TPartialController
                     :di_ru_short,
                     :di_ru_long
                 )
-                SQL;
+SQL;
                $stmt = $this->cs->query($sql, [':di_name' => $this->di_name, ':di_fr_short' => $this->di_fr_short, ':di_fr_long' => $this->di_fr_long, ':di_en_short' => $this->di_en_short, ':di_en_long' => $this->di_en_long, ':di_ru_short' => $this->di_ru_short, ':di_ru_long' => $this->di_ru_long]);
             break;
             case 'Modifier':
@@ -115,7 +115,7 @@ class TDictionary extends TPartialController
                     di_ru_short = :di_ru_short,
                     di_ru_long = :di_ru_long
                 where di_id = {$this->di_id};
-                SQL;
+SQL;
                 $stmt = $this->cs->query($sql, [':di_name' => $this->di_name, ':di_fr_short' => $this->di_fr_short, ':di_fr_long' => $this->di_fr_long, ':di_en_short' => $this->di_en_short, ':di_en_long' => $this->di_en_long, ':di_ru_short' => $this->di_ru_short, ':di_ru_long' => $this->di_ru_long]);
             break;
             case 'Supprimer':

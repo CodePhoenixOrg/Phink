@@ -20,8 +20,8 @@ class TPdoSQLiteSchemaInfo extends TCustomPdoSchemaInfo
             $this->columnTypes = [];
             $table = $this->getQuery();
             $sql = <<<SQL
-            SELECT * FROM PRAGMA_TABLE_INFO('{$table}');
-            SQL;
+SELECT * FROM PRAGMA_TABLE_INFO('{$table}');
+SQL;
 
             $this->result = $connection->query($sql);
 
@@ -113,14 +113,14 @@ class TPdoSQLiteSchemaInfo extends TCustomPdoSchemaInfo
     public function getShowTablesQuery(): string
     {
         $sql = <<<SQL
-        SELECT
-            name
-        FROM
-            sqlite_master
-        WHERE
-            type ='table' AND
-            name NOT LIKE 'sqlite_%';
-        SQL;
+SELECT
+    name
+FROM
+    sqlite_master
+WHERE
+    type ='table' AND
+    name NOT LIKE 'sqlite_%';
+SQL;
 
         return $sql;
     }
@@ -128,8 +128,8 @@ class TPdoSQLiteSchemaInfo extends TCustomPdoSchemaInfo
     public function getShowFieldsQuery(?string $table): string
     {
         $sql = <<<SQL
-            SELECT name FROM PRAGMA_TABLE_INFO('{$table}');
-        SQL;
+SELECT name FROM PRAGMA_TABLE_INFO('{$table}');
+SQL;
 
         return $sql;
     }

@@ -77,7 +77,7 @@ class TMenus extends TPartialController
                     :pa_id,
                     :bl_id
                 )
-                SQL;
+SQL;
                $stmt = $this->cs->query($sql, [':me_level' => $this->me_level, ':me_target' => $this->me_target, ':pa_id' => $this->pa_id, ':bl_id' => $this->bl_id]);
             break;
             case 'Modifier':
@@ -93,7 +93,7 @@ class TMenus extends TPartialController
                     pa_id = :pa_id,
                     bl_id = :bl_id
                 where me_id = {$this->me_id};
-                SQL;
+SQL;
                 $stmt = $this->cs->query($sql, [':me_level' => $this->me_level, ':me_target' => $this->me_target, ':pa_id' => $this->pa_id, ':bl_id' => $this->bl_id]);
             break;
             case 'Supprimer':

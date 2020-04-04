@@ -87,7 +87,7 @@ class TPages extends TPartialController
                     :ft_id,
                     :app_id
                 )
-                SQL;
+SQL;
                $stmt = $this->cs->query($sql, [':pa_filename' => $this->pa_filename, ':pa_directory' => $this->pa_directory, ':pa_url' => $this->pa_url, ':di_id' => $this->di_id, ':ft_id' => $this->ft_id, ':app_id' => $this->app_id]);
             break;
             case 'Modifier':
@@ -107,7 +107,7 @@ class TPages extends TPartialController
                     ft_id = :ft_id,
                     app_id = :app_id
                 where pa_id = {$this->pa_id};
-                SQL;
+SQL;
                 $stmt = $this->cs->query($sql, [':pa_filename' => $this->pa_filename, ':pa_directory' => $this->pa_directory, ':pa_url' => $this->pa_url, ':di_id' => $this->di_id, ':ft_id' => $this->ft_id, ':app_id' => $this->app_id]);
             break;
             case 'Supprimer':
