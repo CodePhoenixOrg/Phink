@@ -184,11 +184,6 @@ class TWebApplication extends TCustomApplication implements IHttpTransport, IWeb
             file_put_contents('phink_builder.lock', date('Y-m-d h:i:s'));
         }
 
-        if (!file_exists('puzzle_builder.lock')) {
-            \Puzzle\JsBuilder::build();
-            file_put_contents('puzzle_builder.lock', date('Y-m-d h:i:s'));
-        }
-
         if (!file_exists('js_builder.lock')) {
             \Phink\JavaScript\JsBuilder::build();
             file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
