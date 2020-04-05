@@ -282,5 +282,3 @@ class SetupPage
 <?php
     }
 }
-
-SetupPage::main();
