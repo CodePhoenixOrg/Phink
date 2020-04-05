@@ -21,8 +21,6 @@ namespace Phink\Core;
 define('WEB_SEPARATOR', '/');
 define('TMP_DIR', 'tmp');
 
-$PWD = '';
-
 $document_root = isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '';
 
 define('APP_IS_WEB', ($document_root !== ''));
@@ -37,8 +35,9 @@ if (APP_IS_WEB) {
         $document_root = str_replace('\\\\', '\\', $document_root);
     }
 
-    if (substr($document_root, -4) !== 'web/') {
-        $document_root = pathinfo($_SERVER['SCRIPT_FILENAME'], PATHINFO_DIRNAME);
+    $script_path = pathinfo($_SERVER['SCRIPT_FILENAME'], PATHINFO_DIRNAME);
+    if (substr($document_root, -4) !== 'web/' && ($p = strpos($script_path, 'src/web')) > -1) {
+        $document_root = substr($script_path, 0, $p+7);
     }
 
     define('DOCUMENT_ROOT', $document_root . DIRECTORY_SEPARATOR);
@@ -48,7 +47,6 @@ if (APP_IS_WEB) {
     if ($rewrite_base = file_get_contents(SRC_ROOT . 'config' . DIRECTORY_SEPARATOR . 'rewrite_base')) {
         $rewrite_base = trim($rewrite_base);
     }
-
     define('REWRITE_BASE', $rewrite_base);
 
     $scheme = 'http';
@@ -135,7 +133,7 @@ if (APP_IS_WEB) {
     define('COOKIE', $_COOKIE);
     define('REQUEST_URI', $_SERVER['REQUEST_URI']);
     define('REQUEST_METHOD', $_SERVER['REQUEST_METHOD']);
-    define('QUERY_STRING', $_SERVER['QUERY_STRING']);
+    define('QUERY_STRING', parse_url(REQUEST_URI, PHP_URL_QUERY));
     define('SERVER_NAME', $_SERVER['SERVER_NAME']);
     define('SERVER_HOST', HTTP_PROTOCOL . '://' . HTTP_HOST);
     define('SERVER_ROOT', HTTP_PROTOCOL . '://' . SERVER_NAME . ((HTTP_PORT !== '80' && HTTP_PORT !== '443') ? ':' . HTTP_PORT : ''));
@@ -191,15 +189,7 @@ define('SQL_LOG', LOG_PATH . 'sql.log');
 
 $appconf = DOCUMENT_ROOT . 'config' . DIRECTORY_SEPARATOR . 'app.ini';
 
-$appname = '';
-
-// if (file_exists($appconf)) {
-//     $appini = parse_ini_file($appconf);
-//     $appname = isset($appini['application']['name']) ?? $appini['application']['name'];
-// }
-
-// if (empty($appname)) {
-//     $apppath = explode(DIRECTORY_SEPARATOR, DOCUMENT_ROOT);
-//     $appname = array_pop($apppath);
-//     $appname = strtolower(array_pop($apppath));
-// }
+unset($document_root);
+unset($scheme);
+unset($appname);
+unset($rewrite_base);
