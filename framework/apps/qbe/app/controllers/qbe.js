@@ -90,7 +90,7 @@ Phink.DOM.ready(function () {
                 var index = 1;
                 var anchor = '#grid';
 
-                qbeMain.getJSON('qbe-grid.html'
+                qbeMain.getJSON('qbe-grid'
                 , {
                     'action': "getData"
                     , 'pagecount': count
