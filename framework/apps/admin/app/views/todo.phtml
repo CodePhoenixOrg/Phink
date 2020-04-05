@@ -19,7 +19,7 @@
 			$sql = <<<SQL
 			select td.td_id, '<b>' || td.td_title || '</b><br>' || td.td_text || '<br>' as `T&acirc;ches`, mb.mbr_name as 'R&eacute;al.', td.td_status as '&Eacute;tat', td.td_priority as 'Priorit&eacute;', td.td_expiry as '&Eacute;ch&eacute;ance' from todo as td left outer join members as mb on td.usr_id2=mb.mbr_id order by td.td_status, td.td_expiry, td.td_priority desc
 			SQL;
-			$dbgrid = $this->datacontrols->createPagerDbGrid("tâches", $sql, $this->page_id, "page.html", "&query=ACTION$curl_pager", "", true, true, $dialog, array(0, 450), 15, $this->grid_colors, $this->cs);
+			$dbgrid = $this->datacontrols->createPagerDbGrid("tâches", $sql, $this->page_id, "admin", "&query=ACTION$curl_pager", "", true, true, $dialog, array(0, 450), 15, $this->grid_colors, $this->cs);
 				//$dbgrid = tableShadow($tablename, $dbgrid);
 			echo "<br>".$dbgrid;
 	} elseif($this->query === "ACTION") {
@@ -28,7 +28,7 @@
 		$status=array("à faire", "en cours", "fait");
 		if(empty($this->td_status)) $this->td_status="à faire";		
 ?>
-<form method="POST" name="todoForm" action="page.html?id=25&lg=fr">
+<form method="POST" name="todoForm" action="admin?id=25&lg=fr">
 	<input type="hidden" name="query" value="ACTION">
 	<input type="hidden" name="event" value="onRun">
 	<input type="hidden" name="pc" value="<?php echo $pc?>">

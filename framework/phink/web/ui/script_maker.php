@@ -190,12 +190,12 @@ class TScriptMaker extends TObject
         $script .= "\tif(isset(\$sr)) \$curl_pager.=\"&sr=\$sr\";\n";
         $script .= "\tif(\$query === \"SELECT\") {\n";
         $script .= "\t\t\t\$sql = \"select $indexfield, $secondfield from \$tablename order by $indexfield\";\n";
-        $script .= "\t\t\t\$dbgrid = \$datacontrols->createPagerDbGrid(\$tablename, \$sql, \$id, \"page.html\", \"&query=ACTION\$curl_pager\", \"\", true, true, \$dialog, array(0, 400), 15, \$grid_colors, \$cs);\n";
+        $script .= "\t\t\t\$dbgrid = \$datacontrols->createPagerDbGrid(\$tablename, \$sql, \$id, \"admin\", \"&query=ACTION\$curl_pager\", \"\", true, true, \$dialog, array(0, 400), 15, \$grid_colors, \$cs);\n";
         $script .= "\t\t\techo \"<br>\".\$dbgrid;\n";
         $script .= "\t} elseif(\$query === \"ACTION\") {\n";
         $script .= "?>\n";
-        $page_filename = "page.html";
-        $script .= "<form method=\"POST\" name=\"$formname\" action=\"page.html?id=$page_id&lg=fr\">\n";
+        $page_filename = "admin";
+        $script .= "<form method=\"POST\" name=\"$formname\" action=\"admin?id=$page_id&lg=fr\">\n";
         $script .= "\t<input type=\"hidden\" name=\"query\" value=\"ACTION\">\n";
         $script .= "\t<input type=\"hidden\" name=\"event\" value=\"onRun\">\n";
         $script .= "\t<input type=\"hidden\" name=\"pc\" value=\"<?php echo \$pc?>\">\n";

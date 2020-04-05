@@ -42,12 +42,12 @@ if ($query === "SELECT") {
 			dictionary bd ON bd.di_id = b.di_id
 		ORDER BY d.di_fr_short
 		SQL;
-	$dbgrid = $datacontrols->createPagerDbGrid("entrées", $sql, $id, "page.html", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 200, 100], 15, $grid_colors, $cs);
-	//$dbgrid = $datacontrols->createPagerDbGrid($tablename, $sql, $id, "page.html", "&query=ACTION$curl_pager", "", true, true, $dialog, array(0, 400), 15, $grid_colors, $cs);
+	$dbgrid = $datacontrols->createPagerDbGrid("entrées", $sql, $id, "admin", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 200, 100], 15, $grid_colors, $cs);
+	//$dbgrid = $datacontrols->createPagerDbGrid($tablename, $sql, $id, "admin", "&query=ACTION$curl_pager", "", true, true, $dialog, array(0, 400), 15, $grid_colors, $cs);
     echo "<br>" . $dbgrid;
 } elseif ($query === "ACTION") {
     ?>
-<form method="POST" name="menusForm" action="page.html?id=18&lg=fr">
+<form method="POST" name="menusForm" action="admin?id=18&lg=fr">
 	<input type="hidden" name="query" value="ACTION">
 	<input type="hidden" name="event" value="onRun">
 	<input type="hidden" name="pc" value="<?php echo $pc ?>">

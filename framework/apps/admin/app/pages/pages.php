@@ -15,12 +15,12 @@
 	if(isset($sr)) $curl_pager.="&sr=$sr";
 	if($query === "SELECT") {
 			$sql = "select pa_id, di_name as `Page` from $tablename order by pa_id";
-			$dbgrid = $datacontrols->createPagerDbGrid($tablename, $sql, $id, "page.html", "&query=ACTION$curl_pager", "", true, true, $dialog, array(0, 400), 15, $grid_colors, $cs);
+			$dbgrid = $datacontrols->createPagerDbGrid($tablename, $sql, $id, "admin", "&query=ACTION$curl_pager", "", true, true, $dialog, array(0, 400), 15, $grid_colors, $cs);
 			//$dbgrid = tableShadow($tablename, $dbgrid);
 			echo "<br>".$dbgrid;
 	} elseif($query === "ACTION") {
 ?>
-<form method="POST" name="pagesForm" action="page.html?id=19&lg=fr">
+<form method="POST" name="pagesForm" action="admin?id=19&lg=fr">
 	<input type="hidden" name="query" value="ACTION">
 	<input type="hidden" name="event" value="onRun">
 	<input type="hidden" name="pc" value="<?php echo $pc?>">

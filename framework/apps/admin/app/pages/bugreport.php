@@ -15,7 +15,7 @@
 	if(isset($sr)) $curl_pager.="&sr=$sr";
 	if($query === "SELECT") {
 		$sql="select br_id, concat('<b>', br_title, '</b><br>', br_text, '<br>') as `bugs trouvés`, br_importance as 'importance', br_status as 'etat' from bugreport order by br_status, br_importance desc";
-		$dbgrid = $datacontrols->createPagerDbGrid("bugs", $sql, $id, "page.html", "&query=ACTION$curl_pager", "", true, true, $dialog, array(0, 400), 15, $grid_colors, $cs);
+		$dbgrid = $datacontrols->createPagerDbGrid("bugs", $sql, $id, "admin", "&query=ACTION$curl_pager", "", true, true, $dialog, array(0, 400), 15, $grid_colors, $cs);
 			//$dbgrid = tableShadow($tablename, $dbgrid);
 			echo "<br>".$dbgrid;
 	} elseif($query === "ACTION") {
@@ -24,7 +24,7 @@
 		$status=array("à fixer", "en test","fixé");
 		if(empty($br_status)) $br_status="à fixer";
 ?>
-<form method="POST" name="bugreportForm" action="page.html?id=64&lg=fr">
+<form method="POST" name="bugreportForm" action="admin?id=64&lg=fr">
 	<input type="hidden" name="query" value="ACTION">
 	<input type="hidden" name="event" value="onRun">
 	<input type="hidden" name="pc" value="<?php echo $pc?>">

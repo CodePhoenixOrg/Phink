@@ -159,14 +159,12 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
         $routesArray['web']['get']["^/admin(/)?$"] = "@/admin/app/views/page.phtml?di=mkmain";
         $routesArray['web']['get']["^/admin(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
         $routesArray['web']['post']["^/admin(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
-        $routesArray['web']['get']["^/page.html(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
-        $routesArray['web']['post']["^/page.html(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
         $routesArray['web']['get']["^/admin/source(\\?([a-z0-9\._\-=&]+))?$"] = "@/admin/app/views/source.phtml?$2";
         $routesArray['web']['get']["^/qbe(/)?$"] = "@/qbe/app/views/qbe.phtml";
         $routesArray['web']['get']["^/qbe/([a-z-]+)$"] = "@/qbe/app/views/qbe.phtml?qbe=$1";
         $routesArray['web']['get']["^/qbe/([a-z-]+)/([a-z-]+)$"] = "@/qbe/app/views/qbe.phtml?qbe=$1&arg=$2";
         $routesArray['web']['post']["^/qbe$"] = "@/qbe/app/views/qbe_window.phtml";
-        $routesArray['web']['post']["^/qbe-grid.html$"] = "@/qbe/app/views/qbe_grid.phtml";
+        $routesArray['web']['post']["^/qbe-grid$"] = "@/qbe/app/views/qbe_grid.phtml";
         
         foreach ($routesArray as $key => $value) {
             TRegistry::write('routes', $key, $value);
