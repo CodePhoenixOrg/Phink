@@ -96,9 +96,9 @@ class Setup
     public function makeBootstrap(): bool
     {
         $bootstrap1 = <<<BOOTSTRAP1
-\$framework_dir = \$_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
-include \$framework_dir . 'phink/phink_library.php';
-include \$framework_dir . 'plugins/plugins_library.php';
+<?php
+include '../../framework/phink/phink_library.php';
+include '../../framework/plugins/plugins_library.php';
         
 BOOTSTRAP1;
 
