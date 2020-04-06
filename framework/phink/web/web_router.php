@@ -116,9 +116,15 @@ class TWebRouter extends TRouter
 
     public function setNamespace(): void
     {
-        $sa = explode('.', SERVER_NAME);
+
+        $re = '/([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})/m';
+        // preg_match($re, SERVER_NAME, $matches, PREG_OFFSET_CAPTURE, 0);
+        $namespace = \preg_replace($re, 'Localhost', SERVER_NAME);
+
+        $sa = explode('.', $namespace);
+
         if(count($sa) == 0) {
-            $sa = [SERVER_NAME];
+            $sa = [$namespace];
         }
         if(count($sa) > 1 ) {
             array_pop($sa);
