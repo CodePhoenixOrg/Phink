@@ -93,6 +93,39 @@ class Setup
         }
     }
 
+    public function makeBootstrap(): bool
+    {
+        $bootstrap1 = <<<BOOTSTRAP1
+\$framework_dir = \$_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
+include \$framework_dir . 'phink/phink_library.php';
+include \$framework_dir . 'plugins/plugins_library.php';
+        
+BOOTSTRAP1;
+
+        $bootstrap2 = <<<BOOTSTRAP2
+<?php
+if (
+    false !== realpath(rtrim(\$_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR) . (\$path = substr(\$_SERVER['REQUEST_URI'], 0, -9)) . DIRECTORY_SEPARATOR . 'index.php')
+    && \$path == (\$upath = parse_url(\$_SERVER['REQUEST_URI'], PHP_URL_PATH))
+) {
+    header('Location: ' . \$path);
+    exit(301);
+}
+\$framework_dir = \$_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
+include \$framework_dir . 'phink/phink_library.php';
+include \$framework_dir . 'plugins/plugins_library.php';
+
+BOOTSTRAP2;
+        // include '../../vendor/autoload.php';
+
+        $bootstrap = $bootstrap1;
+        if(strpos($_SERVER['SERVER_SOFTWARE'], 'embedded') > -1) {
+            $bootstrap = $bootstrap2;
+        }
+
+        return false !== file_put_contents('bootstrap.php', $bootstrap);
+    }
+
     public function makeIndex(): bool
     {
         $index = <<<INDEX

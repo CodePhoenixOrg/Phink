@@ -61,6 +61,7 @@ class SetupPage
 
     public function makeIndex(): void
     {
+        $ok = $this->_setup->makeBootstrap();
         $ok = $this->_setup->makeIndex();
         $this->sendResponse(
             [
