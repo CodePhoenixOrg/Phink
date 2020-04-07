@@ -22,54 +22,109 @@ use stdClass;
 
 final class PhpInfo
 {
-    public static function getSection(int $section, bool $asObject = false)
+    public static function getGeneralSection(bool $asArray = false)
+    {
+        $section = self::getSection(INFO_GENERAL, $asArray);
+        return ($asArray) ? $section['section']['values'] : $section->section->values;
+    }
+
+    public static function getConfigurationSection(bool $asArray = false)
+    {
+        $section = self::getSection(INFO_CONFIGURATION, $asArray);
+        return ($asArray) ? $section['section']['values'] : $section->section->values;
+    }
+
+    public static function getModulesSection(bool $asArray = false)
+    {
+        $section = self::getSection(INFO_MODULES, $asArray);
+        return ($asArray) ? $section['section']['values'] : $section->section->values;
+    }
+
+    public static function getEnvironmentSection(bool $asArray = false)
+    {
+        $section = self::getSection(INFO_ENVIRONMENT, $asArray);
+        return ($asArray) ? $section['section']['values'] : $section->section->values;
+    }
+
+    public static function getPhpVariablesSection(bool $asArray = false)
+    {
+        $section = self::getSection(INFO_VARIABLES, $asArray);
+        return ($asArray) ? $section['section']['values'] : $section->section->values;
+    }
+
+    public static function getPhpCreditstSection(bool $asArray = false)
+    {
+        $section = self::getSection(INFO_CREDITS, $asArray);
+        return ($asArray) ? $section['section']['values'] : $section->section->values;
+    }
+
+    public static function getLicenseSection(bool $asArray = false)
+    {
+        $section = self::getSection(INFO_LICENSE, $asArray);
+        return ($asArray) ? $section['section']['values'] : $section->section->values;
+    }
+
+    public static function getSection(int $section, bool $asArray = false)
     {
         $root = [];
+        $cat = 'general';
 
-        if ($asObject) {
+        if (!$asArray) {
             $root = new stdClass;
+            $root->section = new stdClass;
+            $root->section->name = $cat;
+            $root->section->values = new stdClass;
         }
-
 
         ob_start();
         phpinfo($section);
         $lines = explode("\n", strip_tags(ob_get_clean(), "<tr><td><h2>"));
 
-        $cat = 'general';
         foreach ($lines as $line) {
-            // new cat?
 
             if (false !== preg_match("~<h2>(.*)</h2>~", $line, $title) ? (isset($title[1]) ? $cat = $title[1] : false) : false) {
-
+                // new cat?
                 $cat = self::_formatKey($cat);
-                if ($asObject) {
-                    $root->$cat = new stdClass;
+                if (!$asArray) {
+                    $root->section = new stdClass;
+                    $root->section->name = $cat;
+                    $root->section->values = new stdClass;
+                }
+
+                if ($asArray) {
+                    $root['section'] = [];
+                    $root['section']['name'] = $cat;
+                    $root['section']['values'] = [];
                 }
             }
+
             if (preg_match("~<tr><td[^>]+>([^<]*)</td><td[^>]+>([^<]*)</td></tr>~", $line, $val)) {
                 $key = self::_formatKey($val[1]);
                 $value = self::_formatValue($val[2]);
-                if ($cat !== 'php_variables') {
 
-                    if (!$asObject) {
-                        $root[$cat][$key] = $value;
+                if ($cat !== 'php_variables') {
+                    if (!$asArray) {
+                        $root->section->values->$key = $value;
                     }
-                    if ($asObject) {
-                        $root->$cat->$key = $value;
+                    if ($asArray) {
+                        $root['section']['values'][$key] = $value;
                     }
                 }
+
                 if ($cat == 'php_variables') {
                     if (preg_match('~\$_(server|cookie)\[\'([a-z_]*)\'\]~', $key, $val)) {
                         $subcat = $val[1];
                         $subkey = $val[2];
-                        if (!$asObject) {
-                            $root[$cat][$subcat][$subkey] = $value;
-                        }
-                        if ($asObject) {
-                            if (!property_exists($root->$cat, $subcat)) {
-                                $root->$cat->$subcat = new stdClass;
+
+                        if (!$asArray) {
+                            if (!property_exists($root->section->values, $subcat)) {
+                                $root->section->values->$subcat = new stdClass;
                             }
-                            $root->$cat->$subcat->$subkey = $value;
+                            $root->section->values->$subcat->$subkey = $value;
+                        }
+
+                        if ($asArray) {
+                            $root['section']['values'][$subcat][$subkey] = $value;
                         }
                     }
                 }
@@ -77,16 +132,19 @@ final class PhpInfo
                 $key = self::_formatKey($val[1]);
                 $local = self::_formatValue($val[2]);
                 $master = self::_formatValue($val[3]);
-                if (!$asObject) {
-                    $root[$cat][$key] = ['local' => $local, 'master' => $master];
+
+                if (!$asArray) {
+                    $root->section->values->$key = new stdClass;
+                    $root->section->values->$key->local = $local;
+                    $root->section->values->$key->master = $master;
                 }
-                if ($asObject) {
-                    $root->$cat->$key = new stdClass;
-                    $root->$cat->$key->local = $local;
-                    $root->$cat->$key->master = $master;
+
+                if ($asArray) {
+                    $root['section']['values'][$key] = ['local' => $local, 'master' => $master];
                 }
             }
         }
+
         return $root;
     }
 
