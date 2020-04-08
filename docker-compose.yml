@@ -7,8 +7,8 @@ services:
      - '8080:80'
      - '8443:443'
     volumes:
-     - ./src:/src
-     - ./vendor:/vendor
-     - ./framework:/framework
+     - ./src:/sites/portable/src
+     - ./vendor:/sites/portable/vendor
+     - ./framework:/sites/portable/framework
 
 
