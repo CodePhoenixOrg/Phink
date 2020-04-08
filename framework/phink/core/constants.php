@@ -42,9 +42,10 @@ if (APP_IS_WEB) {
 
     define('DOCUMENT_ROOT', $document_root . DIRECTORY_SEPARATOR);
     define('SRC_ROOT', substr(DOCUMENT_ROOT, 0, -4));
+    define('CONFIG_DIR', SRC_ROOT . 'config' . DIRECTORY_SEPARATOR);
 
     $rewrite_base = '/';
-    if ($rewrite_base = file_get_contents(SRC_ROOT . 'config' . DIRECTORY_SEPARATOR . 'rewrite_base')) {
+    if ($rewrite_base = file_get_contents(CONFIG_DIR . 'rewrite_base')) {
         $rewrite_base = trim($rewrite_base);
     }
     define('REWRITE_BASE', $rewrite_base);
@@ -145,6 +146,7 @@ if (APP_IS_WEB) {
     define('DEFAULT_PARTIAL_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TPartialController');
     define('DEFAULT_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TControl');
     define('DEFAULT_PARTIAL_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TPartialControl');
+
 } else {
     define('DOCUMENT_ROOT', '');
     define('LOG_PATH', './logs/');
@@ -187,7 +189,6 @@ define('DEBUG_LOG', LOG_PATH . 'debug.log');
 define('ERROR_LOG', LOG_PATH . 'error.log');
 define('SQL_LOG', LOG_PATH . 'sql.log');
 
-$appconf = DOCUMENT_ROOT . 'config' . DIRECTORY_SEPARATOR . 'app.ini';
 
 unset($document_root);
 unset($scheme);
