@@ -72,26 +72,32 @@ class Setup
 
     public function fixRewritBase(): bool
     {
-        if (($htaccess = file_get_contents('.htaccess')) && file_exists('bootstrap.php')) {
-            $htaccess = str_replace(PHP_EOL, ';', $htaccess);
-            $text = strtolower($htaccess);
+        $ok = false;
 
-            $ps = strpos($text, 'rewritebase');
-            if ($ps > -1) {
-                $pe = strpos($htaccess, ' ', $ps);
-                $rewriteBaseKey = substr($htaccess, $ps, $pe - $ps);
-                $pe = strpos($htaccess, ';', $ps);
-                $rewriteBaseEntry = substr($htaccess, $ps, $pe - $ps);
+        if ($ok = file_exists('bootstrap.php')) {
 
-                $htaccess = str_replace($rewriteBaseEntry, $rewriteBaseKey . ' ' . $this->_rewriteBase, $htaccess);
-                $htaccess = str_replace(';', PHP_EOL, $htaccess);
+            $ok = $ok && false !== file_put_contents('..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'rewrite_base', $this->_rewriteBase);
 
-                $ok = false !== file_put_contents('.htaccess', $htaccess);
-                $ok = $ok && false !== file_put_contents('..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'rewrite_base', $this->_rewriteBase);
+            if (file_exists('.htaccess') && ($htaccess = file_get_contents('.htaccess'))) {
+                $htaccess = str_replace(PHP_EOL, ';', $htaccess);
+                $text = strtolower($htaccess);
 
-                return $ok;
+                $ps = strpos($text, 'rewritebase');
+                if ($ps > -1) {
+                    $pe = strpos($htaccess, ' ', $ps);
+                    $rewriteBaseKey = substr($htaccess, $ps, $pe - $ps);
+                    $pe = strpos($htaccess, ';', $ps);
+                    $rewriteBaseEntry = substr($htaccess, $ps, $pe - $ps);
+
+                    $htaccess = str_replace($rewriteBaseEntry, $rewriteBaseKey . ' ' . $this->_rewriteBase, $htaccess);
+                    $htaccess = str_replace(';', PHP_EOL, $htaccess);
+
+                    $ok = $ok && false !== file_put_contents('.htaccess', $htaccess);
+                }
             }
         }
+        
+        return $ok;
     }
 
     public function makeBootstrap(): bool

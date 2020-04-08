@@ -42,7 +42,7 @@ class SetupPage
         $ok = $this->_setup->fixRewritBase();
         $this->sendResponse(
             [
-                'result' => ($ok) ? 'All is setup' : SetupPage::SERVER_ERROR,
+                'result' => ($ok) ? 'Rewrite base is set' : SetupPage::SERVER_ERROR,
                 'error' => !$ok
             ]
         );
@@ -61,7 +61,7 @@ class SetupPage
 
     public function makeIndex(): void
     {
-        $ok = $this->_setup->makeBootstrap();
+        // $ok = $this->_setup->makeBootstrap();
         $ok = $this->_setup->makeIndex();
         $this->sendResponse(
             [
@@ -200,8 +200,37 @@ class SetupPage
             </footer>
             <script>
                 PhinkSetup = {};
-                PhinkSetup.rewriteBase = window.location.pathname;
+                PhinkSetup.rewriteBase = window.location.pathname.split('/');
+                PhinkSetup.rewriteBase.pop();
+                PhinkSetup.rewriteBase = PhinkSetup.rewriteBase.join('/') + '/';
                 PhinkSetup.URL = window.location.href;
+                PhinkSetup.isReady = false;
+                PhinkSetup.process = function(callback) {
+                    PhinkSetup.ajax(PhinkSetup.URL, {
+                            "action": "rewrite"
+                        },
+                        function(data) {
+                            PhinkSetup.isReady = PhinkSetup.operationState(1, data.error);
+                        }
+                    );
+
+                    PhinkSetup.ajax(PhinkSetup.URL, {
+                            "action": "js"
+                        },
+                        function(data) {
+                            PhinkSetup.isReady = PhinkSetup.isReady && PhinkSetup.operationState(2, data.error);
+                        }
+                    );
+
+                    PhinkSetup.ajax(PhinkSetup.URL, {
+                            "action": "index"
+                        },
+                        function(data) {
+                            PhinkSetup.isReady = PhinkSetup.isReady && PhinkSetup.operationState(3, data.error);
+                        }
+                    );
+                    callback.call(this);
+                }
 
                 PhinkSetup.ajax = function(url, data, callback) {
                     var params = [];
@@ -242,40 +271,24 @@ class SetupPage
                 }
 
                 PhinkSetup.operationState = function(step, error) {
-
                     if (error) {
                         document.querySelector('div[data-step="' + step + '"]').innerHTML = 'Error';
                         document.querySelector('div[data-step="' + step + '"]').className = 'step error';
+                        return false;
                     }
                     if (!error) {
                         document.querySelector('div[data-step="' + step + '"]').innerHTML = 'OK!';
                         document.querySelector('div[data-step="' + step + '"]').className = 'step ok';
+                        return true;
                     }
                 }
 
-                PhinkSetup.ajax(PhinkSetup.URL, {
-                        "action": "rewrite"
-                    },
-                    function(data) {
-                        PhinkSetup.operationState(1, data.error);
+                PhinkSetup.process(function() {
+                    if (PhinkSetup.isReady) {
+                        window.location = PhinkSetup.rewriteBase;
                     }
-                );
+                });
 
-                PhinkSetup.ajax(PhinkSetup.URL, {
-                        "action": "js"
-                    },
-                    function(data) {
-                        PhinkSetup.operationState(2, data.error);
-                    }
-                );
-
-                PhinkSetup.ajax(PhinkSetup.URL, {
-                        "action": "index"
-                    },
-                    function(data) {
-                        PhinkSetup.operationState(3, data.error);
-                    }
-                );
             </script>
         </body>
 
