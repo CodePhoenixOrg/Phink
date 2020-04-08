@@ -105,8 +105,15 @@ class Setup
 
     public function makeBootstrap(): bool
     {
-        $bootstrap1 = <<<BOOTSTRAP1
+
+        $ok = true;
+
+        $bootstrap = <<<BOOTSTRAP1
 <?php
+if(pathinfo(\$_SERVER['REQUEST_URI'], PATHINFO_BASENAME) == 'index.php') {
+    header('Location: ' . substr(\$_SERVER['REQUEST_URI'], 0, -9));
+    exit(302);
+}
 include '../../framework/phink/phink_library.php';
 include '../../framework/plugins/plugins_library.php';
         
@@ -116,11 +123,11 @@ BOOTSTRAP1;
 
         $serverApi = strtolower(PhpInfo::getGeneralSection()->server_api);
 
-        $bootstrap = $bootstrap1;
-        // if(strpos($serverApi, 'embedded') > -1 || strpos($serverApi, 'built-in') > -1) {
-        // }
+        if(strpos($serverApi, 'embedded') > -1 || strpos($serverApi, 'built-in') > -1) {
+            $ok = false !== file_put_contents('bootstrap.php', $bootstrap);
+        }
 
-        return false !== file_put_contents('bootstrap.php', $bootstrap);
+        return $ok;
     }
 
     public function makeIndex(): bool

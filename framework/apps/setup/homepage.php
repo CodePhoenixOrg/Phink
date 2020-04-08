@@ -61,8 +61,8 @@ class SetupPage
 
     public function makeIndex(): void
     {
-        // $ok = $this->_setup->makeBootstrap();
-        $ok = $this->_setup->makeIndex();
+        $ok = $this->_setup->makeBootstrap();
+        $ok = $ok && $this->_setup->makeIndex();
         $this->sendResponse(
             [
                 'result' => ($ok) ? 'Index created' : SetupPage::SERVER_ERROR,
