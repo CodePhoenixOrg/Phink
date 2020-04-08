@@ -108,16 +108,18 @@ class Setup
 
         $ok = true;
 
-        $bootstrap = <<<BOOTSTRAP1
+        $bootstrap = <<<BOOTSTRAP
 <?php
-if(pathinfo(\$_SERVER['REQUEST_URI'], PATHINFO_BASENAME) == 'index.php') {
-    header('Location: ' . substr(\$_SERVER['REQUEST_URI'], 0, -9));
+if (((\$host = array_shift(\$hostPort = explode(':', \$_SERVER['HTTP_HOST'])) . (isset(\$hostPort[1]) ? \$port = ':' . \$hostPort[1] : \$port = '') == '127.0.0.1' . \$port) ? \$hostname = 'localhost' : \$hostname = \$host) != \$host
+    || (strpos(\$_SERVER['REQUEST_URI'], 'index.php')  > -1 ? \$requestUri = str_replace('index.php', '', \$_SERVER['REQUEST_URI']) : \$requestUri = \$_SERVER['REQUEST_URI']) != \$_SERVER['REQUEST_URI']
+) {
+    header('Location: //' . \$hostname . \$port . \$requestUri);
     exit(302);
 }
 include '../../framework/phink/phink_library.php';
 include '../../framework/plugins/plugins_library.php';
         
-BOOTSTRAP1;
+BOOTSTRAP;
 
         // include '../../vendor/autoload.php';
 
