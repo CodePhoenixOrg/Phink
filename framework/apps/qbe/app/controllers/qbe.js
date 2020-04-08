@@ -6,21 +6,21 @@ Phink.DOM.ready(function () {
     var qbeMain = qbe.createController('main', 'main')
         .actions({
             themeIbmPc: function () {
-                this.getJSON('qbe/', {
+                this.getJSON('admin/console/', {
                     "action": 'setTheme', "theme": 'ibm_pc'
                 } , function (data) {
                     qbeMain.applyTheme(data);
                 });
             }
             , themeAmstradCpc: function () {
-                this.getJSON('qbe/', {
+                this.getJSON('admin/console/', {
                     "action": 'setTheme', "theme": 'amstrad_cpc'
                 } , function (data) {
                     qbeMain.applyTheme(data);
                 });
             }
             , themeSolaris: function () {
-                this.getJSON('qbe/', {
+                this.getJSON('admin/console/', {
                     "action": 'setTheme', "theme": 'solaris'
                 } , function (data) {
                     qbeMain.applyTheme(data);
@@ -32,14 +32,14 @@ Phink.DOM.ready(function () {
                 document.querySelector(':root').style.setProperty('--fore-color', data.theme.foreColor);
             }
             , clearLogs: function () {
-                this.getJSON('qbe/', {
+                this.getJSON('admin/console/', {
                     "action": 'clearLogs'
                 } , function (data) {
                     document.querySelector("#result").innerHTML = data.result;
                 });
             }
             , testQuery: function (sql) {
-                this.getJSON('qbe/', {
+                this.getJSON('admin/qbe/', {
                     "action": 'testQuery',
                     "sql": sql
                 } , function (data) {
@@ -69,7 +69,7 @@ Phink.DOM.ready(function () {
                 var index = 1;
                 var anchor = '#grid';
 
-                qbeMain.getJSON('qbe-grid/'
+                qbeMain.getJSON('admin/qbe/grid/'
                 , {
                     'action': "getData"
                     , 'pagecount': count

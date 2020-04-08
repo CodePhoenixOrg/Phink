@@ -6,21 +6,21 @@ Phink.DOM.ready(function () {
     var conMain = con.createController('main', 'main')
         .actions({
             themeIbmPc: function () {
-                this.getJSON('console/', {
+                this.getJSON('admin/console/', {
                     "action": 'setTheme', "theme": 'ibm_pc'
                 } , function (data) {
                     conMain.applyTheme(data);
                 });
             }
             , themeAmstradCpc: function () {
-                this.getJSON('console/', {
+                this.getJSON('admin/console/', {
                     "action": 'setTheme', "theme": 'amstrad_cpc'
                 } , function (data) {
                     conMain.applyTheme(data);
                 });
             }
             , themeSolaris: function () {
-                this.getJSON('console/', {
+                this.getJSON('admin/console/', {
                     "action": 'setTheme', "theme": 'solaris'
                 } , function (data) {
                     conMain.applyTheme(data);
@@ -33,7 +33,7 @@ Phink.DOM.ready(function () {
                 console.log(data);
             }
             , clearLogs: function () {
-                this.getJSON('console/', {
+                this.getJSON('admin/console/', {
                     "action": 'clearLogs'
                 } , function (data) {
                     document.querySelector("#result").innerHTML = data.result;
@@ -45,14 +45,14 @@ Phink.DOM.ready(function () {
                 });
             }
             , displayDebugLog: function () {
-                this.getJSON('console/', {
+                this.getJSON('admin/console/', {
                     "action": 'displayDebugLog'
                 } , function (data) {
                     document.querySelector("#result").innerHTML = '<pre>' + data.result + '</pre>';
                 });
             }
             , displayPhpErrorLog: function () {
-                this.getJSON('console/', {
+                this.getJSON('admin/console/', {
                     "action": 'displayPhpErrorLog'
                 } , function (data) {
                     document.querySelector("#result").innerHTML = '<pre>' + data.result + '</pre>';
