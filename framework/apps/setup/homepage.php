@@ -39,11 +39,11 @@ class SetupPage
 
     public function fixRewriteBase(): void
     {
-        $ok = $this->_setup->fixRewritBase();
+        $rewritebase = $this->_setup->fixRewritBase();
         $this->sendResponse(
             [
-                'result' => ($ok) ? 'Rewrite base is set' : SetupPage::SERVER_ERROR,
-                'error' => !$ok
+                'result' => ($rewritebase !== null) ? $rewritebase : SetupPage::SERVER_ERROR,
+                'error' => ($rewritebase === null)
             ]
         );
     }
@@ -210,6 +210,9 @@ class SetupPage
                             "action": "rewrite"
                         },
                         function(data) {
+                            if(!data.error) {
+                                PhinkSetup.rewriteBase = data.result;
+                            }
                             PhinkSetup.isReady = PhinkSetup.operationState(1, data.error);
                         }
                     );
@@ -229,7 +232,8 @@ class SetupPage
                             PhinkSetup.isReady = PhinkSetup.isReady && PhinkSetup.operationState(3, data.error);
                         }
                     );
-                    callback.call(this);
+                    
+                    setTimeout(callback, 2000);
                 }
 
                 PhinkSetup.ajax = function(url, data, callback) {

@@ -17,7 +17,7 @@ class Setup
 
     public function __construct()
     {
-        $this->_rewriteBase =  pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME) . DIRECTORY_SEPARATOR;
+        $this->_rewriteBase =  dirname(pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME)) . DIRECTORY_SEPARATOR;
     }
 
     public function getRewriteBase(): string
@@ -70,8 +70,9 @@ class Setup
         return $ok;
     }
 
-    public function fixRewritBase(): bool
+    public function fixRewritBase(): ?string
     {
+        $result = null;
         $ok = false;
 
         if ($ok = file_exists('bootstrap.php')) {
@@ -97,7 +98,9 @@ class Setup
             }
         }
         
-        return $ok;
+        $result = ($ok) ? $this->_rewriteBase : null;
+
+        return $result;
     }
 
     public function makeBootstrap(): bool
