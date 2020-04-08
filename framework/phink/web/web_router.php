@@ -116,6 +116,12 @@ class TWebRouter extends TRouter
 
     public function setNamespace(): void
     {
+        if(file_exists(CONFIG_DIR . 'namespace')) {
+            $this->namespace = file_get_contents(CONFIG_DIR . 'namespace');
+            $this->namespace .= '\\Controllers';
+
+            return;
+        }
 
         $re = '/([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})/m';
         // preg_match($re, SERVER_NAME, $matches, PREG_OFFSET_CAPTURE, 0);
@@ -133,6 +139,8 @@ class TWebRouter extends TRouter
             }
         }
         $this->namespace = str_replace('-', '_', ucfirst($sa[0]));
+        file_put_contents(CONFIG_DIR . 'namespace', $this->namespace);
+
         $this->namespace .= '\\Controllers';
     }
 
