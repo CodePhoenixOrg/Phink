@@ -13,7 +13,6 @@ puzzle.js
 *builder.lock
 _3rdparty*
 *.db
-index.php
 images
 rewrite_base
 .htaccess
