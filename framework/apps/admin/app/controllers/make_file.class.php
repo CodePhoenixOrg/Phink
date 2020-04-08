@@ -66,7 +66,7 @@ class TMakeFile extends TPartialController
 		$usercs = TPdoConnection::opener($this->userconf);
 		// $this->cs = connection(CONNECT, $userdb) or die("UserDb='$userdb'<br>");
 		$tmp_filename = 'tmp_' . $this->pa_filename;
-		$wwwroot = getWwwRoot();
+		$wwwroot = DOCUMENT_ROOT;
 	
 		$A_data = array_map(function($defs) {
 			return base64_decode($defs);

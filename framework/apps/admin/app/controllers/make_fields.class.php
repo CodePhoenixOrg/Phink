@@ -51,7 +51,7 @@ class TMakeFields extends TPartialController
 		$usercs = TPdoConnection::opener($this->userconf);
 
 		$tmp_filename = "tmp.php";
-		$wwwroot = getWwwRoot();
+		$wwwroot = DOCUMENT_ROOT;
 		$this->datacontrols = new DbControls($this->lang, $this->db_prefix);
 
 		$analyzer = new TAnalyzer;
