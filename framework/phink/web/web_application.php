@@ -179,19 +179,19 @@ class TWebApplication extends TCustomApplication implements IHttpTransport, IWeb
     {
         $result = true;
 
-        if (!file_exists('phink_builder.lock')) {
+        if (!file_exists(RUNTIME_DIR . 'phink_builder.lock')) {
             \Phink\JavaScript\PhinkBuilder::build();
-            file_put_contents('phink_builder.lock', date('Y-m-d h:i:s'));
+            file_put_contents(RUNTIME_DIR . 'phink_builder.lock', date('Y-m-d h:i:s'));
         }
 
-        if (!file_exists('js_builder.lock')) {
+        if (!file_exists(RUNTIME_DIR . 'js_builder.lock')) {
             \Phink\JavaScript\JsBuilder::build();
-            file_put_contents('js_builder.lock', date('Y-m-d h:i:s'));
+            file_put_contents(RUNTIME_DIR . 'js_builder.lock', date('Y-m-d h:i:s'));
         }
 
-        if (!file_exists('css_builder.lock')) {
+        if (!file_exists(RUNTIME_DIR . 'css_builder.lock')) {
             \Phink\CascadingStyleSheet\CssBuilder::build();
-            file_put_contents('css_builder.lock', date('Y-m-d h:i:s'));
+            file_put_contents(RUNTIME_DIR . 'css_builder.lock', date('Y-m-d h:i:s'));
         }
 
         $this->params = $params;
