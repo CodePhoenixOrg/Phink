@@ -5,28 +5,28 @@ Phink.DOM.ready(function () {
     var conWindow = con.createController('console_window', 'console_window')
         .actions({
             clearLogs: function () {
-                this.getJSON('console', {
+                this.getJSON('console/', {
                     "action": 'clearLogs'
                 }, function (data) {
                     document.querySelector("#result").innerHTML = data.result;
                 });
             }
             , deleteRuntime: function () {
-                this.getJSON('console', {
+                this.getJSON('console/', {
                     "action": 'clearRuntime'
                 }, function (data) {
                     document.querySelector("#result").innerHTML = data.result;
                 });
             }
             , displayDebugLog: function () {
-                this.getJSON('console', {
+                this.getJSON('console/', {
                     "action": 'displayDebugLog'
                 }, function (data) {
                     document.querySelector("#result").innerHTML = '<pre>' + data.result + '</pre>';
                 });
             }
             , displayPhpErrorLog: function () {
-                this.getJSON('console', {
+                this.getJSON('console/', {
                     "action": 'displayPhpErrorLog'
                 }, function (data) {
                     document.querySelector("#result").innerHTML = '<pre>' + data.result + '</pre>';

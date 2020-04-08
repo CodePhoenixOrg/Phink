@@ -6,21 +6,21 @@ Phink.DOM.ready(function () {
     var qbeMain = qbe.createController('main', 'main')
         .actions({
             themeIbmPc: function () {
-                this.getJSON('qbe', {
+                this.getJSON('qbe/', {
                     "action": 'setTheme', "theme": 'ibm_pc'
                 } , function (data) {
                     qbeMain.applyTheme(data);
                 });
             }
             , themeAmstradCpc: function () {
-                this.getJSON('qbe', {
+                this.getJSON('qbe/', {
                     "action": 'setTheme', "theme": 'amstrad_cpc'
                 } , function (data) {
                     qbeMain.applyTheme(data);
                 });
             }
             , themeSolaris: function () {
-                this.getJSON('qbe', {
+                this.getJSON('qbe/', {
                     "action": 'setTheme', "theme": 'solaris'
                 } , function (data) {
                     qbeMain.applyTheme(data);
@@ -32,40 +32,19 @@ Phink.DOM.ready(function () {
                 document.querySelector(':root').style.setProperty('--fore-color', data.theme.foreColor);
             }
             , clearLogs: function () {
-                this.getJSON('qbe', {
+                this.getJSON('qbe/', {
                     "action": 'clearLogs'
                 } , function (data) {
                     document.querySelector("#result").innerHTML = data.result;
                 });
             }
             , testQuery: function (sql) {
-                this.getJSON('qbe', {
+                this.getJSON('qbe/', {
                     "action": 'testQuery',
                     "sql": sql
                 } , function (data) {
                     document.querySelector("#recordset pre").innerHTML = data.result;
                 });
-            }
-            , getData: function (count, index, anchor) {
-                var query = document.querySelector("#query").value;
-                query = encodeURIComponent(query);
-
-                this.getJSON('grid-result.html'
-                    , {
-                        'action': "getData"
-                        , 'pagecount': count
-                        , 'pagenum': index
-                        , 'query': query
-                    }
-                    , function (data) {
-                        Phink.Web.UI.Table.create().bind('#grid', data.grid, function () {
-                            $(anchor).html(index);
-                        });
-    
-                    }
-                );
-    
-                return false;
             }
         })
         .onload(function () {
@@ -90,7 +69,7 @@ Phink.DOM.ready(function () {
                 var index = 1;
                 var anchor = '#grid';
 
-                qbeMain.getJSON('qbe-grid'
+                qbeMain.getJSON('qbe-grid/'
                 , {
                     'action': "getData"
                     , 'pagecount': count
