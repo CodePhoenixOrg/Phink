@@ -26,6 +26,7 @@ class PhinkLibrary
             'core/constants.php',
             'log/log.php',
             'core/static_object.php',
+            'core/phpinfo.php',
             'core/object.php',
             'autoloader.php',
             'registry/class_info.php',
