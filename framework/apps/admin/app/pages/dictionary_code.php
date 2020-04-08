@@ -90,5 +90,5 @@ SQL;
 			$stmt = $cs->query($sql);
 		break;
 		}
-		echo "<script language='JavaScript'>window.location.href='admin?id=61&lg=fr'</script>";
+		echo "<script language='JavaScript'>window.location.href='?id=61&lg=fr'</script>";
 	}

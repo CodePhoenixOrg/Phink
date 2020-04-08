@@ -29,6 +29,6 @@ class TMakeMain extends TPartialController
 		array_shift($this->tab_ides);
 		$this->on_click="var index=get_radio_value(\"myTabForm\", \"choice\");";
 		$this->on_click.=jsArray("myTabCaptions", $this->tab_ides);
-		$this->on_click.="location.href=\"admin?di=\"+myTabCaptions[index]+\"&lg=$this->lang\";";
+		$this->on_click.="location.href=\"?di=\"+myTabCaptions[index]+\"&lg=$this->lang\";";
 	}
 }

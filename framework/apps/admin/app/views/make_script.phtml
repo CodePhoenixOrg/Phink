@@ -4,7 +4,7 @@
 			alert("Vous devez choisir une table.");
 			return false;
 		} else {
-			document.myForm.action = 'admin?di=mkfields&lg=<phx:echo var="lang" />';
+			document.myForm.action = '?di=mkfields&lg=<phx:echo var="lang" />';
 		}
 
 		return true;
@@ -97,7 +97,7 @@
 	</select>
 	</td></tr>
 	<tr><td colspan='3' align='center'>
-	<br><input type='button' name='previous' value='<< Précédent' onClick='document.myForm.action=\"admin?id=17&lg=<phx:echo var="lg" />\";document.myForm.submit()'>
+	<br><input type='button' name='previous' value='<< Précédent' onClick='document.myForm.action=\"?id=17&lg=<phx:echo var="lg" />\";document.myForm.submit()'>
 	&nbsp;<input type='button' name='next' value='Suivant >>' onClick='if(checkValues()) document.myForm.submit();'>
 	</td></tr>
 	</table>

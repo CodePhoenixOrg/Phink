@@ -11,11 +11,11 @@ if($this->query === "SELECT") {
     select cl_id, '<b>' || cl_title || '</b><br>' || cl_text || '</b><br>'  || '<br>' as changements from changelog order by cl_id
 SQL;
 
-    $dbgrid = $this->datacontrols->createPagerDbGrid('changelog', $sql, $this->page_id, "admin", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 550], 15, $this->grid_colors, $this->cs);
+    $dbgrid = $this->datacontrols->createPagerDbGrid('changelog', $sql, $this->page_id, "", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 550], 15, $this->grid_colors, $this->cs);
     echo "<br>".$dbgrid;
 } elseif($this->query === "ACTION") {
 ?>
-<form method="POST" name="changelogForm" action="admin?id=24&lg=fr">
+<form method="POST" name="changelogForm" action="?id=24&lg=fr">
 <input type="hidden" name="query" value="ACTION">
 <input type="hidden" name="event" value="onRun">
 <input type="hidden" name="pc" value="<?php echo $pc?>">

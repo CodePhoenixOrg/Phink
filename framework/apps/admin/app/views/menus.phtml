@@ -28,11 +28,11 @@ if($this->query === "SELECT") {
 			dictionary bd ON bd.di_id = b.di_id
 		ORDER BY d.di_fr_short
 SQL;
-    $dbgrid = $this->datacontrols->createPagerDbGrid('menus', $sql, $this->page_id, "admin", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 400], 15, $this->grid_colors, $this->cs);
+    $dbgrid = $this->datacontrols->createPagerDbGrid('menus', $sql, $this->page_id, "", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 400], 15, $this->grid_colors, $this->cs);
     echo "<br>".$dbgrid;
 } elseif($this->query === "ACTION") {
 ?>
-<form method="POST" name="menusForm" action="admin?id=18&lg=fr">
+<form method="POST" name="menusForm" action="?id=18&lg=fr">
 <input type="hidden" name="query" value="ACTION">
 <input type="hidden" name="event" value="onRun">
 <input type="hidden" name="pc" value="<?php echo $pc?>">

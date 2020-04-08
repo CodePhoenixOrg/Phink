@@ -12,11 +12,11 @@ if($this->query === "SELECT") {
     FROM
         dictionary
 SQL;
-    $dbgrid = $this->datacontrols->createPagerDbGrid('dictionary', $sql, $this->page_id, "admin", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 50, 200, 300], 15, $this->grid_colors, $this->cs);
+    $dbgrid = $this->datacontrols->createPagerDbGrid('dictionary', $sql, $this->page_id, "", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 50, 200, 300], 15, $this->grid_colors, $this->cs);
     echo "<br>".$dbgrid;
 } elseif($this->query === "ACTION") {
 ?>
-<form method="POST" name="dictionaryForm" action="admin?id=21&lg=fr">
+<form method="POST" name="dictionaryForm" action="?id=21&lg=fr">
 <input type="hidden" name="query" value="ACTION">
 <input type="hidden" name="event" value="onRun">
 <input type="hidden" name="pc" value="<?php echo $pc?>">

@@ -71,7 +71,7 @@ SQL;
 
         //tableau_sql("menu", $sql, 0, "edit.php", "", "&database=$database", "", "", "", $cs);
         //container("menu", 50, 250, 200, 355, 16);
-        $dbgrid = createDbGrid("menu", $sql, "editor", "admin", "&me_id=#Menu&userdb={$this->database}", false, $dialog, array(), $grid_colors, $cs);
+        $dbgrid = createDbGrid("menu", $sql, "editor", "", "&me_id=#Menu&userdb={$this->database}", false, $dialog, array(), $grid_colors, $cs);
         echo $dbgrid;
     }
 
@@ -190,7 +190,7 @@ SQL;
         list($me_id, $pa_id) = $this->getMenuAndPage($userdb, $pa_filename);
         if (!($me_id && $pa_id)) {
             $cs = TPdoConnection::opener($userdb);
-            $wwwroot = getWwwRoot();
+            $wwwroot = DOCUMENT_ROOT;
 
             if (empty($me_target)) {
                 $me_target = "page";
@@ -474,9 +474,9 @@ SQL;
             //$target=$rows[3];
             //$link=$rows[4];
 
-            #$main_menu=$main_menu . "<td bgcolor='black'><a href='admin?id=$id&lg=" . ${this->lg} . "'><span style='color:#ffffff'><b>$caption</b></span></a><span style='color:#ffffff'><b>&nbsp;|&nbsp;</b></span></td>";
-            //$menu_items[] =  "<a href='admin?id=$id&lg={$this->lg}'><span>$caption</span></a>";
-            $menu_items[] = "<a href='admin?id=$id&di=$name&lg={$this->lg}'><span>$caption</span></a>";
+            #$main_menu=$main_menu . "<td bgcolor='black'><a href='?id=$id&lg=" . ${this->lg} . "'><span style='color:#ffffff'><b>$caption</b></span></a><span style='color:#ffffff'><b>&nbsp;|&nbsp;</b></span></td>";
+            //$menu_items[] =  "<a href='?id=$id&lg={$this->lg}'><span>$caption</span></a>";
+            $menu_items[] = "<a href='?id=$id&di=$name&lg={$this->lg}'><span>$caption</span></a>";
 
             if ($count == 0) {
                 $default_id = $id;
@@ -530,29 +530,29 @@ SQL;
             if ($orientation == Menus::SUB_MENU_HORIZONTAL) {
                 switch ($level) {
                     case "2":
-                        $sub_menu .= "<a href='admin?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
+                        $sub_menu .= "<a href='?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                     case "3":
                         $sub_menu .= "<a href='$target?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                     case "4":
-                        $sub_menu .= "<a href='admin?id=$page&lg={$this->lg}#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
+                        $sub_menu .= "<a href='?id=$page&lg={$this->lg}#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         //$sub_menu.="<a href='$PHP_SELF#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                 }
             } elseif ($orientation == Menus::SUB_MENU_VERTICAL) {
                 switch ($level) {
                     case "2":
-                        $sub_menu .= "<tr><td><a href='admin?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td><a href='?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
                         break;
                     case "3":
                         $sub_menu .= "<tr><td><a href='$target?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
                         break;
                     case "4":
-                        $sub_menu .= "<tr><td><a href='admin?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td><a href='?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
                         break;
                     case "5":
-                        $sub_menu .= "<tr><td>&nbsp;&nbsp;&nbsp;<a href='admin?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td>&nbsp;&nbsp;&nbsp;<a href='?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
                     // no break
                     case "6":
                         $sub_menu .= "<tr><td><a href='$link' target='_new'>$caption</a></td></tr>";
@@ -637,35 +637,35 @@ SQL;
             if ($orientation == Menus::SUB_MENU_HORIZONTAL) {
                 switch ($level) {
                     case "1":
-                        $sub_menu .= "<a href='admin?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
+                        $sub_menu .= "<a href='?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                     case "2":
-                        $sub_menu .= "<a href='admin?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
+                        $sub_menu .= "<a href='?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                     case "3":
                         $sub_menu .= "<a href='$target?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                     case "4":
-                        $sub_menu .= "<a href='admin?id=$page&lg={$this->lg}#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
+                        $sub_menu .= "<a href='?id=$page&lg={$this->lg}#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         //$sub_menu.="<a href='$PHP_SELF#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                 }
             } elseif ($orientation == Menus::SUB_MENU_VERTICAL) {
                 switch ($level) {
                     case "1":
-                        $sub_menu .= "<tr><td><a href='admin?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td><a href='?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
                         break;
                     case "2":
-                        $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='admin?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
                         break;
                     case "3":
                         $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='$target?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
                         break;
                     case "4":
-                        $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='admin?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
                         break;
                     case "5":
-                        $sub_menu .= "<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;<a href='admin?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;<a href='?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
                     // no break
                     case "6":
                         $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='$link' target='_new'>$caption</a></td></tr>";

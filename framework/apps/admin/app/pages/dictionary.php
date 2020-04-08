@@ -23,12 +23,12 @@
 		FROM
 			dictionary
 		SQL;
-					$dbgrid = $datacontrols->createPagerDbGrid("entrées", $sql, $id, "admin", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 70, 120, 250], 15, $grid_colors, $cs);
+					$dbgrid = $datacontrols->createPagerDbGrid("entrées", $sql, $id, "", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 70, 120, 250], 15, $grid_colors, $cs);
 					//$dbgrid = tableShadow($tablename, $dbgrid);
 			echo "<br>".$dbgrid;
 	} elseif($query === "ACTION") {
 ?>
-<form method="POST" name="dictionaryForm" action="admin?id=61&lg=fr">
+<form method="POST" name="dictionaryForm" action="?id=61&lg=fr">
 	<input type="hidden" name="query" value="ACTION">
 	<input type="hidden" name="event" value="onRun">
 	<input type="hidden" name="pc" value="<?php echo $pc?>">

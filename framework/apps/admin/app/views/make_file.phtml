@@ -16,7 +16,7 @@
 
 		<phx:echo var="message" />
 
-		<form name='myForm' method='POST' action='admin?di=mkfinal&lg=<phx:echo var="lg" />'>
+		<form name='myForm' method='POST' action='?di=mkfinal&lg=<phx:echo var="lg" />'>
 	
 		<input type='hidden' name='workdb' value='<phx:echo var="workdb" />'>
 		<input type='hidden' name='userdb' value='<phx:echo var="userdb" />'>
@@ -39,7 +39,7 @@
 		<input type='hidden' name='di_long' value='<phx:echo var="di_long" />'>
 		<input type='hidden' name='di_short' value='<phx:echo var="di_short" />'>
 
-		<input type='button' name='previous' value='<< Précédent' onClick='document.myForm.action="admin?di=mkfields&lg=<phx:echo var="lg" />";document.myForm.submit();'>
+		<input type='button' name='previous' value='<< Précédent' onClick='document.myForm.action="?di=mkfields&lg=<phx:echo var="lg" />";document.myForm.submit();'>
 		<input type='submit' name='save' value='<phx:echo var="YES" />'>
 		<input type='submit' name='save' value='<phx:echo var="NO" />'>
 		</form>
