@@ -1,6 +1,6 @@
 <?php
-include '../../framework/phink/phink_library.php';
-include '../../framework/apps/setup/setup.php';
+include  SETUP_SITE_ROOT . SETUP_FRAMEWORK . 'phink/phink_library.php';
+include  SETUP_SITE_ROOT . SETUP_FRAMEWORK . 'apps/setup/setup.php';
 
 use Phink\Setup;
 
@@ -201,20 +201,47 @@ class SetupPage
             </footer>
             <script>
                 PhinkSetup = {};
-                PhinkSetup.rewriteBase = window.location.pathname.split('/');
-                PhinkSetup.rewriteBase.pop();
-                PhinkSetup.rewriteBase = PhinkSetup.rewriteBase.join('/') + '/';
+                PhinkSetup.rewriteBase = '/';
                 PhinkSetup.URL = window.location.href;
                 PhinkSetup.isReady = false;
+                PhinkSetup.stepsResult = [];
+                PhinkSetup.stepsCount = document.querySelectorAll('div[data-step]').length;
+
+                PhinkSetup.checkSteps = function(stepResult, callback) {
+                    PhinkSetup.stepsResult.push(stepResult);
+                    if (PhinkSetup.stepsResult.length == PhinkSetup.stepsCount) {
+
+                        var finalResult = true;
+                        for (var key in PhinkSetup.stepsResult) {
+                            var currentResult = PhinkSetup.stepsResult[key];
+                            finalResult = finalResult && currentResult;
+                        }
+
+                        PhinkSetup.isReady = finalResult;
+                        if (finalResult && 'function' == typeof callback) {
+                            callback.call(this);
+                        }
+                    }
+                }
+
+                PhinkSetup.callback = function() {
+                    if (PhinkSetup.isReady) {
+                        setTimeout(function() {
+                            window.location = PhinkSetup.rewriteBase;
+                        }, 1000);
+                    }
+                }
+
                 PhinkSetup.process = function(callback) {
                     PhinkSetup.ajax(PhinkSetup.URL, {
                             "action": "rewrite"
                         },
                         function(data) {
-                            if(!data.error) {
+                            if (!data.error) {
                                 PhinkSetup.rewriteBase = data.result;
                             }
-                            PhinkSetup.isReady = PhinkSetup.operationState(1, data.error);
+                            var result = PhinkSetup.operationState(1, data.error);
+                            PhinkSetup.checkSteps(result, PhinkSetup.callback);
                         }
                     );
 
@@ -222,7 +249,8 @@ class SetupPage
                             "action": "js"
                         },
                         function(data) {
-                            PhinkSetup.isReady = PhinkSetup.isReady && PhinkSetup.operationState(2, data.error);
+                            var result = PhinkSetup.operationState(2, data.error);
+                            PhinkSetup.checkSteps(result, PhinkSetup.callback);
                         }
                     );
 
@@ -230,11 +258,11 @@ class SetupPage
                             "action": "index"
                         },
                         function(data) {
-                            PhinkSetup.isReady = PhinkSetup.isReady && PhinkSetup.operationState(3, data.error);
+                            var result = PhinkSetup.operationState(3, data.error);
+                            PhinkSetup.checkSteps(result, PhinkSetup.callback);
                         }
                     );
-                    
-                    setTimeout(callback, 2000);
+
                 }
 
                 PhinkSetup.ajax = function(url, data, callback) {
@@ -276,24 +304,23 @@ class SetupPage
                 }
 
                 PhinkSetup.operationState = function(step, error) {
+                    var result = false;
+
                     if (error) {
                         document.querySelector('div[data-step="' + step + '"]').innerHTML = 'Error';
                         document.querySelector('div[data-step="' + step + '"]').className = 'step error';
-                        return false;
                     }
+                    
                     if (!error) {
                         document.querySelector('div[data-step="' + step + '"]').innerHTML = 'OK!';
                         document.querySelector('div[data-step="' + step + '"]').className = 'step ok';
-                        return true;
+                        result = true;
                     }
+
+                    return result;
                 }
 
-                PhinkSetup.process(function() {
-                    if (PhinkSetup.isReady) {
-                        window.location = PhinkSetup.rewriteBase;
-                    }
-                });
-
+                PhinkSetup.process();
             </script>
         </body>
 

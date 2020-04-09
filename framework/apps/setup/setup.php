@@ -4,6 +4,7 @@ namespace Phink;
 
 use Phink\Core\PhpInfo;
 use Phink\Log\TLog;
+use Phink\Utils\TFileUtils;
 use Phink\Web\TCurl;
 
 class Setup
@@ -17,12 +18,12 @@ class Setup
 
     public function __construct()
     {
-        $this->_rewriteBase =  dirname(pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME)) . DIRECTORY_SEPARATOR;
+        define('SETUP_REWRITE_BASE', dirname(pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME)) . DIRECTORY_SEPARATOR);
     }
 
     public function getRewriteBase(): string
     {
-        return $this->_rewriteBase;
+        return SETUP_REWRITE_BASE;
     }
 
     public function installPhinkJS(): bool
@@ -33,8 +34,22 @@ class Setup
 
             $filename = 'phinkjs.tar.gz';
             $tarfilename = 'phinkjs.tar';
+            $phinkjs_dirname = 'phinkjs' . DIRECTORY_SEPARATOR;
 
-            $filepath = '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'framework'  . DIRECTORY_SEPARATOR;
+            $filepath = SETUP_SITE_ROOT . SETUP_FRAMEWORK;
+
+            if (file_exists($filepath . $phinkjs_dirname)) {
+                chdir($filepath . $phinkjs_dirname);
+
+                unlink('.gitignore');
+                $github = '.github' . DIRECTORY_SEPARATOR;
+                if (file_exists($filepath . $phinkjs_dirname . $github)) {
+                    TFileUtils::delTree($filepath . $phinkjs_dirname . $github);
+                }
+
+                chdir('..');
+                TFileUtils::delTree($filepath . $phinkjs_dirname);
+            }
 
             if (file_exists($tarfilename)) {
                 unlink($tarfilename);
@@ -58,8 +73,6 @@ class Setup
                 unlink($tarfilename);
             }
 
-            chdir($filepath);
-
             $ok = $ok && rename('PhinkJS-master', 'phinkjs');
         } catch (\Exception $ex) {
             $ok = false;
@@ -77,7 +90,7 @@ class Setup
 
         if ($ok = file_exists('bootstrap.php')) {
 
-            $ok = $ok && false !== file_put_contents('..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'rewrite_base', $this->_rewriteBase);
+            $ok = $ok && false !== file_put_contents('..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'rewrite_base', REWRITE_BASE);
 
             if (file_exists('.htaccess') && ($htaccess = file_get_contents('.htaccess'))) {
                 $htaccess = str_replace(PHP_EOL, ';', $htaccess);
@@ -90,17 +103,38 @@ class Setup
                     $pe = strpos($htaccess, ';', $ps);
                     $rewriteBaseEntry = substr($htaccess, $ps, $pe - $ps);
 
-                    $htaccess = str_replace($rewriteBaseEntry, $rewriteBaseKey . ' ' . $this->_rewriteBase, $htaccess);
+                    $htaccess = str_replace($rewriteBaseEntry, $rewriteBaseKey . ' ' . SETUP_REWRITE_BASE, $htaccess);
                     $htaccess = str_replace(';', PHP_EOL, $htaccess);
 
                     $ok = $ok && false !== file_put_contents('.htaccess', $htaccess);
                 }
             }
         }
-        
-        $result = ($ok) ? $this->_rewriteBase : null;
+
+        $result = ($ok) ? SETUP_REWRITE_BASE : null;
 
         return $result;
+    }
+
+    public function findFramework(): bool
+    {
+        $ok = false;
+
+        $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
+        $portable_dir = 'framework' . DIRECTORY_SEPARATOR;
+        $lib = 'phink' . DIRECTORY_SEPARATOR . 'phink_library.php';
+
+        $framework_dir = '';
+        if (file_exists(SETUP_SITE_ROOT . $vendor_dir . $lib)) {
+            $framework_dir = $vendor_dir;
+        }
+
+        if (file_exists(SETUP_SITE_ROOT . $portable_dir . $lib)) {
+            $framework_dir = $portable_dir;
+        }
+        $ok = false !== file_put_contents(SETUP_CONFIG_DIR . 'framework', $framework_dir);
+
+        return $ok;
     }
 
     public function makeBootstrap(): bool
@@ -117,8 +151,10 @@ if(\$is127 || \$isIndex) {
     header('Location: //' . \$hostname . \$port . \$requestUri);
     exit(302);
 }
-include '../../framework/phink/phink_library.php';
-include '../../framework/plugins/plugins_library.php';
+define('CONFIG_DIR', '..' . DIRECTORY_SEPARATOR . 'config');
+define('FRAMEWORK', '../../' . trim(file_get_contents(CONFIG_DIR . 'framework')));
+include FRAMEWORK . 'phink' . DIRECTORY_SEPARATOR . 'phink_library.php';
+include FRAMEWORK . 'plugins' . DIRECTORY_SEPARATOR . 'plugins_library.php';
         
 BOOTSTRAP;
 
@@ -126,7 +162,7 @@ BOOTSTRAP;
 
         $serverApi = strtolower(PhpInfo::getGeneralSection()->server_api);
 
-        if(strpos($serverApi, 'embedded') > -1 || strpos($serverApi, 'built-in') > -1) {
+        if (strpos($serverApi, 'embedded') > -1 || strpos($serverApi, 'built-in') > -1) {
             $ok = false !== file_put_contents('bootstrap.php', $bootstrap);
         }
 
