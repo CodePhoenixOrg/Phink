@@ -1,5 +1,4 @@
 <?php
-chdir('..');
-include '../../framework/apps/setup/homepage.php';
+include 'bootstrap.php';
 
 SetupPage::main();

@@ -39,6 +39,7 @@ class SetupPage
 
     public function fixRewriteBase(): void
     {
+        $ok = $this->_setup->findFramework();
         $rewritebase = $this->_setup->fixRewritBase();
         $this->sendResponse(
             [
