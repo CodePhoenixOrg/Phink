@@ -42,7 +42,6 @@ if (APP_IS_WEB) {
 
     define('DOCUMENT_ROOT', $document_root . DIRECTORY_SEPARATOR);
     define('SRC_ROOT', substr(DOCUMENT_ROOT, 0, -4));
-    define('CONFIG_DIR', SRC_ROOT . 'config' . DIRECTORY_SEPARATOR);
 
     $rewrite_base = '/';
     if ($rewrite_base = file_get_contents(CONFIG_DIR . 'rewrite_base')) {

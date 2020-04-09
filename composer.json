@@ -15,10 +15,13 @@
     "autoload": {
         "classmap": [
             "framework/phink/",
+            "framework/plugins/",
+            "framework/widgets/",
             "framework/puzzle/"
         ],
         "exclude-from-classmap": [
             "framework/phink/phink_library.php",
+            "framework/plugins/plugins_library.php",
             "framework/puzzle/ipuzzle_library.php",
             "framework/puzzle/ipz_db.php",
             "framework/puzzle/ipz_dico.php",
