@@ -97,17 +97,17 @@ class TWebApplication extends TCustomApplication implements IHttpTransport, IWeb
 
     public static function mediaPath(): string
     {
-        return SERVER_ROOT . '/media/';
+        return SERVER_ROOT . REWRITE_BASE . 'media/';
     }
 
     public static function themePath(): string
     {
-        return SERVER_ROOT . '/themes/';
+        return SERVER_ROOT . REWRITE_BASE . 'themes/';
     }
 
     public static function imagePath(): string
     {
-        return self::mediaPath() . 'images';
+        return self::mediaPath() . 'images/';
     }
 
     public static function create(...$params): void
