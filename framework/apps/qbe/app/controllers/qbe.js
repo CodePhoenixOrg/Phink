@@ -7,42 +7,45 @@ Phink.DOM.ready(function () {
         .actions({
             themeIbmPc: function () {
                 this.getJSON('admin/console/', {
-                    "action": 'setTheme', "theme": 'ibm_pc'
-                } , function (data) {
+                    "action": 'setTheme',
+                    "theme": 'ibm_pc'
+                }, function (data) {
                     qbeMain.applyTheme(data);
                 });
-            }
-            , themeAmstradCpc: function () {
+            },
+            themeAmstradCpc: function () {
                 this.getJSON('admin/console/', {
-                    "action": 'setTheme', "theme": 'amstrad_cpc'
-                } , function (data) {
+                    "action": 'setTheme',
+                    "theme": 'amstrad_cpc'
+                }, function (data) {
                     qbeMain.applyTheme(data);
                 });
-            }
-            , themeSolaris: function () {
+            },
+            themeSolaris: function () {
                 this.getJSON('admin/console/', {
-                    "action": 'setTheme', "theme": 'solaris'
-                } , function (data) {
+                    "action": 'setTheme',
+                    "theme": 'solaris'
+                }, function (data) {
                     qbeMain.applyTheme(data);
                 });
-            }
-            , applyTheme: function(data) {
+            },
+            applyTheme: function (data) {
                 document.querySelector("#result").innerHTML = data.theme.name;
                 document.querySelector(':root').style.setProperty('--back-color', data.theme.backColor);
                 document.querySelector(':root').style.setProperty('--fore-color', data.theme.foreColor);
-            }
-            , clearLogs: function () {
+            },
+            clearLogs: function () {
                 this.getJSON('admin/console/', {
                     "action": 'clearLogs'
-                } , function (data) {
+                }, function (data) {
                     document.querySelector("#result").innerHTML = data.result;
                 });
-            }
-            , testQuery: function (sql) {
+            },
+            testQuery: function (sql) {
                 this.getJSON('admin/qbe/', {
                     "action": 'testQuery',
                     "sql": sql
-                } , function (data) {
+                }, function (data) {
                     document.querySelector("#recordset pre").innerHTML = data.result;
                 });
             }
@@ -69,20 +72,17 @@ Phink.DOM.ready(function () {
                 var index = 1;
                 var anchor = '#grid';
 
-                qbeMain.getJSON('admin/qbe/grid/'
-                , {
-                    'action': "getData"
-                    , 'pagecount': count
-                    , 'pagenum': index
-                    , 'query': sql
-                }
-                , function (data) {
+                qbeMain.getJSON('admin/qbe/grid/', {
+                    'action': "getData",
+                    'pagecount': count,
+                    'pagenum': index,
+                    'query': sql
+                }, function (data) {
                     Phink.Web.UI.Table.create().bind('#grid', data.grid, function () {
                         //document.querySelector('#grid').innerHTML(index);
                     });
 
-                }
-            );
+                });
             }
 
         });
