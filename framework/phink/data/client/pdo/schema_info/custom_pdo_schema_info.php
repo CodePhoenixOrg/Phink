@@ -44,7 +44,7 @@ abstract class TCustomPdoSchemaInfo implements IPdoSchemaInfo
             if ($config->getDriver() == TServerType::SQLITE) {
                 $result = new TPdoSQLiteSchemaInfo($config);
             }
-        } catch(\PDOException $ex) {
+        } catch (\PDOException $ex) {
             self::getLogger()->error($ex);
             $result = null;
         } finally {
@@ -71,7 +71,7 @@ abstract class TCustomPdoSchemaInfo implements IPdoSchemaInfo
     {
         return $this->columnTypes;
     }
-    
+
     public function isQueryATable(): bool
     {
         if (!$this->queryIsATable) {
@@ -84,10 +84,12 @@ abstract class TCustomPdoSchemaInfo implements IPdoSchemaInfo
     }
 
     public function setTypes(): void
-    {}
+    {
+    }
 
     public function getInfo(int $index): ?object
-    {}
+    {
+    }
 
     public function typeNumToName(int $type): string
     {
@@ -111,7 +113,12 @@ abstract class TCustomPdoSchemaInfo implements IPdoSchemaInfo
     public function getShowFieldsQuery(?string $table): string
     {
     }
+
+    public function getFieldCount(): int
+    {
+    }
     
-    public function getFieldCount() : int
-    {}
+    public function getRowCount(): int
+    {
+    }
 }

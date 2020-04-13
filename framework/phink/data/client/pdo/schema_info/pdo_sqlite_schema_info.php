@@ -37,7 +37,6 @@ SQL;
             $name = $this->columnNames[$index];
             $type = $this->columnTypes[$index];
             $len = 1024;
-
         }
 
         if ($name == '' && !$this->isQueryATable()) {
@@ -75,9 +74,7 @@ SQL;
                 if ($errno > 0) {
                     throw new \PDOException($connection->lastErrorMsg(), (int) $errno, $ex);
                 }
-
             }
-
         }
 
         $this->info = (object) ['name' => $name, 'type' => $type, 'length' => $len];
@@ -151,6 +148,25 @@ SQL;
             }
             $result = $count;
         }
+
+        return $result;
+    }
+
+    public function getRowCount(): int
+    {
+        $result = 0;
+
+        $connection = new \SQLite3(
+            $this->config->getDatabaseName()
+        );
+
+        $sql = $this->getQuery();
+        $stmt = $connection->query($sql);
+        $count = 0;
+        while ($row = $stmt->fetchArray()) {
+            $count++;
+        }
+        $result = $count;
 
         return $result;
     }

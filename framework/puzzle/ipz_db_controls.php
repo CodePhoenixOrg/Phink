@@ -348,7 +348,7 @@ class Controls extends \Puzzle\Base
             $page_uri = "$page_link?di=$id&lg=$lg";
         }
 
-        if (strpos($page_uri, "?") > 0) {
+        if (strpos($page_uri, "?") > -1) {
             $page_uri .= "&";
         }
 
@@ -470,7 +470,7 @@ class Controls extends \Puzzle\Base
             $page_uri = "$page_link?di=$id&lg=$lg";
         }
 
-        if (strpos($page_uri, "?") > 0) {
+        if (strpos($page_uri, "?") > -1) {
             $page_uri .= "&";
         }
 
@@ -862,7 +862,7 @@ class Controls extends \Puzzle\Base
                 $a = "";
             } else {
                 // if ($page_link != "") {
-                    $url = "$page_link?$page_id&$index_fieldname=" . $index_value . "&action=Modifier";
+                $url = "$page_link?$page_id&$index_fieldname=" . $index_value . "&action=Modifier";
                 // }
                 $ahref = "<a href='$url$curl_rows'$target>";
                 $a = "</a>";
@@ -1324,7 +1324,7 @@ class Controls extends \Puzzle\Base
                 $a = "";
             } else {
                 // if ($page_link != "") {
-                    $url = "$page_link?$page_id&$index_fieldname=" . $index_value . "&action=Modifier";
+                $url = "$page_link?$page_id&$index_fieldname=" . $index_value . "&action=Modifier";
                 // }
                 $ahref = "<a href='$url$curl_rows'$target>";
                 $a = "</a>";
@@ -1681,7 +1681,7 @@ class Controls extends \Puzzle\Base
                 $a = "";
             } else {
                 // if ($page_link != "") {
-                    $url = "$page_link?$page_id&$index_fieldname=" . $index_value . "&action=Modifier";
+                $url = "$page_link?$page_id&$index_fieldname=" . $index_value . "&action=Modifier";
                 // }
                 $ahref = "<a href='$url$curl_rows'$target>";
                 $a = "</a>";
