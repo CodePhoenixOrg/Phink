@@ -48,7 +48,7 @@ class TAutoloader extends TStaticObject
         // spl_autoload_register(array(new self, 'autoload'), true, $prepend);
     }
 
-    public static function innerClassNameToFilename($className)
+    public static function innerClassNameToFilename($className): string
     {
         $translated = '';
         $className = substr($className, 1);
@@ -66,7 +66,7 @@ class TAutoloader extends TStaticObject
         return $translated;
     }
 
-    public static function userClassNameToFilename($className)
+    public static function userClassNameToFilename($className): string
     {
         $translated = '';
         $l = strlen($className);
@@ -83,22 +83,27 @@ class TAutoloader extends TStaticObject
         return $translated;
     }
 
-    public static function cacheFilenameFromView($viewName)
+    public static function cacheFilenameFromView(string $viewName): string
     {
-        return REL_RUNTIME_DIR . strtolower('app_controllers_' . $viewName . CLASS_EXTENSION);
+        return REL_RUNTIME_DIR . strtolower('controller_' . $viewName . CLASS_EXTENSION);
     }
 
-    public static function cacheJsFilenameFromView($viewName)
+    public static function cacheJsFilenameFromView(string $viewName): string
     {
         return REL_RUNTIME_JS_DIR . strtolower('javascript_' . $viewName . JS_EXTENSION);
     }
 
-    public static function cacheCssFilenameFromView($viewName)
+    public static function absoluteURL(string $relativeURL = ''): string
     {
-        return REL_RUNTIME_CSS_DIR . strtolower('stylesheet_' . $viewName . CSS_EXTENSION);
+        return ((HTTP_HOST !== SERVER_NAME) ? SERVER_HOST : SERVER_ROOT) . REWRITE_BASE . $relativeURL;
     }
 
-    public static function cachePath($filepath)
+    public static function cacheCssFilenameFromView(string $viewName): string
+    {
+        return  REL_RUNTIME_CSS_DIR . strtolower('stylesheet_' . $viewName . CSS_EXTENSION);
+    }
+
+    public static function cachePath(string $filepath): string
     {
         return  str_replace(DIRECTORY_SEPARATOR, '_', $filepath);
     }
@@ -128,10 +133,10 @@ class TAutoloader extends TStaticObject
     {
         $className = ucfirst($viewName);
         $filename = $info->path . 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR  . \Phink\TAutoloader::innerClassNameToFilename($viewName) . CLASS_EXTENSION;
-        if($filename[0] == '@') {
+        if ($filename[0] == '@') {
             $filename = \str_replace('@/', PHINK_APPS_ROOT, $filename);
         }
-        if($filename[0] == '~') {
+        if ($filename[0] == '~') {
             $filename = \str_replace('~/', PHINK_WIDGETS_ROOT, $filename);
         }
         //self::getLogger()->debug('INCLUDE INNER PARTIAL CONTROLLER : ' . $filename, __FILE__, __LINE__);
@@ -192,14 +197,16 @@ class TAutoloader extends TStaticObject
 
     public static function includeModelByName(string $modelName): ?array
     {
-        $file = ''; $type = ''; $code = '';
+        $file = '';
+        $type = '';
+        $code = '';
 
         //self::getLogger()->debug('MODEL NAME : ' . $modelName, __FILE__, __LINE__);
 
         $modelFileName = 'app' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $modelName . CLASS_EXTENSION;
 
         $result = self::includeClass($modelFileName, INCLUDE_FILE);
-        if($result !== null) {
+        if ($result !== null) {
             list($file, $type, $code) = $result;
         }
         if ($type === '') {
@@ -212,11 +219,13 @@ class TAutoloader extends TStaticObject
 
     public static function includeControllerByName(string $viewName): ?array
     {
-        $file = ''; $type = ''; $code = '';
+        $file = '';
+        $type = '';
+        $code = '';
         $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
 
         $result = self::includeClass($controllerFileName, RETURN_CODE);
-        if($result !== null) {
+        if ($result !== null) {
             list($file, $type, $code) = $result;
         }
         if ($result === null) {
@@ -238,7 +247,9 @@ class TAutoloader extends TStaticObject
 
     public static function includePartialControllerByName(string $viewName): ?array
     {
-        $file = ''; $type = ''; $code = '';
+        $file = '';
+        $type = '';
+        $code = '';
         $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
         if (file_exists($controllerFileName)) {
             //self::getLogger()->debug('INCLUDE CUSTOM PARTIAL CONTROLLER : ' . $controllerFileName, __FILE__, __LINE__);
@@ -258,23 +269,26 @@ class TAutoloader extends TStaticObject
 
     public static function includeDefaultController(string $namespace, string $className): array
     {
-        $file = ''; $type = ''; $code = '';
+        $file = '';
+        $type = '';
+        $code = '';
         $type = DEFAULT_CONTROLLER;
         $code = self::controllerTemplate($namespace, $className);
         $code = substr(trim($code), 0, -2) . CONTROL_ADDITIONS;
 
         return [$file, $type, $code];
-
     }
 
     public static function includeDefaultPartialController(string $namespace, string $className): array
     {
-        $file = ''; $type = ''; $code = '';
+        $file = '';
+        $type = '';
+        $code = '';
         $type = DEFAULT_PARTIAL_CONTROLLER;
         $code = self::partialControllerTemplate($namespace, $className);
         $code = substr(trim($code), 0, -2) . CONTROL_ADDITIONS;
 
-        return [$file, $type, $code];        
+        return [$file, $type, $code];
     }
 
     public static function import(Web\UI\TCustomControl $ctrl, string $className): bool
@@ -283,7 +297,9 @@ class TAutoloader extends TStaticObject
             $className = $ctrl->getClassName();
         }
         $result = false;
-        $file = ''; $type = ''; $code = '';
+        $file = '';
+        $type = '';
+        $code = '';
 
         $cacheFilename = '';
         //$classFilename = '';
@@ -303,9 +319,9 @@ class TAutoloader extends TStaticObject
             if ($info->path[0] == '~') {
                 $path = str_replace("~" . DIRECTORY_SEPARATOR, PHINK_VENDOR_WIDGETS, $info->path);
             }
-            // $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . $ctrl->getId()) . CLASS_EXTENSION;
-            $cacheFilename = REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $path . 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR  . $viewName) . CLASS_EXTENSION;
-        } 
+
+            $cacheFilename = TAutoloader::cacheFilenameFromView($viewName);
+        }
         if ($info === null) {
             $viewName = self::userClassNameToFilename($className);
 
@@ -340,7 +356,7 @@ class TAutoloader extends TStaticObject
 
         if ($info !== null) {
             list($file, $type, $code) = self::_includeInnerClass($className, $info);
-            $view->setCacheFilename(SRC_ROOT . $cacheFilename);
+            $view->getCacheFilename();
         } else {
             list($file, $type, $code) = self::includeClass($view->getControllerFileName(), RETURN_CODE);
         }
@@ -375,7 +391,6 @@ class TAutoloader extends TStaticObject
         $controller = new $fqClassName($parent);
 
         return $controller;
-
     }
 
 

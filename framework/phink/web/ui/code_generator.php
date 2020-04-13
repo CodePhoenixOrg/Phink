@@ -168,11 +168,11 @@ trait TCodeGenerator
                         $sa = explode(':', $value);
                         $member = $sa[1];
                         if ($sa[0] == 'var') {
-                            //if($key == 'for') {
-                            //                                    array_push($afterBinding[$j], $thisControl . '->set' . ucfirst($key) . '($this->' . $member . '); ');
-                            //                                } else {
+                            // if ($key == 'for') {
+                            //     array_push($afterBinding[$j], $thisControl . '->set' . ucfirst($key) . '($this->' . $member . '); ');
+                            // } else {
                             array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '($this->' . $member . '); ');
-                            //                                }
+                            // }
                         } elseif ($sa[0] == 'prop') {
                             array_push($additions[$j], $thisControl . '->set' . ucfirst($key) . '($this->get' . ucfirst($member) . '()); ');
                         }

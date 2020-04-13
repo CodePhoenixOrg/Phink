@@ -44,6 +44,7 @@ class TPartialController extends TCustomController
     public function render() : void
     {
         $this->init();
+        $this->partialLoad();
         $this->parse();
         $this->beforeBinding();
         $this->renderCreations();
@@ -54,6 +55,7 @@ class TPartialController extends TCustomController
             $this->renderHtml();
             $this->renderedHtml();
         }
+
         $this->unload();    
     }    
     

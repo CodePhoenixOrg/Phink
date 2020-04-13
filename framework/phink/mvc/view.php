@@ -41,7 +41,7 @@ class TView extends TCustomView
 
         $this->clonePrimitivesFrom($parent);
         $this->cloneNamesFrom($parent);
-        $this->setCacheFileName();
+        $this->getCacheFileName();
         $this->cacheFileName = $parent->getCacheFileName();
 
         // if ($this->getType() == 'TView' && $this->motherView === null) {
