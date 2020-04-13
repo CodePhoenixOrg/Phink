@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 namespace Phink\Widgets\Pager;
 
 use Phink\TAutoloader;
@@ -29,23 +29,25 @@ class TPager extends TWidget
     protected $currentPage;
     protected $pageNum;
     protected $pagerJS;
+    protected $jscall;
+    protected $script;
 
-    public function setPageCount($value) : void
+    public function setPageCount($value): void
     {
         $this->pageCount = $value;
     }
-    
-    public function setCurrentPage($value) : void
+
+    public function setCurrentPage($value): void
     {
         $this->currentPage = $value;
     }
-    
-    public function setPageNum($value) : void
+
+    public function setPageNum($value): void
     {
         $this->pageNum = $value;
     }
-    
-    public function init() : void
+
+    public function init(): void
     {
         $forControl = $this->parent->getChildById($this->forThis);
 
@@ -54,8 +56,8 @@ class TPager extends TWidget
         $this->forApp = $this->getApplication()->getName();
 
         $this->pageNum = (int) (!$this->pageNum) ? 1 : $this->pageNum;
-        $this->pageCount = ($forControl) ? $forControl->getRowCount(): $this->pageNum;
-    
+        $this->pageCount = ($forControl) ? $forControl->getRowCount() : $this->pageNum;
+
         $this->path = TRegistry::widgetPath('TPager');
 
         $this->pagerJS = file_get_contents($this->path . '/views/pager.jhtml');
@@ -67,9 +69,17 @@ class TPager extends TWidget
         $this->pagerJS = str_replace('{{ pageNum }}', $this->pageNum, $this->pagerJS);
         $this->pagerJS = str_replace('{{ id }}', $this->id, $this->pagerJS);
         $this->pagerJS = str_replace('{{ onclick }}', $this->onclick, $this->pagerJS);
-        
+
         $this->script = TAutoloader::cacheJsFilenameFromView($this->forThis . 'pager');
-        $this->response->addScript($this->script);
+        if (!$this->getRequest()->isAJAX($this->script)) {
+            $scriptURI = TAutoloader::absoluteURL($this->script);
+            $this->jscall = <<<JSCRIPT
+            <script type='text/javascript' src='{$scriptURI}'></script>
+JSCRIPT;
+        }
+        if ($this->getRequest()->isAJAX()) {
+            $this->response->addSript($this->script);
+        }
         file_put_contents($this->script, $this->pagerJS);
     }
 }
