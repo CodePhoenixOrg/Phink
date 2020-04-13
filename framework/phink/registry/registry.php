@@ -115,7 +115,7 @@ class TRegistry extends TStaticObject
         if ($registry === null) {
             return;
         }
-        
+
         $classes = count($registry['classes']) > 0 ? $registry['classes'][0] : [];
 
         foreach ($classes as $type => $class) {
@@ -145,7 +145,7 @@ class TRegistry extends TStaticObject
 
         if (self::init() && isset(self::$_items['classes'][$className])) {
             $result = self::$_items['classes'][$className];
-            if(isset($result['type'])) {
+            if (isset($result['type'])) {
                 $className = $result['type'];
                 $result = self::$_items['classes'][$result['type']];
             }
@@ -226,21 +226,42 @@ class TRegistry extends TStaticObject
         }
     }
 
-    public static function add($item, $key, $value): void
+    public static function push($item, $key, $value): void
     {
         if (!isset(self::$_items[$item])) {
             self::$_items[$item] = [];
+        }
+
+        if (!isset(self::$_items[$item][$key])) {
+            self::$_items[$item][$key] = $value;
         }
 
         if (isset(self::$_items[$item][$key]) && !is_array(self::$_items[$item][$key])) {
             $tmp = self::$_items[$item][$key];
             self::$_items[$item][$key] = [];
             self::$_items[$item][$key][] = $tmp;
-            self::$_items[$item][$key][] = $value;
         }
-        if (isset(self::$_items[$item][$key]) && is_array(self::$_items[$item][$key])) {
-            self::$_items[$item][$key][] = $value;
+
+        array_push(self::$_items[$item][$key], $value);
+    }
+
+    public static function unshift($item, $key, $value): void
+    {
+        if (!isset(self::$_items[$item])) {
+            self::push($item, $key, $value);
         }
+
+        if (!isset(self::$_items[$item][$key])) {
+            self::$_items[$item][$key] = $value;
+        }
+        
+        if (isset(self::$_items[$item][$key]) && !is_array(self::$_items[$item][$key])) {
+            $tmp = self::$_items[$item][$key];
+            self::$_items[$item][$key] = [];
+            self::$_items[$item][$key][] = $tmp;
+        }
+
+        array_unshift(self::$_items[$item][$key], $value);
     }
 
     public static function read($item, $key, $defaultValue = null)
@@ -259,11 +280,11 @@ class TRegistry extends TStaticObject
         $section = self::read('ini', $section);
         $value = null;
 
-        if($key === null) {
+        if ($key === null) {
             return $section;
         }
 
-        if(is_array($section)) {
+        if (is_array($section)) {
             $value = isset($section[$key]) ? $section[$key] : $value;
         }
 
