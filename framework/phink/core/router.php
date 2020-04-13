@@ -155,11 +155,12 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
         $routesArray['web']['get']["^/admin/console/([a-z-]+)$"] = "@/console/app/views/console.phtml?console=$1";
         $routesArray['web']['get']["^/admin/console/([a-z-]+)/([a-z-]+)$"] = "@/console/app/views/console.phtml?console=$1&arg=$2";
         $routesArray['web']['post']["^/admin/console(/)?$"] = "@/console/app/views/console_window.phtml";
+        $routesArray['web']['post']["^/admin/console/token/$"] = "@/console/app/views/token.phtml";
         $routesArray['web']['get']["^/tuto(/)?$"] = "@/tuto/app/views/index.phtml";
         $routesArray['web']['get']["^/admin(/)?$"] = "@/admin/app/views/page.phtml?di=mkmain";
         $routesArray['web']['get']["^/admin/(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
         $routesArray['web']['post']["^/admin/(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
-        $routesArray['web']['get']["^/admin/source(\\?([a-z0-9\._\-=&]+))?$"] = "@/admin/app/views/source.phtml?$2";
+        $routesArray['web']['get']["^/admin/source/(\\?([a-z0-9\._\-=&]+))?$"] = "@/admin/app/views/source.phtml?$2";
         $routesArray['web']['get']["^/admin/qbe(/)?$"] = "@/qbe/app/views/qbe.phtml";
         $routesArray['web']['get']["^/admin/qbe/([a-z-]+)$"] = "@/qbe/app/views/qbe.phtml?qbe=$1";
         $routesArray['web']['get']["^/admin/qbe/([a-z-]+)/([a-z-]+)$"] = "@/qbe/app/views/qbe.phtml?qbe=$1&arg=$2";

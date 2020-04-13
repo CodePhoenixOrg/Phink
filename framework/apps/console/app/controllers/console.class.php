@@ -1,8 +1,6 @@
 <?php
 namespace Phink\Apps\Console;
 
-//require PHINK_APPS_ROOT . 'console/app_bootstrap.php';
-
 use Phink\MVC\TController;
 use Phink\Registry\TRegistry;
 

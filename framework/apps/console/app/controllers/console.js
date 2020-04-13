@@ -5,62 +5,79 @@ Phink.DOM.ready(function () {
 
     var conMain = con.createController('main', 'main')
         .actions({
+            showToken: function () {
+                var token = Phink.Registry.item(con.name).token;
+
+                this.getPartialView('admin/console/token/', 'showToken', '#token', {
+                    "token": token,
+                    "label": 'token'
+                }, function (data) {
+                    document.querySelector('#tokenLink').onclick = function () {
+                        conMain.showToken();
+                    }
+                });
+                return false;
+            },
             themeIbmPc: function () {
                 this.getJSON('admin/console/', {
-                    "action": 'setTheme', "theme": 'ibm_pc'
-                } , function (data) {
+                    "action": 'setTheme',
+                    "theme": 'ibm_pc'
+                }, function (data) {
                     conMain.applyTheme(data);
                 });
-            }
-            , themeAmstradCpc: function () {
+            },
+            themeAmstradCpc: function () {
                 this.getJSON('admin/console/', {
-                    "action": 'setTheme', "theme": 'amstrad_cpc'
-                } , function (data) {
+                    "action": 'setTheme',
+                    "theme": 'amstrad_cpc'
+                }, function (data) {
                     conMain.applyTheme(data);
                 });
-            }
-            , themeSolaris: function () {
+            },
+            themeSolaris: function () {
                 this.getJSON('admin/console/', {
-                    "action": 'setTheme', "theme": 'solaris'
-                } , function (data) {
+                    "action": 'setTheme',
+                    "theme": 'solaris'
+                }, function (data) {
                     conMain.applyTheme(data);
                 });
-            }
-            , applyTheme: function(data) {
+            },
+            applyTheme: function (data) {
                 document.querySelector("#result").innerHTML = data.theme.name;
                 document.querySelector(':root').style.setProperty('--back-color', data.theme.backColor);
                 document.querySelector(':root').style.setProperty('--fore-color', data.theme.foreColor);
                 console.log(data);
-            }
-            , clearLogs: function () {
+            },
+            clearLogs: function () {
                 this.getJSON('admin/console/', {
                     "action": 'clearLogs'
-                } , function (data) {
+                }, function (data) {
                     document.querySelector("#result").innerHTML = data.result;
                 });
-            }
-            , deleteRuntime: function () {
+            },
+            deleteRuntime: function () {
                 Phink.Commands.clearRuntime(function (data) {
                     document.querySelector("#result").innerHTML = data.result;
                 });
-            }
-            , displayDebugLog: function () {
+            },
+            displayDebugLog: function () {
                 this.getJSON('admin/console/', {
                     "action": 'displayDebugLog'
-                } , function (data) {
+                }, function (data) {
                     document.querySelector("#result").innerHTML = '<pre>' + data.result + '</pre>';
                 });
-            }
-            , displayPhpErrorLog: function () {
+            },
+            displayPhpErrorLog: function () {
                 this.getJSON('admin/console/', {
                     "action": 'displayPhpErrorLog'
-                } , function (data) {
+                }, function (data) {
                     document.querySelector("#result").innerHTML = '<pre>' + data.result + '</pre>';
                 });
             }
         })
         .onload(function () {
             conMain = this;
+            // conMain.showToken();
             document.querySelector('#ibm-pcTheme').onclick = function () {
                 conMain.themeIbmPc();
             }
@@ -81,6 +98,9 @@ Phink.DOM.ready(function () {
             }
             document.querySelector('#phperr').onclick = function () {
                 conMain.displayPhpErrorLog();
+            }
+            document.querySelector('#tokenLink').onclick = function () {
+                conMain.showToken();
             }
         });
 });
