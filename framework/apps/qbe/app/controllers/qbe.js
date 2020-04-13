@@ -48,6 +48,21 @@ Phink.DOM.ready(function () {
                 }, function (data) {
                     document.querySelector("#recordset pre").innerHTML = data.result;
                 });
+            },
+            getData: function (count, index, anchor) {
+
+                qbe.getJSON('admin/qbe/grid/', {
+                    'action': "getData",
+                    'pagecount': count,
+                    'pagenum': index
+                    //, 'token'
+                }, function (data) {
+                    Phink.Web.UI.Table.create().bind('#grid', data.grid, function () {
+                        //document.querySelector('#grid').innerHTML(index);
+                    });
+                });
+
+                return false;
             }
         })
         .onload(function () {
