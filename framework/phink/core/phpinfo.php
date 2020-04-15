@@ -20,7 +20,7 @@ namespace Phink\Core;
 
 use stdClass;
 
-final class PhpInfo
+final class TPhpInfo
 {
     public static function getGeneralSection(bool $asArray = false)
     {
