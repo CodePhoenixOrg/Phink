@@ -2,6 +2,7 @@
 
 namespace Phink\Apps\Admin;
 
+use Phink\Data\TDataAccess;
 use Phink\MVC\TController;
 use Puzzle\Menus;
 use Puzzle\Design;
@@ -27,6 +28,7 @@ class Page extends TController
 
     public function load(): void
     {
+        $cs = TDataAccess::getNidusLiteDB();
 
         $this->lang = TRegistry::ini('application', 'lang');
         $this->db_prefix = TRegistry::ini('data', 'db_prefix');

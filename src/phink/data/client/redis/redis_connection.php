@@ -49,12 +49,17 @@ class TRedisConnection extends TObject implements IConnection, IConfigurable
         $this->configure();
     }
 
-    public function getState()
+    public function getDriver(): string
+    {
+        return 'Redis';
+    }
+
+    public function getState(): object
     {
         return $this->_state;
     }
 
-    public function open()
+    public function open(): object
     {
         try {
             $this->_state = new Client($this->_params);
@@ -65,27 +70,31 @@ class TRedisConnection extends TObject implements IConnection, IConfigurable
         return $this->_state;
     }
 
-    public function configure()
+    public function loadConfiguration(string $filename): bool
+    {
+        return false;
+    }
+
+    public function configure(): void
     {
         $this->_params = ['host' => $this->_config->getHost(), 'port' => $this->_config->getPort(), 'database' => $this->_config->getDatabaseName()]; 
 
     }
     
-    public function setAttribute($key, $value)
+    public function setAttribute($key, $value): void
     {
         $this->_state->setAttribute($key, $value);
     }
     
-    public function getAttribute($key)
+    public function getAttribute($key): string
     {
         return $this->_state->getAttribute($key);
     }
     
-    public function close()
+    public function close(): void
     {
         unset($this->_state);
 
-        return $this->_state;
     }
 
     public function __destruct()

@@ -168,7 +168,7 @@ class TPlugin extends TPluginRenderer
         file_put_contents(RUNTIME_JS_DIR . $scriptFilename, 'var ' . $id . 'Data = ' . $json . ';');
         file_put_contents(RUNTIME_JS_DIR . $id . '_data.json', $json);
 
-        $this->response->addScript(REL_RUNTIME_JS_DIR . $scriptFilename);
+        $this->response->addJSObject(REL_RUNTIME_JS_DIR . $scriptFilename);
 
         parent::renderHtml();
 

@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
- // on ouvre la base sbx
+
+// on ouvre la base sbx
 namespace Phink\Data;
 
 //require_once 'phink/data/client/pdo/pdo_command.php';
@@ -28,19 +28,19 @@ use Phink\Data\TServerType;
 class TDataAccess
 {
 
-    public static function getCryptoDB() : ?TPdoConnection
+    public static function getCryptoDB(): ?TPdoConnection
     {
 
         $databaseName = \Phink\Utils\TFileUtils::filePath(SRC_ROOT . 'data/crypto.db');
 
         $sqlConfig = new TPdoConfiguration(TServerType::SQLITE, $databaseName);
         $connection = new TPdoConnection($sqlConfig);
-        
+
         $isFound = (file_exists($databaseName));
         $connection->open();
-        
-        if(!$isFound) {
-                    
+
+        if (!$isFound) {
+
             $connection->exec("CREATE TABLE crypto (id integer primary key autoincrement, token text, userId text, userName text, outdated integer);");
             $connection->exec("CREATE INDEX crypto_id ON crypto (id);");
             $connection->exec("CREATE UNIQUE INDEX covering_idx ON crypto (token, userId, userName, outdated);");
@@ -50,20 +50,23 @@ class TDataAccess
     }
 
 
-    public static function getNidusLiteDB() : ?TPdoConnection
+    public static function getNidusLiteDB(): ?TPdoConnection
     {
 
         $databaseName = APP_DATA . 'niduslite.db';
         $isFound = (file_exists($databaseName));
-
+        $size = 0;
+        if ($isFound) {
+            $size = filesize($databaseName);
+        }
         $sqlConfig = new TPdoConfiguration(TServerType::SQLITE, $databaseName);
         $connection = new TPdoConnection($sqlConfig);
-        
+
         $connection->open();
-        
-        if(!$isFound) {
+
+        if (!$isFound || ($isFound && $size === 0)) {
             $sqlFilename = PHINK_APPS_ROOT . 'common' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'niduslite.sql';
-            if(\file_exists($sqlFilename)) {
+            if (\file_exists($sqlFilename)) {
                 $sql = \file_get_contents($sqlFilename);
                 $connection->exec($sql);
             }
@@ -72,4 +75,3 @@ class TDataAccess
         return $connection;
     }
 }
-?>
