@@ -51,8 +51,11 @@ class TTable extends TCustomPlugin
         $typeId0 = 'id="' . $this->getId() . $elements[3]->getType() . (0) . '"';
         $thead .= str_replace('%s', $typeId0, $elements[3]->getOpening()) . "\n";
         for ($j = 0; $j < $this->columns; $j++) {
-            $colName = $head[$j];
-            if($this->templates[0]['name'] != '*') {
+            $colName = isset($head[$j]) ? $head[$j] : '';
+            if(empty($colName)) {
+                continue;
+            }
+            if ($this->templates[0]['name'] != '*') {
                 $colName = $this->templates[$j]['name'];
             }
             $colIndex = array_keys($head, $colName)[0];
@@ -80,7 +83,7 @@ class TTable extends TCustomPlugin
                     $k = $i * $this->columns + $j;
                     $colIndex = 0;
                     $dataIndex = array_keys($head, $head[$j])[0];
-                    if($this->templates[0]['name'] != '*') {
+                    if ($this->templates[0]['name'] != '*') {
                         $dataIndex = array_keys($head, $this->templates[$j]['name'])[0];
                         $colIndex = $dataIndex;
                     }
@@ -140,6 +143,5 @@ class TTable extends TCustomPlugin
         $result .= $elements[0]->getClosing() . "\n";
 
         return $result;
-
     }
 }

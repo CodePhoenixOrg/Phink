@@ -1,22 +1,22 @@
-<!--script type='text/javascript' src='<phx:echo var="script" />' ></script-->
-<table border='0' cellspacing='0' cellpadding='0'>
+<phx:echo var="jscall" />
+<table id='<phx:echo var="forThis" />Pager' border='0' cellspacing='0' cellpadding='0'>
 <tr class="Row0">
     <td width='100%' align='center' valign='bottom'>
         <a onclick='<phx:echo var="forThis" />Pager.leftLimit()' href='javascript:void(0)'>
-            <img src='<phx:exec type="\Phink\Web\TWebApplication" stmt="imagePath" />/scroll/leftLimit_0.gif' valign='top' border='0'>
+            <span>&lt;&lt;</span>
         </a>
         <a onclick='<phx:echo var="forThis" />Pager.fastLeft()' href='javascript:void(0)'>
-            <img src='<phx:exec type="\Phink\Web\TWebApplication" stmt="imagePath" />/scroll/fastLeft_0.gif' valign='top' border='0'>
+            <span>&lt;</span>
         </a>
         <phx:echo var="pageCount" /> <phx:echo var="caption" /> - Page 
         <span id='<phx:echo var="id" />pageNum' >
            <phx:echo var="pageNum" />
         </span>
         <a onclick='<phx:echo var="forThis" />Pager.fastRight()' href='javascript:void(0)'>
-            <img src='<phx:exec type="\Phink\Web\TWebApplication" stmt="imagePath" />/scroll/fastRight_0.gif' valign='top' border='0'>
+            <span>&gt;</span>
         </a>
         <a onclick='<phx:echo var="forThis" />Pager.rightLimit()' href='javascript:void(0)'>
-            <img src='<phx:exec type="\Phink\Web\TWebApplication" stmt="imagePath" />/scroll/rightLimit_0.gif' valign='top' border='0'>
+            <span>&gt;&gt;</span>
         </a>
     </td>
 </tr>

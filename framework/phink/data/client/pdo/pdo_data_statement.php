@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
- 
+
+
 namespace Phink\Data\Client\PDO;
 
 //require_once 'phink/data/data_statement.php';
@@ -60,69 +60,69 @@ class TPdoDataStatement extends TObject implements IDataStatement
         $this->_exception = $error;
         $this->_hasException = ($error instanceof \PDOException);
 
-        if($connection !== null) {
+        if ($connection !== null) {
             $this->_connection = $connection;
             $this->_native_connection = $connection->getState();
             $this->_config = $connection->getConfiguration();
             $this->_driver = $this->_config->getDriver();
             $this->_schemaInfo = $connection->getSchemaInfo();
-            if($sql !== null) {
+            if ($sql !== null) {
                 $this->_schemaInfo->setQuery($sql);
             }
-        } 
+        }
     }
 
-    public function hasException() : bool
+    public function hasException(): bool
     {
         return $this->_hasException;
     }
 
-    public function getException() : ?\PDOException
+    public function getException(): ?\PDOException
     {
         return $this->_exception;
     }
 
-    public function getValue($i) : array
+    public function getValue($i): array
     {
         return $this->_values[$i];
     }
 
-    public function fetch(int $mode = \PDO::FETCH_NUM) : ?array
+    public function fetch(int $mode = \PDO::FETCH_NUM): ?array
     {
         $this->_values = $this->_statement->fetch($mode);
         return (!$this->_values) ? null : $this->_values;
     }
-    
-    public function fetchAll(int $mode = \PDO::FETCH_NUM) : ?array
+
+    public function fetchAll(int $mode = \PDO::FETCH_NUM): ?array
     {
         $this->_values = $this->_statement->fetchAll($mode);
         return (!$this->_values) ? null : $this->_values;
     }
-    
-    public function fetchAssoc() : ?array
+
+    public function fetchAssoc(): ?array
     {
         $this->_values = $this->_statement->fetch(\PDO::FETCH_ASSOC);
         return (!$this->_values) ? null : $this->_values;
     }
 
-    public function fetchAllAssoc() : ?array
+    public function fetchAllAssoc(): ?array
     {
         $this->_values = $this->_statement->fetchAll(\PDO::FETCH_ASSOC);
         return (!$this->_values) ? null : $this->_values;
     }
 
-    public function fetchObject() : ?object
+    public function fetchObject(): ?object
     {
         return $this->_statement->fetchObject();
     }
-    
-    public function getFieldCount() : ?int
+
+    public function getFieldCount(): ?int
     {
-        if(!isset($this->_fieldCount)) {
+        if (!isset($this->_fieldCount)) {
             try {
                 $this->_fieldCount = $this->_statement->columnCount();
             } catch (\Exception | \PDOException $ex) {
-                if(isset($this->_values[0])) {
+                if (isset($this->_values[0])) {
                     $this->_fieldCount = count($this->_values[0]);
                 } else {
                     throw new \Exception("Cannot count fields of a row before the resource is fetched", -1, $ex);
@@ -133,16 +133,21 @@ class TPdoDataStatement extends TObject implements IDataStatement
         return $this->_fieldCount;
     }
 
-    public function getRowCount() : ?int
+    public function getRowCount(): ?int
     {
-        if(!isset($this->_rowCount)) {
-            try {
-                $this->_rowCount = $this->_statement->rowCount();
-            } catch (\Exception | \PDOException $ex) {
-                if(is_array($this->_values)) {
-                    $this->_rowCount = count($this->_values);
-                } else {
-                    throw new \Exception("Cannot count rows of a result set before the resource is fetched", -1, $ex);
+        if (!isset($this->_rowCount)) {
+            if ($this->_schemaInfo !== null) {
+                $this->_rowCount = $this->_schemaInfo->getRowCount();
+            } else {
+
+                try {
+                    $this->_rowCount = $this->_statement->rowCount();
+                } catch (\Exception | \PDOException $ex) {
+                    if (is_array($this->_values)) {
+                        $this->_rowCount = count($this->_values);
+                    } else {
+                        throw new \Exception("Cannot count rows of a result set before the resource is fetched", -1, $ex);
+                    }
                 }
             }
         }
@@ -150,20 +155,20 @@ class TPdoDataStatement extends TObject implements IDataStatement
         return $this->_rowCount;
     }
 
-    public function getFieldNames() : array
+    public function getFieldNames(): array
     {
-        if(count($this->_colNames) == 0 && $this->_connection !== null) {
+        if (count($this->_colNames) == 0 && $this->_connection !== null) {
 
             $c = $this->getFieldCount();
-            for($i = 0; $i < $c; $i++) {
+            for ($i = 0; $i < $c; $i++) {
                 $this->_colNames[] = $this->getFieldName($i);
             }
         }
 
-        return $this->_colNames;        
+        return $this->_colNames;
     }
 
-    public function getFieldName($i) : string
+    public function getFieldName($i): string
     {
         $name = '';
 
@@ -180,7 +185,7 @@ class TPdoDataStatement extends TObject implements IDataStatement
         return $name;
     }
 
-    public function getFieldType(int $i) : string
+    public function getFieldType(int $i): string
     {
         $type = '';
 
@@ -197,7 +202,7 @@ class TPdoDataStatement extends TObject implements IDataStatement
         return $type;
     }
 
-    public function getFieldLen(int $i) : int
+    public function getFieldLen(int $i): int
     {
         $len = 0;
 
@@ -214,18 +219,18 @@ class TPdoDataStatement extends TObject implements IDataStatement
         return $len;
     }
 
-    public function typeNumToName(int $type) : string
+    public function typeNumToName(int $type): string
     {
         return $this->_schemaInfo->typeNumToName($type);
     }
 
-    public function typeNameToPhp(string $type) : string
+    public function typeNameToPhp(string $type): string
     {
         return $this->_schemaInfo->typeNameToPhp($type);
     }
 
-    public function typeNumToPhp(int $type) : string 
+    public function typeNumToPhp(int $type): string
     {
         return $this->_schemaInfo->typeNumToPhp($type);
-    } 
+    }
 }

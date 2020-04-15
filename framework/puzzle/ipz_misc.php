@@ -23,7 +23,6 @@ define("WIN32", "windows");
 define("CONNECT", "connect");
 define("DISCONNECT", "disconnect");
 // define ('DEBUG_LOG_FILE', serverPath() . '/logs/debug.log');
-// define("DOCUMENT_ROOT", getWwwRoot()."/");
 
 // global $DEBUG_LOG_FILE;
 
@@ -236,24 +235,6 @@ function getHttpRoot() {
 	return $http_root;
 }
 
-function getWwwRoot() {
-	/*
-	$p=strpos($_SERVER["DOCUMENT_ROOT"], "/");
-	if($p==2) 
-		$system=WIN32;
-	else
-		$system=LINUX;
-
-	if($system==LINUX)
-		$wwwroot="/var/www";
-	else
-		$wwwroot="e:/www/html";
-	*/
-	//$wwwroot=$_SERVER["DOCUMENT_ROOT"]."/..";
-	$wwwroot=$_SERVER["DOCUMENT_ROOT"];
-	return $wwwroot;
-}
-
 function getCurrentDir() {
 	$current_dir="";
 	$phpself=$_SERVER["PHP_SELF"];
@@ -280,7 +261,7 @@ function getCurrentHttpRoot() {
 	
 function getCurrentWwwRoot() {
 
-	$www_root=getWwwRoot();
+	$www_root=DOCUMENT_ROOT;
 	$current_dir=getCurrentDir();
 	$files_dir="";
 

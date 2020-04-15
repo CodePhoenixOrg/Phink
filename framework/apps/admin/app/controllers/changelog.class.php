@@ -87,7 +87,7 @@ class TChangelog extends TPartialController
                     :app_id,
                     :usr_id
                 )
-                SQL;
+SQL;
                $stmt = $this->cs->query($sql, [':cl_title' => $this->cl_title, ':cl_text' => $this->cl_text, ':cl_date' => $this->cl_date, ':cl_time' => $this->cl_time, ':app_id' => $this->app_id, ':usr_id' => $this->usr_id]);
             break;
             case 'Modifier':
@@ -107,7 +107,7 @@ class TChangelog extends TPartialController
                     app_id = :app_id,
                     usr_id = :usr_id
                 where cl_id = {$this->cl_id};
-                SQL;
+SQL;
                 $stmt = $this->cs->query($sql, [':cl_title' => $this->cl_title, ':cl_text' => $this->cl_text, ':cl_date' => $this->cl_date, ':cl_time' => $this->cl_time, ':app_id' => $this->app_id, ':usr_id' => $this->usr_id]);
             break;
             case 'Supprimer':

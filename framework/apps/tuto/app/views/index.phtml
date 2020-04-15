@@ -11,8 +11,8 @@
     <!-- <link href="/css/_3rdparty.css" rel="stylesheet"> -->
     <!-- <link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet"> -->
     <script type="text/javascript" 
-            data-depends="/js/_3rdparty.js" 
-            src="/phink.js">
+            data-depends="<phx:echo const="REWRITE_BASE" />js/_3rdparty.js" 
+            src="<phx:echo const="REWRITE_BASE" />phink.js">
     </script>
 
 </head>
@@ -32,5 +32,17 @@
     <h3>
     Learn to make your first page
     </h3>
+    <p>
+        You can find basic tools on the&nbsp;
+        <a href="<phx:echo const="REWRITE_BASE" />admin/console">console</a>
+    </p>
+    <p>
+        You can find admin tools on the&nbsp;
+        <a href="<phx:echo const="REWRITE_BASE" />admin">administration interface</a>
+    </p>
+    <p>
+        You can query the porject database on the&nbsp;
+        <a href="<phx:echo const="REWRITE_BASE" />admin/qbe">SQL editor interface</a>
+    </p>
 </body>
 </html>

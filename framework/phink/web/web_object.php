@@ -25,9 +25,9 @@ namespace Phink\Web;
  */
 
 use Phink\Core\TCustomApplication;
+use Phink\MVC\TCustomView;
 use Phink\Registry\TRegistry;
 use Phink\TAutoloader;
-use Phink\Web\UI\TCustomControl;
 
 trait TWebObject
 {
@@ -48,7 +48,9 @@ trait TWebObject
     protected $controllerFileName = '';
     protected $jsControllerFileName = '';
     protected $cssFileName = '';
-    protected $cacheFileName = '';
+    protected $cacheFileName = null;
+    protected $jsCacheFileName = null;
+    protected $cssCacheFileName = null;
     protected $preHtmlName = '';
     protected $viewName = '';
     protected $actionName = '';
@@ -107,60 +109,31 @@ trait TWebObject
         return self::pageCount();
     }
 
-    public function setCacheFileName($value = '')
+    public function getCacheFileName(): string
     {
-        $this->cacheFileName = $value;
-        if ($this->cacheFileName == '') {
-            $this->cacheFileName = RUNTIME_DIR . strtolower(str_replace(DIRECTORY_SEPARATOR, '_', $this->getControllerFileName()));
+        if($this->cacheFileName === null) {
+            $this->cacheFileName = SRC_ROOT . TAutoloader::cacheFilenameFromView($this->viewName);
         }
-    }
-    public function getCacheFileName()
-    {
         return $this->cacheFileName;
     }
 
-    public function getPhpCode(): string
+    public function getJsCacheFileName(): string
     {
-        if (!$this->code) {
-            //        $this->code = $this->redis->mget($this->getCacheFileName());
-            //        $this->code = $this->code[0];
-            if (file_exists($this->getCacheFileName())) {
-                $this->code = file_get_contents($this->getCacheFileName());
-            }
+        if($this->jsCacheFileName === null) {
+            $this->jsCacheFileName = DOCUMENT_ROOT . TAutoloader::cacheJsFilenameFromView($this->viewName);
         }
-
-        return $this->code;
+        return $this->jsCacheFileName;
     }
-
-    public function preHtmlExists()
+    
+    public function getCssCacheFileName(): string
     {
-        return file_exists($this->getPreHtmlName());
+        if($this->cssCacheFileName === null) {
+            $this->cssCacheFileName = DOCUMENT_ROOT . TAutoloader::cacheCssFilenameFromView($this->viewName);
+        }
+        return $this->cssCacheFileName;
     }
 
-    public function getGlobalDesignName()
-    {
-        $parts = pathinfo($this->getFileName());
-        return DOCUMENT_ROOT . 'tmp' . DIRECTORY_SEPARATOR . $parts['filename'] . '.design.php';
-    }
-
-    public function getJsonName()
-    {
-        return RUNTIME_DIR . $this->className . '.json';
-    }
-
-    public function getConfigName()
-    {
-        $parts = pathinfo($this->getFileName());
-        return DOCUMENT_ROOT . 'config' . DIRECTORY_SEPARATOR . $parts['filename'] . '.config.' . $parts['extension'];
-    }
-
-    public function getXmlName()
-    {
-        $parts = pathinfo($this->getFileName());
-        return DOCUMENT_ROOT . 'tmp' . DIRECTORY_SEPARATOR . $parts['filename'] . '.xml';
-    }
-
-    public function getMotherView(): ?TCustomControl
+    public function getMotherView(): ?TCustomView
     {
         return $this->motherView;
     }
@@ -418,7 +391,7 @@ trait TWebObject
             }
         }
 
-        $this->setCacheFileName();
+        $this->getCacheFileName();
     }
 
     public function getMvcFileNamesByTypeName(?string $typeName = null): ?array
@@ -480,7 +453,7 @@ trait TWebObject
             }
         }
 
-        $cacheFileName = RUNTIME_DIR . strtolower(str_replace(DIRECTORY_SEPARATOR, '_', $controllerFileName));
+        $cacheFileName = SRC_ROOT . TAutoloader::cacheFilenameFromView($viewName);
 
         return [
             'modelFileName' => $modelFileName,

@@ -42,7 +42,7 @@ class TControl extends TCustomCachedControl
         //$this->setViewName($this->className);
         $this->setNames();
         
-        $this->setCacheFileName();
+        $this->getCacheFileName();
 
         list($file, $type, $code) = TAutoloader::includeModelByName($this->viewName);
         $model = SRC_ROOT . $file;

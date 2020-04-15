@@ -63,7 +63,7 @@ class Menus extends Base
             where m.di_name = d.di_name 
             and p.di_name = d.di_name 
             order by m.me_id
-        SQL;
+SQL;
         //echo $sql;
         $cs->query($sql);
 
@@ -71,7 +71,7 @@ class Menus extends Base
 
         //tableau_sql("menu", $sql, 0, "edit.php", "", "&database=$database", "", "", "", $cs);
         //container("menu", 50, 250, 200, 355, 16);
-        $dbgrid = createDbGrid("menu", $sql, "editor", "admin", "&me_id=#Menu&userdb={$this->database}", false, $dialog, array(), $grid_colors, $cs);
+        $dbgrid = createDbGrid("menu", $sql, "editor", "", "&me_id=#Menu&userdb={$this->database}", false, $dialog, array(), $grid_colors, $cs);
         echo $dbgrid;
     }
 
@@ -105,7 +105,7 @@ class Menus extends Base
             pages
         WHERE
             pa_filename = '$pa_filename'
-        SQL;
+SQL;
         self::getLogger()->debug($sql, __FILE__, __LINE__);
         self::getLogger()->dump('LG', $this->lg);
 
@@ -128,7 +128,7 @@ class Menus extends Base
             pages p ON m.pa_id = p.pa_id
         WHERE
             p.pa_filename = '$pa_filename'
-        SQL;
+SQL;
         self::getLogger()->debug($sql, __FILE__, __LINE__);
         $stmt = $cs->query($sql);
         $rows = $stmt->fetch();
@@ -149,7 +149,7 @@ class Menus extends Base
             pages p ON m.pa_id = p.pa_id
         WHERE
             p.pa_filename = '$pa_filename'
-        SQL;
+SQL;
         self::getLogger()->debug($sql, __FILE__, __LINE__);
         $stmt = $cs->query($sql);
         $rows = $stmt->fetch();
@@ -167,7 +167,7 @@ class Menus extends Base
             where m.di_id=d.di_id
             and p.pa_id=m.pa_id
             and m.me_id=$id;
-        SQL;
+SQL;
         $cs = TPdoConnection::opener($conf);
         $stmt = $cs->query($sql);
         $rows = $stmt->fetch();
@@ -190,7 +190,7 @@ class Menus extends Base
         list($me_id, $pa_id) = $this->getMenuAndPage($userdb, $pa_filename);
         if (!($me_id && $pa_id)) {
             $cs = TPdoConnection::opener($userdb);
-            $wwwroot = getWwwRoot();
+            $wwwroot = DOCUMENT_ROOT;
 
             if (empty($me_target)) {
                 $me_target = "page";
@@ -201,7 +201,7 @@ class Menus extends Base
                 dictionary (di_name, di_fr_short, di_fr_long, di_en_short, di_en_long)
                 VALUES 
                     ('$di_name', '$di_fr_short', '$di_fr_long', '$di_en_short', '$di_en_long')
-            SQL;
+SQL;
             $cs->beginTransaction();
             $affected_rows += (int) $cs->exec($sql);
             $di_id = $cs->lastInsertId();
@@ -213,7 +213,7 @@ class Menus extends Base
                 pages (di_id, pa_filename)
                 VALUES
                     ('$di_id', '$pa_filename')
-            SQL;
+SQL;
             $affected_rows += (int) $cs->exec($sql);
             $pa_id = $cs->lastInsertId();
 
@@ -224,7 +224,7 @@ class Menus extends Base
                 menus (me_level, me_target, pa_id)
                 VALUES 
                     ('$me_level', '$me_target', $pa_id)
-            SQL;
+SQL;
             $affected_rows += (int) $cs->exec($sql);
             $me_id = $cs->lastInsertId();
 
@@ -266,13 +266,13 @@ class Menus extends Base
         WHERE
             m.me_id = $me_id
                 AND d.di_id = '$di_name';
-        SQL;
+SQL;
         $affected_rows = $cs->exec($sql);
 
         $sql = <<<SQL
         update pages set di_name='$di_name', pa_filename='$pa_filename'
             where pa_id=$pa_id
-        SQL;
+SQL;
         $affected_rows += $cs->exec($sql);
 
         $sql = <<<SQL
@@ -284,7 +284,7 @@ class Menus extends Base
             di_en_long = '$di_en_long'
         WHERE
             di_name = '$di_name'
-        SQL;
+SQL;
         $affected_rows += $cs->exec($sql);
 
         $cs->commit();
@@ -308,7 +308,7 @@ class Menus extends Base
             dictionary d ON d.di_id = p.di_id
         WHERE
             d.di_name='$di_name'
-        SQL;
+SQL;
         $affected_rows = $cs->exec($sql);
 
         $sql = <<<SQL
@@ -319,7 +319,7 @@ class Menus extends Base
             dictionary d ON d.di_id = p.di_id
         WHERE
             d.di_name='$di_name'
-        SQL;
+SQL;
         $affected_rows += $cs->exec($sql);
 
         $sql = <<<SQL
@@ -328,7 +328,7 @@ class Menus extends Base
             dictionary 
         WHERE
             di_name='$di_name'
-        SQL;
+SQL;
         $affected_rows += $cs->exec($sql);
 
         $cs->commit();
@@ -458,7 +458,7 @@ class Menus extends Base
         WHERE
             m.me_level='$level'
         ORDER BY m.me_id        
-        SQL;
+SQL;
         self::getLogger()->debug($sql, __FILE__, __LINE__);
         self::getLogger()->dump('LG', $this->lg);
 
@@ -474,9 +474,9 @@ class Menus extends Base
             //$target=$rows[3];
             //$link=$rows[4];
 
-            #$main_menu=$main_menu . "<td bgcolor='black'><a href='admin?id=$id&lg=" . ${this->lg} . "'><span style='color:#ffffff'><b>$caption</b></span></a><span style='color:#ffffff'><b>&nbsp;|&nbsp;</b></span></td>";
-            //$menu_items[] =  "<a href='admin?id=$id&lg={$this->lg}'><span>$caption</span></a>";
-            $menu_items[] = "<a href='admin?id=$id&di=$name&lg={$this->lg}'><span>$caption</span></a>";
+            #$main_menu=$main_menu . "<td bgcolor='black'><a href='?id=$id&lg=" . ${this->lg} . "'><span style='color:#ffffff'><b>$caption</b></span></a><span style='color:#ffffff'><b>&nbsp;|&nbsp;</b></span></td>";
+            //$menu_items[] =  "<a href='?id=$id&lg={$this->lg}'><span>$caption</span></a>";
+            $menu_items[] = "<a href='?id=$id&di=$name&lg={$this->lg}'><span>$caption</span></a>";
 
             if ($count == 0) {
                 $default_id = $id;
@@ -515,7 +515,7 @@ class Menus extends Base
             dictionary d ON d.di_id = p.di_id AND m.me_id <> m.pa_id
                 AND m.me_level > 1
                 AND m.pa_id = $id;
-        SQL;
+SQL;
         //and m.me_id<>m.pa_id
 
         $cs = TPdoConnection::opener($conf);
@@ -530,29 +530,29 @@ class Menus extends Base
             if ($orientation == Menus::SUB_MENU_HORIZONTAL) {
                 switch ($level) {
                     case "2":
-                        $sub_menu .= "<a href='admin?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
+                        $sub_menu .= "<a href='?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                     case "3":
                         $sub_menu .= "<a href='$target?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                     case "4":
-                        $sub_menu .= "<a href='admin?id=$page&lg={$this->lg}#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
+                        $sub_menu .= "<a href='?id=$page&lg={$this->lg}#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         //$sub_menu.="<a href='$PHP_SELF#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                 }
             } elseif ($orientation == Menus::SUB_MENU_VERTICAL) {
                 switch ($level) {
                     case "2":
-                        $sub_menu .= "<tr><td><a href='admin?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td><a href='?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
                         break;
                     case "3":
                         $sub_menu .= "<tr><td><a href='$target?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
                         break;
                     case "4":
-                        $sub_menu .= "<tr><td><a href='admin?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td><a href='?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
                         break;
                     case "5":
-                        $sub_menu .= "<tr><td>&nbsp;&nbsp;&nbsp;<a href='admin?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td>&nbsp;&nbsp;&nbsp;<a href='?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
                     // no break
                     case "6":
                         $sub_menu .= "<tr><td><a href='$link' target='_new'>$caption</a></td></tr>";
@@ -594,7 +594,7 @@ class Menus extends Base
         WHERE
             m.me_id=$id 
         ORDER BY p.pa_id , m.me_level
-        SQL;
+SQL;
 
         $cs = TPdoConnection::opener($conf);
         $stmt = $cs->query($sql);
@@ -622,7 +622,7 @@ class Menus extends Base
                 INNER JOIN
             dictionary d ON d.di_id = p.di_id 
         ORDER BY p.pa_id , m.me_level
-        SQL;
+SQL;
 
         //echo "$sql<br>";
 
@@ -637,35 +637,35 @@ class Menus extends Base
             if ($orientation == Menus::SUB_MENU_HORIZONTAL) {
                 switch ($level) {
                     case "1":
-                        $sub_menu .= "<a href='admin?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
+                        $sub_menu .= "<a href='?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                     case "2":
-                        $sub_menu .= "<a href='admin?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
+                        $sub_menu .= "<a href='?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                     case "3":
                         $sub_menu .= "<a href='$target?id=$id&lg={$this->lg}'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                     case "4":
-                        $sub_menu .= "<a href='admin?id=$page&lg={$this->lg}#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
+                        $sub_menu .= "<a href='?id=$page&lg={$this->lg}#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         //$sub_menu.="<a href='$PHP_SELF#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                         break;
                 }
             } elseif ($orientation == Menus::SUB_MENU_VERTICAL) {
                 switch ($level) {
                     case "1":
-                        $sub_menu .= "<tr><td><a href='admin?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td><a href='?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
                         break;
                     case "2":
-                        $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='admin?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
                         break;
                     case "3":
                         $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='$target?id=$id&lg={$this->lg}'>$caption</a></td></tr>";
                         break;
                     case "4":
-                        $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='admin?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
                         break;
                     case "5":
-                        $sub_menu .= "<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;<a href='admin?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
+                        $sub_menu .= "<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;<a href='?id=$page&lg={$this->lg}#$target'>$caption</a></td></tr>";
                     // no break
                     case "6":
                         $sub_menu .= "<tr><td>&nbsp;&nbsp;<a href='$link' target='_new'>$caption</a></td></tr>";
@@ -701,7 +701,7 @@ class Menus extends Base
             dictionary d ON d.di_id = p.di_id
         WHERE
             p.pa_id = $id
-        SQL;
+SQL;
         self::getLogger()->debug($sql, __FILE__, __LINE__);
 
         //echo $sql . "<br>";
@@ -755,7 +755,7 @@ class Menus extends Base
             dictionary d ON d.di_id = p.di_id
         WHERE
             m.me_id=$id
-        SQL;
+SQL;
         // self::getLogger()->debug($sql, __FILE__, __LINE__);
 
         //        echo $sql . "<br>";
@@ -808,7 +808,7 @@ class Menus extends Base
             dictionary d ON d.di_id = p.di_id
         WHERE
             d.di_name='$di'
-        SQL;
+SQL;
 
         self::getLogger()->debug($sql, __FILE__, __LINE__);
 
@@ -852,7 +852,7 @@ class Menus extends Base
         WHERE
             d.di_name LIKE 'mk%'
         ORDER BY m.me_id
-        SQL;
+SQL;
         self::getLogger()->dump(__FILE__ . ':' . __METHOD__ . ':' . __LINE__ . ':SQL', $sql);
 
         $cs = TPdoConnection::opener($conf);

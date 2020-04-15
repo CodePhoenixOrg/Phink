@@ -15,13 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 namespace Phink\Core;
 
 define('WEB_SEPARATOR', '/');
 define('TMP_DIR', 'tmp');
-
-$PWD = '';
 
 $document_root = isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '';
 
@@ -29,16 +27,28 @@ define('APP_IS_WEB', ($document_root !== ''));
 define('APP_IS_PHAR', (\Phar::running() !== ''));
 define('ROOT_NAMESPACE', 'Phink');
 define('ROOT_PATH', 'phink');
-
+// define('DOCUMENT_SCRIPT', $_SERVER['SCRIPT_FILENAME']);
 if (APP_IS_WEB) {
     define('BR', "<br />");
+
     if (PHP_OS == 'WINNT') {
-        $document_root = str_replace('\\\\', '\\', $document_root) . '\\';
-    } elseif (PHP_OS == 'Linux') {
-        $document_root = $document_root . '/';
-    } else {
-        $document_root = $document_root . '/';
+        $document_root = str_replace('\\\\', '\\', $document_root);
     }
+
+    $script_path = pathinfo($_SERVER['SCRIPT_FILENAME'], PATHINFO_DIRNAME);
+    if (substr($document_root, -4) !== 'web/' && ($p = strpos($script_path, 'src/web')) > -1) {
+        $document_root = substr($script_path, 0, $p+7);
+    }
+
+    define('DOCUMENT_ROOT', $document_root . DIRECTORY_SEPARATOR);
+    define('SRC_ROOT', substr(DOCUMENT_ROOT, 0, -4));
+
+    $rewrite_base = '/';
+    if ($rewrite_base = file_get_contents(CONFIG_DIR . 'rewrite_base')) {
+        $rewrite_base = trim($rewrite_base);
+    }
+    define('REWRITE_BASE', $rewrite_base);
+
     $scheme = 'http';
     if (strstr($_SERVER['SERVER_SOFTWARE'], 'IIS')) {
         $scheme = ($_SERVER['HTTPS'] == 'off') ? 'http' : 'https';
@@ -49,26 +59,21 @@ if (APP_IS_WEB) {
     } elseif (strstr($_SERVER['SERVER_SOFTWARE'], 'nginx')) {
         $scheme = strstr($_SERVER['SERVER_PROTOCOL'], 'HTPPS') ? 'https' : 'http';
     }
-    
-    define('DOCUMENT_ROOT', $document_root);
-    define('HTTP_PROTOCOL', $scheme);
 
-    if (substr(DOCUMENT_ROOT, -4) === 'web/') {
-        define('SRC_ROOT', substr(DOCUMENT_ROOT, 0, -4));
-    } else {
-        define('SRC_ROOT', DOCUMENT_ROOT);
-    }
+    define('HTTP_PROTOCOL', $scheme);
     define('SITE_ROOT', substr(SRC_ROOT, 0, -4));
 
-    $appname = pathinfo(SRC_ROOT, PATHINFO_FILENAME);
+    $appname = pathinfo(SITE_ROOT, PATHINFO_FILENAME);
     define('APP_NAME', $appname);
 
-    define('PHINK_VENDOR_SRC', 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR);
+    // define('PHINK_VENDOR_SRC', 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR);
+    define('PHINK_VENDOR_SRC', 'framework' . DIRECTORY_SEPARATOR);
     define('PHINK_VENDOR_LIB', PHINK_VENDOR_SRC . 'phink' . DIRECTORY_SEPARATOR);
     define('PHINK_VENDOR_WIDGETS', PHINK_VENDOR_SRC . 'widgets' . DIRECTORY_SEPARATOR);
     define('PHINK_VENDOR_PLUGINS', PHINK_VENDOR_SRC . 'plugins' . DIRECTORY_SEPARATOR);
     define('PHINK_VENDOR_APPS', PHINK_VENDOR_SRC . 'apps' . DIRECTORY_SEPARATOR);
-    define('PHINKJS_VENDOR', 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phinkjs' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR);
+    // define('PHINKJS_VENDOR', 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phinkjs' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR);
+    define('PHINKJS_VENDOR', 'framework' . DIRECTORY_SEPARATOR . 'phinkjs' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR);
     define('PHINK_ROOT', SITE_ROOT . PHINK_VENDOR_LIB);
     define('PHINK_WIDGETS_ROOT', SITE_ROOT . PHINK_VENDOR_WIDGETS);
     define('PHINK_PLUGINS_ROOT', SITE_ROOT . PHINK_VENDOR_PLUGINS);
@@ -85,7 +90,7 @@ if (APP_IS_WEB) {
     define('PUZZLEJS_ROOT', SITE_ROOT . PUZZLEJS_VENDOR);
 
     define('APP_DIR', 'app' . DIRECTORY_SEPARATOR);
-    
+
     define('APP_ROOT', SRC_ROOT . APP_DIR);
     define('CONTROLLER_ROOT', APP_ROOT . 'controllers' . DIRECTORY_SEPARATOR);
     define('MODEL_ROOT', APP_ROOT . 'models' . DIRECTORY_SEPARATOR);
@@ -101,9 +106,9 @@ if (APP_IS_WEB) {
     define('RUNTIME_JS_DIR', DOCUMENT_ROOT . REL_RUNTIME_JS_DIR);
     define('RUNTIME_CSS_DIR', DOCUMENT_ROOT . REL_RUNTIME_CSS_DIR);
     define('CACHE_DIR', SRC_ROOT . 'cache' . DIRECTORY_SEPARATOR);
-    
+
     define('LOG_PATH', SRC_ROOT . 'logs' . DIRECTORY_SEPARATOR);
-    
+
     define('PAGE_NUMBER', 'pagen');
     define('PAGE_COUNT', 'pagec');
     define('PAGE_NUMBER_DEFAULT', 1);
@@ -128,7 +133,7 @@ if (APP_IS_WEB) {
     define('COOKIE', $_COOKIE);
     define('REQUEST_URI', $_SERVER['REQUEST_URI']);
     define('REQUEST_METHOD', $_SERVER['REQUEST_METHOD']);
-    define('QUERY_STRING', $_SERVER['QUERY_STRING']);
+    define('QUERY_STRING', parse_url(REQUEST_URI, PHP_URL_QUERY));
     define('SERVER_NAME', $_SERVER['SERVER_NAME']);
     define('SERVER_HOST', HTTP_PROTOCOL . '://' . HTTP_HOST);
     define('SERVER_ROOT', HTTP_PROTOCOL . '://' . SERVER_NAME . ((HTTP_PORT !== '80' && HTTP_PORT !== '443') ? ':' . HTTP_PORT : ''));
@@ -140,8 +145,6 @@ if (APP_IS_WEB) {
     define('DEFAULT_PARTIAL_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TPartialController');
     define('DEFAULT_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TControl');
     define('DEFAULT_PARTIAL_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TPartialControl');
-
-
 
 } else {
     define('DOCUMENT_ROOT', '');
@@ -185,18 +188,8 @@ define('DEBUG_LOG', LOG_PATH . 'debug.log');
 define('ERROR_LOG', LOG_PATH . 'error.log');
 define('SQL_LOG', LOG_PATH . 'sql.log');
 
-$appconf = DOCUMENT_ROOT . 'config' . DIRECTORY_SEPARATOR . 'app.ini';
 
-$appname = '';
-
-// if (file_exists($appconf)) {
-//     $appini = parse_ini_file($appconf);
-//     $appname = isset($appini['application']['name']) ?? $appini['application']['name'];
-// }
-
-// if (empty($appname)) {
-//     $apppath = explode(DIRECTORY_SEPARATOR, DOCUMENT_ROOT);
-//     $appname = array_pop($apppath);
-//     $appname = strtolower(array_pop($apppath));
-// }
-
+unset($document_root);
+unset($scheme);
+unset($appname);
+unset($rewrite_base);

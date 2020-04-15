@@ -19,4 +19,6 @@ interface IPdoSchemaInfo
     public function getShowFieldsQuery(?string $table) : string;
     
     public function getFieldCount() : int;
+
+    public function getRowCount() : int;
 }

@@ -36,6 +36,8 @@ use Phink\Core\IObject;
  
     public function getApplication();
     public function getCacheFileName();
+    public function getJsCacheFileName();
+    public function getCssCacheFileName();
     public function getClassName();
     public function getActionName();
     public function getModelFileName();

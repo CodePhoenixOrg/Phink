@@ -37,7 +37,7 @@ class TMakeScript extends TPartialController
 		self::getLogger()->debug('USER CONF::' . $this->userconf);
 		self::getLogger()->debug('USER DB::' . $this->userdb);
 
-		$this->basedir = getArgument('srvdir', getCurrentDir() . DIRECTORY_SEPARATOR . $lg);
+		$this->basedir = getArgument('srvdir', $lg);
 		$usertable = getArgument('usertable');
 		// $this->pa_filename = getArgument('pa_filename', $usertable);
 		$this->pa_filename = $usertable;
@@ -76,7 +76,7 @@ class TMakeScript extends TPartialController
 				INNER JOIN
 			dictionary d ON d.di_id = b.di_id
 		ORDER BY d.di_{$this->lang}_short
-		SQL;
+SQL;
 		$this->block_list = $datacontrols->createOptionsFromQuery($sql, 0, 1, array(), $bl_id, false, $workcs);
 
 		//Options de menu

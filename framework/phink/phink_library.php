@@ -26,6 +26,7 @@ class PhinkLibrary
             'core/constants.php',
             'log/log.php',
             'core/static_object.php',
+            'core/phpinfo.php',
             'core/object.php',
             'autoloader.php',
             'registry/class_info.php',
@@ -118,12 +119,13 @@ class PhinkLibrary
             'mvc/partial_controller.php',
             'web/ui/html_control.php',
             'web/ui/html_element.php',
-            'web/ui/html_objects.php',
+            // 'web/ui/html_objects.php',
             'web/ui/html_pattern.php',
             'web/ui/html_template.php',
             'web/ui/mvc_script_maker.php',
             'web/ui/plugin/custom_plugin.php',
             'web/ui/script_maker.php',
+            'web/ui/widget/widget.php',
             'web/ui/widget/plugin/plugin_renderer.php',
             'web/ui/widget/plugin/plugin.class.php',
             'web/ui/widget/plugin/plugin_child.php',
@@ -131,6 +133,7 @@ class PhinkLibrary
             'rest/rest_application.php',
             'rest/rest_controller.php',
             'rest/rest_router.php',
+            'core/bootstrap.php',
         ];
 
         if (Phar::running() != '') {

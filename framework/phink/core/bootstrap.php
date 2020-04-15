@@ -67,13 +67,9 @@ abstract class TBootstrap extends TStaticObject
         $tree = TFileUtils::walkTree($assets);
         self::getLogger()->dump('ASSETS TREE AT ' . $assets, $tree);
 
-        $currentDir = pathinfo($this->_path, PATHINFO_BASENAME);
+        // $currentDir = pathinfo($this->_path, PATHINFO_BASENAME);
 
-        if (!\file_exists(DOCUMENT_ROOT . 'assets')) {
-            mkdir(DOCUMENT_ROOT . 'assets', 0755);
-        }
-
-        $destDir = DOCUMENT_ROOT . 'assets' . DIRECTORY_SEPARATOR . $currentDir;
+        $destDir = DOCUMENT_ROOT . 'admin' . DIRECTORY_SEPARATOR . 'assets';
 
         if (!\file_exists($destDir)) {
             mkdir($destDir, 0755);

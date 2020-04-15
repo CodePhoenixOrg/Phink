@@ -41,57 +41,52 @@ abstract class TCustomCachedControl extends TCustomControl
     public function __construct(IObject $parent)
     {
         parent::__construct($parent);
-
-
     }
 
-    public function getView() : TCustomView
+    public function getView(): TCustomView
     {
         return $this->view;
     }
-    
-    public function getModel() : TModel
+
+    public function getModel(): TModel
     {
         return $this->model;
     }
-       
-    public function getInnerHtml() : string
+
+    public function getInnerHtml(): string
     {
         return $this->innerHtml;
     }
-    
-    public function renderView() : void
+
+    public function renderView(): void
     {
         // include "data://text/plain;base64," . base64_encode($this->viewHtml);
         eval('?>' . $this->viewHtml . '<?php ');
     }
-    
-    public function createObjects() : void
-    {
-    }
-    
-    public function declareObjects() : void
+
+    public function createObjects(): void
     {
     }
 
-    public function afterBinding() : void 
+    public function declareObjects(): void
     {
     }
-    
-    public function displayHtml() : void 
+
+    public function afterBinding(): void
     {
     }
-    
-    public function getViewHtml() : void
+
+    public function displayHtml(): void
     {
-        // if(isset($_REQUEST['PHPSESSID'])) {
-        //     self::$logger->debug(__METHOD__ . '::PHPSESSID::' . $_REQUEST['PHPSESSID']);
-        // }
+    }
+
+    public function getViewHtml(): void
+    {
         ob_start();
         if (!$this->isDeclared) {
             //$this->createObjects();
             $this->declareObjects();
-//            $this->partialLoad();
+            //            $this->partialLoad();
         }
         $this->displayHtml();
         $html = ob_get_clean();
@@ -99,15 +94,6 @@ abstract class TCustomCachedControl extends TCustomControl
 
         $this->unload();
 
-        /*
-                $cachedJsController = RUNTIME_DIR . TAutoloader::cacheJsFilenameFromView($this->viewName);
-                if(file_exists($cachedJsController)) {
-                    $jsCode = file_get_contents($cachedJsController);
-                    $html .= PHP_EOL . "?>" .PHP_EOL . $jsCode . PHP_EOL;
-
-                    $this->response->addScript($cachedJsController);
-                }
-        */
         if (file_exists(SRC_ROOT . $this->getJsControllerFileName())) {
             $cacheJsFilename = TAutoloader::cacheJsFilenameFromView($this->viewName);
             if (!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
@@ -117,8 +103,8 @@ abstract class TCustomCachedControl extends TCustomControl
         }
         $this->response->setData('view', $html);
     }
-    
-    public function render() : void
+
+    public function render(): void
     {
         $this->init();
         $this->createObjects();
@@ -135,8 +121,8 @@ abstract class TCustomCachedControl extends TCustomControl
 
         $this->unload();
     }
-    
-    public function perform() : void
+
+    public function perform(): void
     {
         $this->init();
         $this->createObjects();
@@ -156,8 +142,10 @@ abstract class TCustomCachedControl extends TCustomControl
                 $this->declareObjects();
                 $this->afterBinding();
 
-                if ($this->request->isPartialView()
-                || ($this->request->isView() && $actionName !== 'getViewHtml')) {
+                if (
+                    $this->request->isPartialView()
+                    || ($this->request->isView() && $actionName !== 'getViewHtml')
+                ) {
                     $this->getViewHtml();
                 }
             } catch (\BadMethodCallException $ex) {
@@ -170,7 +158,7 @@ abstract class TCustomCachedControl extends TCustomControl
             $this->beforeBinding();
             $this->declareObjects();
             $this->afterBinding();
-            
+
             $twig = $this->view->getTwigHtml();
 
             if (!empty($twig)) {
@@ -180,14 +168,14 @@ abstract class TCustomCachedControl extends TCustomControl
             }
             //TWebObject::register($this);
 
-            if($this->getParent()->isMotherView()) {
+            if ($this->getParent()->isMotherView()) {
                 TRegistry::dump($this->getUID());
             }
 
             $this->unload();
         }
     }
-    
+
     public function __destruct()
     {
         unset($this->model);

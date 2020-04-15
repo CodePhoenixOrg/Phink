@@ -53,7 +53,7 @@ class TMakeFinal extends TPartialController
 
 		$cs = TPdoConnection::opener($this->conf);
 		$tmp_filename = 'tmp_' . $this->pa_filename;
-		$this->wwwroot = getWwwRoot();
+		$this->wwwroot = DOCUMENT_ROOT;
 
 		$this->rel_page_filename = $this->pa_filename . $this->extension;
 

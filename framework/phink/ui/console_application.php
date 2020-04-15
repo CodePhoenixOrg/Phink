@@ -18,6 +18,8 @@
 
 namespace Phink\UI;
 
+use Phink\Web\TCurl;
+
 class TConsoleApplication extends \Phink\Core\TCustomApplication
 {
     //put your code here
@@ -320,7 +322,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
 
         if (!file_exists($filename)) {
             self::writeLine('Downloading Phink github master');
-            $curl = new \Phink\Web\TCurl();
+            $curl = new TCurl();
             $result = $curl->request('https://codeload.github.com/CodePhoenixOrg/Phink/zip/master');
             file_put_contents($filename, $result->content);
         }
@@ -328,7 +330,7 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         if (file_exists($filename)) {
             self::writeLine('Inflating Phink master archive');
             $zip = new \Phink\Utils\TZip();
-            $zip->deflat($filename);
+            $zip->inflate($filename);
         }
 
         if (file_exists($master)) {

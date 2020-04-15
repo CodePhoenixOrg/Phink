@@ -23,6 +23,12 @@ class AppBootstrap extends TBootstrap
 {
     public function start(): void
     {
+        // include '../../framework/puzzle/ipuzzle_library.php';
+        if (!file_exists(RUNTIME_DIR . 'puzzle_builder.lock')) {
+            \Puzzle\JsBuilder::build();
+            file_put_contents(RUNTIME_DIR . 'puzzle_builder.lock', date('Y-m-d h:i:s'));
+        }
+
         $this->mount([
             BUSINESS_DIR . 'sub_page' . CLASS_EXTENSION
         ]);

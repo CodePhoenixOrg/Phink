@@ -7,11 +7,11 @@ if(isset($pc)) $curl_pager="&pc=$pc";
 if(isset($sr)) $curl_pager.="&sr=$sr";
 if($this->query === "SELECT") {
     $sql = "select bl_id, bl_column from blocks order by bl_id";
-    $dbgrid = $this->datacontrols->createPagerDbGrid('blocks', $sql, $this->page_id, "page.html", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 400], 15, $this->grid_colors, $this->cs);
+    $dbgrid = $this->datacontrols->createPagerDbGrid('blocks', $sql, $this->page_id, "", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 400], 15, $this->grid_colors, $this->cs);
     echo "<br>".$dbgrid;
 } elseif($this->query === "ACTION") {
 ?>
-<form method="POST" name="blocksForm" action="page.html?id=20&lg=fr">
+<form method="POST" name="blocksForm" action="?id=20&lg=fr">
 <input type="hidden" name="query" value="ACTION">
 <input type="hidden" name="event" value="onRun">
 <input type="hidden" name="pc" value="<?php echo $pc?>">

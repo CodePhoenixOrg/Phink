@@ -20,8 +20,8 @@ class TPdoSQLiteSchemaInfo extends TCustomPdoSchemaInfo
             $this->columnTypes = [];
             $table = $this->getQuery();
             $sql = <<<SQL
-            SELECT * FROM PRAGMA_TABLE_INFO('{$table}');
-            SQL;
+SELECT * FROM PRAGMA_TABLE_INFO('{$table}');
+SQL;
 
             $this->result = $connection->query($sql);
 
@@ -37,7 +37,6 @@ class TPdoSQLiteSchemaInfo extends TCustomPdoSchemaInfo
             $name = $this->columnNames[$index];
             $type = $this->columnTypes[$index];
             $len = 1024;
-
         }
 
         if ($name == '' && !$this->isQueryATable()) {
@@ -75,9 +74,7 @@ class TPdoSQLiteSchemaInfo extends TCustomPdoSchemaInfo
                 if ($errno > 0) {
                     throw new \PDOException($connection->lastErrorMsg(), (int) $errno, $ex);
                 }
-
             }
-
         }
 
         $this->info = (object) ['name' => $name, 'type' => $type, 'length' => $len];
@@ -113,14 +110,14 @@ class TPdoSQLiteSchemaInfo extends TCustomPdoSchemaInfo
     public function getShowTablesQuery(): string
     {
         $sql = <<<SQL
-        SELECT
-            name
-        FROM
-            sqlite_master
-        WHERE
-            type ='table' AND
-            name NOT LIKE 'sqlite_%';
-        SQL;
+SELECT
+    name
+FROM
+    sqlite_master
+WHERE
+    type ='table' AND
+    name NOT LIKE 'sqlite_%';
+SQL;
 
         return $sql;
     }
@@ -128,8 +125,8 @@ class TPdoSQLiteSchemaInfo extends TCustomPdoSchemaInfo
     public function getShowFieldsQuery(?string $table): string
     {
         $sql = <<<SQL
-            SELECT name FROM PRAGMA_TABLE_INFO('{$table}');
-        SQL;
+SELECT name FROM PRAGMA_TABLE_INFO('{$table}');
+SQL;
 
         return $sql;
     }
@@ -151,6 +148,25 @@ class TPdoSQLiteSchemaInfo extends TCustomPdoSchemaInfo
             }
             $result = $count;
         }
+
+        return $result;
+    }
+
+    public function getRowCount(): int
+    {
+        $result = 0;
+
+        $connection = new \SQLite3(
+            $this->config->getDatabaseName()
+        );
+
+        $sql = $this->getQuery();
+        $stmt = $connection->query($sql);
+        $count = 0;
+        while ($row = $stmt->fetchArray()) {
+            $count++;
+        }
+        $result = $count;
 
         return $result;
     }

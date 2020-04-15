@@ -72,7 +72,7 @@ class TBlocks extends TPartialController
                     :bt_id,
                     :di_id
                 )
-                SQL;
+SQL;
                $stmt = $this->cs->query($sql, [':bl_column' => $this->bl_column, ':bt_id' => $this->bt_id, ':di_id' => $this->di_id]);
             break;
             case 'Modifier':
@@ -86,7 +86,7 @@ class TBlocks extends TPartialController
                     bt_id = :bt_id,
                     di_id = :di_id
                 where bl_id = {$this->bl_id};
-                SQL;
+SQL;
                 $stmt = $this->cs->query($sql, [':bl_column' => $this->bl_column, ':bt_id' => $this->bt_id, ':di_id' => $this->di_id]);
             break;
             case 'Supprimer':

@@ -150,33 +150,50 @@ class TRouter extends TObject implements \Phink\Web\IWebObject
             $routesArray['web']['get']["^/$"] = "@/welcome/app/views/home.phtml";
         }
 
-        $routesArray['web']['get']["^/console$"] = "@/console/app/views/console.phtml";
-        $routesArray['web']['get']["^/console/$"] = "@/console/app/views/console.phtml?console=help";
-        $routesArray['web']['get']["^/console/([a-z-]+)$"] = "@/console/app/views/console.phtml?console=$1";
-        $routesArray['web']['get']["^/console/([a-z-]+)/([a-z-]+)$"] = "@/console/app/views/console.phtml?console=$1&arg=$2";
-        $routesArray['web']['post']["^/console$"] = "@/console/app/views/console_window.phtml";
-        $routesArray['web']['get']["^/tuto/$"] = "@/tuto/app/views/index.phtml";
-        $routesArray['web']['get']["^/admin$"] = "@/admin/app/views/page.phtml?di=mkmain";
-        $routesArray['web']['get']["^/admin(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
-        $routesArray['web']['post']["^/admin(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
-        $routesArray['web']['get']["^/page.html(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
-        $routesArray['web']['post']["^/page.html(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
-        $routesArray['web']['get']["^/admin/source(\\?([a-z0-9\._\-=&]+))?$"] = "@/admin/app/views/source.phtml?$2";
-        $routesArray['web']['get']["^/qbe$"] = "@/qbe/app/views/qbe.phtml";
-        $routesArray['web']['get']["^/qbe/$"] = "@/qbe/app/views/qbe.phtml?qbe=help";
-        $routesArray['web']['get']["^/qbe/([a-z-]+)$"] = "@/qbe/app/views/qbe.phtml?qbe=$1";
-        $routesArray['web']['get']["^/qbe/([a-z-]+)/([a-z-]+)$"] = "@/qbe/app/views/qbe.phtml?qbe=$1&arg=$2";
-        $routesArray['web']['post']["^/qbe$"] = "@/qbe/app/views/qbe_window.phtml";
-        $routesArray['web']['post']["^/qbe-grid.html$"] = "@/qbe/app/views/qbe_grid.phtml";
+        $routesArray['web']['get']["^/admin/console$"] = "@/console/app/views/console.phtml";
+        $routesArray['web']['get']["^/admin/console/$"] = "@/console/app/views/console.phtml?console=help";
+        $routesArray['web']['get']["^/admin/console/([a-z-]+)$"] = "@/console/app/views/console.phtml?console=$1";
+        $routesArray['web']['get']["^/admin/console/([a-z-]+)/([a-z-]+)$"] = "@/console/app/views/console.phtml?console=$1&arg=$2";
+        $routesArray['web']['post']["^/admin/console(/)?$"] = "@/console/app/views/console_window.phtml";
+        $routesArray['web']['post']["^/admin/console/token/$"] = "@/console/app/views/token.phtml";
+        $routesArray['web']['get']["^/tuto(/)?$"] = "@/tuto/app/views/index.phtml";
+        $routesArray['web']['get']["^/admin(/)?$"] = "@/admin/app/views/page.phtml?di=mkmain";
+        $routesArray['web']['get']["^/admin/(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
+        $routesArray['web']['post']["^/admin/(\\?([a-zA-Z0-9\._\-=&]+))?$"] = "@/admin/app/views/page.phtml?$2";
+        $routesArray['web']['get']["^/admin/source/(\\?([a-z0-9\._\-=&]+))?$"] = "@/admin/app/views/source.phtml?$2";
+        $routesArray['web']['get']["^/admin/qbe(/)?$"] = "@/qbe/app/views/qbe.phtml";
+        $routesArray['web']['get']["^/admin/qbe/([a-z-]+)$"] = "@/qbe/app/views/qbe.phtml?qbe=$1";
+        $routesArray['web']['get']["^/admin/qbe/([a-z-]+)/([a-z-]+)$"] = "@/qbe/app/views/qbe.phtml?qbe=$1&arg=$2";
+        $routesArray['web']['post']["^/admin/qbe/$"] = "@/qbe/app/views/qbe_window.phtml";
+        $routesArray['web']['post']["^/admin/qbe/grid/$"] = "@/qbe/app/views/qbe_grid.phtml";
         
         foreach ($routesArray as $key => $value) {
             TRegistry::write('routes', $key, $value);
+        }
+
+        if(REWRITE_BASE != '/') {
+            $this->_translateRoutes($routesArray, REWRITE_BASE);
         }
 
         $this->routes = $routesArray;
 
         return $routesArray;
     }
+
+    private function _translateRoutes(array &$routes, $rewritebase) : void
+    {
+        foreach($routes as $type => $methods) {
+            // type = rest / web
+            // methods = get / post / put / delete
+            foreach ($methods as $method => $entry) {
+                foreach($entry as $route => $rule) {
+                    unset($routes[$type][$method][$route]);
+                    $route = str_replace('^/', '^' . $rewritebase, $route);
+                    $routes[$type][$method][$route] = $rule;
+                }
+            }
+        }
+    } 
 
     public function translate()
     {}

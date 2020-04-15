@@ -3,9 +3,9 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <link rel="stylesheet" defer="sync" href="/css/_3rdparty.css" type="text/css" />
-    <link rel="stylesheet" defer="sync" href="/assets/admin/css/user-agent.css" type="text/css" />
-    <link rel="stylesheet" defer="sync" href="/assets/admin/css/page.css" type="text/css" />
+    <link rel="stylesheet" defer="sync" href="<?php echo REWRITE_BASE ?>css/_3rdparty.css" type="text/css" />
+    <link rel="stylesheet" defer="sync" href="<?php echo REWRITE_BASE ?>admin/assets/css/user-agent.css" type="text/css" />
+    <link rel="stylesheet" defer="sync" href="<?php echo REWRITE_BASE ?>admin/assets/css/page.css" type="text/css" />
     <title>Hatcherry</title>
     <script language="JavaScript">
     //Paramètres côté client
@@ -14,8 +14,7 @@
     var hlBackColor = "#46a0E9";
     var hlTextColor = "white";
     </script>
-    <script type="text/javascript" data-sources="/puzzle.js" data-depends="/js/_3rdparty.js" src="/phink.js">
-    </script>
+    <script data-sources="<?php echo REWRITE_BASE ?>puzzle.js" data-depends="<?php echo REWRITE_BASE ?>js/_3rdparty.js" src="<?php echo REWRITE_BASE ?>phink.js"></script>
 </head>
 
 <body bgcolor="<?php echo $this->page_colors->back_color ?>" text="<?php echo $this->page_colors->text_color ?>"

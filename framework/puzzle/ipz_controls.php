@@ -68,7 +68,7 @@ class Controls extends Base
 
         $result .= "<table valign='top' bgcolor='black' border='0' cellpadding='0' cellspacing='1' width='400' height='400'>\n";
         $result .= "<tr bgcolor='lightgrey'><td colspan='$tab_count'>\n";
-        $result .= "<form method='post' name='" . $name . "Form' action='admin?id=$id&lg=$lg'>\n";
+        $result .= "<form method='post' name='" . $name . "Form' action='?id=$id&lg=$lg'>\n";
 
         $result .= $hidden;
         $result .= $tab_ctrl;
@@ -138,9 +138,9 @@ class Controls extends Base
         echo "</pre>";
          */
 
-        chdir(getWwwRoot() . $basedir);
+        chdir(DOCUMENT_ROOT . $basedir);
 
-        $handle = opendir(getWwwRoot() . $basedir);
+        $handle = opendir(DOCUMENT_ROOT . $basedir);
 
         $result = "";
         $result .= "<select id='$name' name='$name' multiple size='$size' maxlength='15' onChange='document.$formname.filename.value=this.value;" . $onChange . "'>\n";
@@ -195,11 +195,11 @@ class Controls extends Base
 
         $basedir = str_replace("/./", "/", $basedir);
 
-        TLog::create()->debug("basedir='" . getWwwRoot() . $basedir . "'<br>");
+        TLog::create()->debug("basedir='" . DOCUMENT_ROOT . $basedir . "'<br>");
 
-        chdir(getWwwRoot() . $basedir);
+        chdir(DOCUMENT_ROOT . $basedir);
 
-        $handle = opendir(getWwwRoot() . $basedir);
+        $handle = opendir(DOCUMENT_ROOT . $basedir);
         //document.$formname.basedir.value=this.value
 
         $result = "";

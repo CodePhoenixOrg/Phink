@@ -11,12 +11,12 @@ if($this->query === "SELECT") {
     select br_id, '<b>' || br_title || '</b><br>' || br_text || '<br>' as `bugs trouvés`, br_importance as 'importance', bs_id as 'etat'
         from bugreport
         order by bs_id, br_importance desc
-    SQL;    
-    $dbgrid = $this->datacontrols->createPagerDbGrid('bugreport', $sql, $this->page_id, "page.html", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 400], 15, $this->grid_colors, $this->cs);
+SQL;    
+    $dbgrid = $this->datacontrols->createPagerDbGrid('bugreport', $sql, $this->page_id, "", "&query=ACTION$curl_pager", "", true, true, $dialog, [0, 400], 15, $this->grid_colors, $this->cs);
     echo "<br>".$dbgrid;
 } elseif($this->query === "ACTION") {
 ?>
-<form method="POST" name="bugreportForm" action="page.html?id=26&lg=fr">
+<form method="POST" name="bugreportForm" action="?id=26&lg=fr">
 <input type="hidden" name="query" value="ACTION">
 <input type="hidden" name="event" value="onRun">
 <input type="hidden" name="pc" value="<?php echo $pc?>">
