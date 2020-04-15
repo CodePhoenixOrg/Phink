@@ -6,6 +6,7 @@ namespace Phink\Apps\QBE;
 use Phink\MVC\TController;
 use Phink\Registry\TRegistry;
 use Phink\Data\TDataAccess;
+
 class Qbe extends TController
 {
     protected $qbe0;

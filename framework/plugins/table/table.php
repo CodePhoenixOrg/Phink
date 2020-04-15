@@ -21,6 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 namespace Phink\Plugins\Table;
 
 use \Phink\Web\UI\Plugin\TCustomPlugin;
