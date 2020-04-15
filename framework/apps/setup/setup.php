@@ -51,6 +51,10 @@ class Setup
                 TFileUtils::delTree($filepath . $phinkjs_dirname);
             }
 
+            if (!file_exists($filepath . $phinkjs_dirname)) {
+                chdir($filepath);
+            }
+
             if (file_exists($tarfilename)) {
                 unlink($tarfilename);
             }
@@ -73,6 +77,7 @@ class Setup
                 unlink($tarfilename);
             }
 
+
             $ok = $ok && rename('PhinkJS-master', 'phinkjs');
         } catch (\Exception $ex) {
             $ok = false;
@@ -90,7 +95,7 @@ class Setup
 
         if ($ok = file_exists('bootstrap.php')) {
 
-            $ok = $ok && false !== file_put_contents('..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'rewrite_base', REWRITE_BASE);
+            $ok = $ok && false !== file_put_contents(SETUP_CONFIG_DIR . 'rewrite_base', SETUP_REWRITE_BASE);
 
             if (file_exists('.htaccess') && ($htaccess = file_get_contents('.htaccess'))) {
                 $htaccess = str_replace(PHP_EOL, ';', $htaccess);

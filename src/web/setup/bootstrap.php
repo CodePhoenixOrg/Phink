@@ -8,6 +8,8 @@ if (substr($document_root, -4) !== 'web/' && ($p = strpos($script_path, 'src/web
 define('SETUP_DOCUMENT_ROOT', $document_root . DIRECTORY_SEPARATOR);
 define('SETUP_SRC_ROOT', substr(SETUP_DOCUMENT_ROOT, 0, -4));
 define('SETUP_CONFIG_DIR', SETUP_SRC_ROOT . 'config' . DIRECTORY_SEPARATOR);
+define('CONFIG_DIR', SETUP_CONFIG_DIR);
+
 define('SETUP_SITE_ROOT', substr(SETUP_SRC_ROOT, 0, -4));
 
 $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
