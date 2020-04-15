@@ -2,7 +2,7 @@
 
 namespace Phink;
 
-use Phink\Core\PhpInfo;
+use Phink\Core\TPhpInfo;
 use Phink\Log\TLog;
 use Phink\Utils\TFileUtils;
 use Phink\Web\TCurl;
@@ -160,7 +160,7 @@ BOOTSTRAP;
 
         // include '../../vendor/autoload.php';
 
-        $serverApi = strtolower(PhpInfo::getGeneralSection()->server_api);
+        $serverApi = strtolower(TPhpInfo::getGeneralSection()->server_api);
 
         if (strpos($serverApi, 'embedded') > -1 || strpos($serverApi, 'built-in') > -1) {
             $ok = false !== file_put_contents('bootstrap.php', $bootstrap);
