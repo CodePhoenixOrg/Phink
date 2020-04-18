@@ -47,7 +47,7 @@ class TPager extends TWidget
         $this->pageNum = $value;
     }
 
-    public function init(): void
+    public function partialLoad(): void
     {
         $forControl = $this->parent->getChildById($this->forThis);
 
@@ -60,26 +60,16 @@ class TPager extends TWidget
 
         $this->path = TRegistry::widgetPath('TPager');
 
-        $this->pagerJS = file_get_contents($this->path . '/views/pager.jhtml');
-        $this->pagerJS = str_replace('{{ forApp }}', $this->forApp, $this->pagerJS);
-        $this->pagerJS = str_replace('{{ forThis }}', $this->forThis, $this->pagerJS);
-        $this->pagerJS = str_replace('{{ forView }}', $this->forView, $this->pagerJS);
-        $this->pagerJS = str_replace('{{ forCtrl }}', $this->forCtrl, $this->pagerJS);
-        $this->pagerJS = str_replace('{{ pageCount }}', $this->pageCount, $this->pagerJS);
-        $this->pagerJS = str_replace('{{ pageNum }}', $this->pageNum, $this->pagerJS);
-        $this->pagerJS = str_replace('{{ id }}', $this->id, $this->pagerJS);
-        $this->pagerJS = str_replace('{{ onclick }}', $this->onclick, $this->pagerJS);
+        $pagerJS = file_get_contents($this->path . '/views/pager.jhtml');
+        $pagerJS = str_replace('{{ forApp }}', $this->forApp, $pagerJS);
+        $pagerJS = str_replace('{{ forThis }}', $this->forThis, $pagerJS);
+        $pagerJS = str_replace('{{ forView }}', $this->forView, $pagerJS);
+        $pagerJS = str_replace('{{ forCtrl }}', $this->forCtrl, $pagerJS);
+        $pagerJS = str_replace('{{ pageCount }}', $this->pageCount, $pagerJS);
+        $pagerJS = str_replace('{{ pageNum }}', $this->pageNum, $pagerJS);
+        $pagerJS = str_replace('{{ id }}', $this->id, $pagerJS);
+        $pagerJS = str_replace('{{ onclick }}', $this->onclick, $pagerJS);
 
-        $this->script = TAutoloader::cacheJsFilenameFromView($this->forThis . 'pager');
-        if (!$this->getRequest()->isAJAX($this->script)) {
-            $scriptURI = TAutoloader::absoluteURL($this->script);
-            $this->jscall = <<<JSCRIPT
-            <script type='text/javascript' src='{$scriptURI}'></script>
-JSCRIPT;
-        }
-        if ($this->getRequest()->isAJAX()) {
-            $this->response->addSript($this->script);
-        }
-        file_put_contents($this->script, $this->pagerJS);
+        $this->cacheJsFile($this->forThis . 'pager', $pagerJS);
     }
 }

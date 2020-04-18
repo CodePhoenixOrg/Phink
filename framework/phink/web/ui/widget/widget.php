@@ -57,8 +57,5 @@ abstract class TWidget extends TPartialController
         $this->forThis = $value;
     }
 
-    public function getCacheFilename() : string
-    {
-        return SRC_ROOT . REL_RUNTIME_DIR . str_replace(DIRECTORY_SEPARATOR, '_', $this->path . $this->forThis . 'pager' . CLASS_EXTENSION);
-    }
+    
 }
