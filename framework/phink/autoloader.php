@@ -19,8 +19,11 @@
 namespace Phink;
 
 use Phink\Core\TStaticObject;
+use Phink\MVC\TCustomView;
+use Phink\MVC\TPartialView;
 use Phink\Registry\TRegistry;
 use Phink\Web\UI\TCustomCachedControl;
+use Phink\Web\UI\TCustomControl;
 
 class TAutoloader extends TStaticObject
 {
@@ -129,10 +132,15 @@ class TAutoloader extends TStaticObject
         // }
     }
 
-    private static function _includeInnerClass(string $viewName, object $info, bool $withCode = true): array
+    private static function _includeInnerClass(TCustomView $view, object $info, bool $withCode = true): array
     {
-        $className = ucfirst($viewName);
-        $filename = $info->path . 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR  . \Phink\TAutoloader::innerClassNameToFilename($viewName) . CLASS_EXTENSION;
+        $className = $view->getClassName();
+        $viewName = $view->getViewName();
+
+        // $filename = $info->path . 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR  . \Phink\TAutoloader::innerClassNameToFilename($className) . CLASS_EXTENSION;
+        // $filename = $view->getControllerFileName();
+        $filename = $info->path . 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR  . $viewName. CLASS_EXTENSION;
+
         if ($filename[0] == '@') {
             $filename = \str_replace('@/', PHINK_APPS_ROOT, $filename);
         }
@@ -145,7 +153,7 @@ class TAutoloader extends TStaticObject
 
         if ($withCode) {
             $code = substr(trim($code), 0, -2) . PHP_EOL . CONTROL_ADDITIONS;
-            TRegistry::setCode($filename, $code);
+            TRegistry::setCode($view->getUID(), $code);
         }
 
         return [$filename, $info->namespace . '\\' . $className, $code];
@@ -195,6 +203,51 @@ class TAutoloader extends TStaticObject
         return [$classFilename, $fqClassName, $code];
     }
 
+     /**
+     * Load the controller file, parse it in search of namespace and classname.
+     * Alternatively execute the code if the class is not already declared
+     *
+     * @param string $filename The controller filename
+     * @param int $params The bitwise constants values that determine the behavior
+     *                    INCLUDE_FILE : execute the code
+     *                    RETURN_CODE : ...
+     * @return boolean
+     */
+    public static function includeViewClass(TCustomView $view, $params = 0): ?array
+    {
+        $filename = $view->getControllerFileName();
+        $classFilename = SRC_ROOT . $filename;
+        if (!file_exists($classFilename)) {
+            $classFilename = SITE_ROOT . $filename;
+        }
+        if (!file_exists($classFilename)) {
+            return null;
+        }
+
+        list($namespace, $className, $code) = self::getClassDefinition($classFilename);
+
+        $fqClassName = trim($namespace) . "\\" . trim($className);
+
+        $file = str_replace('\\', '_', $fqClassName) . '.php';
+
+        if (isset($params) && ($params && RETURN_CODE === RETURN_CODE)) {
+            $code = substr(trim($code), 0, -2) . PHP_EOL . CONTROL_ADDITIONS;
+            TRegistry::setCode($view->getUID(), $code);
+        }
+
+        self::getLogger()->debug(__METHOD__ . '::' . $filename, __FILE__, __LINE__);
+
+        if ((isset($params) && ($params && INCLUDE_FILE === INCLUDE_FILE)) && !class_exists('\\' . $fqClassName)) {
+            if (\Phar::running() != '') {
+                include pathinfo($filename, PATHINFO_BASENAME);
+            } else {
+                //include $classFilename;
+            }
+        }
+
+        return [$classFilename, $fqClassName, $code];
+    }
+
     public static function includeModelByName(string $modelName): ?array
     {
         $file = '';
@@ -213,56 +266,6 @@ class TAutoloader extends TStaticObject
             $type = DEFAULT_MODEL;
         }
         $file = $modelFileName;
-
-        return [$file, $type, $code];
-    }
-
-    public static function includeControllerByName(string $viewName): ?array
-    {
-        $file = '';
-        $type = '';
-        $code = '';
-        $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
-
-        $result = self::includeClass($controllerFileName, RETURN_CODE);
-        if ($result !== null) {
-            list($file, $type, $code) = $result;
-        }
-        if ($result === null) {
-            $sa = explode('.', SERVER_NAME);
-            array_pop($sa);
-            if (count($sa) == 2) {
-                array_shift($sa);
-            }
-            $namespace = ucfirst($sa[0]);
-            $namespace .= '\\Controllers';
-            $className = ucfirst($viewName);
-
-            list($file, $type, $code)  = self::includeDefaultController($namespace, $className);
-            TRegistry::setCode('app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION, $code);
-        }
-
-        return [$file, $type, $code];
-    }
-
-    public static function includePartialControllerByName(string $viewName): ?array
-    {
-        $file = '';
-        $type = '';
-        $code = '';
-        $controllerFileName = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
-        if (file_exists($controllerFileName)) {
-            //self::getLogger()->debug('INCLUDE CUSTOM PARTIAL CONTROLLER : ' . $controllerFileName, __FILE__, __LINE__);
-            list($file, $type, $code)  = self::includeClass($controllerFileName, RETURN_CODE);
-        } elseif ($info = TRegistry::classInfo($viewName)) {
-            list($file, $type, $code)  = self::_includeInnerClass($viewName, $info, true);
-        } else {
-            //self::getLogger()->debug('INCLUDE DEFAULT PARTIAL CONTROLLER : ' . $controllerFileName, __FILE__, __LINE__);
-            $namespace = self::getDefaultNamespace();
-            $className = ucfirst($viewName);
-            list($file, $type, $code)  = self::includeDefaultPartialController($namespace, $className);
-            TRegistry::setCode('app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION, $code);
-        }
 
         return [$file, $type, $code];
     }
@@ -291,7 +294,7 @@ class TAutoloader extends TStaticObject
         return [$file, $type, $code];
     }
 
-    public static function import(Web\UI\TCustomControl $ctrl, string $className): bool
+    public static function import(TCustomControl $ctrl, string $className): bool
     {
         if (!isset($className)) {
             $className = $ctrl->getClassName();
@@ -338,7 +341,7 @@ class TAutoloader extends TStaticObject
                 $ctrl->getResponse()->addScript($cacheJsFilename);
             }
             self::getLogger()->debug('INCLUDE CACHED CONTROL: ' . SRC_ROOT . $cacheFilename, __FILE__, __LINE__);
-            self::includeClass($cacheFilename, RETURN_CODE);
+            // self::includeClass($cacheFilename, RETURN_CODE);
 
             include SRC_ROOT . $cacheFilename;
 
@@ -352,15 +355,15 @@ class TAutoloader extends TStaticObject
 
 
         self::getLogger()->debug('PARSING ' . $viewName . '!!!');
-        $view = new \Phink\MVC\TPartialView($ctrl, $className);
+        $view = new TPartialView($ctrl, $className);
 
         if ($info !== null) {
-            list($file, $type, $code) = self::_includeInnerClass($className, $info);
+            list($file, $type, $code) = self::_includeInnerClass($view, $info);
             $view->getCacheFilename();
         } else {
-            list($file, $type, $code) = self::includeClass($view->getControllerFileName(), RETURN_CODE);
+            list($file, $type, $code) = self::includeViewClass($view, RETURN_CODE);
         }
-        TRegistry::setCode($view->getControllerFileName(), $code);
+        TRegistry::setCode($view->getUID(), $code);
         self::getLogger()->debug($view->getControllerFileName() . ' IS REGISTERED : ' . (TRegistry::exists('code', $view->getControllerFileName()) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
         self::getLogger()->debug('CONTROLLER FILE NAME OF THE PARSED VIEW: ' . $view->getControllerFileName());
         $view->parse();

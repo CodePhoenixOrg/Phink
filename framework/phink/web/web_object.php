@@ -109,25 +109,34 @@ trait TWebObject
         return self::pageCount();
     }
 
-    public function getCacheFileName(): string
+    public function getCacheFileName(?string $viewName = null): string
     {
-        if($this->cacheFileName === null) {
+        if ($this->cacheFileName === null) {
+            if ($viewName === null) {
+                $viewName = $this->viewName;
+            }
             $this->cacheFileName = SRC_ROOT . TAutoloader::cacheFilenameFromView($this->viewName);
         }
         return $this->cacheFileName;
     }
 
-    public function getJsCacheFileName(): string
+    public function getJsCacheFileName(?string $viewName = null): string
     {
-        if($this->jsCacheFileName === null) {
+        if ($this->jsCacheFileName === null) {
+            if ($viewName === null) {
+                $viewName = $this->viewName;
+            }
             $this->jsCacheFileName = DOCUMENT_ROOT . TAutoloader::cacheJsFilenameFromView($this->viewName);
         }
         return $this->jsCacheFileName;
     }
-    
-    public function getCssCacheFileName(): string
+
+    public function getCssCacheFileName(?string $viewName = null): string
     {
-        if($this->cssCacheFileName === null) {
+        if ($this->cssCacheFileName === null) {
+            if ($viewName === null) {
+                $viewName = $this->viewName;
+            }
             $this->cssCacheFileName = DOCUMENT_ROOT . TAutoloader::cacheCssFilenameFromView($this->viewName);
         }
         return $this->cssCacheFileName;
@@ -160,7 +169,6 @@ trait TWebObject
             // $this->redis = new Redis($params);
             $this->redis = null;
         }
-
     }
 
     public function getRedis(): ?object
@@ -364,14 +372,12 @@ trait TWebObject
                     $this->jsControllerFileName = $path . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
                     $this->cssFileName = $path . 'views' . DIRECTORY_SEPARATOR . $this->viewName . CSS_EXTENSION;
                     $this->viewFileName = $path . 'views' . DIRECTORY_SEPARATOR . $this->viewName . PREHTML_EXTENSION;
-
                 } else if ($info->path[0] == '~') {
                     $path = str_replace("~" . DIRECTORY_SEPARATOR, PHINK_VENDOR_WIDGETS, $info->path) . DIRECTORY_SEPARATOR;
                     $this->controllerFileName = $path . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . CLASS_EXTENSION;
                     $this->jsControllerFileName = $path . 'controllers' . DIRECTORY_SEPARATOR . $this->viewName . JS_EXTENSION;
                     $this->cssFileName = $path . 'views' . DIRECTORY_SEPARATOR . $this->viewName . CSS_EXTENSION;
                     $this->viewFileName = $path . 'views' . DIRECTORY_SEPARATOR . $this->viewName . PREHTML_EXTENSION;
-
                 } else {
                     $this->viewName = \Phink\TAutoloader::innerClassNameToFilename($this->className);
 
@@ -380,7 +386,6 @@ trait TWebObject
                     $this->jsControllerFileName = $path . $this->viewName . JS_EXTENSION;
                     $this->cssFileName = $path . $this->viewName . CSS_EXTENSION;
                     $this->viewFileName = $path . $this->viewName . PREHTML_EXTENSION;
-
                 }
                 // $path = $info->path;
                 if (!$info->hasTemplate) {
@@ -434,7 +439,6 @@ trait TWebObject
                     $jsControllerFileName = $path . 'controllers' . DIRECTORY_SEPARATOR . $viewName . JS_EXTENSION;
                     $cssFileName = $path . 'views' . DIRECTORY_SEPARATOR . $viewName . CSS_EXTENSION;
                     $viewFileName = $path . 'views' . DIRECTORY_SEPARATOR . $viewName . PREHTML_EXTENSION;
-
                 } else {
 
                     $path = PHINK_VENDOR_LIB . $info->path;
@@ -442,7 +446,6 @@ trait TWebObject
                     $jsControllerFileName = $path . $viewName . JS_EXTENSION;
                     $cssFileName = $path . $viewName . CSS_EXTENSION;
                     $viewFileName = $path . $viewName . PREHTML_EXTENSION;
-
                 }
                 // $path = $info->path;
                 if (!$info->hasTemplate) {
@@ -463,7 +466,6 @@ trait TWebObject
             'cssFileName' => $cssFileName,
             'cacheFileName' => $cacheFileName,
         ];
-
     }
 
     public function cloneNamesFrom($parent): void
@@ -493,7 +495,5 @@ trait TWebObject
 
         $this->request = $parent->getRequest();
         $this->response = $parent->getResponse();
-
     }
-
 }

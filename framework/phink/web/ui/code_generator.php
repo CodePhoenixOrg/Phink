@@ -99,14 +99,15 @@ trait TCodeGenerator
                     $fqcn = $info->namespace . '\\' . $className;
                 } elseif ($className !== 'this') {
                     $viewName = TAutoloader::userClassNameToFilename($className);
-                    $fullClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . CLASS_EXTENSION;
-                    $fullJsClassPath = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $viewName . JS_EXTENSION;
+                    $fullClassPath = $view->getControllerFileName();
+                    $fullJsClassPath = $view->getJsControllerFileName();
+
                     $fullJsCachePath = TAutoloader::cacheJsFilenameFromView($viewName);
                     array_push($requires, '\\Phink\\TAutoloader::import($this, "' . $className . '");');
 
                     self::getLogger()->dump('FULL_CLASS_PATH', $fullClassPath);
 
-                    list($file, $fqcn, $code) = TAutoloader::includeClass($fullClassPath, RETURN_CODE);
+                    list($file, $fqcn, $code) = TAutoloader::includeViewClass($view, RETURN_CODE);
 
                     self::getLogger()->dump('FULL_QUALIFIED_CLASS_NAME: ', $fqcn);
 
@@ -121,7 +122,7 @@ trait TCodeGenerator
                         copy(SITE_ROOT . $fullJsClassPath, DOCUMENT_ROOT . $fullJsCachePath);
                         $view->getResponse()->addScriptFirst($fullJsCachePath);
                     }
-                    TRegistry::setCode($fullClassPath, $code);
+                    TRegistry::setCode($view->getUID(), $code);
                 }
 
                 $canRender = ($info && $info->canRender || !$info);

@@ -19,6 +19,7 @@
 namespace Phink\Web;
 
 use Phink\Core\TRouter;
+use Phink\MVC\TCustomView;
 use Phink\Registry\TRegistry;
 use Phink\TAutoloader;
 use Phink\MVC\TView;
@@ -100,9 +101,10 @@ class TWebRouter extends TRouter
         //        $modelClass = ($include = TAutoloader::includeModelByName($this->viewName)) ? $include['type'] : DEFALT_MODEL;
         //        include $include['file'];
         //        $model = new $modelClass();
-        $include = $this->includeController();
-
         $view = new TView($this);
+
+        $include = $this->includeController($view);
+
         $view->parse();
 
         if (file_exists($view->getCacheFileName())) {
@@ -144,14 +146,14 @@ class TWebRouter extends TRouter
         $this->namespace .= '\\Controllers';
     }
 
-    public function includeController(): ?array
+    public function includeController(TCustomView $view): ?array
     {
         $file = '';
         $type = '';
         $code = '';
 
 
-        $result = TAutoloader::includeClass($this->controllerFileName, RETURN_CODE);
+        $result = TAutoloader::includeViewClass($view, RETURN_CODE);
         if ($result !== null) {
             list($file, $type, $code) = $result;
         }
@@ -162,7 +164,7 @@ class TWebRouter extends TRouter
                 list($file, $type, $code) = TAutoloader::includeDefaultController($this->namespace, $this->className);
             }
 
-            TRegistry::setCode($this->controllerFileName, $code);
+            TRegistry::setCode($view->getUID(), $code);
         }
 
         return [$file, $type, $code];
