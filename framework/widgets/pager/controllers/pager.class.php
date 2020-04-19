@@ -53,7 +53,7 @@ class TPager extends TWidget
 
         $this->forView = ($this->getMotherView() !== null) ? $this->getMotherView()->getViewName() : $this->parent->getViewName();
         $this->forCtrl = $this->parent->getViewName();
-        $this->forApp = $this->getApplication()->getName();
+        $this->forApp = $this->getApplication()->getName() . 'App';
 
         $this->pageNum = (int) (!$this->pageNum) ? 1 : $this->pageNum;
         $this->pageCount = ($forControl) ? $forControl->getRowCount() : $this->pageNum;
