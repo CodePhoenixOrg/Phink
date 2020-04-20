@@ -32,19 +32,28 @@ class TPager extends TWidget
     protected $jscall;
     protected $script;
 
+    public function init(): void
+    {
+        $this->pageNum = $this->request->getQueryArguments('pagenum');
+        $this->pageCount = $this->request->getQueryArguments('pagecount');
+    }
+
     public function setPageCount($value): void
     {
         $this->pageCount = $value;
     }
-
-    public function setCurrentPage($value): void
+    public function getPageCount(): int
     {
-        $this->currentPage = $value;
+        return $this->pageCount;
     }
 
     public function setPageNum($value): void
     {
         $this->pageNum = $value;
+    }
+    public function getPageNum(): int
+    {
+        return $this->pageNum;
     }
 
     public function partialLoad(): void
@@ -56,7 +65,7 @@ class TPager extends TWidget
         $this->forApp = $this->getApplication()->getName() . 'App';
 
         $this->pageNum = (int) (!$this->pageNum) ? 1 : $this->pageNum;
-        $this->pageCount = ($forControl) ? $forControl->getRowCount() : $this->pageNum;
+        $this->pageCount = ($forControl) ? $forControl->getRowCount() : $this->pageCount;
 
         $this->path = TRegistry::widgetPath('TPager');
 
