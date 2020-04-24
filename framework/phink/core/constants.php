@@ -37,7 +37,7 @@ if (APP_IS_WEB) {
 
     $script_path = pathinfo($_SERVER['SCRIPT_FILENAME'], PATHINFO_DIRNAME);
     if (substr($document_root, -4) !== 'web/' && ($p = strpos($script_path, 'src/web')) > -1) {
-        $document_root = substr($script_path, 0, $p+7);
+        $document_root = substr($script_path, 0, $p + 7);
     }
 
     define('DOCUMENT_ROOT', $document_root . DIRECTORY_SEPARATOR);
@@ -65,15 +65,14 @@ if (APP_IS_WEB) {
 
     $appname = pathinfo(SITE_ROOT, PATHINFO_FILENAME);
     define('APP_NAME', $appname);
-
     // define('PHINK_VENDOR_SRC', 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR);
-    define('PHINK_VENDOR_SRC', 'framework' . DIRECTORY_SEPARATOR);
+    // define('PHINK_VENDOR_SRC', 'framework' . DIRECTORY_SEPARATOR);
+    define('PHINK_VENDOR_SRC', FRAMEWORK);
     define('PHINK_VENDOR_LIB', PHINK_VENDOR_SRC . 'phink' . DIRECTORY_SEPARATOR);
     define('PHINK_VENDOR_WIDGETS', PHINK_VENDOR_SRC . 'widgets' . DIRECTORY_SEPARATOR);
     define('PHINK_VENDOR_PLUGINS', PHINK_VENDOR_SRC . 'plugins' . DIRECTORY_SEPARATOR);
     define('PHINK_VENDOR_APPS', PHINK_VENDOR_SRC . 'apps' . DIRECTORY_SEPARATOR);
-    // define('PHINKJS_VENDOR', 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phinkjs' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR);
-    define('PHINKJS_VENDOR', 'framework' . DIRECTORY_SEPARATOR . 'phinkjs' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR);
+    define('PHINKJS_VENDOR', PHINK_VENDOR_SRC . 'phinkjs' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR);
     define('PHINK_ROOT', SITE_ROOT . PHINK_VENDOR_LIB);
     define('PHINK_WIDGETS_ROOT', SITE_ROOT . PHINK_VENDOR_WIDGETS);
     define('PHINK_PLUGINS_ROOT', SITE_ROOT . PHINK_VENDOR_PLUGINS);
@@ -145,7 +144,6 @@ if (APP_IS_WEB) {
     define('DEFAULT_PARTIAL_CONTROLLER', ROOT_NAMESPACE . '\\MVC\\TPartialController');
     define('DEFAULT_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TControl');
     define('DEFAULT_PARTIAL_CONTROL', ROOT_NAMESPACE . '\\Web\\UI\\TPartialControl');
-
 } else {
     define('DOCUMENT_ROOT', '');
     define('LOG_PATH', './logs/');
