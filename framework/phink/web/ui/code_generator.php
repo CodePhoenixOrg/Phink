@@ -22,6 +22,7 @@ use Phink\Registry\TRegistry;
 use Phink\Xml\TXmlDocument;
 use Phink\Xml\TXmlMatch;
 use Phink\MVC\TCustomView;
+use Phink\MVC\TPartialView;
 use \Phink\TAutoloader;
 
 /**
@@ -32,7 +33,7 @@ use \Phink\TAutoloader;
 trait TCodeGenerator
 {
     //put your code here
-    public function writeDeclarations(TXmlDocument $doc, TCustomView $view)
+    public function writeDeclarations(TXmlDocument $doc, TCustomView $parentView)
     {
         $result = '';
         $matches = $doc->getMatchesByDepth();
@@ -99,6 +100,8 @@ trait TCodeGenerator
                     $fqcn = $info->namespace . '\\' . $className;
                 } elseif ($className !== 'this') {
                     $viewName = TAutoloader::userClassNameToFilename($className);
+                    $view = new TPartialView($parentView, $className);
+                    $view->setNames();
                     $fullClassPath = $view->getControllerFileName();
                     $fullJsClassPath = $view->getJsControllerFileName();
 
@@ -107,20 +110,21 @@ trait TCodeGenerator
 
                     self::getLogger()->dump('FULL_CLASS_PATH', $fullClassPath);
 
-                    list($file, $fqcn, $code) = TAutoloader::includeViewClass($view, RETURN_CODE);
+                    // list($file, $fqcn, $code) = TAutoloader::includeViewClass($parentView, RETURN_CODE);
+                    list($file, $fqcn, $code) = TAutoloader::includeClass($fullClassPath, RETURN_CODE);
 
                     self::getLogger()->dump('FULL_QUALIFIED_CLASS_NAME: ', $fqcn);
 
                     if (file_exists(DOCUMENT_ROOT . $fullJsCachePath)) {
-                        $view->getResponse()->addScriptFirst($fullJsCachePath);
+                        $parentView->getResponse()->addScriptFirst($fullJsCachePath);
                     }
                     if (file_exists(SRC_ROOT . $fullJsClassPath)) {
                         copy(SRC_ROOT . $fullJsClassPath, DOCUMENT_ROOT . $fullJsCachePath);
-                        $view->getResponse()->addScriptFirst($fullJsCachePath);
+                        $parentView->getResponse()->addScriptFirst($fullJsCachePath);
                     }
                     if (file_exists(SITE_ROOT . $fullJsClassPath)) {
                         copy(SITE_ROOT . $fullJsClassPath, DOCUMENT_ROOT . $fullJsCachePath);
-                        $view->getResponse()->addScriptFirst($fullJsCachePath);
+                        $parentView->getResponse()->addScriptFirst($fullJsCachePath);
                     }
                     TRegistry::setCode($view->getUID(), $code);
                 }
@@ -244,10 +248,10 @@ trait TCodeGenerator
         return (object) ['creations' => $objectCreation, 'additions' => $objectAdditions, 'afterBinding' => $objectAfterBiding];
     }
 
-    public function writeHTML(TXmlDocument $doc, TCustomView $view)
+    public function writeHTML(TXmlDocument $doc, TCustomView $parentView)
     {
-        $motherView = $view->getMotherView();
-        $viewHtml = $view->getViewHtml();
+        $motherView = $parentView->getMotherView();
+        $viewHtml = $parentView->getViewHtml();
 
         $count = $doc->getCount();
         $matchesSort = $doc->getMatchesByDepth();

@@ -76,7 +76,7 @@ class TPartialController extends TCustomController
                 $contents = file_get_contents($this->getJsControllerFileName());
             }
         }
-        $script = $this->getJsCacheFilename($viewName);
+        $script = $this->getJsCacheFileName($viewName);
         $lock = $viewName . '.lock';
         if (file_exists($lock)) {
             return;
@@ -91,7 +91,7 @@ JSCRIPT;
             if ($this->getMotherView() !== null) {
                 $view = $this->getMotherView();
                 // $filename = $view->getCacheFileName();
-                $jsfilename = $view->getJsCacheFileName();
+                $jsfilename = DOCUMENT_ROOT . $view->getJsCacheFileName();
 
                 $html = file_get_contents($jsfilename);
 
@@ -106,10 +106,10 @@ JSCRIPT;
             }
         }
         if ($this->getRequest()->isAJAX()) {
-            $this->response->addSript($script);
+            $this->response->addScript($script);
         }
 
-        // file_put_contents($script, $this->pagerJS);
+        file_put_contents(DOCUMENT_ROOT . $script, $contents);
 
     }
 }

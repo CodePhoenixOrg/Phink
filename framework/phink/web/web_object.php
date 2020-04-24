@@ -41,8 +41,6 @@ trait TWebObject
     private static $_pageNumber;
     private static $_pageCount;
     protected $redis = null;
-    //    protected $response = null;
-    //    protected $request = null;
     protected $modelFileName = '';
     protected $viewFileName = '';
     protected $controllerFileName = '';
@@ -68,14 +66,6 @@ trait TWebObject
     protected $parentType = null;
     protected $motherView = null;
     protected $motherUID = '';
-
-    //    protected $authentication = null;
-
-    //    public function __construct(IObject $parent)
-    //    {
-    //        $this->request = $parent->getRequest();
-    //        $this->response = $parent->getResponse();
-    //    }
 
     public static function pageNumber($value = null)
     {
@@ -126,7 +116,7 @@ trait TWebObject
             if ($viewName === null) {
                 $viewName = $this->viewName;
             }
-            $this->jsCacheFileName = DOCUMENT_ROOT . TAutoloader::cacheJsFilenameFromView($this->viewName);
+            $this->jsCacheFileName = TAutoloader::cacheJsFilenameFromView($viewName);
         }
         return $this->jsCacheFileName;
     }
@@ -137,7 +127,7 @@ trait TWebObject
             if ($viewName === null) {
                 $viewName = $this->viewName;
             }
-            $this->cssCacheFileName = DOCUMENT_ROOT . TAutoloader::cacheCssFilenameFromView($this->viewName);
+            $this->cssCacheFileName = TAutoloader::cacheCssFilenameFromView($viewName);
         }
         return $this->cssCacheFileName;
     }
