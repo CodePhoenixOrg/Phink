@@ -58,7 +58,7 @@ class TWebApplication extends TCustomApplication implements IHttpTransport, IWeb
         $this->request = new TRequest();
         $this->response = new TResponse();
 
-        if (class_exists('Twig\Environment')) {
+        if (class_exists('Twig\Environment') && file_exists(VIEW_ROOT)) {
             $loader = new \Twig\Loader\FilesystemLoader(VIEW_ROOT);
             $this->twigEnvironment = new \Twig\Environment($loader, [
                 'cache' => CACHE_DIR,
