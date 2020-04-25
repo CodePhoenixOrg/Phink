@@ -217,6 +217,19 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
                 }
             }
         );
+
+        $this->setCommand(
+            'display-history',
+            '',
+            'Display commands history.',
+            function () {
+                try {
+                    $this->writeLine(readline_list_history());
+                } catch (\Throwable $ex) {
+                    $this->writeException($ex);
+                }
+            }
+        );
     }
 
     protected function execute(): void
@@ -440,7 +453,6 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
 
             rename($buildRoot . $this->appName . '.phar', $execname);
             chmod($execname, 0755);
-
         } catch (\Throwable $ex) {
             $this->writeException($ex);
         }
@@ -496,6 +508,16 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
         } else {
             self::getLogger()->debug($result . PHP_EOL);
         }
+    }
+
+    public static function readLine(?string $prompt = null): string
+    {
+        $result = '';
+
+        $result = readline($prompt);
+        readline_add_history($result);
+
+        return $result;
     }
 
     public static function writeException(\Throwable $ex, $file = null, $line = null): void
