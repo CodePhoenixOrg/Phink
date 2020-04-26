@@ -77,7 +77,7 @@ class TPartialController extends TCustomController
             }
         }
         $script = $this->getJsCacheFileName($viewName);
-        $lock = $viewName . '.lock';
+        $lock = RUNTIME_DIR . $viewName . '.lock';
         if (file_exists($lock)) {
             return;
         }
@@ -98,7 +98,7 @@ JSCRIPT;
                 // if ($jscall !== null) {
                 // $view->appendToBody($jscall, $html);s
                 file_put_contents($jsfilename, $contents, FILE_APPEND);
-                file_put_contents(RUNTIME_DIR . $lock, date('Y-m-d h:i:s'));
+                file_put_contents($lock, date('Y-m-d h:i:s'));
 
                 // }
 
