@@ -81,6 +81,7 @@ Phink.DOM.ready(function () {
                     'query': sql
                     //, 'token'
                 }, function (data) {
+                    document.querySelector(anchor).innerHTML = index;
                     Phink.Web.UI.Table.create().bind('#grid', data.grid, function () {
                         //document.querySelector('#grid').innerHTML(index);
                     });
