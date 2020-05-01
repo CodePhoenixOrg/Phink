@@ -18,6 +18,7 @@
 
 namespace Phink\Web\UI;
 
+use Phink\Cache\TCache;
 use Phink\Core\IObject;
 use Phink\MVC\TActionInfo;
 use Phink\MVC\TCustomView;
@@ -95,7 +96,7 @@ abstract class TCustomCachedControl extends TCustomControl
         $this->unload();
 
         if (file_exists(SRC_ROOT . $this->getJsControllerFileName())) {
-            $cacheJsFilename = TAutoloader::cacheJsFilenameFromView($this->viewName);
+            $cacheJsFilename = TCache::cacheJsFilenameFromView($this->viewName, $this->isInternalComponent());
             if (!file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
                 copy(SRC_ROOT . $this->getJsControllerFileName(), DOCUMENT_ROOT . $cacheJsFilename);
             }

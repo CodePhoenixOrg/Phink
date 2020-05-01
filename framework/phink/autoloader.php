@@ -18,6 +18,7 @@
 
 namespace Phink;
 
+use Phink\Cache\TCache;
 use Phink\Core\TStaticObject;
 use Phink\MVC\TCustomView;
 use Phink\MVC\TPartialView;
@@ -323,17 +324,17 @@ class TAutoloader extends TStaticObject
                 $path = str_replace("~" . DIRECTORY_SEPARATOR, PHINK_VENDOR_WIDGETS, $info->path);
             }
 
-            $cacheFilename = TAutoloader::cacheFilenameFromView($viewName);
+            $cacheFilename = TCache::cacheFilenameFromView($viewName, $ctrl->isInternalComponent());
         }
         if ($info === null) {
             $viewName = self::userClassNameToFilename($className);
 
             //$classFilename = 'app' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $className . CLASS_EXTENSION;
-            $cacheFilename = self::cacheFilenameFromView($viewName);
+            $cacheFilename = TCache::cacheFilenameFromView($viewName, $ctrl->isInternalComponent());
             self::getLogger()->debug('CACHED JS FILENAME: ' . $cacheJsFilename, __FILE__, __LINE__);
         }
-        $cacheJsFilename = self::cacheJsFilenameFromView($viewName);
-        $cacheCssFilename = self::cacheCssFilenameFromView($viewName);
+        $cacheJsFilename = TCache::cacheJsFilenameFromView($viewName, $ctrl->isInternalComponent());
+        $cacheCssFilename = TCache::cacheCssFilenameFromView($viewName, $ctrl->isInternalComponent());
 
         if (file_exists(SRC_ROOT . $cacheFilename)) {
             if (file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {

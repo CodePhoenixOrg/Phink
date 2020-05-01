@@ -18,6 +18,7 @@
 
 namespace Phink\MVC;
 
+use Phink\Cache\TCache;
 use Phink\Registry\TRegistry;
 use Phink\TAutoloader;
 use Phink\Web\IWebObject;
@@ -276,7 +277,7 @@ abstract class TCustomView extends TCustomControl
 
     function getScriptTag(): ?string
     {
-        $cacheJsFilename = TAutoloader::cacheJsFilenameFromView($this->getViewName());
+        $cacheJsFilename = TCache::cacheJsFilenameFromView($this->getViewName(), $this->isInternalComponent());
         $script = "<script src='" . TAutoloader::absoluteURL($cacheJsFilename) . "'></script>" . PHP_EOL;
 
         $ok = $this->safeCopy($this->getJsControllerFileName(), $cacheJsFilename);
@@ -286,7 +287,7 @@ abstract class TCustomView extends TCustomControl
 
     function getStyleSheetTag(): ?string
     {
-        $cacheCssFilename = TAutoloader::cacheCssFilenameFromView($this->getViewName());
+        $cacheCssFilename = TCache::cacheCssFilenameFromView($this->getViewName(), $this->isInternalComponent());
         $head = "<link rel='stylesheet' href='" . TAutoloader::absoluteURL($cacheCssFilename) . "' />" . PHP_EOL;
 
         $ok = $this->safeCopy($this->getCssFileName(), $cacheCssFilename);
@@ -331,9 +332,9 @@ abstract class TCustomView extends TCustomControl
                 "js" => $object->getJsControllerFileName(),
                 "cache" =>
                 [
-                    "controller" => SRC_ROOT . TAutoloader::cacheFilenameFromView($object->getViewName()),
-                    "css" => SRC_ROOT . TAutoloader::cacheCssFilenameFromView($object->getViewName()),
-                    "js" => SRC_ROOT . TAutoloader::cacheJsFilenameFromView($object->getViewName()),
+                    "controller" => SRC_ROOT . TCache::cacheFilenameFromView($object->getViewName(), $this->isInternalComponent()),
+                    "css" => SRC_ROOT . TCache::cacheCssFilenameFromView($object->getViewName(), $this->isInternalComponent()),
+                    "js" => SRC_ROOT . TCache::cacheJsFilenameFromView($object->getViewName(), $this->isInternalComponent()),
                 ],
             ]
         );

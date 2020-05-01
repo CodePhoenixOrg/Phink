@@ -18,6 +18,7 @@
 
 namespace Phink\Web\UI;
 
+use Phink\Cache\TCache;
 use Phink\Registry\TRegistry;
 use Phink\Xml\TXmlDocument;
 use Phink\Xml\TXmlMatch;
@@ -105,7 +106,7 @@ trait TCodeGenerator
                     $fullClassPath = $view->getControllerFileName();
                     $fullJsClassPath = $view->getJsControllerFileName();
 
-                    $fullJsCachePath = TAutoloader::cacheJsFilenameFromView($viewName);
+                    $fullJsCachePath = TCache::cacheJsFilenameFromView($viewName, $parentView->isInternalComponent());
                     array_push($requires, '\\Phink\\TAutoloader::import($this, "' . $className . '");');
 
                     self::getLogger()->dump('FULL_CLASS_PATH', $fullClassPath);

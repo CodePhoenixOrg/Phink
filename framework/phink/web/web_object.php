@@ -24,6 +24,7 @@ namespace Phink\Web;
  * @author david
  */
 
+use Phink\Cache\TCache;
 use Phink\Core\TCustomApplication;
 use Phink\MVC\TCustomView;
 use Phink\Registry\TRegistry;
@@ -105,7 +106,7 @@ trait TWebObject
             if ($viewName === null) {
                 $viewName = $this->viewName;
             }
-            $this->cacheFileName = SRC_ROOT . TAutoloader::cacheFilenameFromView($this->viewName);
+            $this->cacheFileName = SRC_ROOT . TCache::cacheFilenameFromView($this->viewName, $this->isInternalComponent());
         }
         return $this->cacheFileName;
     }
@@ -116,7 +117,7 @@ trait TWebObject
             if ($viewName === null) {
                 $viewName = $this->viewName;
             }
-            $this->jsCacheFileName = TAutoloader::cacheJsFilenameFromView($viewName);
+            $this->jsCacheFileName = TCache::cacheJsFilenameFromView($viewName, $this->isInternalComponent());
         }
         return $this->jsCacheFileName;
     }
@@ -127,7 +128,7 @@ trait TWebObject
             if ($viewName === null) {
                 $viewName = $this->viewName;
             }
-            $this->cssCacheFileName = TAutoloader::cacheCssFilenameFromView($viewName);
+            $this->cssCacheFileName = TCache::cacheCssFilenameFromView($viewName, $this->isInternalComponent());
         }
         return $this->cssCacheFileName;
     }
@@ -446,7 +447,7 @@ trait TWebObject
             }
         }
 
-        $cacheFileName = SRC_ROOT . TAutoloader::cacheFilenameFromView($viewName);
+        $cacheFileName = SRC_ROOT . TCache::cacheFilenameFromView($viewName);
 
         return [
             'modelFileName' => $modelFileName,

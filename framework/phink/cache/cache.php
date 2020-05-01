@@ -24,6 +24,22 @@ use Phink\Core\TStaticObject;
 
 class TCache extends TStaticObject
 {
+
+    public static function cacheFilenameFromView(string $viewName, ?bool $isInnerComponent): string
+    {
+        return REL_RUNTIME_DIR . ($isInnerComponent ? 'framework_' : '') . strtolower('controller_' . $viewName . CLASS_EXTENSION);
+    }
+
+    public static function cacheJsFilenameFromView(string $viewName, ?bool $isInnerComponent): string
+    {
+        return REL_RUNTIME_JS_DIR . ($isInnerComponent ? 'framework_' : '') . strtolower('javascript_' . $viewName . JS_EXTENSION);
+    }
+
+    public static function cacheCssFilenameFromView(string $viewName, ?bool $isInnerComponent): string
+    {
+        return  REL_RUNTIME_CSS_DIR . ($isInnerComponent ? 'framework_' : '') . strtolower('stylesheet_' . $viewName . CSS_EXTENSION);
+    }
+
     public static function cacheFile($filename, $content): void
     {
         $filename = CACHE_DIR . $filename;
