@@ -5,5 +5,23 @@ vendor
 .DS_Store
 xdebug*
 php_error*
+<<<<<<< HEAD
+egg
+*log
+runtime
+phink.js
+puzzle.js
+*builder.lock
+_3rdparty*
+*.db
+images
+rewrite_base
+.htaccess
+fonts
+assets
+framework/phinkjs
+composer.lock
+=======
 composer.lock
 src/apps/egg/build/egg
+>>>>>>> master
