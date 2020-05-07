@@ -19,3 +19,4 @@ rewrite_base
 fonts
 assets
 framework/phinkjs
+composer.lock
