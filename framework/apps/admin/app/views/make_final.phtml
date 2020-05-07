@@ -1,0 +1,30 @@
+		<fieldset style='width:450px;'>
+		<legend>Récapitulatif des opérations</legend>
+		<form name='myForm' method='POST' action='?di=mkmain&lg=<phx:echo var="lg" />'>
+
+		<table border='0' bordercolor='0' width='85%' valign='top' style='display:hidden;'>
+		<tr><td>
+		<table border='0' cellspacing='0' cellpadding='0'>
+		<tr><td><b>Base de données : </b></td><td><phx:echo var="userdb" /></td></tr>
+		<tr><td><b>Table : </b></td><td><phx:echo var="usertable" /></td></tr>
+		<tr><td><b>Propriétés du script : </b></td><td><phx:echo var="props" /></td></tr>
+		<tr><td><b>Répertoire : </b></td><td><phx:echo var="wwwroot" /> <phx:echo var="basedir" /></td></tr>
+		<tr><td><b>Nom du fichier : </b></td><td><phx:echo var="rel_page_filename" /></td></tr>
+		<tr><td><b>Index du menu : </b></td><td><phx:echo var="me_id" /></td></tr>
+		<tr><td><b>Index de page : </b></td><td><phx:echo var="pa_id" /></td></tr>
+		<tr><td><b>Niveau du menu : </b></td><td><phx:echo var="me_level" /></td></tr>
+		<tr><td><b>Bloc du menu : </b></td><td><phx:echo var="bl_id" /></td></tr>
+		<tr><td><b>Index de dictionaire : </b></td><td><phx:echo var="di_name" /></td></tr>
+		<tr><td><b>Libellé court : </b></td><td><phx:echo var="di_short" /></td></tr>
+		<tr><td><b>Libellé long : </b></td><td><phx:echo var="di_long" /></td></tr>
+		<tr><td><b>Le script existait déjà : </b></td><td><phx:echo var="script_exists_tostring" /></td></tr>
+		<tr><td><b>Etat du script : </b></td><td><phx:echo var="sstatus" /></td></tr>
+		</table>
+		</td></tr>
+		<tr><td align='center'>
+		<input type='submit' name='save' value='Terminer'>
+		</td></tr>
+		</table>
+		</form>
+
+		</fieldset>

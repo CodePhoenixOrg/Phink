@@ -1,0 +1,22 @@
+{
+    "classes": [
+        {
+            "TConsoleWindow": {
+                "alias": "window",
+                "path": "@/console/",
+                "namespace": "Phink\\Apps\\Console",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            },
+            "TToken": {
+                "alias": "token",
+                "path": "@/console/",
+                "namespace": "Phink\\Apps\\Console",
+                "hasTemplate": true,
+                "canRender": true,
+                "isAutoloaded": false
+            }
+        }
+    ]
+}

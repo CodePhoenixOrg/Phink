@@ -5,4 +5,5 @@ vendor
 .DS_Store
 xdebug*
 php_error*
+composer.lock
 src/apps/egg/build/egg
