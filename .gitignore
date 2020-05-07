@@ -5,6 +5,7 @@ vendor
 .DS_Store
 xdebug*
 php_error*
+<<<<<<< HEAD
 egg
 *log
 runtime
@@ -20,3 +21,7 @@ fonts
 assets
 framework/phinkjs
 composer.lock
+=======
+composer.lock
+src/apps/egg/build/egg
+>>>>>>> master
