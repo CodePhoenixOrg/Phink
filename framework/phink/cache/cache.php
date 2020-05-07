@@ -25,19 +25,19 @@ use Phink\Core\TStaticObject;
 class TCache extends TStaticObject
 {
 
-    public static function cacheFilenameFromView(string $viewName, ?bool $isInnerComponent): string
+    public static function cacheFilenameFromView(string $viewName, bool $isFrameworkComponent = false): string
     {
-        return REL_RUNTIME_DIR . ($isInnerComponent ? 'framework_' : '') . strtolower('controller_' . $viewName . CLASS_EXTENSION);
+        return REL_RUNTIME_DIR . ($isFrameworkComponent ? 'framework_' : '') . strtolower('controller_' . $viewName . CLASS_EXTENSION);
     }
 
-    public static function cacheJsFilenameFromView(string $viewName, ?bool $isInnerComponent): string
+    public static function cacheJsFilenameFromView(string $viewName, bool $isFrameworkComponent = false): string
     {
-        return REL_RUNTIME_JS_DIR . ($isInnerComponent ? 'framework_' : '') . strtolower('javascript_' . $viewName . JS_EXTENSION);
+        return REL_RUNTIME_JS_DIR . ($isFrameworkComponent ? 'framework_' : '') . strtolower('javascript_' . $viewName . JS_EXTENSION);
     }
 
-    public static function cacheCssFilenameFromView(string $viewName, ?bool $isInnerComponent): string
+    public static function cacheCssFilenameFromView(string $viewName, bool $isFrameworkComponent = false): string
     {
-        return  REL_RUNTIME_CSS_DIR . ($isInnerComponent ? 'framework_' : '') . strtolower('stylesheet_' . $viewName . CSS_EXTENSION);
+        return  REL_RUNTIME_CSS_DIR . ($isFrameworkComponent ? 'framework_' : '') . strtolower('stylesheet_' . $viewName . CSS_EXTENSION);
     }
 
     public static function cacheFile($filename, $content): void
