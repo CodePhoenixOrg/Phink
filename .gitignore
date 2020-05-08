@@ -2,6 +2,7 @@ bower_components
 nbproject
 vendor
 .vscode
+.vs
 .DS_Store
 xdebug*
 php_error*
@@ -20,4 +21,3 @@ fonts
 assets
 framework/phinkjs
 composer.lock
-
