@@ -22,6 +22,7 @@ if (file_exists(SETUP_SITE_ROOT . $portable_dir . $lib)) {
 }
 
 define('SETUP_FRAMEWORK', $framework_dir);
+define('FRAMEWORK', SETUP_FRAMEWORK);
 
 chdir('..');
 include SETUP_SITE_ROOT . SETUP_FRAMEWORK . 'apps/setup/homepage.php';

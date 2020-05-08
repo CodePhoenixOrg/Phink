@@ -147,3 +147,4 @@ class TCache extends TStaticObject
         return $result;
     }
 }
+

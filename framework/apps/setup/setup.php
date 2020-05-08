@@ -18,7 +18,7 @@ class Setup
 
     public function __construct()
     {
-        define('SETUP_REWRITE_BASE', dirname(pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME)) . DIRECTORY_SEPARATOR);
+        define('SETUP_REWRITE_BASE', trim(dirname(pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME)), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
     }
 
     public function getRewriteBase(): string
@@ -157,10 +157,11 @@ if(\$is127 || \$isIndex) {
     exit(302);
 }
 define('CONFIG_DIR', '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR);
-define('FRAMEWORK', '..'  . DIRECTORY_SEPARATOR . '..'  . DIRECTORY_SEPARATOR . trim(file_get_contents(CONFIG_DIR . 'framework')));
-include FRAMEWORK . 'phink' . DIRECTORY_SEPARATOR . 'phink_library.php';
-include FRAMEWORK . 'plugins' . DIRECTORY_SEPARATOR . 'plugins_library.php';
-        
+define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
+// include FRAMEWORK . 'phink' . DIRECTORY_SEPARATOR . 'phink_library.php';
+// include FRAMEWORK . 'plugins' . DIRECTORY_SEPARATOR . 'plugins_library.php';
+include '../../vendor/autoload.php';
+
 BOOTSTRAP;
 
         // include '../../vendor/autoload.php';
