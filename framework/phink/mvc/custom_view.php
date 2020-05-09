@@ -136,7 +136,7 @@ abstract class TCustomView extends TCustomControl
 
     function parse(): bool
     {
-        self::$logger->debug($this->viewName . ' IS REGISTERED : ' . (TRegistry::exists('code', $this->controllerFileName) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
+        // self::$logger->debug($this->viewName . ' IS REGISTERED : ' . (TRegistry::exists('code', $this->controllerFileName) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
 
         // $this->viewHtml = $this->redis->mget($templateName);
         // $this->viewHtml = $this->viewHtml[0];
@@ -191,6 +191,7 @@ abstract class TCustomView extends TCustomControl
                 $this->appendToBody($script, $this->viewHtml);
             }
         }
+
         // if (!$this->isMotherView()) {
         //     $view = $this->getMotherView();
         //     $filename = $view->getCacheFileName();
@@ -242,7 +243,11 @@ abstract class TCustomView extends TCustomControl
         $code = str_replace(PARTIAL_CONTROLLER, PARTIAL_CONTROL, $code);
         if (!empty(trim($code))) {
             self::$logger->debug('SOMETHING TO CACHE : ' . $this->getCacheFileName(), __FILE__, __LINE__);
-            file_put_contents($this->getCacheFileName(), $code);
+            if (!$this->isMotherView()) {
+                file_put_contents($this->getCacheFileName(), $code);
+            }
+            TRegistry::setCode($this->getUID(), $code);
+
         }
 
         //TRegistry::push($this->getUID(), 'code', $code);

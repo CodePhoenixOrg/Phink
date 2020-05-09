@@ -60,6 +60,16 @@ class TPartialController extends TCustomController
         $this->unload();
     }
 
+    public function getHtml(): string
+    {
+        ob_start();
+        $this->render();
+        $html = ob_get_clean();
+        
+        return $html;
+        
+    }
+
     public function __destruct()
     {
         unset($this->model);
@@ -78,9 +88,9 @@ class TPartialController extends TCustomController
         }
         $script = $this->getJsCacheFileName($viewName);
         $lock = RUNTIME_DIR . $viewName . '.lock';
-        if (file_exists($lock)) {
-            return;
-        }
+        // if (file_exists($lock)) {
+        //     return;
+        // }
 
         if (!$this->getRequest()->isAJAX()) {
             $scriptURI = TAutoloader::absoluteURL($script);
@@ -90,19 +100,18 @@ JSCRIPT;
 
             if ($this->getMotherView() !== null) {
                 $view = $this->getMotherView();
-                // $filename = $view->getCacheFileName();
+                $filename = $view->getCacheFileName();
                 $jsfilename = DOCUMENT_ROOT . $view->getJsCacheFileName();
 
-                $html = file_get_contents($jsfilename);
+                $html = file_get_contents($filename);
 
-                // if ($jscall !== null) {
-                // $view->appendToBody($jscall, $html);s
-                file_put_contents($jsfilename, $contents, FILE_APPEND);
-                file_put_contents($lock, date('Y-m-d h:i:s'));
+                if ($jscall !== null) {
+                    $view->appendToBody($jscall, $html);
+                    file_put_contents($jsfilename, $contents, FILE_APPEND);
+                    file_put_contents($lock, date('Y-m-d h:i:s'));
+                }
 
-                // }
-
-                // file_put_contents($filename, $html);
+                file_put_contents($filename, $html);
             }
         }
         if ($this->getRequest()->isAJAX()) {
@@ -110,6 +119,5 @@ JSCRIPT;
         }
 
         file_put_contents(DOCUMENT_ROOT . $script, $contents);
-
     }
 }

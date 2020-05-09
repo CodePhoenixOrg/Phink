@@ -49,4 +49,15 @@ class TPartialControl extends TCustomCachedControl
             $this->model = new $modelClass();
         }
     }
+
+    public function getHtml(): string
+    {
+        ob_start();
+        $this->render();
+        $html = ob_get_clean();
+        
+        return $html;
+        
+    }
+    
 }

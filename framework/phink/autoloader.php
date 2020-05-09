@@ -408,7 +408,7 @@ class TAutoloader extends TStaticObject
         return [$namespace, $className, $classText];
     }
 
-    private static function grabKeywordName(string $keyword, string $classText, $delimiter): string
+    public static function grabKeywordName(string $keyword, string $classText, $delimiter): string
     {
         $result = '';
 

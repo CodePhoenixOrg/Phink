@@ -43,22 +43,28 @@ abstract class TCustomControl extends TObject implements IHttpTransport, IWebObj
     protected $isRendered = false;
 
     public function init(): void
-    { }
+    {
+    }
 
     public function load(): void
-    { }
+    {
+    }
 
     public function view($html)
-    { }
+    {
+    }
 
     public function partialLoad(): void
-    { }
+    {
+    }
 
     public function beforeBinding(): void
-    { }
+    {
+    }
 
     public function afterBinding(): void
-    { }
+    {
+    }
 
     public function parse(): bool
     {
@@ -66,17 +72,28 @@ abstract class TCustomControl extends TObject implements IHttpTransport, IWebObj
     }
 
     public function renderHtml(): void
-    { }
+    {
+    }
 
     public function displayHtml(): void
-    { }
+    {
+    }
 
     public function renderTwig(): void
-    { }
+    {
+    }
 
     public function render(): void
-    { }
+    {
+    }
+
+    public function getHtml(): string
+    {
+        $html = '';
+        return $html;
+    }
 
     public function unload(): void
-    { }
+    {
+    }
 }
