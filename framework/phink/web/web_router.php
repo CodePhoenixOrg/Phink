@@ -104,17 +104,26 @@ class TWebRouter extends TRouter
         $className = TAutoloader::grabKeywordName('class', $classText, ' ');
 
         $view->parse();
-        $code = TRegistry::getCode($view->getUID());
+        $uid = $view->getUID();
+        $code = TRegistry::getCode($uid);
         
-        file_put_contents($this->getCacheFileName(), $code);
+        // file_put_contents($this->getCacheFileName(), $code);
 
         eval('?>' . $code);
 
         $fqClassName = $namespace . '\\' . $className;
 
         $controller = new $fqClassName($view);
+
         $controller->perform();
 
+        $html = TRegistry::getHtml($uid);
+        $code = TRegistry::getCode($uid);
+        $code = str_replace(HTML_PLACEHOLDER, $html, $code);
+
+        file_put_contents($this->getCacheFileName(), $code);
+        
+        echo $html;
 
         return false;
     }

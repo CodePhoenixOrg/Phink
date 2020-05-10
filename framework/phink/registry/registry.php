@@ -202,6 +202,17 @@ class TRegistry extends TStaticObject
         //self::$logger->debug('CODE REGISTRY : ' . print_r($keys, true));
     }
 
+    public static function getHtml($id): string
+    {
+        return self::$_items['html'][$id];
+    }
+
+    public static function setHtml($id, $value): void
+    {
+        
+        self::write('html', $id, $value);
+    }
+
     /**
      * @param mixed $item Name of the key
      * @param array $params May one key/value pair or an array of pairs

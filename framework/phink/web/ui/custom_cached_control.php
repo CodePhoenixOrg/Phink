@@ -165,7 +165,15 @@ abstract class TCustomCachedControl extends TCustomControl
             if (!empty($twig)) {
                 echo $twig;
             } else {
-                $this->displayHtml();
+                $uid = $this->getView()->getUID();
+                if (TRegistry::exists('html', $uid)) {
+                    ob_start();
+                    eval('?>' . TRegistry::getHtml($uid));
+                    $html = ob_get_clean();
+                    TRegistry::setHtml($uid, $html);
+                } else {
+                    $this->displayHtml();
+                }
             }
             //TWebObject::register($this);
 

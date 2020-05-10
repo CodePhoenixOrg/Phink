@@ -192,20 +192,18 @@ abstract class TCustomView extends TCustomControl
             }
         }
 
-        // if (!$this->isMotherView()) {
-        //     $view = $this->getMotherView();
-        //     $filename = $view->getCacheFileName();
+        if (!$this->isMotherView() && !$this->getRequest()->isAJAX()) {
+            $view = $this->getMotherView();
+            $html = TRegistry::getHtml($view->getUID());
 
-        //     $html = file_get_contents($filename);
-        //     if ($head !== null) {
-        //         $this->appendToHead($head, $html);
-        //     }
-        //     if ($script !== null) {
-        //         $this->appendToBody($script, $html);
-        //     }
-
-        //     file_put_contents($filename, $html);
-        // }
+            if ($head !== null) {
+                $this->appendToHead($head, $html);
+            }
+            if ($script !== null) {
+                $this->appendToBody($script, $html);
+            }
+            TRegistry::setHtml($view->getUID(), $html);
+        }
 
         // $this->redis->mset($templateName, $this->viewHtml);
         // self::$logger->debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');
@@ -227,6 +225,10 @@ abstract class TCustomView extends TCustomControl
             $this->viewHtml = $this->writeHTML($doc, $this);
         }
 
+        if ($this->isMotherView()) {
+            TRegistry::setHtml($this->getUID(), $this->viewHtml);
+        }
+
         if (!TRegistry::exists('code', $this->getUID())) {
             self::$logger->debug('NO NEED TO WRITE CODE: ' . $this->controllerFileName, __FILE__, __LINE__);
             return false;
@@ -236,7 +238,9 @@ abstract class TCustomView extends TCustomControl
         // We store the parsed code in a file so that we know it's already parsed on next request.
         $code = str_replace(CREATIONS_PLACEHOLDER, $this->creations, $code);
         $code = str_replace(ADDITIONS_PLACEHOLDER, $this->additions, $code);
-        $code = str_replace(HTML_PLACEHOLDER, $this->viewHtml, $code);
+        if (!$this->isMotherView()) {
+            $code = str_replace(HTML_PLACEHOLDER, $this->viewHtml, $code);
+        }
         $code = str_replace(DEFAULT_CONTROLLER, DEFAULT_CONTROL, $code);
         $code = str_replace(DEFAULT_PARTIAL_CONTROLLER, DEFAULT_PARTIAL_CONTROL, $code);
         $code = str_replace(CONTROLLER, CONTROL, $code);
@@ -247,7 +251,6 @@ abstract class TCustomView extends TCustomControl
                 file_put_contents($this->getCacheFileName(), $code);
             }
             TRegistry::setCode($this->getUID(), $code);
-
         }
 
         //TRegistry::push($this->getUID(), 'code', $code);
