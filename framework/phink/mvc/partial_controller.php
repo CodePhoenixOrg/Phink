@@ -88,9 +88,9 @@ class TPartialController extends TCustomController
         }
         $script = $this->getJsCacheFileName($viewName);
         $lock = RUNTIME_DIR . $viewName . '.lock';
-        // if (file_exists($lock)) {
-        //     return;
-        // }
+        if (file_exists($lock)) {
+            return;
+        }
 
         if (!$this->getRequest()->isAJAX()) {
             $scriptURI = TAutoloader::absoluteURL($script);
