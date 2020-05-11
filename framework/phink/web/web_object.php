@@ -86,6 +86,43 @@ trait TWebObject
         }
     }
 
+    public function appendJsToBody(string $viewName): void
+    {
+        $lock = RUNTIME_DIR . $viewName . '.lock';
+
+        if(file_exists($lock)) {
+            return;
+        }
+
+        $script = $this->getJsCacheFileName($viewName);
+
+        if (!$this->getRequest()->isAJAX()) {
+            $view = $this->getMotherView();
+            $uid = $view->getUID();
+
+            if(!TRegistry::exists('html', $uid)) {
+                return;
+            }
+
+            $scriptURI = TAutoloader::absoluteURL($script);
+            $jscall = <<<JSCRIPT
+            <script type='text/javascript' src='{$scriptURI}'></script>
+JSCRIPT;
+
+            $html = TRegistry::getHtml($uid);
+
+            if ($jscall !== null) {
+                $view->appendToBody($jscall, $html);
+                TRegistry::setHtml($uid, $html);
+                file_put_contents($lock, date('Y-m-d h:i:s'));
+            }
+
+        }
+        if ($this->getRequest()->isAJAX()) {
+            $this->response->addScript($script);
+        }
+    }
+
     public function pageCountByDefault($default)
     {
         self::pageCount($this->request->getQueryArguments(PAGE_COUNT));

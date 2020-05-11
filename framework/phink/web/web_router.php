@@ -122,8 +122,10 @@ class TWebRouter extends TRouter
         $code = str_replace(HTML_PLACEHOLDER, $html, $code);
 
         file_put_contents($this->getCacheFileName(), $code);
-        
-        echo $html;
+
+        if(!$this->getRequest()->isAJAX()) {
+            echo $html;
+        }
 
         return false;
     }

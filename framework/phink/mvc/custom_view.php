@@ -192,18 +192,22 @@ abstract class TCustomView extends TCustomControl
             }
         }
 
-        if (!$this->isMotherView() && !$this->getRequest()->isAJAX()) {
-            $view = $this->getMotherView();
-            $html = TRegistry::getHtml($view->getUID());
+        // if (!$this->isMotherView() && !$this->getRequest()->isAJAX()) {
+        //     $view = $this->getMotherView();
+        //     $uid = $view->getUID();
 
-            if ($head !== null) {
-                $this->appendToHead($head, $html);
-            }
-            if ($script !== null) {
-                $this->appendToBody($script, $html);
-            }
-            TRegistry::setHtml($view->getUID(), $html);
-        }
+        //     if (TRegistry::exists('html', $uid)) {
+        //         $html = TRegistry::getHtml($uid);
+
+        //         if ($head !== null) {
+        //             $this->appendToHead($head, $html);
+        //         }
+        //         if ($script !== null) {
+        //             $this->appendToBody($script, $html);
+        //         }
+        //         TRegistry::setHtml($view->getUID(), $html);
+        //     }
+        // }
 
         // $this->redis->mset($templateName, $this->viewHtml);
         // self::$logger->debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');
