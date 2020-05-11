@@ -40,6 +40,7 @@ trait TCodeGenerator
         $matches = $doc->getMatchesByDepth();
         $docList = $doc->getList();
         $count = count($docList);
+        $uid = $parentView->getUID();
 
         $code = '';
         $uses = [];
@@ -204,7 +205,7 @@ trait TCodeGenerator
                 array_push($additions[$j], '$this->addChild(' . $thisControl . ');');
                 if($canRender && $className !== 'this') {
                     array_push($additions[$j], '$html = ' .  $thisControl . '->getHtml();');
-                    array_push($additions[$j], '\\Phink\\Registry\\TRegistry::push("partials", "' . $controlId . '", $html);');
+                    array_push($additions[$j], '\\Phink\\Registry\\TRegistry::push("' . $uid . '", "' . $controlId . '", $html);');
                 }
 
                 $creations[$j] = implode(PHP_EOL, $creations[$j]);
@@ -257,6 +258,7 @@ trait TCodeGenerator
     {
         $motherView = $parentView->getMotherView();
         $viewHtml = $parentView->getViewHtml();
+        $uid = $parentView->getUID();
 
         $count = $doc->getCount();
         $matchesSort = $doc->getMatchesByDepth();
@@ -306,7 +308,7 @@ trait TCodeGenerator
                     $declare = '<?php $this->renderHtml(); $this->renderedHtml(); ?>';
                 } else {
                     /** $declare = '<?php ' . $type . $id . '->render(); ?>'; */
-                    $declare = '<?php echo \\Phink\\Registry\\TRegistry::read("partials", "' . $id . '")[0]; ?>';
+                    $declare = '<?php echo \\Phink\\Registry\\TRegistry::read("' . $uid . '", "' . $id . '")[0]; ?>';
                 }
             }
 
