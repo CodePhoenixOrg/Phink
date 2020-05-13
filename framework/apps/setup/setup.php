@@ -18,7 +18,9 @@ class Setup
 
     public function __construct()
     {
-        define('SETUP_REWRITE_BASE', trim(dirname(pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME)), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
+        $rewriteBase = dirname(pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME)) . DIRECTORY_SEPARATOR;
+        $rewriteBase = str_replace("//", "/", $rewriteBase);
+        define('SETUP_REWRITE_BASE', $rewriteBase);
     }
 
     public function getRewriteBase(): string
