@@ -1,8 +1,9 @@
 <?php
-$is127 = ((($host = array_shift($hostPort = explode(':', $_SERVER['HTTP_HOST']))) . (isset($hostPort[1]) ? $port = ':' . $hostPort[1] : $port = '') == '127.0.0.1' . $port) ? $hostname = 'localhost' : $hostname = $host) !== $host;
+$hostPort = explode(':', $_SERVER['HTTP_HOST']);
+$is127 = (($host = array_shift($hostPort) . (isset($hostPort[1]) ? $port = ':' . $hostPort[1] : $port = '') == '127.0.0.1' . $port) ? $hostname = 'localhost' : $hostname = $host) !== $host;
 $isIndex = (((strpos($_SERVER['REQUEST_URI'], 'index.php')  > -1) ? $requestUri = str_replace('index.php', '', $_SERVER['REQUEST_URI']) : $requestUri = $_SERVER['REQUEST_URI']) !== $_SERVER['REQUEST_URI']);
 
-if($is127 || $isIndex) {
+if ($is127 || $isIndex) {
     header('Location: //' . $hostname . $port . $requestUri);
     exit(302);
 }
