@@ -196,7 +196,7 @@ abstract class TCustomView extends TCustomControl
         //     $view = $this->getMotherView();
         //     $uid = $view->getUID();
 
-        //     if (TRegistry::exists('html', $uid)) {
+        //     if (TRegistry::htmlExists($uid)) {
         //         $html = TRegistry::getHtml($uid);
 
         //         if ($head !== null) {
@@ -229,9 +229,7 @@ abstract class TCustomView extends TCustomControl
             $this->viewHtml = $this->writeHTML($doc, $this);
         }
 
-        if ($this->isMotherView()) {
-            TRegistry::setHtml($this->getUID(), $this->viewHtml);
-        }
+        TRegistry::setHtml($this->getUID(), $this->viewHtml);
 
         if (!TRegistry::exists('code', $this->getUID())) {
             self::$logger->debug('NO NEED TO WRITE CODE: ' . $this->controllerFileName, __FILE__, __LINE__);
@@ -242,7 +240,7 @@ abstract class TCustomView extends TCustomControl
         // We store the parsed code in a file so that we know it's already parsed on next request.
         $code = str_replace(CREATIONS_PLACEHOLDER, $this->creations, $code);
         $code = str_replace(ADDITIONS_PLACEHOLDER, $this->additions, $code);
-        if (!$this->isMotherView()) {
+        if (!$this->isMotherView() || $this->getRequest()->isAJAX()) {
             $code = str_replace(HTML_PLACEHOLDER, $this->viewHtml, $code);
         }
         $code = str_replace(DEFAULT_CONTROLLER, DEFAULT_CONTROL, $code);
@@ -257,8 +255,7 @@ abstract class TCustomView extends TCustomControl
             TRegistry::setCode($this->getUID(), $code);
         }
 
-        //TRegistry::push($this->getUID(), 'code', $code);
-        //        $this->redis->mset($this->preHtmlName, $this->declarations . $this->viewHtml);
+        // $this->redis->mset($this->preHtmlName, $this->declarations . $this->viewHtml);
 
         self::register($this);
 
