@@ -37,7 +37,7 @@ class TPartialControl extends TCustomCachedControl
         $this->className = $this->getType();
         $this->setViewName($this->className);
         $this->setNames();
-        
+        $this->view = null;
         $this->getCacheFileName();
 
         list($file, $type, $code) = TAutoloader::includeModelByName($this->viewName);
