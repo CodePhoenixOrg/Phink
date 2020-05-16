@@ -265,7 +265,9 @@ class TXmlDocument extends TObject
             $firstName = $this->elementName($s, $cursor);
 
             $arr = explode(':', $firstName);
-
+            if(!isset($arr[1])) {
+                $arr[1] = '';
+            }
             // self::getLogger()->debug('XML_MATCHALL::FIRSTNAME::' . $firstName);
             // self::getLogger()->debug('ARR::1::EXISTS::' . (isset($arr[1]) ? 'true' : 'false'));
 
