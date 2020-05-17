@@ -337,7 +337,10 @@ class TAutoloader extends TStaticObject
         $cacheCssFilename = TCache::cacheCssFilenameFromView($viewName, $ctrl->isInternalComponent());
 
         if (file_exists(SRC_ROOT . $cacheFilename)) {
+
             if (file_exists(DOCUMENT_ROOT . $cacheJsFilename)) {
+                $ctrl->appendJsToBody($viewName);
+
                 self::getLogger()->debug('INCLUDE CACHED JS CONTROL: ' . DOCUMENT_ROOT . $cacheJsFilename, __FILE__, __LINE__);
                 $ctrl->getResponse()->addScript($cacheJsFilename);
             }
@@ -408,7 +411,7 @@ class TAutoloader extends TStaticObject
         return [$namespace, $className, $classText];
     }
 
-    private static function grabKeywordName(string $keyword, string $classText, $delimiter): string
+    public static function grabKeywordName(string $keyword, string $classText, $delimiter): string
     {
         $result = '';
 

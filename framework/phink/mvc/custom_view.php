@@ -136,7 +136,7 @@ abstract class TCustomView extends TCustomControl
 
     function parse(): bool
     {
-        self::$logger->debug($this->viewName . ' IS REGISTERED : ' . (TRegistry::exists('code', $this->controllerFileName) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
+        // self::$logger->debug($this->viewName . ' IS REGISTERED : ' . (TRegistry::exists('code', $this->controllerFileName) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
 
         // $this->viewHtml = $this->redis->mget($templateName);
         // $this->viewHtml = $this->viewHtml[0];
@@ -191,19 +191,22 @@ abstract class TCustomView extends TCustomControl
                 $this->appendToBody($script, $this->viewHtml);
             }
         }
-        // if (!$this->isMotherView()) {
+
+        // if (!$this->isMotherView() && !$this->getRequest()->isAJAX()) {
         //     $view = $this->getMotherView();
-        //     $filename = $view->getCacheFileName();
+        //     $uid = $view->getUID();
 
-        //     $html = file_get_contents($filename);
-        //     if ($head !== null) {
-        //         $this->appendToHead($head, $html);
-        //     }
-        //     if ($script !== null) {
-        //         $this->appendToBody($script, $html);
-        //     }
+        //     if (TRegistry::htmlExists($uid)) {
+        //         $html = TRegistry::getHtml($uid);
 
-        //     file_put_contents($filename, $html);
+        //         if ($head !== null) {
+        //             $this->appendToHead($head, $html);
+        //         }
+        //         if ($script !== null) {
+        //             $this->appendToBody($script, $html);
+        //         }
+        //         TRegistry::setHtml($view->getUID(), $html);
+        //     }
         // }
 
         // $this->redis->mset($templateName, $this->viewHtml);
@@ -226,6 +229,8 @@ abstract class TCustomView extends TCustomControl
             $this->viewHtml = $this->writeHTML($doc, $this);
         }
 
+        TRegistry::setHtml($this->getUID(), $this->viewHtml);
+
         if (!TRegistry::exists('code', $this->getUID())) {
             self::$logger->debug('NO NEED TO WRITE CODE: ' . $this->controllerFileName, __FILE__, __LINE__);
             return false;
@@ -235,18 +240,22 @@ abstract class TCustomView extends TCustomControl
         // We store the parsed code in a file so that we know it's already parsed on next request.
         $code = str_replace(CREATIONS_PLACEHOLDER, $this->creations, $code);
         $code = str_replace(ADDITIONS_PLACEHOLDER, $this->additions, $code);
-        $code = str_replace(HTML_PLACEHOLDER, $this->viewHtml, $code);
+        if (!$this->isMotherView() || $this->getRequest()->isAJAX()) {
+            $code = str_replace(HTML_PLACEHOLDER, $this->viewHtml, $code);
+        }
         $code = str_replace(DEFAULT_CONTROLLER, DEFAULT_CONTROL, $code);
         $code = str_replace(DEFAULT_PARTIAL_CONTROLLER, DEFAULT_PARTIAL_CONTROL, $code);
         $code = str_replace(CONTROLLER, CONTROL, $code);
         $code = str_replace(PARTIAL_CONTROLLER, PARTIAL_CONTROL, $code);
         if (!empty(trim($code))) {
             self::$logger->debug('SOMETHING TO CACHE : ' . $this->getCacheFileName(), __FILE__, __LINE__);
-            file_put_contents($this->getCacheFileName(), $code);
+            if (!$this->isMotherView()) {
+                file_put_contents($this->getCacheFileName(), $code);
+            }
+            TRegistry::setCode($this->getUID(), $code);
         }
 
-        //TRegistry::push($this->getUID(), 'code', $code);
-        //        $this->redis->mset($this->preHtmlName, $this->declarations . $this->viewHtml);
+        // $this->redis->mset($this->preHtmlName, $this->declarations . $this->viewHtml);
 
         self::register($this);
 
