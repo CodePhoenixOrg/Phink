@@ -167,11 +167,7 @@ abstract class TCustomCachedControl extends TCustomControl
             $this->declareObjects();
             $this->afterBinding();
 
-            $twig = $this->view->getTwigHtml();
-
-            if (!empty($twig)) {
-                echo $twig;
-            } else {
+            if ($this->view->isReedEngine()) {
                 $uid = $this->getView()->getUID();
                 if (TRegistry::exists('html', $uid)) {
                     ob_start();
@@ -181,7 +177,11 @@ abstract class TCustomCachedControl extends TCustomControl
                 } else {
                     $this->displayHtml();
                 }
+            } elseif ($this->view->isTwigEngine()) {
+                $html = $this->view->getTwigHtml();
+                echo $html;
             }
+
             //TWebObject::register($this);
 
             if ($this->getParent()->isMotherView()) {

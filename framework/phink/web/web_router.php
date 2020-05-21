@@ -106,7 +106,7 @@ class TWebRouter extends TRouter
         $view->parse();
         $uid = $view->getUID();
         $code = TRegistry::getCode($uid);
-        
+
         // file_put_contents($this->getCacheFileName(), $code);
 
         eval('?>' . $code);
@@ -119,14 +119,14 @@ class TWebRouter extends TRouter
 
         $html = TRegistry::getHtml($uid);
 
-        if(!$this->getRequest()->isAJAX()) {
-            echo $html;
+        if ($view->isReedEngine()) {
+            if (!$this->getRequest()->isAJAX()) {
+                echo $html;
+            }           
+            // cache the file
+            $code = str_replace(HTML_PLACEHOLDER, $html, $code);
+            file_put_contents($this->getCacheFileName(), $code);
         }
-
-        // cache the file
-        $code = str_replace(HTML_PLACEHOLDER, $html, $code);
-        file_put_contents($this->getCacheFileName(), $code);
-
         return false;
     }
 
