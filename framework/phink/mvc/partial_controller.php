@@ -60,16 +60,6 @@ class TPartialController extends TCustomController
         $this->unload();
     }
 
-    public function getHtml(): string
-    {
-        ob_start();
-        $this->render();
-        $html = ob_get_clean();
-        
-        return $html;
-        
-    }
-
     public function __destruct()
     {
         unset($this->model);

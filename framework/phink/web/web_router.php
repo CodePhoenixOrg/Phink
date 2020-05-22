@@ -119,13 +119,14 @@ class TWebRouter extends TRouter
         $controller->perform();
 
         $html = TRegistry::getHtml($uid);
+        $php = TRegistry::read('php', $uid);
 
         if ($view->isReedEngine()) {
             if (!$this->getRequest()->isAJAX()) {
                 echo $html;
             }
             // cache the file
-            $code = str_replace(HTML_PLACEHOLDER, $html, $code);
+            $code = str_replace(HTML_PLACEHOLDER, $php, $code);
             file_put_contents($this->getCacheFileName(), $code);
         }
         return false;

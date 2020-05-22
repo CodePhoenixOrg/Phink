@@ -170,10 +170,12 @@ abstract class TCustomCachedControl extends TCustomControl
             if ($this->view->isReedEngine()) {
                 $uid = $this->getView()->getUID();
                 if (TRegistry::exists('html', $uid)) {
+                    $php = TRegistry::getHtml($uid);
                     ob_start();
-                    eval('?>' . TRegistry::getHtml($uid));
+                    eval('?>' . $php); 
                     $html = ob_get_clean();
                     TRegistry::setHtml($uid, $html);
+                    TRegistry::write('php', $uid, $php);
                 } else {
                     $this->displayHtml();
                 }
