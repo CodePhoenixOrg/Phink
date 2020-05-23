@@ -64,29 +64,49 @@ class TConsoleApplication extends \Phink\Core\TCustomApplication
             $this->appDirectory = str_replace('phar://', '', $scriptDir);
         }
 
-        define('PHINK_VENDOR_SRC', 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR);
-        define('PHINK_VENDOR_LIB', PHINK_VENDOR_SRC . 'phink' . DIRECTORY_SEPARATOR);
-        define('PHINK_VENDOR_APPS', PHINK_VENDOR_SRC . 'apps' . DIRECTORY_SEPARATOR);
+        $vendor_dir = 'vendor' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'phink' . DIRECTORY_SEPARATOR . 'framework' . DIRECTORY_SEPARATOR;
+        $portable_dir = 'framework' . DIRECTORY_SEPARATOR;
+        $lib = 'phink' . DIRECTORY_SEPARATOR . 'phink_library.php';
+
+        $framework_dir = $vendor_dir;
 
         define('APP_NAME', $this->appName);
 
-        if (APP_IS_PHAR) {
-            define('SCRIPT_ROOT', '.' . $scriptDir);
-            define('SITE_ROOT', SCRIPT_ROOT);
-            define('PHINK_ROOT', \Phar::running());
-        }
+        $script_root = '.' . $scriptDir;
+        $site_root = $script_root;
+        $phink_root = \Phar::running();
 
         if (!APP_IS_PHAR) {
-            define('SCRIPT_ROOT', $scriptDir);
+            $script_root = $scriptDir;
 
             if (APP_NAME == 'egg') {
-                define('SITE_ROOT', $scriptDir);
-                define('PHINK_ROOT', @realpath(SITE_ROOT . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'phink') . DIRECTORY_SEPARATOR);
+                $site_root = $scriptDir;
+                if (file_exists($site_root . $portable_dir . $lib)) {
+                    $framework_dir = $portable_dir;
+                }
+                $phink_vendor_lib = $framework_dir . 'phink' . DIRECTORY_SEPARATOR;
+                $phink_vendor_apps = $framework_dir . 'apps' . DIRECTORY_SEPARATOR;
+
+                $phink_root = @realpath($site_root . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'phink') . DIRECTORY_SEPARATOR;
             } else {
-                define('SITE_ROOT', $siteDir);
-                define('PHINK_ROOT', SITE_ROOT . PHINK_VENDOR_LIB);
+                $site_root =  $siteDir;
+                if (file_exists($site_root . $portable_dir . $lib)) {
+                    $framework_dir = $portable_dir;
+                }
+                $phink_vendor_lib = $framework_dir . 'phink' . DIRECTORY_SEPARATOR;
+                $phink_vendor_apps = $framework_dir . 'apps' . DIRECTORY_SEPARATOR;
+
+                $phink_root = $site_root . $phink_vendor_lib;
             }
         }
+
+        define('PHINK_VENDOR_SRC', $framework_dir);
+        define('PHINK_VENDOR_LIB', $phink_vendor_lib);
+        define('PHINK_VENDOR_APPS', $phink_vendor_apps);
+
+        define('SCRIPT_ROOT', $script_root);
+        define('SITE_ROOT', $site_root);
+        define('PHINK_ROOT', $phink_root);
 
         define('PHINK_APPS_ROOT', SITE_ROOT . PHINK_VENDOR_APPS);
         define('SRC_ROOT', SITE_ROOT . 'src' . DIRECTORY_SEPARATOR);
