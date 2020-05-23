@@ -172,7 +172,6 @@ abstract class TCustomCachedControl extends TCustomControl
                 if (TRegistry::exists('html', $uid)) {
                     $php = TRegistry::getHtml($uid);
                     eval('?>' . $php); 
-                    // TRegistry::write('php', $uid, $php);
                 } else {
                     $this->displayHtml();
                 }
