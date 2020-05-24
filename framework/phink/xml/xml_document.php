@@ -261,19 +261,22 @@ class TXmlDocument extends TObject
         //$this->_depths[$depth] = 1;
 
         while ($openElementPos > -1 && $closeElementPos > $openElementPos) {
+            $siblingId = $i - 1;
             $s = trim(substr($text, $openElementPos, $closeElementPos - $openElementPos + 1));
             $firstName = $this->elementName($s, $cursor);
 
             $arr = explode(':', $firstName);
-            if(!isset($arr[1])) {
+            if (!isset($arr[1])) {
                 $arr[1] = '';
             }
-            // self::getLogger()->debug('XML_MATCHALL::FIRSTNAME::' . $firstName);
-            // self::getLogger()->debug('ARR::1::EXISTS::' . (isset($arr[1]) ? 'true' : 'false'));
 
             if ($arr[1] == 'eof') {
                 break;
             }
+            $terminator1 = $s[1];
+            $terminator2 = $s[strlen($s) - 2];
+            $hasCloser = $terminator1 != TERMINATOR && $terminator2 != TERMINATOR;
+            $isSibling = isset($this->_list[$siblingId]) && $this->_list[$siblingId]['hasCloser'];
 
             $this->_list[$i]['id'] = $i;
             $this->_list[$i]['method'] = $arr[1];
@@ -282,19 +285,13 @@ class TXmlDocument extends TObject
             $this->_list[$i]['startsAt'] = $openElementPos;
             $this->_list[$i]['endsAt'] = $closeElementPos;
             $this->_list[$i]['depth'] = $depth;
-            $this->_list[$i]['hasCloser'] = false;
+            $this->_list[$i]['hasCloser'] = $hasCloser;
             $this->_list[$i]['childName'] = '';
             if (!isset($parentId[$depth])) {
+                // $parentId[$depth] = ($siblingId > 0) ? $siblingId : -1;
                 $parentId[$depth] = $i - 1;
             }
             $this->_list[$i]['parentId'] = $parentId[$depth];
-
-            $p = strpos($s, STR_SPACE);
-            //            if ($p == strlen($firstName) + 1 && $closeElementPos > $p) {
-            //                $attributes = trim(substr($s, $p + 1, strlen($s) - $p - 3));
-            //                $this->_list[$i]['properties'] = TStringUtils::parameterStringToArray($attributes);
-            //            }
-
             $this->_list[$i]['properties'] = $properties;
 
             $cursor = $closeElementPos + 1;
@@ -302,18 +299,24 @@ class TXmlDocument extends TObject
 
             if (TERMINATOR . $firstName != $secondName) {
                 if ($s[1] == TERMINATOR) {
+                    $this->_list[$i]['isSibling'] = $isSibling;
+
                     $depth--;
                     $this->_list[$i]['depth'] = $depth;
-                    $pId = $this->_list[$i]['parentId'];
+                    $pId = !$isSibling ? $this->_list[$i]['parentId'] : $siblingId;
                     $this->_list[$pId]['hasCloser'] = true;
-                    if ($this->_list[$pId]['depth'] > 0 && (empty($this->_list[$pId]['properties']['content']))) {
+                    // $this->_list[$pId]['depth'] > 0 &&
+                    if ((empty($this->_list[$pId]['properties']['content']))) {
                         $contents = substr($text, $this->_list[$pId]['endsAt'] + 1, $this->_list[$i]['startsAt'] - $this->_list[$pId]['endsAt'] - 1);
                         $this->_list[$pId]['properties']['content'] = '!#base64#' . base64_encode($contents); // uniqid();
                     }
 
                     $this->_list[$pId]['closer'] = $this->_list[$i];
                     unset($this->_list[$i]);
-                } elseif ($s[1] == QUEST_MARK) { } elseif ($s[strlen($s) - 2] == TERMINATOR) { } elseif ($s[1] == SKIP_MARK) { } else {
+                } elseif ($s[1] == QUEST_MARK) {
+                } elseif ($s[strlen($s) - 2] == TERMINATOR) {
+                } elseif ($s[1] == SKIP_MARK) {
+                } else {
                     $sa = explode(':', $secondName);
                     if (isset($sa[1])) {
                         $this->_list[$i]['childName'] = $sa[1];
