@@ -107,7 +107,7 @@ class TXmlDocument extends TObject
         return $this->_matchesByDepth;
     }
 
-    public function elementName(string $s, int $offset): string
+    public function elementName(string $s, int $offset, string $tag = TAG_PATTERN_ANY): ?array
     {
         if (!isset($offset)) {
             $offset = 0;
@@ -121,9 +121,9 @@ class TXmlDocument extends TObject
 
         if ($offset > 0 && $offset < strlen($s)) {
             //$openElementPos = $offset;
-            $openElementPos = strpos($s, OPEN_TAG, $offset);
+            $openElementPos = strpos($s, OPEN_TAG . $tag, $offset);
         } else {
-            $openElementPos = strpos($s, OPEN_TAG);
+            $openElementPos = strpos($s, OPEN_TAG . $tag);
         }
 
         if ($openElementPos == -1) {
@@ -143,7 +143,7 @@ class TXmlDocument extends TObject
             $result = substr($s, $openElementPos + 1, $closeElementPos - 1);
         }
 
-        return $result;
+        return [$result];
     }
 
     public function getMatch(): ?TXmlMatch
@@ -255,15 +255,16 @@ class TXmlDocument extends TObject
 
         list($openElementPos, $closeElementPos, $properties) = $this->_parse($tag, $text, $cursor);
 
-        $parentId[0] = -1;
-
+        $parentId = [];
         $depth = 0;
+        $parentId[$depth] = -1;
+
         //$this->_depths[$depth] = 1;
 
         while ($openElementPos > -1 && $closeElementPos > $openElementPos) {
             $siblingId = $i - 1;
             $s = trim(substr($text, $openElementPos, $closeElementPos - $openElementPos + 1));
-            $firstName = $this->elementName($s, $cursor);
+            list($firstName) = $this->elementName($s, $cursor);
 
             $arr = explode(':', $firstName);
             if (!isset($arr[1])) {
@@ -287,30 +288,44 @@ class TXmlDocument extends TObject
             $this->_list[$i]['depth'] = $depth;
             $this->_list[$i]['hasCloser'] = $hasCloser;
             $this->_list[$i]['childName'] = '';
-            if (!isset($parentId[$depth])) {
-                // $parentId[$depth] = ($siblingId > 0) ? $siblingId : -1;
-                $parentId[$depth] = $i - 1;
+            if ($isSibling && $depth > -1) {
+                $parentId[$depth - 1] = $siblingId;
             }
-            $this->_list[$i]['parentId'] = $parentId[$depth];
+
+            $this->_list[$i]['parentId'] = (isset( $parentId[$depth - 1])) ?  $parentId[$depth - 1] : -1;
+            $this->_list[$i]['isSibling'] = $isSibling;
+
+            if (isset($this->_list[$siblingId]) && $this->_list[$siblingId]['isSibling']) {
+                $parentId[$depth - 1] = $i;
+            }
             $this->_list[$i]['properties'] = $properties;
 
             $cursor = $closeElementPos + 1;
-            $secondName = $this->elementName($text, $cursor);
+            list($secondName) = $this->elementName($text, $cursor);
 
             if (TERMINATOR . $firstName != $secondName) {
                 if ($s[1] == TERMINATOR) {
-                    $this->_list[$i]['isSibling'] = $isSibling;
+                    $pId = !$isSibling ? $parentId[$depth] : $siblingId;
 
-                    $depth--;
+                    if ($this->_list[$pId]['isSibling']) {
+                        $depth--;
+                    }
+                    if ($this->_list[$i]['isSibling']) {
+                        $depth--;
+                    }
                     $this->_list[$i]['depth'] = $depth;
-                    $pId = !$isSibling ? $this->_list[$i]['parentId'] : $siblingId;
                     $this->_list[$pId]['hasCloser'] = true;
-                    // $this->_list[$pId]['depth'] > 0 &&
                     if ((empty($this->_list[$pId]['properties']['content']))) {
                         $contents = substr($text, $this->_list[$pId]['endsAt'] + 1, $this->_list[$i]['startsAt'] - $this->_list[$pId]['endsAt'] - 1);
                         $this->_list[$pId]['properties']['content'] = '!#base64#' . base64_encode($contents); // uniqid();
                     }
 
+                    $this->_list[$i]['depth'] = $this->_list[$i]['depth'];
+
+                    if ($this->_list[$pId]['isSibling']) {
+                        $this->_list[$i]['depth'] = $this->_list[$pId]['depth'];
+                    }
+                    $this->_list[$i]['parentId'] = $this->_list[$pId]['id'];
                     $this->_list[$pId]['closer'] = $this->_list[$i];
                     unset($this->_list[$i]);
                 } elseif ($s[1] == QUEST_MARK) {
@@ -322,9 +337,13 @@ class TXmlDocument extends TObject
                         $this->_list[$i]['childName'] = $sa[1];
                     }
 
-                    $depth++;
+                    if ($hasCloser) {
+                        $depth++;
+                    }
                     $this->_depths[$depth] = 1;
-                    unset($parentId[$depth]);
+                    if (isset($parentId[$depth])) {
+                        unset($parentId[$depth]);
+                    }
                 }
             }
             list($openElementPos, $closeElementPos, $properties) = $this->_parse($tag, $text, $cursor);
