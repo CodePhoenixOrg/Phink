@@ -143,7 +143,7 @@ class TXmlDocument extends TObject
             $result = substr($s, $openElementPos + 1, $closeElementPos - 1);
         }
 
-        return $result;
+        return [$result];
     }
 
     public function getMatch(): ?TXmlMatch
@@ -264,7 +264,7 @@ class TXmlDocument extends TObject
         while ($openElementPos > -1 && $closeElementPos > $openElementPos) {
             $siblingId = $i - 1;
             $s = trim(substr($text, $openElementPos, $closeElementPos - $openElementPos + 1));
-            $firstName = $this->elementName($s, $cursor);
+            list($firstName) = $this->elementName($s, $cursor);
 
             $arr = explode(':', $firstName);
             if (!isset($arr[1])) {
@@ -288,9 +288,15 @@ class TXmlDocument extends TObject
             $this->_list[$i]['depth'] = $depth;
             $this->_list[$i]['hasCloser'] = $hasCloser;
             $this->_list[$i]['childName'] = '';
-            if (!isset($parentId[$depth])) {
-                // $parentId[$depth] = ($siblingId > 0) ? $siblingId : -1;
-                $parentId[$depth] = $i - 1;
+            if ($isSibling && $depth > -1) {
+                $parentId[$depth - 1] = $siblingId;
+            }
+
+            $this->_list[$i]['parentId'] = (isset( $parentId[$depth - 1])) ?  $parentId[$depth - 1] : -1;
+            $this->_list[$i]['isSibling'] = $isSibling;
+
+            if (isset($this->_list[$siblingId]) && $this->_list[$siblingId]['isSibling']) {
+                $parentId[$depth - 1] = $i;
             }
             $this->_list[$i]['parentId'] = $parentId[$depth];
             /** begin */
@@ -308,11 +314,11 @@ class TXmlDocument extends TObject
             $this->_list[$i]['properties'] = $properties;
 
             $cursor = $closeElementPos + 1;
-            $secondName = $this->elementName($text, $cursor);
+            list($secondName) = $this->elementName($text, $cursor);
 
             if (TERMINATOR . $firstName != $secondName) {
                 if ($s[1] == TERMINATOR) {
-                    $this->_list[$i]['isSibling'] = $isSibling;
+                    $pId = !$isSibling ? $parentId[$depth] : $siblingId;
 
                     /** begin */
                     // $pId = !$isSibling ? $this->_list[$i]['parentId'] : $siblingId;
