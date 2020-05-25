@@ -53,7 +53,7 @@ class TTable extends TCustomPlugin
         $thead .= str_replace('%s', $typeId0, $elements[3]->getOpening()) . "\n";
         for ($j = 0; $j < $this->columns; $j++) {
             $colName = isset($head[$j]) ? $head[$j] : '';
-            if(empty($colName)) {
+            if (empty($colName)) {
                 continue;
             }
             if ($this->templates[0]['name'] != '*') {
@@ -80,10 +80,17 @@ class TTable extends TCustomPlugin
                 $typeId0 = 'id="' . $this->getId() . $elements[3]->getType() . ($i) . '"';
                 $tbody .= str_replace('%s', $typeId0, $elements[3]->getOpening()) . "\n";
 
-                for ($j = 0; $j < $this->columns; $j++) {
+                $j = 0;
+                while ($j < $this->columns) {
                     $k = $i * $this->columns + $j;
                     $colIndex = 0;
-                    $dataIndex = array_keys($head, $head[$j])[0];
+                    $search = array_keys($head, $head[$j]);
+                    if (!isset($search[0])) {
+                        $j++;
+                        continue;
+                    }
+                    $dataIndex =  $search[0];
+
                     if ($this->templates[0]['name'] != '*') {
                         $dataIndex = array_keys($head, $this->templates[$j]['name'])[0];
                         $colIndex = $dataIndex;
@@ -99,6 +106,7 @@ class TTable extends TCustomPlugin
                         $typeId1 = 'id="' . $this->getId() . $elements[5]->getType() . $k . '"';
                         $tbody .= str_replace('%s', $typeId1, $elements[5]->getOpening()) . $html . $elements[5]->getClosing() . "\n";
                     }
+                    $j++;
                 }
                 $tbody .= $elements[3]->getClosing() . "\n";
             }

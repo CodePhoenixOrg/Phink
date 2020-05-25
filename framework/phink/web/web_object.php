@@ -55,6 +55,7 @@ trait TWebObject
     protected $actionName = '';
     protected $className = '';
     protected $dirName = '';
+    protected $bootDirName = '';
     protected $namespace = '';
     protected $code = '';
     protected $parameters = [];

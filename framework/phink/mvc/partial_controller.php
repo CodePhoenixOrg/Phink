@@ -60,16 +60,6 @@ class TPartialController extends TCustomController
         $this->unload();
     }
 
-    public function getHtml(): string
-    {
-        ob_start();
-        $this->render();
-        $html = ob_get_clean();
-        
-        return $html;
-        
-    }
-
     public function __destruct()
     {
         unset($this->model);
@@ -100,10 +90,10 @@ JSCRIPT;
 
             if ($this->getMotherView() !== null) {
                 $view = $this->getMotherView();
-                $filename = $view->getCacheFileName();
+                $uid = $view->getUID();
+                $html = TRegistry::getHtml($uid);
                 $jsfilename = DOCUMENT_ROOT . $view->getJsCacheFileName();
 
-                $html = file_get_contents($filename);
 
                 if ($jscall !== null) {
                     $view->appendToBody($jscall, $html);
@@ -111,7 +101,8 @@ JSCRIPT;
                     file_put_contents($lock, date('Y-m-d h:i:s'));
                 }
 
-                file_put_contents($filename, $html);
+                TRegistry::setHtml($uid, $html);
+
             }
         }
         if ($this->getRequest()->isAJAX()) {

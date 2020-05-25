@@ -46,7 +46,7 @@ class TView extends TCustomView
 
         // if ($this->getType() == 'TView' && $this->motherView === null) {
             $this->motherView = $this;
-            $this->isMotherView = true;
+            $this->viewIsMother = true;
             $this->motherUID = $this->getUID();
         // }
 

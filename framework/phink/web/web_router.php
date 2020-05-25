@@ -47,6 +47,7 @@ class TWebRouter extends TRouter
         $info = (object) \pathinfo($this->path);
         $this->viewName = $info->filename;
         $this->dirName = $info->dirname;
+        $this->bootDirName = $info->dirname;
 
         if ($this->componentIsInternal) {
             $this->dirName = dirname($this->dirName, 2);
@@ -75,20 +76,20 @@ class TWebRouter extends TRouter
     public function dispatch(): bool
     {
 
+        $dir =  dirname(SRC_ROOT . $this->bootDirName, 1) . DIRECTORY_SEPARATOR;
+
         if ($this->componentIsInternal) {
-            $dir = SITE_ROOT . $this->dirName . DIRECTORY_SEPARATOR;
+            $dir =  dirname(SITE_ROOT . $this->bootDirName, 1) . DIRECTORY_SEPARATOR;
+        }
 
-            self::getLogger()->debug('BOOTSTRAP PATH::' . $dir . 'bootstrap' . CLASS_EXTENSION);
+        if (file_exists($dir . 'bootstrap' . CLASS_EXTENSION)) {
+            list($namespace, $className, $classText) = TAutoloader::getClassDefinition($dir . 'bootstrap' . CLASS_EXTENSION);
+            include $dir . 'bootstrap' . CLASS_EXTENSION;
 
-            if (file_exists($dir . 'bootstrap' . CLASS_EXTENSION)) {
-                list($namespace, $className, $classText) = TAutoloader::getClassDefinition($dir . 'bootstrap' . CLASS_EXTENSION);
-                include $dir . 'bootstrap' . CLASS_EXTENSION;
+            $bootstrapClass = $namespace . '\\'  . $className;
 
-                $bootstrapClass = $namespace . '\\'  . $className;
-
-                $bootstrap = new $bootstrapClass($dir);
-                $bootstrap->start();
-            }
+            $bootstrap = new $bootstrapClass($dir);
+            $bootstrap->start();
         }
 
         $view = new TView($this);
@@ -106,7 +107,7 @@ class TWebRouter extends TRouter
         $view->parse();
         $uid = $view->getUID();
         $code = TRegistry::getCode($uid);
-        
+
         // file_put_contents($this->getCacheFileName(), $code);
 
         eval('?>' . $code);
@@ -117,16 +118,12 @@ class TWebRouter extends TRouter
 
         $controller->perform();
 
-        $html = TRegistry::getHtml($uid);
-
-        if(!$this->getRequest()->isAJAX()) {
-            echo $html;
+        if ($view->isReedEngine()) {
+            // cache the file
+            $php = TRegistry::getHtml($uid);
+            $code = str_replace(HTML_PLACEHOLDER, $php, $code);
+            file_put_contents($this->getCacheFileName(), $code);
         }
-
-        // cache the file
-        $code = str_replace(HTML_PLACEHOLDER, $html, $code);
-        file_put_contents($this->getCacheFileName(), $code);
-
         return false;
     }
 

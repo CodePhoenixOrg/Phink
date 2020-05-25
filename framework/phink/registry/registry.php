@@ -98,7 +98,11 @@ class TRegistry extends TStaticObject
 
     public static function importClasses(string $dirName): void
     {
-        $localRegistryFilename = SITE_ROOT . $dirName . '/registry.json';
+        $localRegistryFilename = SITE_ROOT . $dirName . '/app/registry.json';
+
+        if (!file_exists($localRegistryFilename)) {
+            $localRegistryFilename = SITE_ROOT . $dirName . '/registry.json';
+        }
 
         if (!file_exists($localRegistryFilename)) {
             return;

@@ -45,12 +45,9 @@ abstract class TCustomView extends TCustomControl
     protected $controllerIsIncluded = false;
     protected $pattern = '';
     protected $depth = 0;
-    protected $isMotherView = false;
-
-    function isMotherView(): bool
-    {
-        return $this->isMotherView;
-    }
+    protected $viewIsMother = false;
+    protected $engineIsReed = true;
+    protected $engineIsTwig = false;
 
     function __construct(IWebObject $parent)
     {
@@ -60,10 +57,25 @@ abstract class TCustomView extends TCustomControl
 
         //$this->redis = new Client($this->context->getRedis());
     }
+    
+    function isMotherView(): bool
+    {
+        return $this->viewIsMother;
+    }
 
     function isDirty(): bool
     {
         return $this->_dirty;
+    }
+
+    function isReedEngine(): bool
+    {
+        return $this->engineIsReed;
+    }
+
+    function isTwigEngine(): bool
+    {
+        return $this->engineIsTwig;
     }
 
     function getDepth(): int
@@ -120,6 +132,9 @@ abstract class TCustomView extends TCustomControl
     {
         $html = $this->renderTwigByName($viewName, $dictionary);
         $this->twigHtml = $html;
+
+        $this->engineIsTwig = true;
+        $this->engineIsReed = false;
     }
 
     function loadView($filename): string
@@ -255,6 +270,7 @@ abstract class TCustomView extends TCustomControl
             TRegistry::setCode($this->getUID(), $code);
         }
 
+        $this->engineIsReed = true;
         // $this->redis->mset($this->preHtmlName, $this->declarations . $this->viewHtml);
 
         self::register($this);

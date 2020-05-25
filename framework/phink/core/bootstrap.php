@@ -35,7 +35,7 @@ abstract class TBootstrap extends TStaticObject
 
     public function __construct(string $path)
     {
-        $this->_path = $path;
+        $this->_path = dirname($path, 1) . DIRECTORY_SEPARATOR;
     }
 
     public function start(): void

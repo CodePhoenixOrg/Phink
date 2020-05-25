@@ -166,9 +166,11 @@ abstract class TCustomApplication extends TObject
             '',
             'Display the module section of phpinfo() output.',
             function (callable $callback = null) {
-                ob_start();
-                phpinfo(INFO_MODULES);
-                $data = ob_get_clean();
+                $info = new TPhpInfo();
+                $data = $info->getModulesSection();
+                // ob_start();
+                // phpinfo(INFO_MODULES);
+                // $data = ob_get_clean();
                 if ($callback !== null) {
                     \call_user_func($callback, $data);
                 }

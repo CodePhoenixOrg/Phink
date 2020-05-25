@@ -89,7 +89,10 @@ abstract class TCustomControl extends TObject implements IHttpTransport, IWebObj
 
     public function getHtml(): string
     {
-        $html = '';
+        ob_start();
+        $this->render();
+        $html = ob_get_clean();
+        
         return $html;
     }
 

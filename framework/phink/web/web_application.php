@@ -53,6 +53,7 @@ class TWebApplication extends TCustomApplication implements IHttpTransport, IWeb
         parent::ignite();
 
         TCache::createRuntimeDirs();
+        TCache::createCacheDir();
 
         $this->authentication = new TAuthentication();
         $this->request = new TRequest();
