@@ -322,7 +322,7 @@ JSCRIPT;
         }
     }
 
-    public function getTwigEnvironment()
+    public function getTwigEnvironment() // returns \Twig\Environment
     {
         return $this->twigEnvironment;
     }

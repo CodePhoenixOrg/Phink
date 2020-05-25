@@ -153,9 +153,10 @@ abstract class TCustomView extends TCustomControl
     {
         // self::$logger->debug($this->viewName . ' IS REGISTERED : ' . (TRegistry::exists('code', $this->controllerFileName) ? 'TRUE' : 'FALSE'), __FILE__, __LINE__);
 
-        // $this->viewHtml = $this->redis->mget($templateName);
-        // $this->viewHtml = $this->viewHtml[0];
-
+        /** LATER FOR REDIS
+         * $this->viewHtml = $this->redis->mget($templateName);
+         * $this->viewHtml = $this->viewHtml[0];
+        */
         while (empty($this->getViewHtml())) {
             if (file_exists(SRC_ROOT . $this->viewFileName) && !empty($this->viewFileName)) {
                 self::$logger->debug('PARSE SRC ROOT FILE : ' . $this->viewFileName, __FILE__, __LINE__);
@@ -171,8 +172,6 @@ abstract class TCustomView extends TCustomControl
             }
 
             $viewPath = SITE_ROOT . $this->getDirName() . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $this->viewName . PREHTML_EXTENSION;
-            // if (file_exists(SITE_ROOT . $this->getPath()) && !empty($this->getPath() && empty($this->viewHtml))) {
-            // if (file_exists(SITE_ROOT . $this->getPath()) && !empty($this->getPath())) {
             if (file_exists($viewPath)) {
                 $path = $this->getPath();
                 if ($path[0] == '@') {
@@ -188,11 +187,7 @@ abstract class TCustomView extends TCustomControl
             }
             break;
         }
-        // else {
-        //     self::$logger->debug('PARSE PHINK PLUGIN : ' . $this->getPath(), __FILE__, __LINE__);
 
-        //     $this->viewHtml = file_get_contents(SITE_ROOT . $this->viewFileName, FILE_USE_INCLUDE_PATH);
-        // }
         $head = $this->getStyleSheetTag();
         $script = $this->getScriptTag();
 
@@ -207,34 +202,14 @@ abstract class TCustomView extends TCustomControl
             }
         }
 
-        // if (!$this->isMotherView() && !$this->getRequest()->isAJAX()) {
-        //     $view = $this->getMotherView();
-        //     $uid = $view->getUID();
-
-        //     if (TRegistry::htmlExists($uid)) {
-        //         $html = TRegistry::getHtml($uid);
-
-        //         if ($head !== null) {
-        //             $this->appendToHead($head, $html);
-        //         }
-        //         if ($script !== null) {
-        //             $this->appendToBody($script, $html);
-        //         }
-        //         TRegistry::setHtml($view->getUID(), $html);
-        //     }
-        // }
-
-        // $this->redis->mset($templateName, $this->viewHtml);
-        // self::$logger->debug('HTML VIEW : [' . substr($this->viewHtml, 0, (strlen($this->viewHtml) > 25) ? 25 : strlen($this->viewHtml)) . '...]');
-        // self::$logger->debug('HTML VIEW : <pre>[' . PHP_EOL . htmlentities($this->viewHtml) . PHP_EOL . '...]</pre>');
         $doc = new TXmlDocument($this->viewHtml);
         $doc->matchAll();
 
-        // $matches = $doc->getList();
+        $matches = $doc->getList();
 
-        // foreach($matches as $match) {
-        //     self::$logger->debug(print_r($match, true) . PHP_EOL);
-        // }
+        foreach($matches as $match) {
+            self::$logger->debug(print_r($match, true) . PHP_EOL);
+        }
 
         if ($doc->getCount() > 0) {
             $declarations = $this->writeDeclarations($doc, $this);
@@ -247,7 +222,7 @@ abstract class TCustomView extends TCustomControl
         TRegistry::setHtml($this->getUID(), $this->viewHtml);
 
         if (!TRegistry::exists('code', $this->getUID())) {
-            self::$logger->debug('NO NEED TO WRITE CODE: ' . $this->controllerFileName, __FILE__, __LINE__);
+            // self::$logger->debug('NO NEED TO WRITE CODE: ' . $this->controllerFileName, __FILE__, __LINE__);
             return false;
         }
 
@@ -271,8 +246,10 @@ abstract class TCustomView extends TCustomControl
         }
 
         $this->engineIsReed = true;
-        // $this->redis->mset($this->preHtmlName, $this->declarations . $this->viewHtml);
 
+        /** LATER FOR REDIS
+         * $this->redis->mset($this->preHtmlName, $this->declarations . $this->viewHtml);
+         */
         self::register($this);
 
         // We generate the code, but we don't flag it as parsed because it was not "executed"
