@@ -33,7 +33,9 @@ use Phink\MVC\TPartialView;
  */
 trait TCodeGenerator
 {
-    //put your code here
+    private $_reservedDeclarationsKeywords = ['page', 'echo', 'exec', 'type', 'block', 'extends'];
+    private $_reservedHtmlKeywords = ['echo', 'exec', 'render', 'block'];
+
     public function writeDeclarations(TXmlDocument $doc, TCustomView $parentView)
     {
         $result = '';
@@ -57,10 +59,9 @@ trait TCodeGenerator
 
         $isFirst = true;
         foreach ($docList as $control) {
-            if (in_array($control['name'], ['page', 'echo', 'exec', 'type', 'block']) || $control['method'] == 'render') {
+            if (in_array($control['name'], $this->_reservedDeclarationsKeywords) || $control['method'] == 'render') {
                 continue;
             }
-
             $className = '';
             $nameSpace = '';
             $classPath = '';
@@ -269,7 +270,7 @@ trait TCodeGenerator
             $tag = $match->getMethod();
             $name = $match->getName();
 
-            if ($tag != 'echo' && $tag != 'exec' && $tag != 'render' && $tag != 'block') {
+            if (!in_array($tag, $this->_reservedHtmlKeywords)) {
                 continue;
             }
 
