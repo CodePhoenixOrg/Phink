@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../Reed"
+		},
+		{
+			"path": "../../javascript/PhinkJS"
+		}
+	],
+	"settings": {}
+}
