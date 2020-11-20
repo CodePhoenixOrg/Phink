@@ -6,7 +6,25 @@
 	                                     |___/
 
 ## What is Phink ?
-Phink Framework is a component oriented PHP framework. It allows you to build sites like ASP.Net webform does with its user controls and master pages all in benefiting of an MVC architecture. It integrates a client-side layer in shape of a JavaScript API that looks very much like the PHP classes. This coupled solution is aiming to easily build Single Page Applications. A simple JavaScript starter statement can launch the entire application. Also, Phink contains different levels of security (Injection safety, CORS, HSTS) and cache (dynamic, pseudo-dynamic, static), etc. 
+Phink Framework is a component oriented PHP framework. It allows you to build sites like ASP.Net webform does with its user controls and master pages all in benefiting of an MVC architecture. It integrates a client-side layer in shape of a JavaScript API that looks very much like the PHP classes. This coupled solution is aiming to easily build Ajax Applications. A simple JavaScript starter statement can launch the entire application.
+
+## Requirements
+PHP 7.4  
+Apache (no other server is supported right now)
+## Installation
+Phink is registered in this Packagist library so it's available via composer.
+
+The simplest method is to install it as a standalone application like this:
+
+	composer create-project phink/phink myproject "dev-master"
+
+## Usage
+Let's say myproject is a subdirectory of your local Apache server.
+
+In your browser, go to: 
+	https://localhost/myproject/src/web/setup/
+
+All necessary files will set up automatically and after a few seconds you be in front of the welcome page.
 
 ## Sample javascript bootstrap sample.js
 
@@ -52,5 +70,3 @@ Phink Framework is a component oriented PHP framework. It allows you to build si
 		        </script>
 		</body>
 	</html>
-
-
