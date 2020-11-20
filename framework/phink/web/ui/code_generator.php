@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2019 David Blanchard
+ * Copyright (C) 2020 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,9 @@ use Phink\Cache\TCache;
 use Phink\Registry\TRegistry;
 use Phink\Xml\TXmlDocument;
 use Phink\Xml\TXmlMatch;
+use Phink\TAutoloader;
 use Phink\MVC\TCustomView;
 use Phink\MVC\TPartialView;
-use \Phink\TAutoloader;
 
 /**
  * Description of code_generator
@@ -33,13 +33,16 @@ use \Phink\TAutoloader;
  */
 trait TCodeGenerator
 {
-    //put your code here
+    private $_reservedDeclarationsKeywords = ['page', 'echo', 'exec', 'type', 'block', 'extends'];
+    private $_reservedHtmlKeywords = ['echo', 'exec', 'render', 'block'];
+
     public function writeDeclarations(TXmlDocument $doc, TCustomView $parentView)
     {
         $result = '';
-        $matches = $doc->getMatchesByDepth();
+        $matches = $doc->getDepthsOfMatches();
         $docList = $doc->getList();
         $count = count($docList);
+        $uid = $parentView->getUID();
 
         $code = '';
         $uses = [];
@@ -51,20 +54,18 @@ trait TCodeGenerator
         $childName = [];
         $childrenIndex = [];
 
-        // $doc->getLogger()->debug('DOC LIST');
-        // $doc->getLogger()->debug($docList);
-        //        array_push($creations, []);
+        //self::getLogger()->debug('DOC LIST');
+        //self::getLogger()->debug($docList);
 
         $isFirst = true;
         foreach ($docList as $control) {
-            if (in_array($control['name'], ['page', 'echo', 'exec', 'type']) || $control['method'] == 'render') {
+            if (in_array($control['name'], $this->_reservedDeclarationsKeywords) || $control['method'] == 'render') {
                 continue;
             }
-
             $className = '';
             $nameSpace = '';
             $classPath = '';
-            $templatePath = '';
+            $ViewPath = '';
             $j = $control['id'];
 
             if (isset($control['properties'])) {
@@ -82,8 +83,6 @@ trait TCodeGenerator
                         }
                     }
                 }
-
-                // self::$logger->debug(print_r($control['properties'], true) . PHP_EOL);
 
                 $properties = $control['properties'];
                 $controlId = $properties['id'];
@@ -202,6 +201,10 @@ trait TCodeGenerator
                     array_push($additions[$j], '} ');
                 }
                 array_push($additions[$j], '$this->addChild(' . $thisControl . ');');
+                if ($canRender && $className !== 'this') {
+                    array_push($additions[$j], '$html = ' .  $thisControl . '->getHtml();');
+                    array_push($additions[$j], '\\Phink\\Registry\\TRegistry::push("' . $uid . '", "' . $controlId . '", $html);');
+                }
 
                 $creations[$j] = implode(PHP_EOL, $creations[$j]);
                 $additions[$j] = implode(PHP_EOL, $additions[$j]);
@@ -210,7 +213,7 @@ trait TCodeGenerator
 
 
             $method = $docList[$j]['method'];
-            if ((TRegistry::classInfo($method)  && TRegistry::classCanRender($method)) || !TRegistry::classInfo($method)) {
+            if ((TRegistry::classInfo($method) && TRegistry::classCanRender($method)) || !TRegistry::classInfo($method)) {
                 $doc->fieldValue($j, 'method', 'render');
             }
         }
@@ -253,18 +256,21 @@ trait TCodeGenerator
     {
         $motherView = $parentView->getMotherView();
         $viewHtml = $parentView->getViewHtml();
+        $uid = $parentView->getUID();
 
         $count = $doc->getCount();
-        $matchesSort = $doc->getMatchesByDepth();
-        $docList = $doc->getList();
+        $matchesByDepth = $doc->getDepthsOfMatches();
+        $matchesById = $doc->getIDsOfMatches();
+        $matchesByKey = $doc->getKeysOfMatches();
+        
         for ($i = $count - 1; $i > -1; $i--) {
-            $j = $matchesSort[$i];
-            $match = new TXmlMatch($docList[$j]);
+            $j = $matchesById[$i];
+            $match = $doc->getMatchById($j);
 
             $tag = $match->getMethod();
             $name = $match->getName();
 
-            if ($tag != 'echo' && $tag != 'exec' && $tag != 'render') {
+            if (!in_array($tag, $this->_reservedHtmlKeywords)) {
                 continue;
             }
 
@@ -277,6 +283,7 @@ trait TCodeGenerator
             $prop = $match->properties('prop');
             $stmt = $match->properties('stmt');
             $params = $match->properties('params');
+            $content = $match->properties('content');
 
             if (!$type || $type == 'this') {
                 $type = '$this->';
@@ -297,11 +304,16 @@ trait TCodeGenerator
                 if ($params != null) {
                     $declare = '<?php echo ' . $type . $stmt . '(' . $params . '); ?>';
                 }
+            } elseif ($tag == 'block' && false !== $content) {
+                $plaintext = substr($content, 9);
+                $plaintext = \base64_decode($plaintext);
+                $declare = $plaintext;
             } elseif ($tag == 'render') {
                 if ($name == 'this') {
                     $declare = '<?php $this->renderHtml(); $this->renderedHtml(); ?>';
                 } else {
-                    $declare = '<?php ' . $type . $id . '->render(); ?>';
+                    /** $declare = '<?php ' . $type . $id . '->render(); ?>'; */
+                    $declare = '<?php echo \\Phink\\Registry\\TRegistry::read("' . $uid . '", "' . $id . '")[0]; ?>';
                 }
             }
 

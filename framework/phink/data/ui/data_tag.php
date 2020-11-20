@@ -19,6 +19,7 @@
 namespace Phink\Data\UI;
 
 use Phink\Data\IDataStatement;
+
 /**
  * Description of adatatag
  *
@@ -33,9 +34,11 @@ trait TDataTag
         $result = array();
 
         $c = count($array);
-        for ($i = 0; $i < $c; $i++) {
+        // for ($i = 0; $i < $c; $i++) {
+        foreach ($array as $object) {
+
             $method = 'get' . ucfirst($attribute);
-            $object = $array[$i];
+            // $object = $array[$i];
             $intermediate = $object->$method();
             $result[$intermediate] = $object;
         }
@@ -50,8 +53,9 @@ trait TDataTag
         if ($c > 0) {
             $result = [];
         }
-        for ($i = 0; $i < $c; $i++) {
-            $object = $objectList[$i];
+        // for ($i = 0; $i < $c; $i++) {
+        foreach ($objectList as $object) {
+            // $object = $objectList[$i];
             $template = $object->getProperties();
             array_push($result, $template);
         }

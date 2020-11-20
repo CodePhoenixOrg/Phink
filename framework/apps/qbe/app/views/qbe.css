@@ -1,6 +1,6 @@
 :root {
     --back-color: black;
-    --fore-color: greenyellow;
+    --fore-color: cyan;
 }
 
 .theme * {
@@ -12,7 +12,7 @@
 }
 
 .ibm-pc {
-    color: greenyellow;
+    color: cyan;
     background-color: black;
 }
 

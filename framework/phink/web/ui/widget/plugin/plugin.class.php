@@ -115,10 +115,14 @@ class TPlugin extends TPluginRenderer
             $elements = json_decode(file_get_contents($elementsFilename));
         }
 
-        if ($stmt !== null) {
+        while ($stmt !== null) {
 
             $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
+            if($rows === null) {
+            break;
+            }
+            
             $rowCount = count($rows);
 
             if ($rowCount > 0) {
@@ -135,6 +139,8 @@ class TPlugin extends TPluginRenderer
                 // array_push($values, json_encode(array_fill(0, $fieldCount, '&nbsp;')));
                 array_push($values, array_fill(0, $fieldCount, '&nbsp;'));
             }
+
+        break;
         }
 
         $result = [

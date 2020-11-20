@@ -90,19 +90,19 @@ JSCRIPT;
 
             if ($this->getMotherView() !== null) {
                 $view = $this->getMotherView();
-                // $filename = $view->getCacheFileName();
+                $uid = $view->getUID();
+                $html = TRegistry::getHtml($uid);
                 $jsfilename = DOCUMENT_ROOT . $view->getJsCacheFileName();
 
-                $html = file_get_contents($jsfilename);
 
-                // if ($jscall !== null) {
-                // $view->appendToBody($jscall, $html);s
-                file_put_contents($jsfilename, $contents, FILE_APPEND);
-                file_put_contents($lock, date('Y-m-d h:i:s'));
+                if ($jscall !== null) {
+                    $view->appendToBody($jscall, $html);
+                    file_put_contents($jsfilename, $contents, FILE_APPEND);
+                    file_put_contents($lock, date('Y-m-d h:i:s'));
+                }
 
-                // }
+                TRegistry::setHtml($uid, $html);
 
-                // file_put_contents($filename, $html);
             }
         }
         if ($this->getRequest()->isAJAX()) {
@@ -110,6 +110,5 @@ JSCRIPT;
         }
 
         file_put_contents(DOCUMENT_ROOT . $script, $contents);
-
     }
 }

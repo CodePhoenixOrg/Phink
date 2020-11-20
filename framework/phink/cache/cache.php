@@ -27,17 +27,20 @@ class TCache extends TStaticObject
 
     public static function cacheFilenameFromView(string $viewName, bool $isFrameworkComponent = false): string
     {
-        return REL_RUNTIME_DIR . ($isFrameworkComponent ? 'framework_' : '') . strtolower('controller_' . $viewName . CLASS_EXTENSION);
+
+        // $uri = bin2hex(REQUEST_URI);
+        $uri = '';
+        return REL_RUNTIME_DIR . ($isFrameworkComponent ? 'inner_' : '') . strtolower($viewName) . $uri . CLASS_EXTENSION;
     }
 
     public static function cacheJsFilenameFromView(string $viewName, bool $isFrameworkComponent = false): string
     {
-        return REL_RUNTIME_JS_DIR . ($isFrameworkComponent ? 'framework_' : '') . strtolower('javascript_' . $viewName . JS_EXTENSION);
+        return REL_RUNTIME_JS_DIR . ($isFrameworkComponent ? 'inner_' : '') . strtolower('javascript_' . $viewName . JS_EXTENSION);
     }
 
     public static function cacheCssFilenameFromView(string $viewName, bool $isFrameworkComponent = false): string
     {
-        return  REL_RUNTIME_CSS_DIR . ($isFrameworkComponent ? 'framework_' : '') . strtolower('stylesheet_' . $viewName . CSS_EXTENSION);
+        return  REL_RUNTIME_CSS_DIR . ($isFrameworkComponent ? 'inner_' : '') . strtolower('stylesheet_' . $viewName . CSS_EXTENSION);
     }
 
     public static function cacheFile($filename, $content): void
@@ -50,13 +53,12 @@ class TCache extends TStaticObject
     {
         $result = false;
         $error_dir = [];
-        $isCreated = false;
 
         try {
             $runtime_dir = dirname(RUNTIME_DIR . '_');
             if (!file_exists($runtime_dir)) {
-                $isCreated = mkdir($runtime_dir, 0755, true);
-                $result = $result || $isCreated;
+                $ok = mkdir($runtime_dir, 0755, true);
+                $result = $result || $ok;
             }
             if (!file_exists($runtime_dir)) {
                 $error_dir[] = RUNTIME_DIR;
@@ -64,8 +66,8 @@ class TCache extends TStaticObject
 
             $runtime_js_dir = dirname(RUNTIME_JS_DIR . '_');
             if (!file_exists($runtime_js_dir)) {
-                $isCreated = mkdir($runtime_js_dir, 0755, true);
-                $result = $result || $isCreated;
+                $ok = mkdir($runtime_js_dir, 0755, true);
+                $result = $result || $ok;
             }
             if (!file_exists($runtime_js_dir)) {
                 $error_dir[] = RUNTIME_JS_DIR;
@@ -73,16 +75,16 @@ class TCache extends TStaticObject
 
             $runtime_css_dir = dirname(RUNTIME_CSS_DIR . '_');
             if (!file_exists($runtime_css_dir)) {
-                $isCreated = mkdir($runtime_css_dir, 0755, true);
-                $result = $result || $isCreated;
+                $ok = mkdir($runtime_css_dir, 0755, true);
+                $result = $result || $ok;
             }
             if (!file_exists($runtime_css_dir)) {
                 $error_dir[] = RUNTIME_CSS_DIR;
             }
 
-            if(count($error_dir) > 0) {
+            if (count($error_dir) > 0) {
                 $result = false;
-                
+
                 $message = 'An error occured while creating ' . implode(', ', $error_dir);
                 throw new \Exception($message, 0);
             }
@@ -97,10 +99,9 @@ class TCache extends TStaticObject
     {
         $result = false;
         $error_dir = [];
-        $test = false;
 
         try {
-            
+
             if (file_exists(RUNTIME_DIR)) {
                 $ok = TFileUtils::delTree(RUNTIME_DIR);
                 $result = $result || $ok;
@@ -121,13 +122,15 @@ class TCache extends TStaticObject
             } else {
                 $error_dir[] = RUNTIME_CSS_DIR;
             }
+
+            if (count($error_dir) > 0) {
+                $result = false;
+
+                $message = 'An error occured while deleting ' . implode(', ', $error_dir);
+                throw new \Exception($message, 0);
+            }
         } catch (\Exception $ex) {
             self::getLogger()->error($ex);
-
-            if (!$result) {
-                $message = 'Permission denied on deleting ' . implode(', ', $error_dir);
-                throw new FileNotFoundException($message, 0, $ex);
-            }
         }
 
         return $result;
@@ -139,6 +142,9 @@ class TCache extends TStaticObject
         try {
             $result = $result || self::deleteRuntimeDirs();
             $result = $result || self::createRuntimeDirs();
+            $result = $result || self::deleteCacheDir();
+            $result = $result || self::createCacheDir();
+
         } catch (\Throwable $ex) {
             self::writeException($ex);
 
@@ -146,5 +152,59 @@ class TCache extends TStaticObject
         }
         return $result;
     }
-}
 
+    public static function createCacheDir(): bool
+    {
+        $result = false;
+        $error_dir = [];
+
+        try {
+            $cache_dir = dirname(CACHE_DIR . '_');
+            if (!file_exists($cache_dir)) {
+                $ok = mkdir($cache_dir, 0755, true);
+                $result = $result || $ok;
+            }
+            if (!file_exists($cache_dir)) {
+                $error_dir[] = CACHE_DIR;
+            }
+
+            if (count($error_dir) > 0) {
+                $result = false;
+
+                $message = 'An error occured while creating ' . implode(', ', $error_dir);
+                throw new \Exception($message, 0);
+            }
+        } catch (\Throwable $ex) {
+            self::getLogger()->error($ex);
+        }
+
+        return $result;
+    }
+
+    public static function deleteCacheDir(): bool
+    {
+        $result = false;
+        $error_dir = [];
+
+        try {
+
+            if (file_exists(CACHE_DIR)) {
+                $ok = TFileUtils::delTree(CACHE_DIR);
+                $result = $result || $ok;
+            } else {
+                $error_dir[] = CACHE_DIR;
+            }
+
+            if (count($error_dir) > 0) {
+                $result = false;
+
+                $message = 'Permission denied while deleting ' . implode(', ', $error_dir);
+                throw new \Exception($message, 0, $ex);
+            }
+        } catch (\Exception $ex) {
+            self::getLogger()->error($ex);
+        }
+
+        return $result;
+    }
+}

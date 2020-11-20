@@ -43,7 +43,7 @@ class TConsoleWindow extends TPartialController
         }
     }
 
-    public function getArgs() : array
+    public function getArgs() : string
     {
         return $this->args;
     }

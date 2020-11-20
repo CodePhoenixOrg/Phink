@@ -98,7 +98,11 @@ class TRegistry extends TStaticObject
 
     public static function importClasses(string $dirName): void
     {
-        $localRegistryFilename = SITE_ROOT . $dirName . '/registry.json';
+        $localRegistryFilename = SITE_ROOT . $dirName . '/app/registry.json';
+
+        if (!file_exists($localRegistryFilename)) {
+            $localRegistryFilename = SITE_ROOT . $dirName . '/registry.json';
+        }
 
         if (!file_exists($localRegistryFilename)) {
             return;
@@ -200,6 +204,17 @@ class TRegistry extends TStaticObject
         //file_put_contents(RUNTIME_DIR . $id . PREHTML_EXTENSION, $value);
         //$keys = array_keys(self::$_code);
         //self::$logger->debug('CODE REGISTRY : ' . print_r($keys, true));
+    }
+
+    public static function getHtml($id): string
+    {
+        return self::$_items['html'][$id];
+    }
+
+    public static function setHtml($id, $value): void
+    {
+        
+        self::write('html', $id, $value);
     }
 
     /**

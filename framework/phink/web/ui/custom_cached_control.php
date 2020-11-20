@@ -44,7 +44,7 @@ abstract class TCustomCachedControl extends TCustomControl
         parent::__construct($parent);
     }
 
-    public function getView(): TCustomView
+    public function getView(): ?TCustomView
     {
         return $this->view;
     }
@@ -89,7 +89,14 @@ abstract class TCustomCachedControl extends TCustomControl
             $this->declareObjects();
             //            $this->partialLoad();
         }
-        $this->displayHtml();
+        $uid = ($this->getView() !== null) ? $this->getView()->getUID() : '';
+        if (TRegistry::exists('html', $uid)) {
+            $html = TRegistry::getHtml($uid);
+            eval('?>' . $html);
+        } else {
+            $this->displayHtml();
+        }
+
         $html = ob_get_clean();
         // TWebObject::register($this);
 
@@ -160,13 +167,19 @@ abstract class TCustomCachedControl extends TCustomControl
             $this->declareObjects();
             $this->afterBinding();
 
-            $twig = $this->view->getTwigHtml();
-
-            if (!empty($twig)) {
-                echo $twig;
-            } else {
-                $this->displayHtml();
+            if ($this->view->isReedEngine()) {
+                $uid = $this->getView()->getUID();
+                if (TRegistry::exists('html', $uid)) {
+                    $php = TRegistry::getHtml($uid);
+                    eval('?>' . $php); 
+                } else {
+                    $this->displayHtml();
+                }
+            } elseif ($this->view->isTwigEngine()) {
+                $html = $this->view->getTwigHtml();
+                echo $html;
             }
+
             //TWebObject::register($this);
 
             if ($this->getParent()->isMotherView()) {

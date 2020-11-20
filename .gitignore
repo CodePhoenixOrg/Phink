@@ -21,3 +21,8 @@ fonts
 assets
 framework/phinkjs
 composer.lock
+src/app/
+src/cache/
+src/data/
+src/web/
+routes.json

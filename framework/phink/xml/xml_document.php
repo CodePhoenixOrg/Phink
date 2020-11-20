@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2019 David Blanchard
+ * Copyright (C) 2020 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 
 namespace Phink\Xml;
 
+use Phink\Registry\TRegistry;
 use Phink\Core\TObject;
 
 /**
@@ -58,23 +59,38 @@ class TXmlDocument extends TObject
     private $_cursor = 0;
     private $_matches = [];
     private $_text = STR_EMPTY;
-    private $_id = -1;
+    private $_currentMatchKey = -1;
     private $_match = null;
     private $_list = [];
     private $_depths = [];
     private $_matchesByDepth = [];
-    private $_endPos = -1;
+    private $_matchesById = [];
+    private $_matchesByKey = [];
+    private $_offsetsById = [];
+    private $_replacingsById = [];
+    private $_endOfFile = OPEN_TAG . TAG_PATTERN_ANY . 'eof' . STR_SPACE . TERMINATOR . CLOSE_TAG;
 
     public function __construct($text)
     {
-        $this->_text = $text . OPEN_TAG . TAG_PATTERN_ANY . 'eof' . STR_SPACE . TERMINATOR . CLOSE_TAG;
-
-        $this->_endPos = strlen($this->_text);
+        $this->_text = $text . $this->_endOfFile;
     }
 
     public function getMatches(): array
     {
         return $this->_matches;
+    }
+
+    public function getMatchById(int $id): ?TXmlMatch
+    {
+        $match = null;
+
+        if (!isset($this->_list[$id])) {
+            return $match;
+        }
+
+        $match = new TXmlMatch($this->_list[$id]);
+
+        return $match;
     }
 
     public function getCount(): int
@@ -102,12 +118,22 @@ class TXmlDocument extends TObject
         return count($this->_depths);
     }
 
-    public function getMatchesByDepth(): array
+    public function getDepthsOfMatches(): array
     {
         return $this->_matchesByDepth;
     }
 
-    public function elementName(string $s, int $offset): string
+    public function getIDsOfMatches(): array
+    {
+        return $this->_matchesById;
+    }
+
+    public function getKeysOfMatches(): array
+    {
+        return $this->_matchesByKey;
+    }
+
+    public function elementName(string $s, int $offset, string $tag = TAG_PATTERN_ANY): string
     {
         if (!isset($offset)) {
             $offset = 0;
@@ -121,9 +147,9 @@ class TXmlDocument extends TObject
 
         if ($offset > 0 && $offset < strlen($s)) {
             //$openElementPos = $offset;
-            $openElementPos = strpos($s, OPEN_TAG, $offset);
+            $openElementPos = strpos($s, OPEN_TAG . $tag, $offset);
         } else {
-            $openElementPos = strpos($s, OPEN_TAG);
+            $openElementPos = strpos($s, OPEN_TAG . $tag);
         }
 
         if ($openElementPos == -1) {
@@ -146,56 +172,166 @@ class TXmlDocument extends TObject
         return $result;
     }
 
-    public function getMatch(): ?TXmlMatch
+    public function resetMatchId(): void
     {
-        if ($this->_match == null) {
-            //$this->_match = new TXmlMatch($this->_list[$this->_matchesByDepth[$this->_id]]);
-            $this->_match = new TXmlMatch($this->_list[$this->_id]);
+        $this->_currentMatchKey = -1;
+    }
+
+    public function getCurrentMatch(): ?TXmlMatch
+    {
+        $currentId = $this->_matchesById[$this->_currentMatchKey];
+        if ($this->_match === null || $this->_match->getId() !== $currentId) {
+            $this->_match = new TXmlMatch($this->_list[$currentId]);
         }
 
         return $this->_match;
     }
 
-    public function nextMatch(): ?TXmlMatch
+    public function getNextMatch(): ?TXmlMatch
     {
+        $this->_currentMatchKey++;
+
         $this->_match = null;
-        if ($this->_id == $this->_count - 1) {
+        if ($this->_currentMatchKey == $this->_count) {
             return null;
         }
 
-        $this->_id++;
-
-        return $this->getMatch();
+        return $this->getCurrentMatch();
     }
 
-    public function replaceMatch(string $replace): string
+    public function replaceMatches(TXmlDocument $doc, string $text): string
     {
-        if ($this->_match->hasChildren()) {
-            $start = $this->_match->getStart();
-            $length = $this->_match->getEnd() - $this->_match->getStart() + 1;
-            $needle = substr($this->_text, $start, $length);
-            $this->_text = str_replace($needle, $replace, $this->_text);
-        } else {
-            $this->_text = str_replace($this->_match->getText(), $replace, $this->_text);
+        $masterMatchesById = $this->getIDsOfMatches();
+        $masterCount = $this->getCount();
+        $masterText = $this->_text;
+
+        $slaveMatchesById = $doc->getIDsOfMatches();
+        $slaveCount = $doc->getCount();
+        $slaveText = $text;
+
+        for ($i = $masterCount - 1; $i > -1; $i--) {
+            $masterId = $masterMatchesById[$i];
+            $masterMatch = $this->getMatchById($masterId);
+            $replaced = '';
+
+            if ($masterMatch->getMethod() !== 'block') {
+                continue;
+            }
+
+            if ($masterMatch->hasCloser()) {
+                $start = $masterMatch->getStart();
+                $closer = $masterMatch->getCloser();
+                $length = $closer['endsAt'] - $masterMatch->getStart() + 1;
+
+                $replaced = substr($masterText, $start, $length);
+            } else {
+                $replaced = $masterMatch->getText();
+            }
+
+            for ($j = $slaveCount - 1; $j > -1; $j--) {
+                $slaveId = $slaveMatchesById[$j];
+                $slaveMatch = $doc->getMatchById($slaveId);
+                $replacing = '';
+
+                if (
+                    $slaveMatch->getMethod() !== 'block'
+                    || $masterMatch->properties('name') !== $slaveMatch->properties('name')
+                ) {
+                    continue;
+                }
+
+                if ($slaveMatch->hasCloser()) {
+                    $start = $slaveMatch->getStart();
+                    $closer = $slaveMatch->getCloser();
+                    $length = $closer['endsAt'] - $slaveMatch->getStart() + 1;
+
+                    $replacing = substr($slaveText, $start, $length);
+                } else {
+                    $replacing = $slaveMatch->getText();
+                }
+
+                $masterText = str_replace($replaced, $replacing, $masterText);
+
+                break;
+            }
         }
 
-        return $this->_text;
+        $masterText = str_replace($this->_endOfFile, '', $masterText);
+
+        return $masterText;
     }
 
-    public function replaceThisMatch(TXmlMatch $match, string $text, string $replace): string
+    public function replaceThisMatch(TXmlMatch $match, string $text, string $replacing): string
     {
-
-        if ($match->hasChildren()) {
+        if ($match->hasCloser()) {
             $start = $match->getStart();
             $closer = $match->getCloser();
             $length = $closer['endsAt'] - $match->getStart() + 1;
-            $needle = substr($text, $start, $length);
-            $text = str_replace($needle, $replace, $text);
+
+            $offset = strlen($replacing) - $length;
+            $this->_offsetsById[$match->getId()] = $offset;
+            $offset = 0;
+
+            $currentMatchKey = $this->_matchesByKey[$match->getId()];
+            $previousMatchId = isset($this->_matchesById[$currentMatchKey + 1]) ? $this->_matchesById[$currentMatchKey + 1] : $match->getId();
+
+            if (
+                !$match->isSibling()
+                && !$match->isRegistered()
+                && $previousMatchId != $match->getId()
+            ) {
+                $replacingLength = $closer['startsAt'] - $match->getEnd() - 1;
+
+                if (
+                    $match->getDepth() !== $this->_list[$previousMatchId]['depth']
+                    && $this->_list[$previousMatchId]['depth'] > 0
+                ) {
+
+                    $offset = $this->findOffset($match->getId());
+
+                    if ($offset !== 0) {
+
+                        $replacingLength += $offset;
+                        $length += $offset;
+                    }
+
+                    $patchStart = $match->getEnd() + 1;
+                    $patchEnd = $closer['startsAt'] - 1;
+                    $patchLength = $patchEnd - $patchStart + 1;
+
+                    $patchReplacing = substr($text, $patchStart, $patchLength + $offset);
+
+                    $replacing = $patchReplacing;
+
+                }
+
+            }
+
+            $replaced = substr($text, $start, $length);
+
+            $text = str_replace($replaced, $replacing, $text);
         } else {
-            $text = str_replace($match->getText(), $replace, $text);
+            $offset = strlen($replacing) - strlen($match->getText());
+            $this->_offsetsById[$match->getId()] = $offset;
+
+            $text = str_replace($match->getText(), $replacing, $text);
         }
 
         return $text;
+    }
+
+    private function findOffset(int $parentId): int
+    {
+        $offset = 0;
+        $l = count($this->_matchesById);
+        for ($j = $l - 1; $j > -1; $j--) {
+            $id = $this->_matchesById[$j];
+            if ($this->_list[$id]['parentId'] == $parentId) {
+                $offset += isset($this->_offsetsById[$id]) ? $this->_offsetsById[$id] : 0;
+                $offset += $this->findOffset($id);
+            }
+        }
+        return $offset;
     }
 
     private function _parse(string $tag, string $text, string $cursor): array
@@ -243,35 +379,34 @@ class TXmlDocument extends TObject
     public function matchAll(string $tag = TAG_PATTERN_ANY): bool
     {
         $i = 0;
-        $j = -1;
-
         $s = STR_EMPTY;
         $firstName = STR_EMPTY;
         $secondName = STR_EMPTY;
-
         $cursor = 0;
-
         $text = $this->_text;
+        $parentId = [];
+        $depth = 0;
+        $parentId[$depth] = -1;
 
         list($openElementPos, $closeElementPos, $properties) = $this->_parse($tag, $text, $cursor);
 
-        $parentId[0] = -1;
-
-        $depth = 0;
-        //$this->_depths[$depth] = 1;
-
         while ($openElementPos > -1 && $closeElementPos > $openElementPos) {
+            $siblingId = $i - 1;
             $s = trim(substr($text, $openElementPos, $closeElementPos - $openElementPos + 1));
             $firstName = $this->elementName($s, $cursor);
 
             $arr = explode(':', $firstName);
-
-            // self::getLogger()->debug('XML_MATCHALL::FIRSTNAME::' . $firstName);
-            // self::getLogger()->debug('ARR::1::EXISTS::' . (isset($arr[1]) ? 'true' : 'false'));
+            if (!isset($arr[1])) {
+                $arr[1] = '';
+            }
 
             if ($arr[1] == 'eof') {
                 break;
             }
+            $terminator1 = $s[1];
+            $terminator2 = $s[strlen($s) - 2];
+            $hasCloser = $terminator1 != TERMINATOR && $terminator2 != TERMINATOR;
+            $isSibling = isset($this->_list[$siblingId]) && $this->_list[$siblingId]['hasCloser'];
 
             $this->_list[$i]['id'] = $i;
             $this->_list[$i]['method'] = $arr[1];
@@ -280,18 +415,14 @@ class TXmlDocument extends TObject
             $this->_list[$i]['startsAt'] = $openElementPos;
             $this->_list[$i]['endsAt'] = $closeElementPos;
             $this->_list[$i]['depth'] = $depth;
-            $this->_list[$i]['hasCloser'] = false;
+            $this->_list[$i]['hasCloser'] = $hasCloser;
             $this->_list[$i]['childName'] = '';
             if (!isset($parentId[$depth])) {
                 $parentId[$depth] = $i - 1;
             }
             $this->_list[$i]['parentId'] = $parentId[$depth];
-
-            $p = strpos($s, STR_SPACE);
-            //            if ($p == strlen($firstName) + 1 && $closeElementPos > $p) {
-            //                $attributes = trim(substr($s, $p + 1, strlen($s) - $p - 3));
-            //                $this->_list[$i]['properties'] = TStringUtils::parameterStringToArray($attributes);
-            //            }
+            $this->_list[$i]['isSibling'] = $isSibling;
+            $this->_list[$i]['isRegistered'] = TRegistry::classInfo($this->_list[$i]['name']) !== null;
 
             $this->_list[$i]['properties'] = $properties;
 
@@ -300,26 +431,48 @@ class TXmlDocument extends TObject
 
             if (TERMINATOR . $firstName != $secondName) {
                 if ($s[1] == TERMINATOR) {
+                    $this->_list[$i]['isSibling'] = $isSibling;
+
+                    $pId = !$isSibling && isset($parentId[$depth]) ? $parentId[$depth] : $siblingId;
                     $depth--;
+                    $fatherId = $parentId[$depth];
+
+                    $this->_list[$i]['parentId'] = $fatherId;
                     $this->_list[$i]['depth'] = $depth;
-                    $pId = $this->_list[$i]['parentId'];
-                    $this->_list[$pId]['hasCloser'] = true;
-                    if ($this->_list[$pId]['depth'] > 0 && (empty($this->_list[$pId]['properties']['content']))) {
+
+                    if (
+                        empty($this->_list[$pId]['properties']['content'])
+                        && !$this->_list[$i]['isRegistered']
+                    ) {
                         $contents = substr($text, $this->_list[$pId]['endsAt'] + 1, $this->_list[$i]['startsAt'] - $this->_list[$pId]['endsAt'] - 1);
                         $this->_list[$pId]['properties']['content'] = '!#base64#' . base64_encode($contents); // uniqid();
                     }
 
+                    $this->_list[$i]['depth'] = $this->_list[$i]['depth'];
+
+                    if ($this->_list[$pId]['isSibling']) {
+                        $this->_list[$i]['depth'] = $this->_list[$pId]['depth'];
+                    }
+
                     $this->_list[$pId]['closer'] = $this->_list[$i];
+                    $this->_list[$pId]['closer']['parentId'] = $this->_list[$pId]['id'];
                     unset($this->_list[$i]);
-                } elseif ($s[1] == QUEST_MARK) { } elseif ($s[strlen($s) - 2] == TERMINATOR) { } elseif ($s[1] == SKIP_MARK) { } else {
+                } elseif ($s[1] == QUEST_MARK) {
+                } elseif ($s[strlen($s) - 2] == TERMINATOR) {
+                } elseif ($s[1] == SKIP_MARK) {
+                } else {
                     $sa = explode(':', $secondName);
                     if (isset($sa[1])) {
                         $this->_list[$i]['childName'] = $sa[1];
                     }
 
-                    $depth++;
+                    if ($hasCloser) {
+                        $depth++;
+                    }
                     $this->_depths[$depth] = 1;
-                    unset($parentId[$depth]);
+                    if (isset($parentId[$depth])) {
+                        unset($parentId[$depth]);
+                    }
                 }
             }
             list($openElementPos, $closeElementPos, $properties) = $this->_parse($tag, $text, $cursor);
@@ -330,6 +483,8 @@ class TXmlDocument extends TObject
         }
 
         $this->_matchesByDepth = $this->sortMatchesByDepth();
+        $this->_matchesById = $this->sortMatchesById();
+        $this->_matchesByKey = $this->sortMatchesByKey();
 
         $this->_count = count($this->_list);
 
@@ -341,12 +496,33 @@ class TXmlDocument extends TObject
         $maxDepth = count($this->_depths);
         $result = [];
         for ($i = $maxDepth; $i > -1; $i--) {
-            foreach ($this->_list as $part) {
-                if ($part["depth"] == $i) {
-                    $count = count($result);
-                    $result[$count] = $part['id'];
+            foreach ($this->_list as $match) {
+                if ($match["depth"] == $i) {
+                    array_push($result, $match['id']);
                 }
             }
+        }
+
+        return $result;
+    }
+
+    public function sortMatchesByKey(): array
+    {
+        $result = [];
+        $i = 0;
+        foreach ($this->_list as $match) {
+            $result[$match['id']] = $i;
+            $i++;
+        }
+
+        return $result;
+    }
+
+    public function sortMatchesById(): array
+    {
+        $result = [];
+        foreach ($this->_list as $match) {
+            array_push($result, $match['id']);
         }
 
         return $result;

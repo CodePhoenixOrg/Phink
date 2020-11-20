@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2019 David Blanchard
+ * Copyright (C) 2020 David Blanchard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,36 +39,35 @@ class TXmlMatch extends TObject
     private $_start = 0;
     private $_end = 0;
     private $_depth = 0;
-    private $_tmpText = '';
+    private $_isSibling = false;
     private $_childName = '';
     private $_hasChildren = false;
     private $_closer = '';
+    private $_hasCloser = '';
     private $_properties = array();
     private $_method = '';
+    private $_isRegistered = false;
 
     //$text, $groups, $position, $start, $end, $childName, $closer
-    public function __construct(array $array)
+    public function __construct(array $attributes)
     {
-        $this->id = $array['id'];
-        $this->_parentId = $array['parentId'];
-        $this->_text = $array['element'];
+        $this->id = $attributes['id'];
+        $this->_parentId = $attributes['parentId'];
+        $this->_text = $attributes['element'];
         $this->_tmpText = $this->_text;
-        $this->_name = $array['name'];
-        $this->_start = $array['startsAt'];
-        $this->_end = $array['endsAt'];
-        $this->_depth = $array['depth'];
-        $this->_closer = (isset($array['closer'])) ? $array['closer'] : NULL;
-        $this->_childName = $array['childName'];
-        $this->_properties = $array['properties'];
-        $this->_method = $array['method'];
+        $this->_name = $attributes['name'];
+        $this->_start = $attributes['startsAt'];
+        $this->_end = $attributes['endsAt'];
+        $this->_depth = $attributes['depth'];
+        $this->_closer = (isset($attributes['closer'])) ? $attributes['closer'] : NULL;
+        $this->_childName = $attributes['childName'];
+        $this->_properties = $attributes['properties'];
+        $this->_hasCloser = isset($this->_closer);
+        $this->_method = $attributes['method'];
+        $this->_isRegistered = $attributes['isRegistered'];
 
-        $this->_hasChildren = isset($this->_closer);
-        if ($this->_hasChildren) {
-            $this->_end = $this->_closer['endsAt'];
-        }
+        $this->_hasChildren = !empty($this->_childName);
     }
-
-
 
     public function getParentId(): int
     {
@@ -109,7 +108,7 @@ class TXmlMatch extends TObject
         return $this->_end;
     }
 
-    public function getChildName(): stirng
+    public function getChildName(): string
     {
         return $this->_childName;
     }
@@ -119,13 +118,28 @@ class TXmlMatch extends TObject
         return $this->_hasChildren;
     }
 
+    public function hasCloser(): bool
+    {
+        return $this->_hasCloser;
+    }
+   
+    public function isSibling(): bool
+    {
+        return $this->_isSibling;
+    }
+    
     public function getCloser(): array
     {
         return $this->_closer;
     }
-
+ 
     public function getMethod(): string
     {
         return $this->_method;
+    }
+
+    public function isRegistered(): bool
+    {
+        return $this->_isRegistered;
     }
 }

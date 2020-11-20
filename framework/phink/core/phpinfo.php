@@ -18,6 +18,7 @@
 
 namespace Phink\Core;
 
+use Phink\Registry\TRegistry;
 use stdClass;
 
 final class TPhpInfo
@@ -66,6 +67,11 @@ final class TPhpInfo
 
     public static function getSection(int $section, bool $asArray = false)
     {
+
+        if(TRegistry::exists('ini', $section)) {
+            return TRegistry::read('ini', $section);
+        }
+
         $root = [];
         $cat = 'general';
 
@@ -144,6 +150,7 @@ final class TPhpInfo
                 }
             }
         }
+        TRegistry::write('ini', $section, $root);
 
         return $root;
     }

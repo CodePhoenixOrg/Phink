@@ -1,14 +1,12 @@
 version: "3.0"
 services:
-  php:
+  aphpache:
     build: ./docker
     image: lap:phink
     ports:
-     - '8080:80'
-     - '8443:443'
+     - '80:80'
+     - '443:443'
     volumes:
-     - ./src:/sites/portable/src
-     - ./vendor:/sites/portable/vendor
-     - ./framework:/sites/portable/framework
-
-
+      - .:/Sites/CodePhoenixOrg/SDK/php/Phink
+      - ../Reed:/Sites/CodePhoenixOrg/SDK/php/Reed
+      - ../../javascript/PhinkJS:/Sites/CodePhoenixOrg/SDK/javascript/PhinkJS

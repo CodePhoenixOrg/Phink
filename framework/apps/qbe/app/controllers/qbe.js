@@ -8,7 +8,7 @@ Phink.DOM.ready(function () {
     qbe = qbeApp.createController('qbe', 'main')
         .actions({
             themeIbmPc: function () {
-                this.getJSON('admin/console/', {
+                this.getJSON('admin/qbe/', {
                     "action": 'setTheme',
                     "theme": 'ibm_pc'
                 }, function (data) {
@@ -16,7 +16,7 @@ Phink.DOM.ready(function () {
                 });
             },
             themeAmstradCpc: function () {
-                this.getJSON('admin/console/', {
+                this.getJSON('admin/qbe/', {
                     "action": 'setTheme',
                     "theme": 'amstrad_cpc'
                 }, function (data) {
@@ -24,7 +24,7 @@ Phink.DOM.ready(function () {
                 });
             },
             themeSolaris: function () {
-                this.getJSON('admin/console/', {
+                this.getJSON('admin/qbe/', {
                     "action": 'setTheme',
                     "theme": 'solaris'
                 }, function (data) {
@@ -37,7 +37,7 @@ Phink.DOM.ready(function () {
                 document.querySelector(':root').style.setProperty('--fore-color', data.theme.foreColor);
             },
             clearLogs: function () {
-                this.getJSON('admin/console/', {
+                this.getJSON('admin/qbe/', {
                     "action": 'clearLogs'
                 }, function (data) {
                     document.querySelector("#result").innerHTML = data.result;

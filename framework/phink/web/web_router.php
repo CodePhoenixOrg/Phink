@@ -47,6 +47,7 @@ class TWebRouter extends TRouter
         $info = (object) \pathinfo($this->path);
         $this->viewName = $info->filename;
         $this->dirName = $info->dirname;
+        $this->bootDirName = $info->dirname;
 
         if ($this->componentIsInternal) {
             $this->dirName = dirname($this->dirName, 2);
@@ -75,50 +76,60 @@ class TWebRouter extends TRouter
     public function dispatch(): bool
     {
 
+        $dir =  dirname(SRC_ROOT . $this->bootDirName, 1) . DIRECTORY_SEPARATOR;
+
         if ($this->componentIsInternal) {
-            $dir = SITE_ROOT . $this->dirName . DIRECTORY_SEPARATOR;
-
-            self::getLogger()->debug('BOOTSTRAP PATH::' . $dir . 'bootstrap' . CLASS_EXTENSION);
-
-            if (file_exists($dir . 'bootstrap' . CLASS_EXTENSION)) {
-                list($namespace, $className, $classText) = TAutoloader::getClassDefinition($dir . 'bootstrap' . CLASS_EXTENSION);
-                include $dir . 'bootstrap' . CLASS_EXTENSION;
-
-                $bootstrapClass = $namespace . '\\'  . $className;
-
-                $bootstrap = new $bootstrapClass($dir);
-                $bootstrap->start();
-            }
+            $dir =  dirname(SITE_ROOT . $this->bootDirName, 1) . DIRECTORY_SEPARATOR;
         }
 
-        if ($this->_isCached) {
-            $view = new TView($this);
-            $class = TAutoloader::loadCachedFile($view);
-            $class->perform();
-            return true;
+        if (file_exists($dir . 'bootstrap' . CLASS_EXTENSION)) {
+            list($namespace, $className, $classText) = TAutoloader::getClassDefinition($dir . 'bootstrap' . CLASS_EXTENSION);
+            include $dir . 'bootstrap' . CLASS_EXTENSION;
+
+            $bootstrapClass = $namespace . '\\'  . $className;
+
+            $bootstrap = new $bootstrapClass($dir);
+            $bootstrap->start();
         }
 
-        //        $modelClass = ($include = TAutoloader::includeModelByName($this->viewName)) ? $include['type'] : DEFALT_MODEL;
-        //        include $include['file'];
-        //        $model = new $modelClass();
         $view = new TView($this);
 
-        $include = $this->includeController($view);
-
-        $view->parse();
-
-        if (file_exists($view->getCacheFileName())) {
+        if ($this->_isCached) {
             $class = TAutoloader::loadCachedFile($view);
             $class->perform();
             return true;
         }
 
+        list($file, $class, $classText) = $this->includeController($view);
+        $namespace = TAutoloader::grabKeywordName('namespace', $classText, ';');
+        $className = TAutoloader::grabKeywordName('class', $classText, ' ');
+
+        $view->parse();
+        $uid = $view->getUID();
+        $code = TRegistry::getCode($uid);
+
+        // file_put_contents($this->getCacheFileName(), $code);
+
+        eval('?>' . $code);
+
+        $fqClassName = $namespace . '\\' . $className;
+
+        $controller = new $fqClassName($view);
+
+        $controller->perform();
+
+        if ($view->isReedEngine()) {
+            // cache the file
+            $php = TRegistry::getHtml($uid);
+            $code = str_replace(HTML_PLACEHOLDER, $php, $code);
+            file_put_contents($this->getCacheFileName(), $code);
+        }
         return false;
     }
 
     public function setNamespace(): void
     {
-        if(file_exists(CONFIG_DIR . 'namespace')) {
+        if (file_exists(CONFIG_DIR . 'namespace')) {
             $this->namespace = file_get_contents(CONFIG_DIR . 'namespace');
             $this->namespace .= '\\Controllers';
 
@@ -131,10 +142,10 @@ class TWebRouter extends TRouter
 
         $sa = explode('.', $namespace);
 
-        if(count($sa) == 0) {
+        if (count($sa) == 0) {
             $sa = [$namespace];
         }
-        if(count($sa) > 1 ) {
+        if (count($sa) > 1) {
             array_pop($sa);
             if (count($sa) == 2) {
                 array_shift($sa);
