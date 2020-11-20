@@ -12,7 +12,7 @@ Phink Framework is a component oriented PHP framework. It allows you to build si
 PHP 7.4  
 Apache (no other server is supported right now)
 ## Installation
-Phink is registered in this Packagist library so it's available via composer.
+Phink is registered in the Packagist library so it's available via composer.
 
 The simplest method is to install it as a standalone application like this:
 
@@ -24,7 +24,7 @@ Let's say myproject is a subdirectory of your local Apache server.
 In your browser, go to: 
 	https://localhost/myproject/src/web/setup/
 
-All necessary files will set up automatically and after a few seconds you be in front of the welcome page.
+All necessary files will set up automatically and after a few seconds you'll be in front of the welcome page.
 
 ## Sample javascript bootstrap sample.js
 
