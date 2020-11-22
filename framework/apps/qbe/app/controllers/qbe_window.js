@@ -1,8 +1,8 @@
 Phink.DOM.ready(function () {
 
-    qbe.createView('qbe_window');
+    qed.createView('qed_window');
 
-    var qbeWindow = qbe.createController('qbe_window', 'qbe_window')
+    var qedWindow = qed.createController('qed_window', 'qed_window')
         .actions({
             clearLogs: function () {
                 this.getJSON('console/', {
@@ -13,9 +13,9 @@ Phink.DOM.ready(function () {
             }
         })
         .onload(function () {
-            qbeWindow = this;
+            qedWindow = this;
             document.querySelector('#rlog').onclick = function () {
-                qbeWindow.clearLogs();
+                qedWindow.clearLogs();
             }
         });
 });

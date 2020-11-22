@@ -2,7 +2,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title><phx:echo var="qbeTitle" /></title>
+    <title><phx:echo var="qedTitle" /></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <meta name="description" content="">
@@ -45,11 +45,11 @@
     
     <div id="result">
     </div>
-    <phx:TQbeWindow id="qbe0" />
+    <phx:TQEdWindow id="qed0" />
     <script>
-        var qbe = null;
-        var qbeHost = window.location.hostname + '<phx:echo const="REWRITE_BASE" />';
-        var qbeName = '<phx:echo var="qbeName" />'
+        var qed = null;
+        var qedHost = window.location.hostname + '<phx:echo const="REWRITE_BASE" />';
+        var qedName = '<phx:echo var="qedName" />'
         document.querySelector(':root').style.setProperty('--back-color', '<phx:echo var="themeBackColor" />');
         document.querySelector(':root').style.setProperty('--fore-color', '<phx:echo var="themeForeColor" />');
     </script>

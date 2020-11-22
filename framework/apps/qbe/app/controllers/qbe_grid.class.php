@@ -1,12 +1,12 @@
 <?php
 
-namespace Phink\Apps\QBE;
+namespace Phink\Apps\QEd;
 
 use Phink\Data\Client\PDO\TPdoConnection;
 use Phink\Data\Client\PDO\TPdoDataStatement;
 use Phink\MVC\TActionInfo;
 
-class TQbeGrid extends \Phink\MVC\TPartialController
+class TQEdGrid extends \Phink\MVC\TPartialController
 {
     protected $stmt = null;
     protected $items = [];

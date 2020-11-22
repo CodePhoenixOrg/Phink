@@ -1,5 +1,5 @@
 <?php
-namespace Phink\Apps\QBE;
+namespace Phink\Apps\QEd;
 
 use Phink\Data\Client\PDO\TPdoConnection;
 use Phink\MVC\TActionInfo;
@@ -12,21 +12,21 @@ use Phink\Registry\TRegistry;
  * @author david
  */
 
-class TQbeWindow extends TPartialController
+class TQEdWindow extends TPartialController
 {
     protected $text = "Unknown command";
     protected $args = '';
     protected $cookies = '';
-    protected $qbeName = '';
+    protected $qedName = '';
     protected $themeBackColor = '';
     protected $themeForeColor = '';
 
     public function afterBinding(): void
     {
-        $this->qbeName = $this->getApplication()->getName();
-        $this->cookies = $this->getApplication()->getCookie($this->qbeName);
+        $this->qedName = $this->getApplication()->getName();
+        $this->cookies = $this->getApplication()->getCookie($this->qedName);
 
-        $cmd = isset($this->parameters['qbe']) ? $this->parameters['qbe'] : '';
+        $cmd = isset($this->parameters['qed']) ? $this->parameters['qed'] : '';
         $arg = isset($this->parameters['arg']) ? $this->parameters['arg'] : null;
 
         // $this->setArgs($this->parameters);

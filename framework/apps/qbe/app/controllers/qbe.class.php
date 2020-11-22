@@ -1,17 +1,17 @@
 <?php
-namespace Phink\Apps\QBE;
+namespace Phink\Apps\QEd;
 
-//require PHINK_APPS_ROOT . 'qbe/app_bootstrap.php';
+//require PHINK_APPS_ROOT . 'qed/app_bootstrap.php';
 
 use Phink\MVC\TController;
 use Phink\Registry\TRegistry;
 use Phink\Data\TDataAccess;
 
-class Qbe extends TController
+class QEd extends TController
 {
-    protected $qbe0;
-    protected $qbeName = '';
-    protected $qbeTitle = '';
+    protected $qed0;
+    protected $qedName = '';
+    protected $qedTitle = '';
     protected $themeBackColor = '';
     protected $themeForeColor = '';
 
@@ -19,9 +19,9 @@ class Qbe extends TController
     {
         $cs = TDataAccess::getNidusLiteDB();
 
-        $this->qbeName = $this->getApplication()->getName();
-        $this->qbeTitle = $this->getApplication()->getTitle() . " QBE";
-        $cookies = $this->getApplication()->getCookie($this->qbeName);
+        $this->qedName = $this->getApplication()->getName();
+        $this->qedTitle = $this->getApplication()->getTitle() . " QEd";
+        $cookies = $this->getApplication()->getCookie($this->qedName);
 
         $theme = isset($cookies['theme']) ? $cookies['theme'] : 'ibm_pc';
 

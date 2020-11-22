@@ -1,18 +1,18 @@
 {
     "classes": [
         {
-            "TQbeWindow": {
-                "alias": "qbe",
-                "path": "@/qbe/",
-                "namespace": "Phink\\Apps\\QBE",
+            "TQEdWindow": {
+                "alias": "qed",
+                "path": "@/qed/",
+                "namespace": "Phink\\Apps\\QEd",
                 "hasTemplate": true,
                 "canRender": true,
                 "isAutoloaded": false
             },
-            "TQbeGrid": {
-                "alias": "qbe_grid",
-                "path": "@/qbe/",
-                "namespace": "Phink\\Apps\\QBE",
+            "TQEdGrid": {
+                "alias": "qed_grid",
+                "path": "@/qed/",
+                "namespace": "Phink\\Apps\\QEd",
                 "hasTemplate": true,
                 "canRender": true,
                 "isAutoloaded": false

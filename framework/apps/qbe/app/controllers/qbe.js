@@ -1,34 +1,34 @@
-var qbeApp = null;
-var qbe = null;
+var qedApp = null;
+var qed = null;
 Phink.DOM.ready(function () {
 
-    qbeApp = Phink.Web.Application.create(qbeHost, qbeName);
-    qbeApp.createView('qbe');
+    qedApp = Phink.Web.Application.create(qedHost, qedName);
+    qedApp.createView('qed');
 
-    qbe = qbeApp.createController('qbe', 'main')
+    qed = qedApp.createController('qed', 'main')
         .actions({
             themeIbmPc: function () {
-                this.getJSON('admin/qbe/', {
+                this.getJSON('admin/qed/', {
                     "action": 'setTheme',
                     "theme": 'ibm_pc'
                 }, function (data) {
-                    qbe.applyTheme(data);
+                    qed.applyTheme(data);
                 });
             },
             themeAmstradCpc: function () {
-                this.getJSON('admin/qbe/', {
+                this.getJSON('admin/qed/', {
                     "action": 'setTheme',
                     "theme": 'amstrad_cpc'
                 }, function (data) {
-                    qbe.applyTheme(data);
+                    qed.applyTheme(data);
                 });
             },
             themeSolaris: function () {
-                this.getJSON('admin/qbe/', {
+                this.getJSON('admin/qed/', {
                     "action": 'setTheme',
                     "theme": 'solaris'
                 }, function (data) {
-                    qbe.applyTheme(data);
+                    qed.applyTheme(data);
                 });
             },
             applyTheme: function (data) {
@@ -37,14 +37,14 @@ Phink.DOM.ready(function () {
                 document.querySelector(':root').style.setProperty('--fore-color', data.theme.foreColor);
             },
             clearLogs: function () {
-                this.getJSON('admin/qbe/', {
+                this.getJSON('admin/qed/', {
                     "action": 'clearLogs'
                 }, function (data) {
                     document.querySelector("#result").innerHTML = data.result;
                 });
             },
             testQuery: function (sql) {
-                this.getJSON('admin/qbe/', {
+                this.getJSON('admin/qed/', {
                     "action": 'testQuery',
                     "sql": sql
                 }, function (data) {
@@ -58,7 +58,7 @@ Phink.DOM.ready(function () {
                 var index = 1;
                 var anchor = '#grid';
 
-                qbe.getJSON('admin/qbe/grid/', {
+                qed.getJSON('admin/qed/grid/', {
                     'action': "getData",
                     'pagecount': count,
                     'pagenum': index,
@@ -74,7 +74,7 @@ Phink.DOM.ready(function () {
                 var sql = document.querySelector("#query").value;
                 sql = encodeURIComponent(sql);
 
-                this.getJSON('admin/qbe/grid/', {
+                this.getJSON('admin/qed/grid/', {
                     'action': "getData",
                     'pagecount': count,
                     'pagenum': index,
@@ -91,21 +91,21 @@ Phink.DOM.ready(function () {
             }
         })
         .onload(function () {
-            qbe = this;
+            qed = this;
             document.querySelector('#ibm-pcTheme').onclick = function () {
-                qbe.themeIbmPc();
+                qed.themeIbmPc();
             }
             document.querySelector('#amstrad-cpcTheme').onclick = function () {
-                qbe.themeAmstradCpc();
+                qed.themeAmstradCpc();
             }
             document.querySelector('#solarisTheme').onclick = function () {
-                qbe.themeSolaris();
+                qed.themeSolaris();
             }
             document.querySelector('#rlog').onclick = function () {
-                qbe.clearLogs();
+                qed.clearLogs();
             }
             document.querySelector('#sendQuery').onclick = function () {
-                qbe.sendQuery();
+                qed.sendQuery();
             }
 
         });

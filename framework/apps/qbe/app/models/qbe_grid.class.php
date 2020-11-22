@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Phink\Apps\QBE\Models;
+namespace Phink\Apps\QEd\Models;
 
 use Phink\Data\Client\PDO\TPdoConnection;
 use Phink\Data\Client\PDO\TPdoDataStatement;
 
-class TQbeGrid extends \Phink\MVC\TModel
+class TQEdGrid extends \Phink\MVC\TModel
 {
     public function init(): void
     {
