@@ -9,8 +9,10 @@
 Phink Framework is a component oriented PHP framework. It allows you to build sites like ASP.Net webform does with its user controls and master pages all in benefiting of an MVC architecture. It integrates a client-side layer in shape of a JavaScript API that looks very much like the PHP classes. This coupled solution is aiming to easily build Ajax Applications. A simple JavaScript starter statement can launch the entire application.
 
 ## Requirements
-PHP 7.4  
 Apache (no other server is supported right now)
+PHP 7.4  
+PHP extensions : SQLite, CURL, ZIP, other ones should be setup by default.
+
 ## Installation
 Phink is registered in the Packagist library so it's available via composer.
 
