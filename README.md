@@ -21,7 +21,7 @@ The simplest method is to install it as a standalone application like this:
 	composer create-project phink/phink myproject "dev-master"
 
 ## Usage
-Let's say myproject is a subdirectory of your local Apache server.
+Let's say myproject is a subdirectory of your local Apache server Document root.
 
 In your browser, go to: 
 	https://localhost/myproject/src/web/setup/
