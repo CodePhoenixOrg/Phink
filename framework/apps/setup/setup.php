@@ -81,6 +81,8 @@ class Setup
 
 
             $ok = $ok && rename('PhinkJS-master', 'phinkjs');
+            chmod('phinkjs', 0775);
+
         } catch (\Exception $ex) {
             $ok = false;
             $log = TLog::create();
