@@ -12,7 +12,7 @@ use Phink\Registry\TRegistry;
  * @author david
  */
 
-class TQEdWindow extends TPartialController
+class TQedWindow extends TPartialController
 {
     protected $text = "Unknown command";
     protected $args = '';

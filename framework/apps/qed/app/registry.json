@@ -1,7 +1,7 @@
 {
     "classes": [
         {
-            "TQEdWindow": {
+            "TQedWindow": {
                 "alias": "qed",
                 "path": "@/qed/",
                 "namespace": "Phink\\Apps\\QEd",
@@ -9,7 +9,7 @@
                 "canRender": true,
                 "isAutoloaded": false
             },
-            "TQEdGrid": {
+            "TQedGrid": {
                 "alias": "qed_grid",
                 "path": "@/qed/",
                 "namespace": "Phink\\Apps\\QEd",

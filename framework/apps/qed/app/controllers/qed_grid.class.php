@@ -6,7 +6,7 @@ use Phink\Data\Client\PDO\TPdoConnection;
 use Phink\Data\Client\PDO\TPdoDataStatement;
 use Phink\MVC\TActionInfo;
 
-class TQEdGrid extends \Phink\MVC\TPartialController
+class TQedGrid extends \Phink\MVC\TPartialController
 {
     protected $stmt = null;
     protected $items = [];
