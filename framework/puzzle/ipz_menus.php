@@ -709,7 +709,7 @@ SQL;
         $cs = TPdoConnection::opener($conf);
         $stmt = $cs->query($sql);
         $rows = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $id = $rows["di_name"];
+        $di = $rows["di_name"];
         $page = $rows["pa_filename"];
         $title = $rows["di_" . $this->lg . "_long"];
         if ($title == "") {
@@ -724,7 +724,7 @@ SQL;
             $page = substr($page, 0, $p);
         }
 
-        $title_page = array("id" => $id, "title" => $title, "page" => $page, "request" => $request, "charset" => 'utf-8');
+        $title_page = array("id" => $id, "di" => $di, "title" => $title, "page" => $page, "request" => $request, "charset" => 'utf-8', "lang" => $this->lg);
 
         /*
         $filename=${this->lg}."/".$page;
@@ -831,7 +831,7 @@ SQL;
             $page = substr($page, 0, $p);
         }
 
-        $title_page = array("id" => $id, "title" => $title, "page" => $page, "request" => $request, "charset" => 'utf-8');
+        $title_page = array("id" => $id, "di" => $di, "title" => $title, "page" => $page, "request" => $request, "charset" => 'utf-8', "lang" => $this->lg);
 
         return $title_page;
     }
