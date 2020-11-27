@@ -3,13 +3,8 @@ namespace Phink\Apps\Admin;
 
 use Phink\MVC\TPartialController;
 use Phink\Registry\TRegistry;
-use Phink\Data\Client\PDO\TPdoConnection;
-use Phink\Data\TAnalyzer;
 use Phink\Web\UI\TMvcScriptMaker;
-use Phink\Log\TLog;
 use Puzzle\Menus;
-use Puzzle\Controls;
-use Puzzle\Data\Controls as DbControls;
 
 class TMakeFile extends TPartialController
 {
@@ -30,16 +25,7 @@ class TMakeFile extends TPartialController
 		$this->menus = new Menus($this->lang, $this->db_prefix);
         $this->scriptMaker = new TMvcScriptMaker;
 
-		$form_fields = $this->getRequest()->getArgument("form_fields");
-		$field_defs = $this->getRequest()->getArgument("field_defs");
 		$data = $this->getRequest()->getArgument("data");
-		$names = $this->getRequest()->getArgument("name");
-		$dbsizes = $this->getRequest()->getArgument("dbsize");
-		$dbtypes = $this->getRequest()->getArgument("dbtype");
-		$phphtypes = $this->getRequest()->getArgument("phptype");
-		$htmltypes = $this->getRequest()->getArgument("htmltype");
-		$widths = $this->getRequest()->getArgument("width");
-		$heights = $this->getRequest()->getArgument("height");
 
 		$this->workdb = getArgument("workdb");
 		$this->userconf = getArgument("userconf");
@@ -62,11 +48,6 @@ class TMakeFile extends TPartialController
 		$this->di_short = getArgument("di_short");
 		$this->di_name = getArgument("di_name");
 		$this->lg = getArgument("lg", "fr");
-		$workcs = TPdoConnection::opener($this->conf);
-		$usercs = TPdoConnection::opener($this->userconf);
-		// $this->cs = connection(CONNECT, $userdb) or die("UserDb='$userdb'<br>");
-		$tmp_filename = 'tmp_' . $this->pa_filename;
-		$wwwroot = DOCUMENT_ROOT;
 	
 		$A_data = array_map(function($defs) {
 			return base64_decode($defs);
@@ -74,22 +55,18 @@ class TMakeFile extends TPartialController
 
 		$this->message = "<br>";
 
-		$rel_page_filename = $this->pa_filename . $this->extension;
+		$rel_page_filename = $this->pa_filename . CLASS_EXTENSION;
 
 		$this->basedir .= "/";
 		$this->basedir = str_replace('./', "/", $this->basedir);
 		$this->basedir = str_replace('//', "/", $this->basedir);
 
-		$root_code_filename = $wwwroot . $this->basedir . $this->pa_filename . '_code' . $this->extension;
-		$root_page_filename = $wwwroot . $this->basedir . $this->pa_filename . $this->extension;
 
 		$script_exists = file_exists($rel_page_filename);
-		$script_exists_tostring = $script_exists ? $this->YES : $this->NO;
-		$http_root = getHttpRoot();
 
 		if ($this->save === "") {
 
-			$formname = "fiche_$this->usertable";
+			// $formname = "fiche_$this->usertable";
 
 			list($this->me_id, $this->pa_id) = $this->menus->getMenuAndPage($this->conf, $rel_page_filename);
 

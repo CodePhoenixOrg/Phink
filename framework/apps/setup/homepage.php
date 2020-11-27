@@ -209,18 +209,19 @@ class SetupPage
 
                 PhinkSetup.checkSteps = function(stepResult, callback) {
                     PhinkSetup.stepsResult.push(stepResult);
-                    if (PhinkSetup.stepsResult.length == PhinkSetup.stepsCount) {
+                    if (PhinkSetup.stepsResult.length !== PhinkSetup.stepsCount) {
+                        return;
+                    }
 
-                        var finalResult = true;
-                        for (var key in PhinkSetup.stepsResult) {
-                            var currentResult = PhinkSetup.stepsResult[key];
-                            finalResult = finalResult && currentResult;
-                        }
+                    var finalResult = true;
+                    for (var key in PhinkSetup.stepsResult) {
+                        var currentResult = PhinkSetup.stepsResult[key];
+                        finalResult = finalResult && currentResult;
+                    }
 
-                        PhinkSetup.isReady = finalResult;
-                        if (finalResult && 'function' == typeof callback) {
-                            callback.call(this);
-                        }
+                    PhinkSetup.isReady = finalResult;
+                    if (finalResult && 'function' == typeof callback) {
+                        callback.call(this);
                     }
                 }
 

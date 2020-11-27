@@ -218,11 +218,11 @@ if(isset(\$pc)) \$curl_pager="&pc=\$pc";
 if(isset(\$sr)) \$curl_pager.="&sr=\$sr";
 if(\$this->query === "SELECT") {
     \$sql = "select $indexfield, $secondfield from $table order by $indexfield";
-    \$dbgrid = \$this->datacontrols->createPagerDbGrid('$table', \$sql, \$this->page_id, "admin", "&query=ACTION\$curl_pager", "", true, true, \$dialog, [0, 400], 15, \$this->grid_colors, \$this->cs);
+    \$dbgrid = \$this->datacontrols->createPagerDbGrid('$table', \$sql, \$this->page_id, "", "&query=ACTION\$curl_pager", "", true, true, \$dialog, [0, 400], 15, \$this->grid_colors, \$this->cs);
     echo "<br>".\$dbgrid;
 } elseif(\$this->query === "ACTION") {
 ?>
-<form method="POST" name="$formname" action="admin?id=$page_id&lg=fr">
+<form method="POST" name="$formname" action="?id=$page_id&lg=fr">
 <input type="hidden" name="query" value="ACTION">
 <input type="hidden" name="event" value="onRun">
 <input type="hidden" name="pc" value="<?php echo \$pc?>">

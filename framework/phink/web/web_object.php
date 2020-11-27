@@ -363,8 +363,13 @@ JSCRIPT;
         }
     }
 
-    public function isInternalComponent(): bool
+    public function isInternalComponent(?bool $value = null): ?bool
     {
+        if($value !== null) {
+            $this->componentIsInternal = $value;
+            return null;
+        }
+
         return $this->componentIsInternal;
     }
 
@@ -456,7 +461,7 @@ JSCRIPT;
         ];
     }
 
-    public function getMvcFileNamesByTypeName(?string $typeName = null): ?array
+    public function getMvcFileNamesByTypeName(?string $typeName = null, ?string $lang = null): ?array
     {
         $result = [];
 
@@ -466,6 +471,7 @@ JSCRIPT;
         }
         if ($info === null) {
             $viewName = TAutoloader::userClassNameToFilename($typeName);
+            $this->componentIsInternal = false;
         }
 
         if ($typeName === null) {
@@ -484,6 +490,7 @@ JSCRIPT;
             $controllerFileName = $dirName . DIRECTORY_SEPARATOR . $controllerFileName;
             $jsControllerFileName = $dirName . DIRECTORY_SEPARATOR . $jsControllerFileName;
         }
+
 
         if (!file_exists(SITE_ROOT . $viewFileName) && !file_exists(SRC_ROOT . $viewFileName)) {
             $info = TRegistry::classInfo($typeName);

@@ -4,8 +4,6 @@ namespace Phink\Apps\Admin;
 use Phink\MVC\TPartialController;
 use Phink\Registry\TRegistry;
 use Phink\Data\Client\PDO\TPdoConnection;
-use Phink\Data\TAnalyzer;
-use Phink\Log\TLog;
 use Puzzle\Menus;
 
 class TMakeFinal extends TPartialController
@@ -53,20 +51,30 @@ class TMakeFinal extends TPartialController
 
 		$cs = TPdoConnection::opener($this->conf);
 		$tmp_filename = 'tmp_' . $this->pa_filename;
-		$this->wwwroot = DOCUMENT_ROOT;
+		$this->wwwroot = SRC_ROOT;
 
-		$this->rel_page_filename = $this->pa_filename . $this->extension;
+		$this->rel_page_filename = $this->pa_filename . CLASS_EXTENSION;
 
 		$this->basedir .= "/";
 		$this->basedir = str_replace('./', "/", $this->basedir);
 		$this->basedir = str_replace('//', "/", $this->basedir);
 
-		$root_code_filename = $this->wwwroot . $this->basedir . $this->pa_filename . CLASS_EXTENSION;
-		$root_page_filename = $this->wwwroot . $this->basedir . $this->pa_filename . PREHTML_EXTENSION;
+
+		// $controllersDir =  $this->wwwroot . $this->basedir . 'app' .DIRECTORY_SEPARATOR.  'controllers' . DIRECTORY_SEPARATOR;
+		if(!file_exists(CONTROLLER_ROOT)) {
+			mkdir(CONTROLLER_ROOT, 0775, true);
+		}
+
+		// $viewsDir =  $this->wwwroot . $this->basedir . 'app' .DIRECTORY_SEPARATOR.  'views' . DIRECTORY_SEPARATOR;
+		if(!file_exists(VIEW_ROOT)) {
+			mkdir(VIEW_ROOT, 0775, true);
+		}
+
+		$root_code_filename = CONTROLLER_ROOT . $this->pa_filename . CLASS_EXTENSION;
+		$root_page_filename = VIEW_ROOT . $this->pa_filename . PREHTML_EXTENSION;
 
 		$script_exists = file_exists($this->rel_page_filename);
 		$this->script_exists_tostring = $script_exists ? $this->YES : $this->NO;
-		$http_root = getHttpRoot();
 
 
 		if ($this->dbgrid == "0") {
@@ -91,8 +99,6 @@ class TMakeFinal extends TPartialController
 
 			copy('tmp_code.php', $root_code_filename);
 			copy('tmp_page.php', $root_page_filename);
-			self::getLogger()->debug('FILE_PAGE:' . $root_code_filename, __FILE__ , __LINE__);
-			self::getLogger()->debug('FILE_CODE:' . $root_page_filename, __FILE__ , __LINE__);
 
 			$this->sstatus = "Page enregistrée";
 		} elseif ($this->save == $this->NO) {

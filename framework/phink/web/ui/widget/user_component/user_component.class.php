@@ -27,6 +27,8 @@ class TUserComponent extends TCustomControl
 
     protected $componentType = '';
     protected $componentId = '';
+    protected $componentInfo = [];
+    protected $componentLang = null;
 
     public function __construct(IObject $parent)
     {
@@ -44,9 +46,17 @@ class TUserComponent extends TCustomControl
         $this->componentId = $value;
     }
 
+    public function setComponentInfo(array $info): void
+    {
+        $this->componentInfo = $info;
+        $this->componentId = $info['id'];
+        $this->componentType = $info['di'];
+        $this->componentLang = $info['lang'];
+    }
+
     public function render(): void
     {
-        $mvcFileNames = $this->getMvcFileNamesByTypeName($this->componentType);
+        $mvcFileNames = $this->getMvcFileNamesByTypeName($this->componentType, $this->componentLang);
 
         foreach ($mvcFileNames as $key => $name) {
             self::getLogger()->debug('MVC FILE NAMES::' . $key . '::' . $name);
@@ -71,7 +81,9 @@ class TUserComponent extends TCustomControl
         include $controllerFileName;
         self::getLogger()->debug('USER COMPONENT CACHED FILE EXISTS::' . (file_exists($cachedFileName) ? 'TRUE' : 'FALSE'));
 
-        $class = new $fqClassName($this->getParent());
+        $parent = $this->getParent();
+        $parent->isInternalComponent($this->componentIsInternal);
+        $class = new $fqClassName($parent);
         $class->render();
 
     }

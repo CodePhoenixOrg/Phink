@@ -72,17 +72,17 @@ class TAutoloader extends TStaticObject
 
     public static function userClassNameToFilename($className): string
     {
-        $translated = '';
-        $l = strlen($className);
-        for ($i = 0; $i < $l; $i++) {
-            if (ctype_upper($className[$i])) {
-                $translated .= '_' . strtolower($className[$i]);
-            } else {
-                $translated .= $className[$i];
-            }
-        }
+        // $translated = '';
+        // $l = strlen($className);
+        // for ($i = 0; $i < $l; $i++) {
+        //     if (ctype_upper($className[$i] && $i > 0)) {
+        //         $translated .= '_' . strtolower($className[$i]);
+        //     } else {
+        //         $translated .= $className[$i];
+        //     }
+        // }
 
-        $translated = substr($translated, 1);
+        $translated = strtolower($className);
 
         return $translated;
     }
@@ -184,7 +184,7 @@ class TAutoloader extends TStaticObject
 
         $fqClassName = trim($namespace) . "\\" . trim($className);
 
-        $file = str_replace('\\', '_', $fqClassName) . '.php';
+        // $file = str_replace('\\', '_', $fqClassName) . '.php';
 
         if (isset($params) && ($params && RETURN_CODE === RETURN_CODE)) {
             $code = substr(trim($code), 0, -2) . PHP_EOL . CONTROL_ADDITIONS;
