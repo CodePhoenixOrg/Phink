@@ -151,7 +151,7 @@ class Setup
 
         $ok = true;
 
-        $bootstrap = <<<BOOTSTRAP
+        $bootstrap1 = <<<BOOTSTRAP1
 <?php
 \$is127 = (((\$host = array_shift(\$hostPort = explode(':', \$_SERVER['HTTP_HOST']))) . (isset(\$hostPort[1]) ? \$port = ':' . \$hostPort[1] : \$port = '') == '127.0.0.1' . \$port) ? \$hostname = 'localhost' : \$hostname = \$host) !== \$host;
 \$isIndex = (((strpos(\$_SERVER['REQUEST_URI'], 'index.php')  > -1) ? \$requestUri = str_replace('index.php', '', \$_SERVER['REQUEST_URI']) : \$requestUri = \$_SERVER['REQUEST_URI']) !== \$_SERVER['REQUEST_URI']);
@@ -166,14 +166,24 @@ define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
 // include FRAMEWORK . 'plugins' . DIRECTORY_SEPARATOR . 'plugins_library.php';
 include '../../vendor/autoload.php';
 
-BOOTSTRAP;
+BOOTSTRAP1;
+
+        $bootstrap2 = <<<BOOTSTRAP2
+<?php
+define('CONFIG_DIR', '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR);
+define('FRAMEWORK', trim(file_get_contents(CONFIG_DIR . 'framework')));
+include '../../vendor/autoload.php';
+
+BOOTSTRAP2;
 
         // include '../../vendor/autoload.php';
 
         $serverApi = strtolower(TPhpInfo::getGeneralSection()->server_api);
 
         if (strpos($serverApi, 'embedded') > -1 || strpos($serverApi, 'built-in') > -1) {
-            $ok = false !== file_put_contents('bootstrap.php', $bootstrap);
+            $ok = false !== file_put_contents('bootstrap.php', $bootstrap1);
+        } else {
+            $ok = false !== file_put_contents('bootstrap.php', $bootstrap2);
         }
 
         return $ok;
