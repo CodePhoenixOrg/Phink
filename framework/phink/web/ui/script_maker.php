@@ -30,7 +30,7 @@ class TScriptMaker extends TObject
         $conf,
         $table = "",
         $page_id = 0,
-        $data
+        $data = []
     ): string {
 
         $A_sqlFields = array_map(function ($defs) {
@@ -160,7 +160,7 @@ class TScriptMaker extends TObject
         $table = '',
         $pa_filename = '',
         $page_id = 0,
-        $data
+        $data = []
     ): string {
         $formname = $table . "Form";
 
